@@ -21,6 +21,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status',
+        'nama_kelompok',
+        'ketua',
+        'nik_ketua',
+        'kontak',
+        'grade',
+        'luas_lahan',
+        'alamat',
     ];
 
     /**
@@ -44,5 +53,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is a normal user/petani.
+     */
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
     }
 }

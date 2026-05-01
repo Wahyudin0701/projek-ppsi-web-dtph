@@ -8,40 +8,68 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Auth Routes (Mockups)
-Route::get('/login', function () {
-    return view('pages.auth.login');
-})->name('login');
+// Public Route
+Route::get('/', function () {
+    return view('pages.home');
+})->name('home');
 
-Route::post('/login', function () {
-    return redirect()->route('dashboard')->with('toast', ['type' => 'success', 'message' => 'Selamat datang kembali!']);
+Route::get('/katalog', function () {
+    return view('pages.katalog');
+})->name('katalog');
+
+Route::prefix('profil')->name('profil.')->group(function () {
+    Route::get('/overview', function () {
+        return view('pages.profil.overview');
+    })->name('overview');
+    Route::get('/visi-misi', function () {
+        return view('pages.profil.visi-misi');
+    })->name('visi-misi');
+    Route::get('/struktur-organisasi', function () {
+        return view('pages.profil.struktur-organisasi');
+    })->name('struktur-organisasi');
+    Route::get('/tugas-fungsi', function () {
+        return view('pages.profil.tugas-fungsi');
+    })->name('tugas-fungsi');
+    Route::get('/satuan-kerja', function () {
+        return view('pages.profil.satuan-kerja');
+    })->name('satuan-kerja');
 });
 
-Route::get('/register', function () {
-    return view('pages.auth.register');
-})->name('register');
-
-Route::post('/register', function () {
-    return redirect()->route('login')->with('toast', ['type' => 'success', 'message' => 'Akun berhasil dibuat. Silakan masuk.']);
+Route::prefix('informasi')->name('informasi.')->group(function () {
+    Route::get('/berita-artikel', function () {
+        return view('pages.informasi.berita-artikel');
+    })->name('berita-artikel');
+    Route::get('/berita-artikel/{slug}', function ($slug) {
+        return view('pages.informasi.berita-artikel-detail', compact('slug'));
+    })->name('berita-artikel.detail');
 });
 
-Route::post('/logout', function () {
-    return redirect()->route('login');
-})->name('logout');
-
-// Main App Routes
-Route::middleware([])->group(function () {
+// Protected Routes
+Route::middleware(['auth', 'verified'])->group(function () {
     
-    Route::get('/', function () {
-        return view('pages.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/katalog', function () {
-        return view('pages.katalog');
-    })->name('katalog');
+    // Profile Routes
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/proposal/baru', function () {
-        return view('pages.proposal.create');
-    })->name('proposal.create');
+    // Admin Routes
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/users', [App\Http\Controllers\AdminController::class, 'index'])->name('users.index');
+        Route::post('/users/{user}/approve', [App\Http\Controllers\AdminController::class, 'approve'])->name('users.approve');
+        
+        Route::resource('programs', App\Http\Controllers\Admin\ProgramController::class);
+        Route::post('/programs/{program}/toggle', [App\Http\Controllers\Admin\ProgramController::class, 'toggleStatus'])->name('programs.toggle');
+    });
+
+    // Farmer Routes
+    Route::prefix('farmer')->name('farmer.')->group(function () {
+        Route::get('/proposals', [App\Http\Controllers\ProposalController::class, 'index'])->name('proposals.index');
+        Route::get('/proposals/create/{program}', [App\Http\Controllers\ProposalController::class, 'create'])->name('proposals.create');
+        Route::post('/proposals/{program}', [App\Http\Controllers\ProposalController::class, 'store'])->name('proposals.store');
+    });
 
 });
+
+require __DIR__.'/auth.php';
