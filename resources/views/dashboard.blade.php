@@ -16,12 +16,11 @@
         </div>
     </div>
 
-    @elseif(auth()->user()->status !== 'approved')
-    {{-- ===== WAITING FOR VERIFICATION ===== --}}
-    @include('pages.waiting-verification')
-
+    @elseif(auth()->user()->status !== 'approved' || (auth()->user()->status === 'approved' && !auth()->user()->is_verified_acknowledged))
+        {{-- ===== WAITING FOR VERIFICATION / SUCCESS NOTICE ===== --}}
+        @include('pages.waiting-verification')
     @else
-    {{-- ===== FARMER DASHBOARD ===== --}}
+        {{-- ===== FARMER DASHBOARD CONTENT ===== --}}
     <div class="max-w-7xl mx-auto space-y-8">
 
         {{-- ===== WELCOME CARD ===== --}}
@@ -32,72 +31,56 @@
             <div class="pointer-events-none absolute -bottom-8 right-24 h-32 w-32 rounded-full bg-white/5"></div>
             <div class="pointer-events-none absolute right-16 top-4 h-20 w-20 rounded-full bg-white/8"></div>
 
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
                 <div>
-                    <p class="mb-1 text-sm font-semibold text-green-200">Selamat datang kembali</p>
-                    <h2 class="mb-3 text-3xl font-extrabold tracking-tight">{{ auth()->user()->name }}</h2>
-
-                    <div class="flex flex-wrap items-center gap-2">
-                        @if(auth()->user()->nama_kelompok)
-                        <span class="inline-flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur-sm border border-white/20">
-                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            {{ auth()->user()->nama_kelompok }}
-                        </span>
-                        @endif
-                        @if(auth()->user()->alamat)
-                        <span class="inline-flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur-sm border border-white/20">
-                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            {{ Str::limit(auth()->user()->alamat, 40) }}
-                        </span>
-                        @endif
+                    <p class="mb-1 text-[11px] sm:text-sm font-semibold text-green-200 opacity-80 hidden sm:block">Selamat datang kembali</p>
+                    <h2 class="mb-2 sm:mb-3 text-2xl sm:text-3xl font-extrabold tracking-tight">{{ auth()->user()->name }}</h2>
+                    
+                    @if(auth()->user()->alamat)
+                    <div class="flex items-center gap-2">
+                        <div class="inline-flex items-start gap-2 rounded-xl bg-white/10 p-3 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold backdrop-blur-md border border-white/10 text-white/90">
+                            <svg class="h-3.5 w-3.5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span class="leading-relaxed">{{ auth()->user()->alamat }}</span>
+                        </div>
                     </div>
+                    @endif
 
-                    <p class="mt-4 max-w-md text-sm leading-relaxed text-green-100/90">
+                    <p class="mt-4 max-w-md text-sm leading-relaxed text-green-100/90 hidden sm:block">
                         Pantau status proposal Anda dan ajukan permohonan baru kapan saja. Tim kami siap membantu proses pengajuan alat pertanian Anda.
                     </p>
                 </div>
 
-                <div class="hidden md:flex flex-col items-end gap-3 flex-shrink-0">
+                <div class="flex md:flex-col items-start md:items-end gap-3 flex-shrink-0 mt-2 md:mt-0">
                     <a href="{{ route('farmer.proposals.index') }}"
                        class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-[#19A148] shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                        Ajukan Proposal
+                        <span class="sm:inline">Ajukan Proposal</span>
                     </a>
-                    <span class="text-xs text-green-200 font-medium">{{ now()->isoFormat('dddd, D MMMM Y') }}</span>
+                    <span class="text-[10px] sm:text-xs text-green-200 font-medium hidden sm:block">{{ now()->isoFormat('dddd, D MMMM Y') }}</span>
                 </div>
             </div>
         </div>
 
         {{-- ===== STAT CARDS ===== --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow duration-200">
-                <div class="flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-xl bg-green-50 text-[#19A148]">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Total Pengajuan</p>
-                    <p class="mt-0.5 text-3xl font-black text-gray-800 leading-none">{{ $stats['total'] ?? 0 }}</p>
-                </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-[#19A148] mb-2">Total Pengajuan</p>
+                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['total'] ?? 0 }}</p>
             </div>
 
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow duration-200">
-                <div class="flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Sedang Diproses</p>
-                    <p class="mt-0.5 text-3xl font-black text-gray-800 leading-none">{{ $stats['proses'] ?? 0 }}</p>
-                </div>
+            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-2">Sedang Diproses</p>
+                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['proses'] ?? 0 }}</p>
             </div>
 
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow duration-200">
-                <div class="flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Selesai / Disetujui</p>
-                    <p class="mt-0.5 text-3xl font-black text-gray-800 leading-none">{{ $stats['selesai'] ?? 0 }}</p>
-                </div>
+            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2">Disetujui</p>
+                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['disetujui'] ?? 0 }}</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-red-600 mb-2">Ditolak</p>
+                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['ditolak'] ?? 0 }}</p>
             </div>
         </div>
 

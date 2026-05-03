@@ -25,9 +25,15 @@
                 Portal resmi Dinas Tanaman Pangan dan Hortikultura untuk pengajuan proposal peminjaman alat mesin pertanian (Alsintan) dan program bantuan pendanaan secara digital, transparan, dan efisien.
             </p>
             <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-200">
-                <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl text-primary-800 bg-white hover:bg-gray-50 shadow-lg shadow-white/10 hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-95">
-                    Daftar Akun Sekarang
-                </a>
+                @guest
+                    <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl text-primary-800 bg-white hover:bg-gray-50 shadow-lg shadow-white/10 hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-95">
+                        Daftar Akun Sekarang
+                    </a>
+                @else
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl text-primary-800 bg-white hover:bg-gray-50 shadow-lg shadow-white/10 hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-95">
+                        Masuk ke Dashboard
+                    </a>
+                @endguest
                 <a href="#katalog-alsintan" class="inline-flex items-center justify-center px-8 py-3.5 border-2 border-primary-400 text-base font-bold rounded-xl text-white hover:bg-primary-600/50 hover:border-primary-300 transition-all">
                     Lihat Katalog Alsintan
                 </a>
@@ -69,8 +75,8 @@
                     <div class="p-6 flex-1 flex flex-col">
                         <h3 class="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">{{ $item['nama'] }}</h3>
                         <p class="mt-2 text-gray-500 text-sm flex-1">{{ $item['desc'] }}</p>
-                        <a href="{{ route('login') }}" class="mt-6 w-full inline-flex justify-center items-center px-4 py-2.5 border border-gray-200 text-sm font-semibold rounded-xl text-primary-600 bg-white hover:bg-primary-50 hover:border-primary-200 transition-colors">
-                            Pinjam Alat
+                        <a href="{{ auth()->check() ? route('katalog') : route('login') }}" class="mt-6 w-full inline-flex justify-center items-center px-4 py-2.5 border border-gray-200 text-sm font-semibold rounded-xl text-primary-600 bg-white hover:bg-primary-50 hover:border-primary-200 transition-colors">
+                            {{ auth()->check() ? 'Lihat Detail' : 'Pinjam Alat' }}
                             <svg class="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </a>
                     </div>
@@ -127,8 +133,8 @@
                         </div>
                     </div>
                     
-                    <a href="{{ route('login') }}" class="w-full md:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors flex-shrink-0">
-                        Ajukan Program
+                    <a href="{{ auth()->check() ? route('program') : route('login') }}" class="w-full md:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors flex-shrink-0">
+                        {{ auth()->check() ? 'Lihat Program' : 'Ajukan Program' }}
                     </a>
                 </div>
                 @endforeach
@@ -150,12 +156,18 @@
                     <p class="text-primary-200 text-lg max-w-2xl mx-auto mb-10">Bergabunglah dengan ratusan Kelompok Tani lainnya yang telah memanfaatkan kemudahan layanan digital kami.</p>
                     
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a href="{{ route('register') }}" class="w-full sm:w-auto px-8 py-4 bg-primary-500 text-white font-bold rounded-xl shadow-lg shadow-primary-500/30 hover:bg-primary-400 hover:-translate-y-1 transition-all">
-                            Daftar Akun Kelompok Tani
-                        </a>
-                        <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-white/10 text-white font-bold rounded-xl border border-white/20 hover:bg-white/20 transition-all">
-                            Sudah punya akun? Masuk
-                        </a>
+                        @guest
+                            <a href="{{ route('register') }}" class="w-full sm:w-auto px-8 py-4 bg-primary-500 text-white font-bold rounded-xl shadow-lg shadow-primary-500/30 hover:bg-primary-400 hover:-translate-y-1 transition-all">
+                                Daftar Akun Kelompok Tani
+                            </a>
+                            <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-white/10 text-white font-bold rounded-xl border border-white/20 hover:bg-white/20 transition-all">
+                                Sudah punya akun? Masuk
+                            </a>
+                        @else
+                            <a href="{{ route('dashboard') }}" class="w-full sm:w-auto px-12 py-4 bg-primary-500 text-white font-bold rounded-xl shadow-lg shadow-primary-500/30 hover:bg-primary-400 hover:-translate-y-1 transition-all">
+                                Masuk ke Panel Dashboard Anda
+                            </a>
+                        @endguest
                     </div>
                     <div class="mt-8 inline-flex items-center gap-2 bg-black/20 px-4 py-2 rounded-lg text-sm text-primary-200 border border-white/5">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

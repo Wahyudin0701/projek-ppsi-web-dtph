@@ -3,9 +3,9 @@
 
     <div class="bg-white">
         {{-- Hero Header / Title --}}
-        <div class="pt-8 md:pt-12 pb-10 text-center">
-            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Visi & Misi</h1>
-            <div class="mt-4 w-16 h-1 bg-emerald-500 mx-auto rounded-full"></div>
+        <div class="bg-white py-12 text-center border-b border-gray-100">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight pb-6">Visi & Misi</h1>
+            <div class="w-16 h-1 bg-primary-500 mx-auto rounded-full"></div>
         </div>
 
         {{-- Main Content Container --}}

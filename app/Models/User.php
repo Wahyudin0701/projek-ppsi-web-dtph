@@ -30,6 +30,8 @@ class User extends Authenticatable
         'grade',
         'luas_lahan',
         'alamat',
+        'rejection_reason',
+        'is_verified_acknowledged',
     ];
 
     /**
@@ -52,6 +54,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_verified_acknowledged' => 'boolean',
         ];
     }
 
@@ -69,5 +72,13 @@ class User extends Authenticatable
     public function isUser(): bool
     {
         return $this->role === 'user';
+    }
+
+    /**
+     * Check if user account is approved.
+     */
+    public function isApproved(): bool
+    {
+        return $this->status === 'approved';
     }
 }

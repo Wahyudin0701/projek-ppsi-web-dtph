@@ -17,6 +17,14 @@ Route::get('/katalog', function () {
     return view('pages.katalog');
 })->name('katalog');
 
+Route::get('/program', function () {
+    return view('pages.program');
+})->name('program');
+
+Route::get('/kontak', function () {
+    return view('pages.kontak');
+})->name('kontak');
+
 Route::prefix('profil')->name('profil.')->group(function () {
     Route::get('/overview', function () {
         return view('pages.profil.overview');
@@ -42,6 +50,12 @@ Route::prefix('informasi')->name('informasi.')->group(function () {
     Route::get('/berita-artikel/{slug}', function ($slug) {
         return view('pages.informasi.berita-artikel-detail', compact('slug'));
     })->name('berita-artikel.detail');
+    Route::get('/unduh-dokumen', function () {
+        return view('pages.informasi.unduh-dokumen');
+    })->name('unduh-dokumen');
+    Route::get('/faq', function () {
+        return view('pages.informasi.faq');
+    })->name('faq');
 });
 
 // Protected Routes
@@ -55,19 +69,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Routes
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [App\Http\Controllers\AdminController::class, 'index'])->name('users.index');
-        Route::post('/users/{user}/approve', [App\Http\Controllers\AdminController::class, 'approve'])->name('users.approve');
+        Route::get('/users-list', [App\Http\Controllers\AdminController::class, 'list'])->name('users.list');
+        Route::get('/users/{user}', [App\Http\Controllers\AdminController::class, 'show'])->name('users.show');
+        Route::post('/users/{user}/reviewed', [App\Http\Controllers\AdminController::class, 'markAsReviewed'])->name('users.reviewed');
+        Route::patch('/users/{user}/approve', [App\Http\Controllers\AdminController::class, 'approve'])->name('users.approve');
+        Route::delete('/users/{user}/reject', [App\Http\Controllers\AdminController::class, 'reject'])->name('users.reject');
         
         Route::resource('programs', App\Http\Controllers\Admin\ProgramController::class);
         Route::post('/programs/{program}/toggle', [App\Http\Controllers\Admin\ProgramController::class, 'toggleStatus'])->name('programs.toggle');
     });
 
     // Farmer Routes
-    Route::prefix('farmer')->name('farmer.')->group(function () {
+    Route::middleware(['approved'])->prefix('farmer')->name('farmer.')->group(function () {
         Route::get('/proposals', [App\Http\Controllers\ProposalController::class, 'index'])->name('proposals.index');
         Route::get('/proposals/create/{program}', [App\Http\Controllers\ProposalController::class, 'create'])->name('proposals.create');
         Route::post('/proposals/{program}', [App\Http\Controllers\ProposalController::class, 'store'])->name('proposals.store');
+        
+        Route::get('/messages', function () {
+            return view('pages.farmer.messages');
+        })->name('messages');
     });
 
 });

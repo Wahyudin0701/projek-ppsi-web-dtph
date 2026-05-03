@@ -3,10 +3,10 @@
 
     <div class="bg-[#fcfdfc] min-h-screen">
         {{-- Hero Header (Consistent Style) --}}
-        <div class="bg-white pt-8 md:pt-12 pb-10 text-center border-b border-gray-100">
-            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Satuan Kerja</h1>
-            <div class="mt-4 w-16 h-1 bg-emerald-500 mx-auto rounded-full"></div>
-            <p class="mt-4 text-gray-500 max-w-xl mx-auto text-sm md:text-base px-4">
+        <div class="bg-white py-12 text-center border-b border-gray-100">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight pb-6">Satuan Kerja</h1>
+            <div class="w-16 h-1 bg-primary-500 mx-auto rounded-full"></div>
+            <p class="mt-6 text-gray-500 max-w-2xl mx-auto text-sm md:text-base px-4 leading-relaxed font-medium">
                 Unit Pelaksana Teknis (UPT) dan Balai Penyuluhan Pertanian (BPP) di Wilayah Kabupaten Muaro Jambi
             </p>
         </div>

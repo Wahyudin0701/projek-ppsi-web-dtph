@@ -14,7 +14,10 @@ class EnsureAccountIsApproved
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check() && !auth()->user()->isAdmin() && !auth()->user()->isApproved()) {
-            return redirect()->route('pending');
+            if ($request->routeIs('dashboard')) {
+                return $next($request);
+            }
+            return redirect()->route('dashboard');
         }
 
         return $next($request);

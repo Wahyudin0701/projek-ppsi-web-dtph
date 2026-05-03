@@ -73,25 +73,89 @@
                         </button>
                         <div x-show="open" x-transition.opacity.duration.200ms class="absolute left-0 top-full w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50" x-cloak>
                             <a href="{{ route('informasi.berita-artikel') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Berita &amp; Artikel</a>
-                            <a href="#" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Galeri Kegiatan</a>
-                            <a href="#" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Pengumuman</a>
-                            <a href="#" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Unduh Dokumen</a>
+                            <a href="{{ route('informasi.unduh-dokumen') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Unduh Dokumen</a>
+                            <a href="{{ route('informasi.faq') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">FAQ (Tanya Jawab)</a>
                         </div>
                     </div>
 
-                    <a href="#katalog-alsintan" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition whitespace-nowrap">Katalog Alsintan</a>
-                    <a href="#program-bantuan" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition">Program</a>
-                    <a href="#" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition">Kontak</a>
+                    <a href="{{ route('katalog') }}" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition whitespace-nowrap">Katalog Alsintan</a>
+                    <a href="{{ route('program') }}" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition">Program</a>
+                    <a href="{{ route('kontak') }}" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition">Kontak</a>
 
                     <div class="h-6 w-px bg-gray-200 mx-1"></div>
-                    <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-700 hover:text-primary-600 transition">Masuk</a>
-                    <a href="{{ route('register') }}" class="text-sm font-bold bg-primary-600 text-white px-5 py-2.5 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-600/30 transition-all hover:-translate-y-0.5 active:scale-95">Daftar</a>
+                    @guest
+                        <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-700 hover:text-primary-600 transition">Masuk</a>
+                        <a href="{{ route('register') }}" class="text-sm font-bold bg-primary-600 text-white px-5 py-2.5 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-600/30 transition-all hover:-translate-y-0.5 active:scale-95">Daftar</a>
+                    @else
+                        {{-- Profile Dropdown --}}
+                        <div class="relative ml-2" x-data="{ userOpen: false }" @click.away="userOpen = false">
+                            <button @click="userOpen = !userOpen" class="flex items-center gap-2 p-1 rounded-2xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group">
+                                <div class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold text-lg shadow-sm group-hover:shadow-md transition-all">
+                                    {{ substr(auth()->user()->name, 0, 1) }}
+                                </div>
+                                <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="userOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+
+                            <div x-show="userOpen" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+                                 class="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden" 
+                                 x-cloak>
+                                <div class="px-5 py-3 border-b border-gray-50 mb-1">
+                                    <p class="text-sm font-bold text-gray-900 truncate">{{ auth()->user()->name }}</p>
+                                    <p class="text-[10px] font-medium text-gray-400 uppercase tracking-widest mt-0.5">{{ auth()->user()->role ?? 'Petani' }}</p>
+                                </div>
+                                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                                    Dashboard
+                                </a>
+                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    Edit Profil
+                                </a>
+                                <div class="my-1 border-t border-gray-50"></div>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full flex items-center gap-3 px-5 py-2.5 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                        Keluar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endguest
                 </nav>
 
                 {{-- Mobile Action Buttons (Right) --}}
                 <div class="flex items-center gap-2 sm:gap-4 lg:hidden">
-                    <a href="{{ route('login') }}" class="text-xs sm:text-sm font-bold sm:font-semibold text-gray-700 px-2 sm:px-0 py-2 sm:py-0 hover:bg-gray-50 sm:hover:bg-transparent rounded-lg sm:hover:text-primary-600 transition">Masuk</a>
-                    <a href="{{ route('register') }}" class="text-xs sm:text-sm font-bold bg-primary-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg sm:shadow-primary-600/30 hover:bg-primary-700 transition-all sm:hover:-translate-y-0.5 active:scale-95">Daftar</a>
+                    @guest
+                        <a href="{{ route('login') }}" class="text-xs sm:text-sm font-bold sm:font-semibold text-gray-700 px-2 sm:px-0 py-2 sm:py-0 hover:bg-gray-50 sm:hover:bg-transparent rounded-lg sm:hover:text-primary-600 transition">Masuk</a>
+                        <a href="{{ route('register') }}" class="text-xs sm:text-sm font-bold bg-primary-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg sm:shadow-primary-600/30 hover:bg-primary-700 transition-all sm:hover:-translate-y-0.5 active:scale-95">Daftar</a>
+                    @else
+                        {{-- Mobile Profile Avatar --}}
+                        <div class="relative" x-data="{ mobileUserOpen: false }" @click.away="mobileUserOpen = false">
+                            <button @click="mobileUserOpen = !mobileUserOpen" class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold shadow-md active:scale-90 transition-all border-2 border-white ring-1 ring-gray-100">
+                                {{ substr(auth()->user()->name, 0, 1) }}
+                            </button>
+                            
+                            <div x-show="mobileUserOpen" 
+                                 x-transition.opacity.scale.80
+                                 class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden" 
+                                 x-cloak>
+                                <a href="{{ route('dashboard') }}" class="block px-5 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-bold">Dashboard</a>
+                                <a href="{{ route('profile.edit') }}" class="block px-5 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-bold">Profil Saya</a>
+                                <div class="border-t border-gray-50 my-1"></div>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-5 py-3 text-sm text-red-600 font-black hover:bg-red-50">Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                    @endguest
                 </div>
             </div>
         </div>
@@ -139,15 +203,14 @@
                         </button>
                         <div x-show="openInfo" x-collapse class="bg-gray-50 px-4 py-2" x-cloak>
                             <a href="{{ route('informasi.berita-artikel') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Berita &amp; Artikel</a>
-                            <a href="#" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Galeri Kegiatan</a>
-                            <a href="#" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Pengumuman</a>
-                            <a href="#" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Unduh Dokumen</a>
+                            <a href="{{ route('informasi.unduh-dokumen') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Unduh Dokumen</a>
+                            <a href="{{ route('informasi.faq') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">FAQ (Tanya Jawab)</a>
                         </div>
                     </div>
 
-                    <a href="#katalog-alsintan" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Katalog Alsintan</a>
-                    <a href="#program-bantuan" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Program Bantuan</a>
-                    <a href="#" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Kontak</a>
+                    <a href="{{ route('katalog') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Katalog Alsintan</a>
+                    <a href="{{ route('program') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Program Bantuan</a>
+                    <a href="{{ route('kontak') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Kontak</a>
                 </div>
             </nav>
         </div>
@@ -210,11 +273,12 @@
                 <div class="space-y-5">
                     <h4 class="text-white text-xs font-black uppercase tracking-[0.15em]">Layanan</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>E-Proposal Alsintan</a></li>
-                        <li><a href="#" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Katalog Alsintan</a></li>
-                        <li><a href="#" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Program Bantuan</a></li>
-                        <li><a href="#" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Berita &amp; Artikel</a></li>
-                        <li><a href="#" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Unduh Dokumen</a></li>
+                        <li><a href="{{ route('home') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>E-Proposal Alsintan</a></li>
+                        <li><a href="{{ route('katalog') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Katalog Alsintan</a></li>
+                        <li><a href="{{ route('program') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Program Bantuan</a></li>
+                        <li><a href="{{ route('informasi.berita-artikel') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Berita &amp; Artikel</a></li>
+                        <li><a href="{{ route('informasi.unduh-dokumen') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Unduh Dokumen</a></li>
+                        <li><a href="{{ route('informasi.faq') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>FAQ (Tanya Jawab)</a></li>
                     </ul>
                 </div>
 
@@ -226,27 +290,27 @@
                             <div class="mt-0.5 w-7 h-7 rounded-lg bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             </div>
-                            <p class="text-xs text-gray-500 leading-relaxed">Jl. Lintas Timur, Sengeti, Kec. Sekernan, Kab. Muaro Jambi</p>
+                            <p class="text-xs text-gray-500 leading-relaxed">Komplek Perkantoran Bukit Cinto Kenang, Sengeti, Muaro Jambi 36381</p>
                         </li>
                         <li class="flex items-center gap-3">
                             <div class="w-7 h-7 rounded-lg bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                             </div>
-                            <a href="tel:+62741571234" class="text-xs text-gray-500 hover:text-emerald-400 transition-colors">(0741) 57-1234</a>
+                            <a href="tel:+62741123456" class="text-xs text-gray-500 hover:text-emerald-400 transition-colors">(0741) 123456</a>
                         </li>
                         <li class="flex items-center gap-3">
                             <div class="w-7 h-7 rounded-lg bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                             </div>
-                            <a href="mailto:dtph@muarojambikab.go.id" class="text-xs text-gray-500 hover:text-emerald-400 transition-colors">dtph@muarojambikab.go.id</a>
+                            <a href="mailto:kontak@dtph-muarojambi.go.id" class="text-xs text-gray-500 hover:text-emerald-400 transition-colors">kontak@dtph-muarojambi.go.id</a>
                         </li>
                         <li class="flex items-start gap-3">
                             <div class="mt-0.5 w-7 h-7 rounded-lg bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500">Senin – Kamis: 07.30–16.00</p>
-                                <p class="text-xs text-gray-500">Jumat: 07.30–11.30 WIB</p>
+                                <p class="text-xs text-gray-500">Senin – Jumat</p>
+                                <p class="text-[10px] text-emerald-500 font-bold uppercase">08.00 – 16.00 WIB</p>
                             </div>
                         </li>
                     </ul>

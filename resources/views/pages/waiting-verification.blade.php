@@ -7,6 +7,10 @@
                     <svg class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
+                @elseif(auth()->user()->status === 'approved')
+                    <svg class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 @else
                     <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -17,21 +21,46 @@
             <h2 class="text-2xl font-extrabold text-gray-900 mb-2">
                 @if(auth()->user()->status === 'rejected')
                     Pendaftaran Ditolak
+                @elseif(auth()->user()->status === 'approved')
+                    Akun Berhasil Diverifikasi!
                 @else
                     Menunggu Verifikasi Admin
                 @endif
             </h2>
-            <p class="text-gray-600 max-w-lg mx-auto">
+            <p class="text-gray-600 max-w-lg mx-auto leading-relaxed">
                 @if(auth()->user()->status === 'rejected')
                     Mohon maaf, pendaftaran akun kelompok tani Anda tidak dapat kami setujui saat ini. Silakan periksa alasan penolakan di bawah.
+                @elseif(auth()->user()->status === 'approved')
+                    Selamat! Akun Kelompok Tani <strong>{{ auth()->user()->nama_kelompok }}</strong> telah berhasil diverifikasi oleh tim DTPH Muaro Jambi.
                 @else
                     Terima kasih telah mendaftar. Tim kami sedang meninjau data pendaftaran kelompok tani Anda. Proses ini mungkin memakan waktu 1-2 hari kerja.
                 @endif
             </p>
         </div>
 
-        @if(auth()->user()->status === 'rejected')
-            {{-- Rejection Alert --}}
+        @if(auth()->user()->status === 'approved')
+            {{-- Success Section --}}
+            <div class="p-10 text-center">
+                <div class="mb-8">
+                    <div class="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 inline-block">
+                        <p class="text-sm text-emerald-800 leading-relaxed max-w-md">
+                            Anda sekarang memiliki akses penuh ke sistem E-Proposal. Anda dapat mulai melihat program bantuan yang tersedia dan mengajukan usulan alat pertanian.
+                        </p>
+                    </div>
+                </div>
+                
+                <a href="{{ route('dashboard', ['verified' => 1]) }}" 
+                   class="inline-flex items-center gap-3 px-8 py-4 bg-[#19A148] text-white rounded-2xl font-black text-lg hover:bg-[#15883c] shadow-xl shadow-green-600/20 transition-all active:scale-95 group">
+                    <span>Masuk ke Dashboard</span>
+                    <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                </a>
+                
+                <p class="mt-6 text-xs text-gray-400 font-medium italic">
+                    *Gunakan menu di samping untuk mengelola profil dan riwayat Anda.
+                </p>
+            </div>
+        @elseif(auth()->user()->status === 'rejected')
+            {{-- Rejection Alert (Existing) --}}
             <div class="p-8">
                 <div class="rounded-xl border border-red-100 bg-red-50 p-5">
                     <div class="flex">
@@ -57,14 +86,14 @@
                 </div>
             </div>
         @else
-            {{-- Status Tracker --}}
+            {{-- Status Tracker (Existing for Pending/Reviewed) --}}
             <div class="p-8">
                 <h3 class="font-bold text-gray-800 mb-6 text-center">Status Pendaftaran Saat Ini</h3>
                 
                 @php
                     $status = auth()->user()->status;
                     $steps = [
-                        'pending' => 1,
+                        'menunggu' => 1,
                         'reviewed' => 2,
                         'verifying' => 3,
                     ];
@@ -79,7 +108,7 @@
                          style="width: {{ ($currentStep - 1) * 50 }}%;"></div>
 
                     <div class="relative z-10 flex justify-between">
-                        {{-- Step 1 --}}
+                        {{-- Steps... (existing logic remains) --}}
                         <div class="flex flex-col items-center">
                             <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-colors
                                 {{ $currentStep >= 1 ? 'bg-[#19A148] text-white border-2 border-white' : 'bg-white text-gray-400 border-2 border-gray-200' }}">
@@ -92,7 +121,6 @@
                             <span class="mt-3 text-xs font-bold {{ $currentStep >= 1 ? 'text-gray-900' : 'text-gray-400' }}">Belum Dilihat</span>
                         </div>
 
-                        {{-- Step 2 --}}
                         <div class="flex flex-col items-center">
                             <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-colors
                                 {{ $currentStep >= 2 ? 'bg-[#19A148] text-white border-2 border-white' : 'bg-white text-gray-400 border-2 border-gray-200' }}">
@@ -105,7 +133,6 @@
                             <span class="mt-3 text-xs font-bold {{ $currentStep >= 2 ? 'text-gray-900' : 'text-gray-400' }}">Sedang Dilihat</span>
                         </div>
 
-                        {{-- Step 3 --}}
                         <div class="flex flex-col items-center">
                             <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-colors
                                 {{ $currentStep >= 3 ? 'bg-[#19A148] text-white border-2 border-white' : 'bg-white text-gray-400 border-2 border-gray-200' }}">
@@ -116,7 +143,6 @@
                     </div>
                 </div>
                 
-                {{-- Detail Status Text --}}
                 <div class="mt-12 text-center bg-gray-50 rounded-xl p-5 border border-gray-100">
                     <h4 class="text-sm font-bold text-gray-800 mb-1">
                         @if($currentStep === 1)
@@ -141,18 +167,20 @@
         @endif
     </div>
 
-    {{-- Info Card --}}
-    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex gap-4">
-        <div class="flex-shrink-0 mt-1">
-            <svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+    {{-- Info Card (Only show when NOT approved) --}}
+    @if(auth()->user()->status !== 'approved')
+        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex gap-4">
+            <div class="flex-shrink-0 mt-1">
+                <svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold text-blue-900 mb-1">Informasi Verifikasi</h4>
+                <p class="text-xs text-blue-800/80 leading-relaxed">
+                    Selama masa tunggu, Anda belum dapat mengajukan proposal peminjaman alat pertanian. Pastikan nomor kontak yang Anda daftarkan aktif karena admin mungkin akan menghubungi Anda untuk konfirmasi data lebih lanjut.
+                </p>
+            </div>
         </div>
-        <div>
-            <h4 class="text-sm font-bold text-blue-900 mb-1">Informasi Verifikasi</h4>
-            <p class="text-xs text-blue-800/80 leading-relaxed">
-                Selama masa tunggu, Anda belum dapat mengajukan proposal peminjaman alat pertanian. Pastikan nomor kontak yang Anda daftarkan aktif karena admin mungkin akan menghubungi Anda untuk konfirmasi data lebih lanjut.
-            </p>
-        </div>
-    </div>
+    @endif
 </div>

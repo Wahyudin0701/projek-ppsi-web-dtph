@@ -9,11 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
+        // Handle verification acknowledgment
+        if ($request->has('verified') && $user->status === 'approved' && !$user->is_verified_acknowledged) {
+            $user->update(['is_verified_acknowledged' => true]);
+            return redirect()->route('dashboard');
+        }
+
         if ($user->isAdmin()) {
+            return view('dashboard');
+        }
+
+        if (!$user->isApproved()) {
             return view('dashboard');
         }
 
@@ -21,9 +31,10 @@ class DashboardController extends Controller
         $proposals = Proposal::where('user_id', $user->id)->get();
 
         $stats = [
-            'total'   => $proposals->count(),
-            'proses'  => $proposals->whereIn('status', ['pending_verifikasi', 'dalam_proses'])->count(),
-            'selesai' => $proposals->where('status', 'disetujui')->count(),
+            'total'     => $proposals->count(),
+            'proses'    => $proposals->whereIn('status', ['pending_verifikasi', 'dalam_proses'])->count(),
+            'disetujui' => $proposals->where('status', 'disetujui')->count(),
+            'ditolak'   => $proposals->where('status', 'ditolak')->count(),
         ];
 
         $recentProposals = Proposal::where('user_id', $user->id)
