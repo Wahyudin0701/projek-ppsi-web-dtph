@@ -165,7 +165,7 @@
                     @endif
                 </div>
             </div>
-        </div>
+
 
         {{-- Reject Modal --}}
         <div x-show="rejectModal" 
@@ -274,4 +274,5 @@
                 </div>
         </div>
     </div>
+</div>
 </x-app-layout>

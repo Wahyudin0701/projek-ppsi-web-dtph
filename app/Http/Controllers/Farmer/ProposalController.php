@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Farmer;
 
+use App\Http\Controllers\Controller;
 use App\Models\Program;
 use App\Models\Proposal;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class ProposalController extends Controller
     public function index()
     {
         $proposals = Auth::user()->proposals()->with('program')->latest()->get();
-        return view('pages.farmer.proposals.index', compact('proposals'));
+        return view('farmer.proposals.index', compact('proposals'));
     }
 
     /**
@@ -28,7 +29,7 @@ class ProposalController extends Controller
             return back()->with('error', 'Maaf, pendaftaran untuk program ini sudah ditutup.');
         }
 
-        return view('pages.farmer.proposals.create', compact('program'));
+        return view('farmer.proposals.create', compact('program'));
     }
 
     /**

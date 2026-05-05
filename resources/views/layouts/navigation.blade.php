@@ -31,9 +31,6 @@
                         <x-nav-link :href="route('farmer.proposals.index')" :active="request()->routeIs('farmer.proposals.*')">
                             {{ __('Riwayat Usulan') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('farmer.messages')" :active="request()->routeIs('farmer.messages')">
-                            {{ __('Pesan & Bantuan') }}
-                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -105,9 +102,6 @@
             @else
                 <x-responsive-nav-link :href="route('farmer.proposals.index')" :active="request()->routeIs('farmer.proposals.*')">
                     {{ __('Riwayat Usulan') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('farmer.messages')" :active="request()->routeIs('farmer.messages')">
-                    {{ __('Pesan & Bantuan') }}
                 </x-responsive-nav-link>
             @endif
         </div>

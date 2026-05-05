@@ -114,21 +114,24 @@
             </div>
 
             {{-- Support CTA --}}
-            <div class="mt-20 bg-emerald-950 rounded-[3rem] p-8 md:p-12 text-center relative overflow-hidden group">
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl group-hover:scale-150 transition-all duration-700"></div>
-                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-primary-500/10 rounded-full blur-3xl group-hover:scale-150 transition-all duration-700"></div>
-                
-                <div class="relative z-10">
-                    <h3 class="text-2xl font-extrabold text-white mb-4">Masih Butuh Bantuan?</h3>
-                    <p class="text-emerald-100/70 mb-8 max-w-lg mx-auto font-medium">Jika Anda tidak menemukan jawaban yang Anda cari, jangan ragu untuk menghubungi tim dukungan kami secara langsung.</p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a href="{{ route('kontak') }}" class="w-full sm:w-auto bg-white text-emerald-900 px-8 py-3.5 rounded-2xl font-bold hover:bg-emerald-50 transition-all shadow-xl shadow-black/20 active:scale-95">
-                            Hubungi Kami
-                        </a>
-                        <a href="{{ route('farmer.messages') }}" class="w-full sm:w-auto bg-white/10 text-white border border-white/20 px-8 py-3.5 rounded-2xl font-bold hover:bg-white/20 transition-all active:scale-95">
-                            Kirim Tiket Bantuan
-                        </a>
+            <div class="mt-20 bg-primary-600 rounded-[2.5rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-xl shadow-primary-600/20">
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                    <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 border border-white/30">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-2 tracking-tight">Masih Butuh Bantuan?</h3>
+                        <p class="text-white/90 text-sm md:text-base max-w-lg leading-relaxed font-medium">
+                            Jika Anda tidak menemukan jawaban yang Anda cari, jangan ragu untuk menghubungi tim dukungan kami secara langsung.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="relative z-10 flex-shrink-0 w-full md:w-auto">
+                    <a href="{{ route('kontak') }}" class="inline-flex justify-center w-full md:w-auto items-center gap-2 px-8 py-4 bg-white text-primary-600 hover:bg-primary-50 font-bold text-sm rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-xl">
+                        Hubungi Kami
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
                 </div>
             </div>
         </div>

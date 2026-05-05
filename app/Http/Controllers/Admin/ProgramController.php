@@ -10,7 +10,7 @@ class ProgramController extends Controller
 {
     public function index()
     {
-        $programs = Program::latest()->get();
+        $programs = Program::orderByRaw("open_date ASC")->get();
         return view('admin.programs.index', compact('programs'));
     }
 
@@ -22,13 +22,22 @@ class ProgramController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|in:bantuan_permanen,pinjam_alat,usulan_pendanaan',
-            'open_date' => 'nullable|date',
-            'close_date' => 'nullable|date|after_or_equal:open_date',
+            'name'        => 'required|string|max:255',
+            'type'        => 'required|in:bantuan_permanen,pinjam_alat,usulan_pendanaan',
+            'jenis'       => 'required|in:alsintan,benih,pupuk,infrastruktur,pelatihan',
+            'open_date'   => 'required|date',
+            'close_date'  => 'required|date|after_or_equal:open_date',
+            'description' => 'nullable|string',
+            'sop_description' => 'nullable|string',
+            'sasaran'     => 'nullable|string|max:255',
+            'kuota'       => 'nullable|string|max:255',
+            'requirements' => 'nullable|array',
+            'requirements.*' => 'nullable|string|max:255',
         ]);
 
-        Program::create($request->all());
+        Program::create($request->only([
+            'name', 'type', 'jenis', 'open_date', 'close_date', 'description', 'sop_description', 'sasaran', 'kuota', 'requirements',
+        ]));
 
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil dibuat.');
     }
@@ -41,13 +50,22 @@ class ProgramController extends Controller
     public function update(Request $request, Program $program)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|in:bantuan_permanen,pinjam_alat,usulan_pendanaan',
-            'open_date' => 'nullable|date',
-            'close_date' => 'nullable|date|after_or_equal:open_date',
+            'name'        => 'required|string|max:255',
+            'type'        => 'required|in:bantuan_permanen,pinjam_alat,usulan_pendanaan',
+            'jenis'       => 'required|in:alsintan,benih,pupuk,infrastruktur,pelatihan',
+            'open_date'   => 'required|date',
+            'close_date'  => 'required|date|after_or_equal:open_date',
+            'description' => 'nullable|string',
+            'sop_description' => 'nullable|string',
+            'sasaran'     => 'nullable|string|max:255',
+            'kuota'       => 'nullable|string|max:255',
+            'requirements' => 'nullable|array',
+            'requirements.*' => 'nullable|string|max:255',
         ]);
 
-        $program->update($request->all());
+        $program->update($request->only([
+            'name', 'type', 'jenis', 'open_date', 'close_date', 'description', 'sop_description', 'sasaran', 'kuota', 'requirements',
+        ]));
 
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil diperbarui.');
     }
@@ -56,11 +74,5 @@ class ProgramController extends Controller
     {
         $program->delete();
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil dihapus.');
-    }
-
-    public function toggleStatus(Program $program)
-    {
-        $program->update(['is_open' => !$program->is_open]);
-        return back()->with('success', 'Status program berhasil diubah.');
     }
 }

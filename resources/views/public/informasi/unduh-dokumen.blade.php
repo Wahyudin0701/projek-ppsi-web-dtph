@@ -223,14 +223,14 @@
                     <div>
                         <h3 class="text-2xl font-bold text-white mb-2 tracking-tight">Butuh Dokumen Lainnya?</h3>
                         <p class="text-white/90 text-sm md:text-base max-w-lg leading-relaxed font-medium">
-                            Jika Anda tidak menemukan dokumen yang dicari, silakan hubungi layanan informasi publik DTPH untuk permintaan data spesifik.
+                            Jika Anda tidak menemukan dokumen yang dicari, silakan hubungi kami untuk permintaan data spesifik.
                         </p>
                     </div>
                 </div>
                 
                 <div class="relative z-10 flex-shrink-0 w-full md:w-auto">
-                    <a href="#" class="inline-flex justify-center w-full md:w-auto items-center gap-2 px-8 py-4 bg-white text-primary-600 hover:bg-primary-50 font-bold text-sm rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-xl">
-                        Hubungi Layanan
+                    <a href="{{ route('kontak') }}" class="inline-flex justify-center w-full md:w-auto items-center gap-2 px-8 py-4 bg-white text-primary-600 hover:bg-primary-50 font-bold text-sm rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-xl">
+                        Hubungi Kami
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
                 </div>

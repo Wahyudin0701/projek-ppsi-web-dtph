@@ -48,39 +48,39 @@
 
                 {{-- Desktop Menu (Desktop Right) --}}
                 <nav class="hidden lg:flex flex-1 justify-end gap-5 items-center">
-                    <a href="{{ route('home') }}" class="text-sm font-bold text-gray-800 hover:text-primary-600 transition">Beranda</a>
+                    <a href="{{ route('home') }}" class="text-sm font-bold transition {{ request()->routeIs('home') ? 'text-primary-600' : 'text-gray-800 hover:text-primary-600' }}">Beranda</a>
                     
                     {{-- Dropdown Profil --}}
                     <div class="relative" x-data="{ open: false }" @click.away="open = false" @mouseenter="open = true" @mouseleave="open = false">
-                        <button class="flex items-center gap-1 text-sm font-bold text-gray-600 hover:text-primary-600 transition py-2">
+                        <button class="flex items-center gap-1 text-sm font-bold transition py-2 {{ request()->routeIs('profil.*') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">
                             Profil
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <div x-show="open" x-transition.opacity.duration.200ms class="absolute left-0 top-full w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50" x-cloak>
-                            <a href="{{ route('profil.overview') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Overview</a>
-                            <a href="{{ route('profil.visi-misi') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Visi &amp; Misi</a>
-                            <a href="{{ route('profil.struktur-organisasi') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Struktur Organisasi</a>
-                            <a href="{{ route('profil.tugas-fungsi') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Tugas &amp; Fungsi</a>
-                            <a href="{{ route('profil.satuan-kerja') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Satuan Kerja</a>
+                            <a href="{{ route('profil.overview') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.overview') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">Overview</a>
+                            <a href="{{ route('profil.visi-misi') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.visi-misi') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">Visi &amp; Misi</a>
+                            <a href="{{ route('profil.struktur-organisasi') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.struktur-organisasi') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">Struktur Organisasi</a>
+                            <a href="{{ route('profil.tugas-fungsi') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.tugas-fungsi') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">Tugas &amp; Fungsi</a>
+                            <a href="{{ route('profil.satuan-kerja') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.satuan-kerja') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">Satuan Kerja</a>
                         </div>
                     </div>
 
                     {{-- Dropdown Informasi Publik --}}
                     <div class="relative" x-data="{ open: false }" @click.away="open = false" @mouseenter="open = true" @mouseleave="open = false">
-                        <button class="flex items-center gap-1 text-sm font-bold text-gray-600 hover:text-primary-600 transition py-2 whitespace-nowrap">
+                        <button class="flex items-center gap-1 text-sm font-bold transition py-2 whitespace-nowrap {{ request()->routeIs('informasi.*') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">
                             Informasi Publik
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <div x-show="open" x-transition.opacity.duration.200ms class="absolute left-0 top-full w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50" x-cloak>
-                            <a href="{{ route('informasi.berita-artikel') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Berita &amp; Artikel</a>
-                            <a href="{{ route('informasi.unduh-dokumen') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">Unduh Dokumen</a>
-                            <a href="{{ route('informasi.faq') }}" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">FAQ (Tanya Jawab)</a>
+                            <a href="{{ route('informasi.berita-artikel') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('informasi.berita-artikel') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">Berita &amp; Artikel</a>
+                            <a href="{{ route('informasi.unduh-dokumen') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('informasi.unduh-dokumen') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">Unduh Dokumen</a>
+                            <a href="{{ route('informasi.faq') }}" class="block px-5 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('informasi.faq') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700' }}">FAQ (Tanya Jawab)</a>
                         </div>
                     </div>
 
-                    <a href="{{ route('katalog') }}" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition whitespace-nowrap">Katalog Alsintan</a>
-                    <a href="{{ route('program') }}" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition">Program</a>
-                    <a href="{{ route('kontak') }}" class="text-sm font-bold text-gray-600 hover:text-primary-600 transition">Kontak</a>
+                    <a href="{{ route('katalog') }}" class="text-sm font-bold transition whitespace-nowrap {{ request()->routeIs('katalog') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">Katalog Alsintan</a>
+                    <a href="{{ route('program') }}" class="text-sm font-bold transition {{ request()->routeIs('program') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">Program</a>
+                    <a href="{{ route('kontak') }}" class="text-sm font-bold transition {{ request()->routeIs('kontak') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">Kontak</a>
 
                     <div class="h-6 w-px bg-gray-200 mx-1"></div>
                     @guest
@@ -178,39 +178,39 @@
                 
                 {{-- Menu Links --}}
                 <div class="px-5 py-6 space-y-3 flex-1">
-                    <a href="{{ route('home') }}" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 hover:text-primary-700 transition-colors">Beranda</a>
+                    <a href="{{ route('home') }}" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50 hover:text-primary-700' }}">Beranda</a>
                     
                     {{-- Profil Accordion --}}
                     <div x-data="{ openProfil: false }" class="rounded-xl overflow-hidden">
-                        <button @click="openProfil = !openProfil" class="w-full flex items-center justify-between px-4 py-3.5 text-sm font-bold text-gray-800 hover:bg-primary-50 transition-colors" :class="openProfil ? 'bg-primary-50 text-primary-700' : ''">
+                        <button @click="openProfil = !openProfil" class="w-full flex items-center justify-between px-4 py-3.5 text-sm font-bold transition-colors {{ request()->routeIs('profil.*') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}" :class="openProfil ? 'bg-primary-50 text-primary-700' : ''">
                             Profil
                             <svg :class="{'rotate-180': openProfil}" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <div x-show="openProfil" x-collapse class="bg-gray-50 px-4 py-2" x-cloak>
-                            <a href="{{ route('profil.overview') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Overview</a>
-                            <a href="{{ route('profil.visi-misi') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Visi &amp; Misi</a>
-                            <a href="{{ route('profil.struktur-organisasi') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Struktur Organisasi</a>
-                            <a href="{{ route('profil.tugas-fungsi') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Tugas &amp; Fungsi</a>
-                            <a href="{{ route('profil.satuan-kerja') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Satuan Kerja</a>
+                            <a href="{{ route('profil.overview') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.overview') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">Overview</a>
+                            <a href="{{ route('profil.visi-misi') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.visi-misi') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">Visi &amp; Misi</a>
+                            <a href="{{ route('profil.struktur-organisasi') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.struktur-organisasi') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">Struktur Organisasi</a>
+                            <a href="{{ route('profil.tugas-fungsi') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.tugas-fungsi') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">Tugas &amp; Fungsi</a>
+                            <a href="{{ route('profil.satuan-kerja') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('profil.satuan-kerja') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">Satuan Kerja</a>
                         </div>
                     </div>
 
                     {{-- Informasi Publik Accordion --}}
                     <div x-data="{ openInfo: false }" class="rounded-xl overflow-hidden">
-                        <button @click="openInfo = !openInfo" class="w-full flex items-center justify-between px-4 py-3.5 text-sm font-bold text-gray-800 hover:bg-primary-50 transition-colors" :class="openInfo ? 'bg-primary-50 text-primary-700' : ''">
+                        <button @click="openInfo = !openInfo" class="w-full flex items-center justify-between px-4 py-3.5 text-sm font-bold transition-colors {{ request()->routeIs('informasi.*') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}" :class="openInfo ? 'bg-primary-50 text-primary-700' : ''">
                             Informasi Publik
                             <svg :class="{'rotate-180': openInfo}" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <div x-show="openInfo" x-collapse class="bg-gray-50 px-4 py-2" x-cloak>
-                            <a href="{{ route('informasi.berita-artikel') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Berita &amp; Artikel</a>
-                            <a href="{{ route('informasi.unduh-dokumen') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">Unduh Dokumen</a>
-                            <a href="{{ route('informasi.faq') }}" class="block py-2.5 text-sm font-medium text-gray-600 hover:text-primary-600">FAQ (Tanya Jawab)</a>
+                            <a href="{{ route('informasi.berita-artikel') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('informasi.berita-artikel') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">Berita &amp; Artikel</a>
+                            <a href="{{ route('informasi.unduh-dokumen') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('informasi.unduh-dokumen') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">Unduh Dokumen</a>
+                            <a href="{{ route('informasi.faq') }}" class="block py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('informasi.faq') ? 'text-primary-700' : 'text-gray-600 hover:text-primary-600' }}">FAQ (Tanya Jawab)</a>
                         </div>
                     </div>
 
-                    <a href="{{ route('katalog') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Katalog Alsintan</a>
-                    <a href="{{ route('program') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Program Bantuan</a>
-                    <a href="{{ route('kontak') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold text-gray-800 rounded-xl hover:bg-primary-50 transition-colors">Kontak</a>
+                    <a href="{{ route('katalog') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('katalog') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}">Katalog Alsintan</a>
+                    <a href="{{ route('program') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('program') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}">Program Bantuan</a>
+                    <a href="{{ route('kontak') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('kontak') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}">Kontak</a>
                 </div>
             </nav>
         </div>

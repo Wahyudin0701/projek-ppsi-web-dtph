@@ -97,11 +97,78 @@
                 ],
             ];
             @endphp
+            
+            {{-- Category Filter Cards --}}
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16">
+                {{-- All Categories --}}
+                <button @click="activeCategory = 'semua'" 
+                        :class="activeCategory === 'semua' ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-600/20' : 'bg-white border-gray-100 hover:border-emerald-200 shadow-sm'"
+                        class="p-5 rounded-3xl border transition-all duration-300 text-left group">
+                    <div :class="activeCategory === 'semua' ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-600'" 
+                         class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </div>
+                    <p :class="activeCategory === 'semua' ? 'text-white' : 'text-gray-900'" class="font-bold text-sm">Semua</p>
+                    <p :class="activeCategory === 'semua' ? 'text-emerald-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Total Artikel</p>
+                </button>
+
+                {{-- Berita --}}
+                <button @click="activeCategory = 'berita'" 
+                        :class="activeCategory === 'berita' ? 'bg-blue-600 border-blue-600 shadow-lg shadow-blue-600/20' : 'bg-white border-gray-100 hover:border-blue-200 shadow-sm'"
+                        class="p-5 rounded-3xl border transition-all duration-300 text-left group">
+                    <div :class="activeCategory === 'berita' ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-600'" 
+                         class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                    </div>
+                    <p :class="activeCategory === 'berita' ? 'text-white' : 'text-gray-900'" class="font-bold text-sm">Berita</p>
+                    <p :class="activeCategory === 'berita' ? 'text-blue-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Dinas & Publik</p>
+                </button>
+
+                {{-- Program --}}
+                <button @click="activeCategory = 'program'" 
+                        :class="activeCategory === 'program' ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-600/20' : 'bg-white border-gray-100 hover:border-emerald-200 shadow-sm'"
+                        class="p-5 rounded-3xl border transition-all duration-300 text-left group">
+                    <div :class="activeCategory === 'program' ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-600'" 
+                         class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    </div>
+                    <p :class="activeCategory === 'program' ? 'text-white' : 'text-gray-900'" class="font-bold text-sm">Program</p>
+                    <p :class="activeCategory === 'program' ? 'text-emerald-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Bantuan & Alsintan</p>
+                </button>
+
+                {{-- Artikel --}}
+                <button @click="activeCategory = 'artikel'" 
+                        :class="activeCategory === 'artikel' ? 'bg-amber-600 border-amber-600 shadow-lg shadow-amber-600/20' : 'bg-white border-gray-100 hover:border-amber-200 shadow-sm'"
+                        class="p-5 rounded-3xl border transition-all duration-300 text-left group">
+                    <div :class="activeCategory === 'artikel' ? 'bg-white/20 text-white' : 'bg-amber-50 text-amber-600'" 
+                         class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <p :class="activeCategory === 'artikel' ? 'text-white' : 'text-gray-900'" class="font-bold text-sm">Artikel</p>
+                    <p :class="activeCategory === 'artikel' ? 'text-amber-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Edukasi & Tips</p>
+                </button>
+
+                {{-- Kegiatan --}}
+                <button @click="activeCategory = 'kegiatan'" 
+                        :class="activeCategory === 'kegiatan' ? 'bg-violet-600 border-violet-600 shadow-lg shadow-violet-600/20' : 'bg-white border-gray-100 hover:border-violet-200 shadow-sm'"
+                        class="p-5 rounded-3xl border transition-all duration-300 text-left group">
+                    <div :class="activeCategory === 'kegiatan' ? 'bg-white/20 text-white' : 'bg-violet-50 text-violet-600'" 
+                         class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <p :class="activeCategory === 'kegiatan' ? 'text-white' : 'text-gray-900'" class="font-bold text-sm">Kegiatan</p>
+                    <p :class="activeCategory === 'kegiatan' ? 'text-violet-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Dokumentasi Lapangan</p>
+                </button>
+            </div>
 
             {{-- Article Grid --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($articles as $article)
-                <article class="bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-[0_6px_30px_-10px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-500 group flex flex-col hover:-translate-y-1.5">
+                <article x-show="activeCategory === 'semua' || activeCategory === '{{ $article['kategori'] }}'" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         class="bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-[0_6px_30px_-10px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-500 group flex flex-col hover:-translate-y-1.5">
 
                     {{-- Image Area --}}
                     <a href="{{ route('informasi.berita-artikel.detail', $article['slug']) }}" class="block">

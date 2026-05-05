@@ -20,11 +20,11 @@ class DashboardController extends Controller
         }
 
         if ($user->isAdmin()) {
-            return view('dashboard');
+            return view('admin.dashboard');
         }
 
         if (!$user->isApproved()) {
-            return view('dashboard');
+            return view('farmer.dashboard');
         }
 
         // Farmer/User dashboard data
@@ -47,6 +47,6 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('dashboard', compact('stats', 'recentProposals', 'programs'));
+        return view('farmer.dashboard', compact('stats', 'recentProposals', 'programs'));
     }
 }
