@@ -102,11 +102,29 @@
                                     Stok: <strong class="text-gray-700" x-text="item.stock + ' unit'"></strong>
                                 </span>
                                 <template x-if="item.status === 'tersedia'">
-                                    <a href="{{ route('login') }}" @click.stop
-                                       class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
-                                        Ajukan Pinjaman
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                                    </a>
+                                    <div>
+                                        @auth
+                                            @if(auth()->user()->isApproved())
+                                                <a :href="`{{ route('farmer.proposals.programs') }}?kategori_pengajuan=alsintan&alsintan_id=${item.id}`" @click.stop
+                                                   class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                                    Ajukan Pinjaman
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('dashboard') }}" @click.stop
+                                                   class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                                    Ajukan Pinjaman
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                                </a>
+                                            @endif
+                                        @else
+                                            <a href="{{ route('login') }}" @click.stop
+                                               class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                                Ajukan Pinjaman
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                            </a>
+                                        @endauth
+                                    </div>
                                 </template>
                                 <template x-if="item.status === 'tidak_tersedia'">
                                     <span class="text-xs font-bold text-amber-600">Sedang Dipinjam</span>

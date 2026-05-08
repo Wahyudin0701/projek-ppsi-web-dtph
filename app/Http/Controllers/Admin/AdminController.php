@@ -11,7 +11,10 @@ class AdminController extends Controller
     public function index()
     {
         $pendingUsers = User::where('role', 'user')
-            ->whereIn('status', ['menunggu', 'reviewed'])
+            ->whereHas('farmerProfile', function ($query) {
+                $query->whereIn('status', ['menunggu', 'reviewed']);
+            })
+            ->with('farmerProfile')
             ->latest()
             ->get();
 
@@ -20,9 +23,8 @@ class AdminController extends Controller
 
     public function show(User $user)
     {
-        if ($user->status === 'menunggu') {
-            $user->status = 'reviewed';
-            $user->save();
+        if ($user->farmerProfile && $user->farmerProfile->status === 'menunggu') {
+            $user->farmerProfile->update(['status' => 'reviewed']);
         }
 
         return view('admin.users.show', compact('user'));
@@ -30,21 +32,22 @@ class AdminController extends Controller
 
     public function markAsReviewed(User $user)
     {
-        if ($user->status === 'menunggu') {
-            $user->status = 'reviewed';
-            $user->save();
+        if ($user->farmerProfile && $user->farmerProfile->status === 'menunggu') {
+            $user->farmerProfile->update(['status' => 'reviewed']);
         }
         return response()->json([
             'success' => true,
-            'status' => $user->status
+            'status' => $user->farmerProfile->status ?? null
         ]);
     }
 
     public function approve(User $user)
     {
-        $user->update(['status' => 'approved']);
+        if ($user->farmerProfile) {
+            $user->farmerProfile->update(['status' => 'approved']);
+        }
 
-        return redirect()->route('admin.users.index')->with('success', "Akun Kelompok Tani {$user->nama_kelompok} berhasil disetujui.");
+        return redirect()->route('admin.users.index')->with('success', "Akun Kelompok Tani {$user->farmerProfile->nama_kelompok} berhasil disetujui.");
     }
 
     public function reject(Request $request, User $user)
@@ -53,27 +56,38 @@ class AdminController extends Controller
             'rejection_reason' => 'required|string|max:255',
         ]);
 
-        $user->update([
-            'status' => 'rejected',
-            'rejection_reason' => $request->rejection_reason,
-        ]);
+        if ($user->farmerProfile) {
+            $user->farmerProfile->update([
+                'status' => 'rejected',
+                'rejection_reason' => $request->rejection_reason,
+            ]);
+        }
 
-        return redirect()->route('admin.users.index')->with('success', "Pendaftaran Kelompok Tani {$user->nama_kelompok} telah ditolak.");
+        return redirect()->route('admin.users.index')->with('success', "Pendaftaran Kelompok Tani {$user->farmerProfile->nama_kelompok} telah ditolak.");
     }
 
     public function list(Request $request)
     {
-        $query = User::where('role', 'user');
+        $query = User::where('role', 'user')->with('farmerProfile');
 
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            $query->whereHas('farmerProfile', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            });
         }
 
         if ($request->filled('search')) {
-            $query->where('nama_kelompok', 'like', '%' . $request->search . '%');
+            $query->whereHas('farmerProfile', function ($q) use ($request) {
+                $q->where('nama_kelompok', 'like', '%' . $request->search . '%');
+            });
         }
 
-        $users = $query->orderBy('nama_kelompok', 'asc')->get();
+        // We can't orderBy a relationship column easily with Eloquent, so we join or sort collection
+        // Joining is better for performance if pagination is used later.
+        // For now we'll fetch and sort.
+        $users = $query->get()->sortBy(function($user) {
+            return $user->farmerProfile->nama_kelompok ?? '';
+        });
 
         return view('admin.users.list', compact('users'));
     }

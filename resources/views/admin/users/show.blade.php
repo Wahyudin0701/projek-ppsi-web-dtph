@@ -30,19 +30,19 @@
                                 <div class="space-y-1">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Nama Kelompok Tani</label>
                                     <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50">
-                                        <p class="font-bold text-gray-900">{{ $user->nama_kelompok }}</p>
+                                        <p class="font-bold text-gray-900">{{ $user->farmerProfile->nama_kelompok }}</p>
                                     </div>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Nama Ketua</label>
                                     <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50">
-                                        <p class="font-bold text-gray-900">{{ $user->ketua }}</p>
+                                        <p class="font-bold text-gray-900">{{ $user->farmerProfile->ketua }}</p>
                                     </div>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">NIK Ketua</label>
                                     <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50">
-                                        <p class="font-bold text-gray-900 font-mono tracking-wider">{{ $user->nik_ketua ?? '-' }}</p>
+                                        <p class="font-bold text-gray-900 font-mono tracking-wider">{{ $user->farmerProfile->nik_ketua ?? '-' }}</p>
                                     </div>
                                 </div>
                                 <div class="space-y-1">
@@ -56,7 +56,7 @@
                             <div class="mt-8 space-y-1">
                                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Alamat Lengkap</label>
                                 <div class="bg-gray-50 rounded-2xl p-5 border border-gray-50">
-                                    <p class="text-sm font-bold text-gray-700 leading-relaxed">{{ $user->alamat }}</p>
+                                    <p class="text-sm font-bold text-gray-700 leading-relaxed">{{ $user->farmerProfile->alamat }}</p>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-1 leading-none">Luas Lahan</p>
-                                        <p class="text-2xl font-black text-emerald-900 leading-none">{{ $user->luas_lahan ?? '0' }} <span class="text-sm font-bold opacity-60">Ha</span></p>
+                                        <p class="text-2xl font-black text-emerald-900 leading-none">{{ $user->farmerProfile->luas_lahan ?? '0' }} <span class="text-sm font-bold opacity-60">Ha</span></p>
                                     </div>
                                 </div>
 
@@ -85,7 +85,7 @@
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] mb-1 leading-none">Grade Kelompok</p>
-                                        <p class="text-2xl font-black text-amber-900 leading-none uppercase">{{ $user->grade ?? '-' }}</p>
+                                        <p class="text-2xl font-black text-amber-900 leading-none uppercase">{{ $user->farmerProfile->grade ?? '-' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
 
                 {{-- Right Side: Actions --}}
                 <div class="space-y-8">
-                    @if($user->status === 'menunggu' || $user->status === 'reviewed')
+                    @if($user->farmerProfile->status === 'menunggu' || $user->farmerProfile->status === 'reviewed')
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8">
                             <h3 class="text-lg font-black text-gray-900 tracking-tight mb-6">Tindakan Verifikasi</h3>
                             
@@ -123,7 +123,7 @@
                                         </div>
                                         <div>
                                             <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">Nomor WA</p>
-                                            <p class="text-sm font-bold text-gray-700">{{ $user->kontak }}</p>
+                                            <p class="text-sm font-bold text-gray-700">{{ $user->farmerProfile->kontak }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -131,21 +131,21 @@
                         </div>
                     @else
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8 text-center">
-                            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center {{ $user->status === 'approved' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600' }}">
-                                @if($user->status === 'approved')
+                            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center {{ $user->farmerProfile->status === 'approved' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600' }}">
+                                @if($user->farmerProfile->status === 'approved')
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 @else
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 @endif
                             </div>
                             <h3 class="text-lg font-black text-gray-900 mb-2">Verifikasi Selesai</h3>
-                            <p class="text-sm font-bold {{ $user->status === 'approved' ? 'text-green-600' : 'text-red-600' }} uppercase tracking-widest">
-                                Status: {{ $user->status === 'approved' ? 'Disetujui' : 'Ditolak' }}
+                            <p class="text-sm font-bold {{ $user->farmerProfile->status === 'approved' ? 'text-green-600' : 'text-red-600' }} uppercase tracking-widest">
+                                Status: {{ $user->farmerProfile->status === 'approved' ? 'Disetujui' : 'Ditolak' }}
                             </p>
-                            @if($user->status === 'rejected')
+                            @if($user->farmerProfile->status === 'rejected')
                                 <div class="mt-4 p-4 bg-red-50 rounded-2xl border border-red-100">
                                     <p class="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Alasan Penolakan</p>
-                                    <p class="text-xs font-bold text-red-700 leading-relaxed">{{ $user->rejection_reason }}</p>
+                                    <p class="text-xs font-bold text-red-700 leading-relaxed">{{ $user->farmerProfile->rejection_reason }}</p>
                                 </div>
                             @endif
 
@@ -157,7 +157,7 @@
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">Nomor WA</p>
-                                        <p class="text-sm font-bold text-gray-700">{{ $user->kontak }}</p>
+                                        <p class="text-sm font-bold text-gray-700">{{ $user->farmerProfile->kontak }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         </div>
                         <h3 class="text-xl font-black text-gray-900">Tolak Pendaftaran</h3>
-                        <p class="text-sm text-gray-500 mt-1">Berikan alasan penolakan untuk Kelompok Tani <span class="font-bold text-gray-900">{{ $user->nama_kelompok }}</span></p>
+                        <p class="text-sm text-gray-500 mt-1">Berikan alasan penolakan untuk Kelompok Tani <span class="font-bold text-gray-900">{{ $user->farmerProfile->nama_kelompok }}</span></p>
                     </div>
 
                     <form action="{{ route('admin.users.reject', $user) }}" method="POST" x-data="{ 
@@ -259,7 +259,7 @@
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
                         <h3 class="text-xl font-black text-gray-900">Konfirmasi Persetujuan</h3>
-                        <p class="text-sm text-gray-500 mt-1">Anda akan menyetujui akun Kelompok Tani <span class="font-bold text-gray-900">{{ $user->nama_kelompok }}</span>. Pastikan semua data sudah valid.</p>
+                        <p class="text-sm text-gray-500 mt-1">Anda akan menyetujui akun Kelompok Tani <span class="font-bold text-gray-900">{{ $user->farmerProfile->nama_kelompok }}</span>. Pastikan semua data sudah valid.</p>
                     </div>
 
                     <form action="{{ route('admin.users.approve', $user) }}" method="POST">

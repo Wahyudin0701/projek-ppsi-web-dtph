@@ -37,7 +37,7 @@
 
         $programsData = $programs->map(function ($p) use ($jenisIconMap) {
             // Use the model's computed status accessor (single source of truth)
-            $status = $p->status; // 'belum_berjalan' | 'berjalan' | 'selesai'
+            $status = $p->farmerProfile->status; // 'belum_berjalan' | 'berjalan' | 'selesai'
 
             $status_waktu       = $status === 'berjalan' ? 'sedang_berjalan' : ($status === 'belum_berjalan' ? 'belum_berjalan' : 'berakhir');
             $status_pendaftaran = $status === 'berjalan' ? 'buka' : ($status === 'belum_berjalan' ? 'belum_dibuka' : 'tutup');
@@ -236,10 +236,24 @@
                         <div class="px-6 sm:px-7 py-4 mt-auto border-t border-gray-50 flex items-center justify-between">
                             <span class="text-xs text-gray-400 font-medium">{{ $program['tahap'] }}</span>
                             @if($program['status_pendaftaran'] === 'buka')
-                                <a href="{{ route('login') }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
-                                    Ajukan Proposal
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                                </a>
+                                @auth
+                                    @if(auth()->user()->isApproved())
+                                        <a href="{{ route('farmer.proposals.create', $program['id']) }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                            Ajukan Proposal
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('dashboard') }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                            Lengkapi Profil
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                        </a>
+                                    @endif
+                                @else
+                                    <a href="{{ route('login') }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                        Ajukan Proposal
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                    </a>
+                                @endauth
                             @else
                                 <span class="text-xs font-bold text-gray-400">Pendaftaran Ditutup</span>
                             @endif
@@ -437,9 +451,21 @@
             {{-- Drawer Footer --}}
             <div class="sticky bottom-0 bg-white border-t border-gray-100 p-5 flex gap-3">
                 <template x-if="selected && selected.status_pendaftaran === 'buka'">
-                    <a href="{{ route('login') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
-                        Ajukan Proposal Sekarang
-                    </a>
+                    @auth
+                        @if(auth()->user()->isApproved())
+                            <a :href="'{{ url('farmer/proposals/create') }}/' + selected.id" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                Ajukan Proposal Sekarang
+                            </a>
+                        @else
+                            <a href="{{ route('dashboard') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                Lengkapi Profil Untuk Mengajukan
+                            </a>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                            Ajukan Proposal Sekarang
+                        </a>
+                    @endauth
                 </template>
                 <template x-if="selected && selected.status_pendaftaran === 'belum_dibuka'">
                     <div class="flex-1 bg-amber-100 text-amber-600 py-3.5 rounded-2xl text-sm font-bold text-center cursor-not-allowed">

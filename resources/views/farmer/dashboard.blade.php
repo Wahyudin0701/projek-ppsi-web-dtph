@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Dashboard</x-slot>
 
-    @if(auth()->user()->status !== 'approved' || (auth()->user()->status === 'approved' && !auth()->user()->is_verified_acknowledged))
+    @if(auth()->user()->farmerProfile->status !== 'approved' || (auth()->user()->farmerProfile->status === 'approved' && !auth()->user()->farmerProfile->is_verified_acknowledged))
         {{-- ===== WAITING FOR VERIFICATION / SUCCESS NOTICE ===== --}}
         @include('farmer.waiting-verification')
     @else
@@ -21,11 +21,11 @@
                     <p class="mb-1 text-[11px] sm:text-sm font-semibold text-green-200 opacity-80 hidden sm:block">Selamat datang kembali</p>
                     <h2 class="mb-2 sm:mb-3 text-2xl sm:text-3xl font-extrabold tracking-tight">{{ auth()->user()->name }}</h2>
                     
-                    @if(auth()->user()->alamat)
+                    @if(auth()->user()->farmerProfile->alamat)
                     <div class="flex items-center gap-2">
                         <div class="inline-flex items-start gap-2 rounded-xl bg-white/10 p-3 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold backdrop-blur-md border border-white/10 text-white/90">
                             <svg class="h-3.5 w-3.5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <span class="leading-relaxed">{{ auth()->user()->alamat }}</span>
+                            <span class="leading-relaxed">{{ auth()->user()->farmerProfile->alamat }}</span>
                         </div>
                     </div>
                     @endif
@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="flex md:flex-col items-start md:items-end gap-3 flex-shrink-0 mt-2 md:mt-0">
-                    <a href="{{ route('farmer.proposals.index') }}"
+                    <a href="{{ route('farmer.proposals.programs') }}"
                        class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-[#19A148] shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                         <span class="sm:inline">Ajukan Proposal</span>
@@ -101,17 +101,24 @@
                                 PROP-{{ date('Y') }}-{{ str_pad($prop->id, 3, '0', STR_PAD_LEFT) }}
                             </td>
                             <td class="px-6 py-5">
-                                <div class="font-bold text-gray-800">{{ $prop->program->name }}</div>
-                                <div class="text-[10px] text-gray-400 uppercase font-bold">{{ str_replace('_', ' ', $prop->program->type) }}</div>
+                                @if($prop->alsintan)
+                                    <div class="font-bold text-gray-800">{{ $prop->alsintan->name }}</div>
+                                    <div class="text-[10px] text-[#19A148] uppercase font-bold tracking-tight">Peminjaman Alsintan</div>
+                                @elseif($prop->program)
+                                    <div class="font-bold text-gray-800">{{ $prop->program->name }}</div>
+                                    <div class="text-[10px] text-gray-400 uppercase font-bold">{{ str_replace('_', ' ', $prop->program->type) }}</div>
+                                @else
+                                    <div class="font-bold text-gray-800">-</div>
+                                @endif
                             </td>
                             <td class="px-6 py-5 text-gray-600 font-medium">{{ $prop->lokasi_lahan }}</td>
                             <td class="px-6 py-5 text-gray-500">{{ $prop->submission_date->format('d M Y') }}</td>
                             <td class="px-6 py-5">
-                                @if($prop->status === 'pending_verifikasi')
+                                @if($prop->farmerProfile->status === 'pending_verifikasi')
                                     <span class="inline-flex items-center gap-1.5 rounded-full border border-yellow-100 bg-yellow-50 px-3 py-1 text-[11px] font-bold text-yellow-700">
                                         <span class="h-1.5 w-1.5 rounded-full bg-yellow-500"></span> Menunggu
                                     </span>
-                                @elseif($prop->status === 'disetujui')
+                                @elseif($prop->farmerProfile->status === 'disetujui')
                                     <span class="inline-flex items-center gap-1.5 rounded-full border border-green-100 bg-green-50 px-3 py-1 text-[11px] font-bold text-green-700">
                                         <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span> Disetujui
                                     </span>
@@ -151,11 +158,11 @@
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
                     <div>
                         <div class="mb-4 flex items-center justify-between">
-                            <span class="inline-block rounded-lg bg-green-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#19A148]">
+                            <span class="inline-block rounded-lg bg-primary-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-primary-600">
                                 {{ str_replace('_', ' ', $program->type) }}
                             </span>
-                            <div class="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#19A148] group-hover:text-white transition-colors">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                            <div class="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                             </div>
                         </div>
                         <h4 class="mb-2 font-black text-gray-800 text-lg leading-tight">{{ $program->name }}</h4>
@@ -169,7 +176,7 @@
                             Batas Akhir: <span class="font-bold text-gray-700 block text-xs">{{ $program->close_date?->format('d M Y') ?? 'Tanpa Batas' }}</span>
                         </div>
                         <a href="{{ route('farmer.proposals.create', $program) }}"
-                           class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 hover:bg-[#19A148] hover:shadow-lg hover:shadow-green-900/20">
+                           class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-900/20">
                             Ajukan Sekarang
                         </a>
                     </div>

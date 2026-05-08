@@ -33,13 +33,13 @@
 
                         <div class="p-4 bg-primary-50 rounded-xl border border-primary-100">
                             <p class="text-sm text-primary-800 leading-relaxed">
-                                <strong>Catatan:</strong> Dengan menekan tombol kirim, Anda menyatakan bahwa data yang diisi adalah benar atas nama Kelompok Tani <strong>{{ auth()->user()->nama_kelompok }}</strong>.
+                                <strong>Catatan:</strong> Dengan menekan tombol kirim, Anda menyatakan bahwa data yang diisi adalah benar atas nama Kelompok Tani <strong>{{ auth()->user()->farmerProfile->nama_kelompok }}</strong>.
                             </p>
                         </div>
 
                         <div class="flex items-center gap-4 pt-4">
                             <x-primary-button class="px-8 py-3">{{ __('Kirim Usulan Proposal') }}</x-primary-button>
-                            <a href="{{ route('dashboard') }}" class="text-sm text-gray-600 hover:underline">Batal</a>
+                            <a href="{{ route('farmer.proposals.list', ['category' => $program->jenis === 'alsintan' ? 'alsintan' : 'bantuan']) }}" class="text-sm text-gray-600 hover:underline">Batal</a>
                         </div>
                     </form>
                 </div>

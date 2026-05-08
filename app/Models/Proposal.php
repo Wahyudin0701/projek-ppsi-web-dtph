@@ -13,6 +13,7 @@ class Proposal extends Model
     protected $fillable = [
         'user_id',
         'program_id',
+        'alsintan_id',
         'status',
         'submission_date',
         'lokasi_lahan',
@@ -36,5 +37,13 @@ class Proposal extends Model
     public function program(): BelongsTo
     {
         return $this->belongsTo(Program::class);
+    }
+
+    /**
+     * Get the alsintan that the proposal belongs to (if any).
+     */
+    public function alsintan(): BelongsTo
+    {
+        return $this->belongsTo(Alsintan::class);
     }
 }

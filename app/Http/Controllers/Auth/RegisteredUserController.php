@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\FarmerProfile;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -42,20 +44,27 @@ class RegisteredUserController extends Controller
             'alamat' => ['required', 'string'],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user',
-            'status' => 'menunggu',
-            'nama_kelompok' => $request->name,
-            'ketua' => $request->nama_ketua,
-            'nik_ketua' => $request->nik_ketua,
-            'kontak' => $request->no_wa,
-            'grade' => $request->grade,
-            'luas_lahan' => $request->luas_lahan,
-            'alamat' => $request->alamat,
-        ]);
+        $user = DB::transaction(function () use ($request) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'user',
+            ]);
+
+            $user->farmerProfile()->create([
+                'nama_kelompok' => $request->name,
+                'ketua' => $request->nama_ketua,
+                'nik_ketua' => $request->nik_ketua,
+                'kontak' => $request->no_wa,
+                'grade' => $request->grade,
+                'luas_lahan' => $request->luas_lahan,
+                'alamat' => $request->alamat,
+                'status' => 'menunggu',
+            ]);
+
+            return $user;
+        });
 
         event(new Registered($user));
 

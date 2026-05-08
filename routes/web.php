@@ -87,7 +87,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Farmer Routes
     Route::middleware(['approved'])->prefix('farmer')->name('farmer.')->group(function () {
         Route::get('/proposals', [App\Http\Controllers\Farmer\ProposalController::class, 'index'])->name('proposals.index');
+        Route::get('/proposals/form', [App\Http\Controllers\Farmer\ProposalController::class, 'form'])->name('proposals.programs');
+        Route::get('/proposals/list', [App\Http\Controllers\Farmer\ProposalController::class, 'listByCategory'])->name('proposals.list');
         Route::get('/proposals/create/{program}', [App\Http\Controllers\Farmer\ProposalController::class, 'create'])->name('proposals.create');
+        Route::post('/proposals/store-unified', [App\Http\Controllers\Farmer\ProposalController::class, 'storeUnified'])->name('proposals.store-unified');
         Route::post('/proposals/{program}', [App\Http\Controllers\Farmer\ProposalController::class, 'store'])->name('proposals.store');
     });
 

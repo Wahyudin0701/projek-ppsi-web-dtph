@@ -76,9 +76,9 @@
                             <label for="status" class="block text-sm font-bold text-gray-700 mb-2">Status</label>
                             <select name="status" id="status" required
                                     class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                                <option value="tersedia" {{ old('status', $alsintan->status) === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
-                                <option value="tidak_tersedia" {{ old('status', $alsintan->status) === 'tidak_tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
-                                <option value="rusak" {{ old('status', $alsintan->status) === 'rusak' ? 'selected' : '' }}>Rusak</option>
+                                <option value="tersedia" {{ old('status', $alsintan->farmerProfile->status) === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="tidak_tersedia" {{ old('status', $alsintan->farmerProfile->status) === 'tidak_tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
+                                <option value="rusak" {{ old('status', $alsintan->farmerProfile->status) === 'rusak' ? 'selected' : '' }}>Rusak</option>
                             </select>
                             <x-input-error :messages="$errors->get('status')" class="mt-2" />
                         </div>

@@ -11,7 +11,7 @@
             
             <h2 class="text-2xl font-bold mb-4">Pendaftaran Berhasil!</h2>
             <p class="text-gray-600 mb-6">
-                Terima kasih telah mendaftar, <strong>{{ auth()->user()->nama_kelompok }}</strong>. 
+                Terima kasih telah mendaftar, <strong>{{ auth()->user()->farmerProfile->nama_kelompok }}</strong>. 
                 Akun Anda saat ini sedang dalam proses verifikasi oleh Admin Dinas Pertanian.
             </p>
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 text-left mb-8">

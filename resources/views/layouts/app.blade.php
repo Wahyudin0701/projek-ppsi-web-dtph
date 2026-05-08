@@ -65,8 +65,8 @@
                                 @php
                                     $isUserShow = request()->routeIs('admin.users.show');
                                     $currentUser = $isUserShow ? request()->route('user') : null;
-                                    $isPendingVerif = $currentUser && in_array($currentUser->status, ['menunggu', 'reviewed']);
-                                    $isMasterList = $currentUser && in_array($currentUser->status, ['approved', 'rejected']);
+                                    $isPendingVerif = $currentUser && in_array($currentUser->farmerProfile->status, ['menunggu', 'reviewed']);
+                                    $isMasterList = $currentUser && in_array($currentUser->farmerProfile->status, ['approved', 'rejected']);
                                 @endphp
                                 <li>
                                     <a href="{{ route('admin.users.list') }}" 
@@ -107,7 +107,8 @@
                                 </li>
                             @elseif(auth()->user()->isApproved())
                                 <li>
-                                    <a href="{{ route('program') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm text-[#64748B] hover:bg-green-50 hover:text-[#19A148] transition-all duration-300">
+                                    <a href="{{ route('farmer.proposals.programs') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('farmer.proposals.programs', 'farmer.proposals.list', 'farmer.proposals.create') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                         </svg>
@@ -116,7 +117,7 @@
                                 </li>
                                 <li>
                                     <a href="{{ route('farmer.proposals.index') }}" 
-                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('farmer.proposals.*') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('farmer.proposals.index') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                         </svg>
@@ -316,13 +317,13 @@
                             Manajemen Alsintan
                         </a>
                     @elseif(auth()->user()->isApproved())
-                        <a href="{{ route('program') }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-gray-600 hover:bg-green-50 hover:text-[#19A148]">
+                        <a href="{{ route('farmer.proposals.programs') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('farmer.proposals.programs', 'farmer.proposals.list', 'farmer.proposals.create') ? 'bg-[#19A148] text-white' : 'text-gray-600 hover:bg-green-50 hover:text-[#19A148]' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             Ajukan Proposal
                         </a>
                         <a href="{{ route('farmer.proposals.index') }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('farmer.proposals.*') ? 'bg-[#19A148] text-white' : 'text-gray-600 hover:bg-green-50 hover:text-[#19A148]' }}">
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('farmer.proposals.index') ? 'bg-[#19A148] text-white' : 'text-gray-600 hover:bg-green-50 hover:text-[#19A148]' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             Riwayat Pengajuan
                         </a>

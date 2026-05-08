@@ -3,11 +3,11 @@
         {{-- Header Status --}}
         <div class="bg-gradient-to-br from-emerald-50 to-primary-100/50 p-8 text-center border-b border-emerald-100">
             <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4 shadow-inner">
-                @if(auth()->user()->status === 'rejected')
+                @if(auth()->user()->farmerProfile->status === 'rejected')
                     <svg class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                @elseif(auth()->user()->status === 'approved')
+                @elseif(auth()->user()->farmerProfile->status === 'approved')
                     <svg class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -19,26 +19,26 @@
             </div>
             
             <h2 class="text-2xl font-extrabold text-gray-900 mb-2">
-                @if(auth()->user()->status === 'rejected')
+                @if(auth()->user()->farmerProfile->status === 'rejected')
                     Pendaftaran Ditolak
-                @elseif(auth()->user()->status === 'approved')
+                @elseif(auth()->user()->farmerProfile->status === 'approved')
                     Akun Berhasil Diverifikasi!
                 @else
                     Menunggu Verifikasi Admin
                 @endif
             </h2>
             <p class="text-gray-600 max-w-lg mx-auto leading-relaxed">
-                @if(auth()->user()->status === 'rejected')
+                @if(auth()->user()->farmerProfile->status === 'rejected')
                     Mohon maaf, pendaftaran akun kelompok tani Anda tidak dapat kami setujui saat ini. Silakan periksa alasan penolakan di bawah.
-                @elseif(auth()->user()->status === 'approved')
-                    Selamat! Akun Kelompok Tani <strong>{{ auth()->user()->nama_kelompok }}</strong> telah berhasil diverifikasi oleh tim DTPH Muaro Jambi.
+                @elseif(auth()->user()->farmerProfile->status === 'approved')
+                    Selamat! Akun Kelompok Tani <strong>{{ auth()->user()->farmerProfile->nama_kelompok }}</strong> telah berhasil diverifikasi oleh tim DTPH Muaro Jambi.
                 @else
                     Terima kasih telah mendaftar. Tim kami sedang meninjau data pendaftaran kelompok tani Anda. Proses ini mungkin memakan waktu 1-2 hari kerja.
                 @endif
             </p>
         </div>
 
-        @if(auth()->user()->status === 'approved')
+        @if(auth()->user()->farmerProfile->status === 'approved')
             {{-- Success Section --}}
             <div class="p-10 text-center">
                 <div class="mb-8">
@@ -59,7 +59,7 @@
                     *Gunakan menu di samping untuk mengelola profil dan riwayat Anda.
                 </p>
             </div>
-        @elseif(auth()->user()->status === 'rejected')
+        @elseif(auth()->user()->farmerProfile->status === 'rejected')
             {{-- Rejection Alert (Existing) --}}
             <div class="p-8">
                 <div class="rounded-xl border border-red-100 bg-red-50 p-5">
@@ -72,7 +72,7 @@
                         <div class="ml-3">
                             <h3 class="text-sm font-bold text-red-800">Alasan Penolakan:</h3>
                             <div class="mt-2 text-sm text-red-700">
-                                <p>{{ auth()->user()->rejection_reason ?? 'Data tidak valid atau tidak lengkap. Silakan hubungi dinas terkait untuk informasi lebih lanjut.' }}</p>
+                                <p>{{ auth()->user()->farmerProfile->rejection_reason ?? 'Data tidak valid atau tidak lengkap. Silakan hubungi dinas terkait untuk informasi lebih lanjut.' }}</p>
                             </div>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                 <h3 class="font-bold text-gray-800 mb-6 text-center">Status Pendaftaran Saat Ini</h3>
                 
                 @php
-                    $status = auth()->user()->status;
+                    $status = auth()->user()->farmerProfile->status;
                     $steps = [
                         'menunggu' => 1,
                         'reviewed' => 2,
@@ -168,7 +168,7 @@
     </div>
 
     {{-- Info Card (Only show when NOT approved) --}}
-    @if(auth()->user()->status !== 'approved')
+    @if(auth()->user()->farmerProfile->status !== 'approved')
         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex gap-4">
             <div class="flex-shrink-0 mt-1">
                 <svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

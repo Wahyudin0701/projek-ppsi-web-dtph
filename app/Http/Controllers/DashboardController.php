@@ -38,7 +38,7 @@ class DashboardController extends Controller
         ];
 
         $recentProposals = Proposal::where('user_id', $user->id)
-            ->with('program')
+            ->with(['program', 'alsintan'])
             ->latest('submission_date')
             ->take(5)
             ->get();

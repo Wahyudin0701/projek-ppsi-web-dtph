@@ -38,9 +38,9 @@
         {{-- Stats --}}
         @php
             $total         = $programs->count();
-            $buka          = $programs->filter(fn($p) => $p->status === 'berjalan')->count();
-            $belumBerjalan = $programs->filter(fn($p) => $p->status === 'belum_berjalan')->count();
-            $selesai       = $programs->filter(fn($p) => $p->status === 'selesai')->count();
+            $buka          = $programs->filter(fn($p) => $p->farmerProfile->status === 'berjalan')->count();
+            $belumBerjalan = $programs->filter(fn($p) => $p->farmerProfile->status === 'belum_berjalan')->count();
+            $selesai       = $programs->filter(fn($p) => $p->farmerProfile->status === 'selesai')->count();
         @endphp
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
@@ -103,12 +103,12 @@
 
                             {{-- Status Badge (auto) --}}
                             <td class="px-6 py-4 text-center">
-                                @if($program->status === 'berjalan')
+                                @if($program->farmerProfile->status === 'berjalan')
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded-full border border-emerald-200 whitespace-nowrap">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                         Pendaftaran Buka
                                     </span>
-                                @elseif($program->status === 'belum_berjalan')
+                                @elseif($program->farmerProfile->status === 'belum_berjalan')
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 text-[11px] font-bold rounded-full border border-amber-200 whitespace-nowrap">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                         Belum Dibuka
@@ -133,7 +133,7 @@
                                                 kuota: '{{ $program->kuota ?? '-' }}',
                                                 open_date: '{{ $program->open_date?->translatedFormat('d F Y') ?? '-' }}',
                                                 close_date: '{{ $program->close_date?->translatedFormat('d F Y') ?? '-' }}',
-                                                status: '{{ $program->status }}',
+                                                status: '{{ $program->farmerProfile->status }}',
                                                 requirements: {{ json_encode($program->requirements ?? []) }},
                                                 sop_description: '{{ addslashes($program->sop_description) }}'
                                             })"

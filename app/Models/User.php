@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -22,16 +23,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'status',
-        'nama_kelompok',
-        'ketua',
-        'nik_ketua',
-        'kontak',
-        'grade',
-        'luas_lahan',
-        'alamat',
-        'rejection_reason',
-        'is_verified_acknowledged',
     ];
 
     /**
@@ -54,7 +45,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_verified_acknowledged' => 'boolean',
         ];
     }
 
@@ -79,6 +69,18 @@ class User extends Authenticatable
      */
     public function isApproved(): bool
     {
-        return $this->status === 'approved';
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return $this->farmerProfile && $this->farmerProfile->status === 'approved';
+    }
+
+    /**
+     * Get the farmer profile associated with the user.
+     */
+    public function farmerProfile(): HasOne
+    {
+        return $this->hasOne(FarmerProfile::class);
     }
 }

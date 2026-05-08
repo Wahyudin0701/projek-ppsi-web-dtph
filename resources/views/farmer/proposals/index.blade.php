@@ -30,8 +30,15 @@
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="p-4 text-sm">{{ $proposal->submission_date->format('d M Y') }}</td>
                                     <td class="p-4">
-                                        <div class="font-bold text-gray-900">{{ $proposal->program->name }}</div>
-                                        <div class="text-[10px] text-gray-400 uppercase tracking-tighter">{{ str_replace('_', ' ', $proposal->program->type) }}</div>
+                                        @if($proposal->alsintan)
+                                            <div class="font-bold text-gray-900">{{ $proposal->alsintan->name }}</div>
+                                            <div class="text-[10px] text-primary-600 font-bold uppercase tracking-tighter">Peminjaman Alsintan</div>
+                                        @elseif($proposal->program)
+                                            <div class="font-bold text-gray-900">{{ $proposal->program->name }}</div>
+                                            <div class="text-[10px] text-gray-400 uppercase tracking-tighter">{{ str_replace('_', ' ', $proposal->program->type) }}</div>
+                                        @else
+                                            <div class="font-bold text-gray-900">-</div>
+                                        @endif
                                     </td>
                                     <td class="p-4 text-sm text-gray-600">{{ $proposal->lokasi_lahan }}</td>
                                     <td class="p-4 text-center">
@@ -41,10 +48,10 @@
                                                 'disetujui' => 'bg-green-100 text-green-700',
                                                 'ditolak' => 'bg-red-100 text-red-700',
                                             ];
-                                            $color = $statusColors[$proposal->status] ?? 'bg-gray-100 text-gray-700';
+                                            $color = $statusColors[$proposal->farmerProfile->status] ?? 'bg-gray-100 text-gray-700';
                                         @endphp
                                         <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase {{ $color }}">
-                                            {{ str_replace('_', ' ', $proposal->status) }}
+                                            {{ str_replace('_', ' ', $proposal->farmerProfile->status) }}
                                         </span>
                                     </td>
                                 </tr>

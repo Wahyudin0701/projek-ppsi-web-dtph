@@ -18,8 +18,6 @@ class AdminSeeder extends Seeder
             'email' => 'admin@dtph.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
-            'status' => 'approved',
-            'nama_kelompok' => 'Dinas Pertanian',
         ]);
     }
 }

@@ -118,12 +118,12 @@
 
                             {{-- Status --}}
                             <td class="px-6 py-4">
-                                @if($alsintan->status === 'tersedia')
+                                @if($alsintan->farmerProfile->status === 'tersedia')
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded-full border border-emerald-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                         Tersedia
                                     </span>
-                                @elseif($alsintan->status === 'rusak')
+                                @elseif($alsintan->farmerProfile->status === 'rusak')
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-[11px] font-bold rounded-full border border-red-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                                         Rusak
