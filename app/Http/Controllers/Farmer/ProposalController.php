@@ -20,7 +20,106 @@ class ProposalController extends Controller
     }
 
     /**
-     * Display the unified proposal submission form.
+     * Show selection page for proposal type.
+     */
+    public function selectType()
+    {
+        return view('farmer.proposals.selection');
+    }
+
+    /**
+     * List available Alsintan for borrowing proposal.
+     */
+    public function alsintanList()
+    {
+        $alsintans = \App\Models\Alsintan::latest()->get();
+
+        // IDs alsintan yang sudah memiliki proposal aktif (belum selesai diverifikasi)
+        $activeAlsintanIds = Proposal::where('user_id', Auth::id())
+            ->whereNotNull('alsintan_id')
+            ->whereIn('status', ['pending_verifikasi', 'disetujui'])
+            ->pluck('alsintan_id')
+            ->toArray();
+
+        return view('farmer.proposals.alsintan.list', compact('alsintans', 'activeAlsintanIds'));
+    }
+
+    /**
+     * Show form to submit Alsintan borrowing proposal.
+     */
+    public function alsintanCreate(\App\Models\Alsintan $alsintan)
+    {
+        if ($alsintan->available_stock <= 0) {
+            return back()->with('error', 'Stok alat ini sedang habis atau tidak tersedia untuk dipinjam.');
+        }
+
+        // Cek apakah user sudah punya proposal aktif untuk alat ini
+        $existingProposal = Proposal::where('user_id', Auth::id())
+            ->where('alsintan_id', $alsintan->id)
+            ->whereIn('status', ['pending_verifikasi', 'disetujui'])
+            ->first();
+
+        if ($existingProposal) {
+            return redirect()->route('farmer.proposals.alsintan')
+                ->with('error', 'Anda sudah memiliki proposal aktif untuk alat "' . $alsintan->name . '". Silakan tunggu proses verifikasi selesai.');
+        }
+
+        return view('farmer.proposals.alsintan.create', compact('alsintan'));
+    }
+
+    /**
+     * Store Alsintan borrowing proposal.
+     */
+    public function alsintanStore(Request $request, \App\Models\Alsintan $alsintan)
+    {
+        $user = Auth::user();
+
+        if ($alsintan->available_stock <= 0) {
+            return back()->with('error', 'Stok alat ini sedang habis atau tidak tersedia untuk dipinjam.');
+        }
+
+        // Blokir jika sudah ada proposal aktif untuk alat yang sama
+        $existingProposal = Proposal::where('user_id', $user->id)
+            ->where('alsintan_id', $alsintan->id)
+            ->whereIn('status', ['pending_verifikasi', 'disetujui'])
+            ->first();
+
+        if ($existingProposal) {
+            return redirect()->route('farmer.proposals.alsintan')
+                ->with('error', 'Anda sudah memiliki proposal aktif untuk alat "' . $alsintan->name . '". Silakan tunggu proses verifikasi selesai.');
+        }
+
+        $request->validate([
+            'lokasi_lahan' => 'required|string|max:500',
+        ]);
+
+        $proposal = Proposal::create([
+            'user_id'         => $user->id,
+            'alsintan_id'     => $alsintan->id,
+            'lokasi_lahan'    => $request->lokasi_lahan,
+            'status'          => 'pending_verifikasi',
+            'submission_date' => now(),
+        ]);
+
+        return redirect()->route('farmer.proposals.success', $proposal->id);
+    }
+
+    /**
+     * List open programs for bantuan proposal.
+     */
+    public function bantuanList()
+    {
+        $programs = Program::where('jenis', '!=', 'alsintan')
+            ->withCount('proposals')
+            ->orderBy('close_date', 'asc')
+            ->get()
+            ->filter(fn($p) => $p->status === 'berjalan');
+
+        return view('farmer.proposals.bantuan.list', compact('programs'));
+    }
+
+    /**
+     * Display the unified proposal submission form (legacy).
      */
     public function form()
     {
@@ -60,6 +159,20 @@ class ProposalController extends Controller
     }
 
     /**
+     * Show the details of a proposal.
+     */
+    public function show(Proposal $proposal)
+    {
+        if ($proposal->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $proposal->load(['program', 'alsintan', 'user.farmerProfile']);
+
+        return view('farmer.proposals.show', compact('proposal'));
+    }
+
+    /**
      * Show the form for creating a new proposal.
      */
     public function create(Program $program)
@@ -69,7 +182,7 @@ class ProposalController extends Controller
             return back()->with('error', 'Maaf, pendaftaran untuk program ini sudah ditutup.');
         }
 
-        return view('farmer.proposals.create', compact('program'));
+        return view('farmer.proposals.bantuan.create', compact('program'));
     }
 
     /**
@@ -101,7 +214,7 @@ class ProposalController extends Controller
             'lokasi_lahan' => 'required|string|max:255',
         ]);
 
-        Proposal::create([
+        $proposal = Proposal::create([
             'user_id' => $user->id,
             'program_id' => $program->id,
             'lokasi_lahan' => $request->lokasi_lahan,
@@ -109,7 +222,7 @@ class ProposalController extends Controller
             'submission_date' => now(),
         ]);
 
-        return redirect()->route('farmer.proposals.index')->with('success', 'Proposal Anda berhasil diajukan dan sedang dalam proses verifikasi.');
+        return redirect()->route('farmer.proposals.success', $proposal->id);
     }
     /**
      * Store a newly created unified proposal in storage.
@@ -128,7 +241,7 @@ class ProposalController extends Controller
                 'alsintan_id' => 'required|exists:alsintans,id',
             ]);
 
-            Proposal::create([
+            $proposal = Proposal::create([
                 'user_id' => $user->id,
                 'alsintan_id' => $request->alsintan_id,
                 'lokasi_lahan' => $request->lokasi_lahan,
@@ -160,7 +273,7 @@ class ProposalController extends Controller
                 return back()->with('error', "Anda sudah memiliki pengajuan aktif untuk jenis program {$typeName}. Silakan tunggu proses selesai sebelum mengajukan kembali untuk jenis yang sama.")->withInput();
             }
 
-            Proposal::create([
+            $proposal = Proposal::create([
                 'user_id' => $user->id,
                 'program_id' => $program->id,
                 'lokasi_lahan' => $request->lokasi_lahan,
@@ -169,6 +282,35 @@ class ProposalController extends Controller
             ]);
         }
 
-        return redirect()->route('farmer.proposals.index')->with('success', 'Proposal Anda berhasil diajukan dan sedang dalam proses verifikasi.');
+        return redirect()->route('farmer.proposals.success', $proposal->id);
+    }
+
+    /**
+     * Show the success confirmation page.
+     */
+    public function success(Proposal $proposal)
+    {
+        // Ensure the user owns this proposal
+        if ($proposal->user_id !== Auth::id()) {
+            abort(403);
+        }
+        
+        return view('farmer.proposals.success', compact('proposal'));
+    }
+
+    /**
+     * Download the PDF receipt.
+     */
+    public function downloadReceipt(Proposal $proposal)
+    {
+        if ($proposal->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $proposal->load(['program', 'alsintan', 'user.farmerProfile']);
+        
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('farmer.proposals.pdf-receipt', compact('proposal'));
+        
+        return $pdf->download('Bukti_Pengajuan_Proposal_' . $proposal->id . '.pdf');
     }
 }

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Dashboard</x-slot>
 
-    @if(auth()->user()->farmerProfile->status !== 'approved' || (auth()->user()->farmerProfile->status === 'approved' && !auth()->user()->farmerProfile->is_verified_acknowledged))
+    @if(!auth()->user()->farmerProfile || auth()->user()->farmerProfile->status !== 'approved' || (auth()->user()->farmerProfile->status === 'approved' && !auth()->user()->farmerProfile->is_verified_acknowledged))
         {{-- ===== WAITING FOR VERIFICATION / SUCCESS NOTICE ===== --}}
         @include('farmer.waiting-verification')
     @else
@@ -114,17 +114,21 @@
                             <td class="px-6 py-5 text-gray-600 font-medium">{{ $prop->lokasi_lahan }}</td>
                             <td class="px-6 py-5 text-gray-500">{{ $prop->submission_date->format('d M Y') }}</td>
                             <td class="px-6 py-5">
-                                @if($prop->farmerProfile->status === 'pending_verifikasi')
+                                @if($prop->status === 'pending_verifikasi')
                                     <span class="inline-flex items-center gap-1.5 rounded-full border border-yellow-100 bg-yellow-50 px-3 py-1 text-[11px] font-bold text-yellow-700">
                                         <span class="h-1.5 w-1.5 rounded-full bg-yellow-500"></span> Menunggu
                                     </span>
-                                @elseif($prop->farmerProfile->status === 'disetujui')
+                                @elseif($prop->status === 'disetujui')
                                     <span class="inline-flex items-center gap-1.5 rounded-full border border-green-100 bg-green-50 px-3 py-1 text-[11px] font-bold text-green-700">
                                         <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span> Disetujui
                                     </span>
-                                @else
+                                @elseif($prop->status === 'ditolak')
                                     <span class="inline-flex items-center gap-1.5 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-[11px] font-bold text-red-700">
                                         <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span> Ditolak
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 rounded-full border border-gray-100 bg-gray-50 px-3 py-1 text-[11px] font-bold text-gray-600">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-gray-400"></span> {{ ucfirst(str_replace('_', ' ', $prop->status)) }}
                                     </span>
                                 @endif
                             </td>

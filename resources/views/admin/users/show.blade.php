@@ -27,37 +27,99 @@
                         </div>
                         <div class="p-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="space-y-1">
+                                <div class="space-y-1 min-w-0">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Nama Kelompok Tani</label>
-                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50">
-                                        <p class="font-bold text-gray-900">{{ $user->farmerProfile->nama_kelompok }}</p>
+                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50 overflow-hidden">
+                                        <p class="font-bold text-gray-900 break-words text-sm">{{ $user->farmerProfile->nama_kelompok }}</p>
                                     </div>
                                 </div>
-                                <div class="space-y-1">
+                                <div class="space-y-1 min-w-0">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Nama Ketua</label>
-                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50">
-                                        <p class="font-bold text-gray-900">{{ $user->farmerProfile->ketua }}</p>
+                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50 overflow-hidden">
+                                        <p class="font-bold text-gray-900 break-words text-sm">{{ $user->farmerProfile->ketua }}</p>
                                     </div>
                                 </div>
-                                <div class="space-y-1">
+                                <div class="space-y-1 min-w-0">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">NIK Ketua</label>
-                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50">
-                                        <p class="font-bold text-gray-900 font-mono tracking-wider">{{ $user->farmerProfile->nik_ketua ?? '-' }}</p>
+                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50 overflow-hidden">
+                                        <p class="font-bold text-gray-900 font-mono tracking-wider break-all text-sm">{{ $user->farmerProfile->nik_ketua ?? '-' }}</p>
                                     </div>
                                 </div>
-                                <div class="space-y-1">
+                                <div class="space-y-1 min-w-0">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Nomor WA / Kontak</label>
+                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50 overflow-hidden">
+                                        <p class="font-bold text-gray-900 break-all text-sm">{{ $user->farmerProfile->kontak ?? '-' }}</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1 min-w-0">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Email Terdaftar</label>
-                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50">
-                                        <p class="font-bold text-gray-900">{{ $user->email }}</p>
+                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50 overflow-hidden">
+                                        <p class="font-bold text-gray-900 break-all text-sm">{{ $user->email }}</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1 min-w-0">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Kecamatan</label>
+                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-50 overflow-hidden">
+                                        <p class="font-bold text-gray-900 break-words text-sm">{{ $user->farmerProfile->kecamatan ?? '-' }}</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="mt-8 space-y-1">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Alamat Lengkap</label>
+                            <div class="mt-6 space-y-1">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Alamat Sekretariat</label>
                                 <div class="bg-gray-50 rounded-2xl p-5 border border-gray-50">
-                                    <p class="text-sm font-bold text-gray-700 leading-relaxed">{{ $user->farmerProfile->alamat }}</p>
+                                    <p class="text-sm font-bold text-gray-700 leading-relaxed">{{ $user->farmerProfile->alamat ?? '-' }}</p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Komoditi Section --}}
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                        <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/30">
+                            <h3 class="text-lg font-black text-gray-900 tracking-tight">Data Komoditi</h3>
+                        </div>
+                        <div class="p-8 space-y-6">
+                            {{-- Komoditi Utama --}}
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Komoditi Utama</label>
+                                <div class="bg-primary-50 rounded-2xl p-6 border border-primary-100">
+                                    <p class="text-[10px] font-bold text-primary-600 uppercase tracking-widest mb-1">Fokus Utama Kelompok</p>
+                                    <p class="text-2xl font-black text-primary-900 capitalize">
+                                        {{ $user->farmerProfile->komoditi_utama ?? '-' }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {{-- Komoditi Lainnya --}}
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Komoditi Lainnya</label>
+                                @php
+                                    $allKomoditi = $user->farmerProfile->komoditi
+                                        ? array_map('trim', explode(',', $user->farmerProfile->komoditi))
+                                        : [];
+                                    
+                                    $utama = trim($user->farmerProfile->komoditi_utama);
+                                    
+                                    // Filter agar komoditi utama tidak muncul lagi di list "Lainnya"
+                                    $lainnya = array_filter($allKomoditi, function($k) use ($utama) {
+                                        return strtolower($k) !== strtolower($utama);
+                                    });
+                                @endphp
+
+                                @if(count($lainnya) > 0)
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach($lainnya as $k)
+                                            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-gray-50 border border-gray-100 text-gray-600 hover:bg-white hover:border-gray-200 transition-all">
+                                                {{ $k }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <div class="p-4 rounded-2xl bg-gray-50/50 border border-dashed border-gray-200">
+                                        <p class="text-xs font-medium text-gray-400 italic text-center">Tidak ada komoditi tambahan.</p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -69,24 +131,14 @@
                         </div>
                         <div class="p-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div class="bg-emerald-50/50 rounded-2xl p-6 border border-emerald-100/50 flex items-center gap-5">
-                                    <div class="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-1 leading-none">Luas Lahan</p>
-                                        <p class="text-2xl font-black text-emerald-900 leading-none">{{ $user->farmerProfile->luas_lahan ?? '0' }} <span class="text-sm font-bold opacity-60">Ha</span></p>
-                                    </div>
+                                <div class="bg-emerald-50/50 rounded-2xl p-6 border border-emerald-100/50">
+                                    <p class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-2 leading-none">Luas Lahan</p>
+                                    <p class="text-3xl font-black text-emerald-900 leading-none">{{ $user->farmerProfile->luas_lahan ?? '0' }} <span class="text-sm font-bold opacity-60">Ha</span></p>
                                 </div>
 
-                                <div class="bg-amber-50/50 rounded-2xl p-6 border border-amber-100/50 flex items-center gap-5">
-                                    <div class="w-14 h-14 rounded-2xl bg-amber-500 flex items-center justify-center text-white shadow-lg shadow-amber-500/30">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"></path></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] mb-1 leading-none">Grade Kelompok</p>
-                                        <p class="text-2xl font-black text-amber-900 leading-none uppercase">{{ $user->farmerProfile->grade ?? '-' }}</p>
-                                    </div>
+                                <div class="bg-amber-50/50 rounded-2xl p-6 border border-amber-100/50">
+                                    <p class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] mb-2 leading-none">Grade Kelompok</p>
+                                    <p class="text-3xl font-black text-amber-900 leading-none uppercase">{{ $user->farmerProfile->grade ?? '-' }}</p>
                                 </div>
                             </div>
                         </div>

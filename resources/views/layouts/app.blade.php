@@ -16,15 +16,26 @@
             body { font-family: 'Plus Jakarta Sans', sans-serif; }
             .sidebar-link-active { @apply bg-primary-600 text-white shadow-md; }
             .sidebar-link { @apply text-gray-600 hover:bg-green-50 hover:text-primary-600 transition-colors; }
+            
+            /* Hide scrollbar for sidebar */
+            .hide-scrollbar {
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            .hide-scrollbar::-webkit-scrollbar {
+                display: none; /* Chrome, Safari and Opera */
+            }
         </style>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        @stack('styles')
     </head>
     <body class="bg-[#F8FAFC] text-slate-900 antialiased overflow-hidden flex h-screen" x-data="{ mobileMenuOpen: false }">
         
         <aside class="w-72 bg-white border-r border-gray-100 flex flex-col justify-between hidden lg:flex h-screen sticky top-0">
-            <div class="flex-1 flex flex-col overflow-y-auto">
+            <div class="flex-1 flex flex-col overflow-y-auto hide-scrollbar">
                 <!-- Logo Section -->
                 <div class="h-24 flex items-center px-8 border-b border-gray-50/50">
                     <a href="{{ route('home') }}" class="flex items-center gap-4">
@@ -90,7 +101,7 @@
                                     <a href="{{ route('admin.programs.index') }}" 
                                        class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.programs.*') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-.98.626-1.813 1.5-2.122"/>
                                         </svg>
                                         Manajemen Program
                                     </a>
@@ -99,16 +110,28 @@
                                     <a href="{{ route('admin.alsintan.index') }}" 
                                        class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.alsintan.*') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"/>
                                         </svg>
                                         Manajemen Alsintan
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('admin.proposals.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.proposals.*') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                                        </svg>
+                                        Kelola Proposal
+                                        @php $pendingCount = \App\Models\Proposal::where('status', 'pending_verifikasi')->count(); @endphp
+                                        @if($pendingCount > 0)
+                                            <span class="ml-auto bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingCount }}</span>
+                                        @endif
+                                    </a>
+                                </li>
                             @elseif(auth()->user()->isApproved())
                                 <li>
-                                    <a href="{{ route('farmer.proposals.programs') }}" 
-                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('farmer.proposals.programs', 'farmer.proposals.list', 'farmer.proposals.create') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
+                                    <a href="{{ route('farmer.proposals.pilih') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('farmer.proposals.pilih', 'farmer.proposals.alsintan*', 'farmer.proposals.bantuan*', 'farmer.proposals.create', 'farmer.proposals.form') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                         </svg>
@@ -317,8 +340,8 @@
                             Manajemen Alsintan
                         </a>
                     @elseif(auth()->user()->isApproved())
-                        <a href="{{ route('farmer.proposals.programs') }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('farmer.proposals.programs', 'farmer.proposals.list', 'farmer.proposals.create') ? 'bg-[#19A148] text-white' : 'text-gray-600 hover:bg-green-50 hover:text-[#19A148]' }}">
+                        <a href="{{ route('farmer.proposals.pilih') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('farmer.proposals.pilih', 'farmer.proposals.alsintan*', 'farmer.proposals.bantuan*', 'farmer.proposals.create', 'farmer.proposals.form') ? 'bg-[#19A148] text-white' : 'text-gray-600 hover:bg-green-50 hover:text-[#19A148]' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             Ajukan Proposal
                         </a>
@@ -412,5 +435,7 @@
                 {{ $slot }}
             </div>
         </main>
+        
+        @stack('scripts')
     </body>
 </html>

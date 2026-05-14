@@ -14,8 +14,8 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // Handle verification acknowledgment
-        if ($request->has('verified') && $user->status === 'approved' && !$user->is_verified_acknowledged) {
-            $user->update(['is_verified_acknowledged' => true]);
+        if ($request->has('verified') && $user->farmerProfile && $user->farmerProfile->status === 'approved' && !$user->farmerProfile->is_verified_acknowledged) {
+            $user->farmerProfile->update(['is_verified_acknowledged' => true]);
             return redirect()->route('dashboard');
         }
 

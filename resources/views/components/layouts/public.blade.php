@@ -85,7 +85,16 @@
                     <div class="h-6 w-px bg-gray-200 mx-1"></div>
                     @guest
                         <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-700 hover:text-primary-600 transition">Masuk</a>
-                        <a href="{{ route('register') }}" class="text-sm font-bold bg-primary-600 text-white px-5 py-2.5 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-600/30 transition-all hover:-translate-y-0.5 active:scale-95">Daftar</a>
+                        <div class="relative ml-2" x-data="{ regisOpen: false }" @click.away="regisOpen = false" @mouseenter="regisOpen = true" @mouseleave="regisOpen = false">
+                            <button class="text-sm font-bold bg-primary-600 text-white px-5 py-2.5 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-600/30 transition-all flex items-center gap-1">
+                                Daftar
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div x-show="regisOpen" x-transition.opacity.duration.200ms class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50" x-cloak>
+                                <a href="{{ route('register', ['role' => 'petani']) }}" class="block px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors">Sebagai Kelompok Tani</a>
+                                <a href="{{ route('register', ['role' => 'umum']) }}" class="block px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors">Sebagai Umum</a>
+                            </div>
+                        </div>
                     @else
                         {{-- Profile Dropdown --}}
                         <div class="relative ml-2" x-data="{ userOpen: false }" @click.away="userOpen = false">
@@ -134,7 +143,16 @@
                 <div class="flex items-center gap-2 sm:gap-4 lg:hidden">
                     @guest
                         <a href="{{ route('login') }}" class="text-xs sm:text-sm font-bold sm:font-semibold text-gray-700 px-2 sm:px-0 py-2 sm:py-0 hover:bg-gray-50 sm:hover:bg-transparent rounded-lg sm:hover:text-primary-600 transition">Masuk</a>
-                        <a href="{{ route('register') }}" class="text-xs sm:text-sm font-bold bg-primary-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg sm:shadow-primary-600/30 hover:bg-primary-700 transition-all sm:hover:-translate-y-0.5 active:scale-95">Daftar</a>
+                        <div class="relative" x-data="{ mobRegisOpen: false }" @click.away="mobRegisOpen = false">
+                            <button @click="mobRegisOpen = !mobRegisOpen" class="text-xs sm:text-sm font-bold bg-primary-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg sm:shadow-primary-600/30 hover:bg-primary-700 transition-all flex items-center gap-1">
+                                Daftar
+                                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div x-show="mobRegisOpen" x-transition.opacity.scale.80 class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50" x-cloak>
+                                <a href="{{ route('register', ['role' => 'petani']) }}" class="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors">Kelompok Tani</a>
+                                <a href="{{ route('register', ['role' => 'umum']) }}" class="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors">Umum</a>
+                            </div>
+                        </div>
                     @else
                         {{-- Mobile Profile Avatar --}}
                         <div class="relative" x-data="{ mobileUserOpen: false }" @click.away="mobileUserOpen = false">

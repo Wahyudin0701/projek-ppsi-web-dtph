@@ -1,17 +1,26 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('admin.alsintan.index') }}" class="text-gray-500 hover:text-gray-700">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-            </a>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Tambah Alsintan') }}
-            </h2>
-        </div>
-    </x-slot>
+    <x-slot name="header">Manajemen Alsintan</x-slot>
 
-    <div class="max-w-3xl mx-auto space-y-6">
-        <div class="bg-white overflow-hidden shadow-sm rounded-2xl">
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        {{-- Page Header --}}
+        <div class="flex items-center justify-between mb-2">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                    <a href="{{ route('admin.alsintan.index') }}" class="hover:text-primary-600 transition-colors">Manajemen Alsintan</a>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <span class="font-semibold text-gray-700">Tambah Alat</span>
+                </div>
+                <h2 class="text-2xl font-extrabold text-gray-900">Tambah Alsintan Baru</h2>
+                <p class="text-gray-500 text-sm mt-1">Masukkan detail spesifikasi alat dan mesin pertanian.</p>
+            </div>
+            <a href="{{ route('admin.alsintan.index') }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Kembali
+            </a>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100">
             <div class="p-6 text-gray-900">
                 <form action="{{ route('admin.alsintan.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
@@ -67,14 +76,11 @@
                             <x-input-error :messages="$errors->get('stock')" class="mt-2" />
                         </div>
                         <div>
-                            <label for="status" class="block text-sm font-bold text-gray-700 mb-2">Status</label>
-                            <select name="status" id="status" required
-                                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                                <option value="tersedia" {{ old('status') === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
-                                <option value="tidak_tersedia" {{ old('status') === 'tidak_tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
-                                <option value="rusak" {{ old('status') === 'rusak' ? 'selected' : '' }}>Rusak</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                            <label for="broken_count" class="block text-sm font-bold text-gray-700 mb-2">Jumlah Rusak <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                            <input type="number" name="broken_count" id="broken_count" value="{{ old('broken_count', 0) }}" min="0"
+                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
+                            <p class="text-xs text-gray-500 mt-1">Jumlah unit yang saat ini rusak/dalam perbaikan.</p>
+                            <x-input-error :messages="$errors->get('broken_count')" class="mt-2" />
                         </div>
                     </div>
 

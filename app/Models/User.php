@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Proposal;
 
 class User extends Authenticatable
 {
@@ -82,5 +84,13 @@ class User extends Authenticatable
     public function farmerProfile(): HasOne
     {
         return $this->hasOne(FarmerProfile::class);
+    }
+
+    /**
+     * Get all proposals submitted by the user.
+     */
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class);
     }
 }

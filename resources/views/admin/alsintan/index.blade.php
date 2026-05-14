@@ -30,26 +30,26 @@
 
         {{-- Stats Row --}}
         @php
-            $total     = $alsintans->count();
-            $tersedia  = $alsintans->where('status', 'tersedia')->count();
-            $dipinjam  = $alsintans->where('status', 'tidak_tersedia')->count();
-            $rusak     = $alsintans->where('status', 'rusak')->count();
+            $total     = $alsintans->sum('stock');
+            $tersedia  = $alsintans->sum('available_stock');
+            $dipinjam  = $alsintans->sum('borrowed_count');
+            $rusak     = $alsintans->sum('broken_count');
         @endphp
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Unit</p>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Inventaris</p>
                 <p class="text-3xl font-extrabold text-gray-900">{{ $total }}</p>
             </div>
             <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100 shadow-sm">
-                <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Tersedia</p>
+                <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Siap Dipinjam</p>
                 <p class="text-3xl font-extrabold text-emerald-700">{{ $tersedia }}</p>
             </div>
             <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100 shadow-sm">
-                <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">Dipinjam</p>
+                <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">Sedang Dipinjam</p>
                 <p class="text-3xl font-extrabold text-amber-700">{{ $dipinjam }}</p>
             </div>
             <div class="bg-red-50 rounded-2xl p-5 border border-red-100 shadow-sm">
-                <p class="text-xs font-bold text-red-600 uppercase tracking-wider mb-1">Rusak</p>
+                <p class="text-xs font-bold text-red-600 uppercase tracking-wider mb-1">Rusak / Servis</p>
                 <p class="text-3xl font-extrabold text-red-700">{{ $rusak }}</p>
             </div>
         </div>
@@ -60,12 +60,10 @@
                 <table class="w-full text-left">
                     <thead>
                         <tr class="border-b border-gray-100 bg-gray-50/80">
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Alsintan</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Kategori</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Spesifikasi</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-center">Stok</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Status</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-right">Aksi</th>
+                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest flex justify-center">Alsintan</th>
+                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-center">Kategori</th>
+                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest w-40 text-center">Status Distribusi</th>
+                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -88,13 +86,13 @@
                                     @endif
                                     <div>
                                         <p class="font-bold text-sm text-gray-900 leading-tight">{{ $alsintan->name }}</p>
-                                        <p class="text-xs text-gray-400 mt-0.5">ID #{{ $alsintan->id }}</p>
+                                        <p class="text-[11px] text-gray-500 mt-0.5">{{ $alsintan->merk ?? 'Tanpa Merk' }}</p>
                                     </div>
                                 </div>
                             </td>
 
                             {{-- Category --}}
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 flex justify-center">
                                 @php
                                     $catLabels = ['traktor' => 'Traktor', 'pompa' => 'Pompa Air', 'pascapanen' => 'Pasca Panen', 'tanam' => 'Alat Tanam'];
                                     $catLabel = $catLabels[$alsintan->category] ?? ucfirst($alsintan->category ?? '-');
@@ -104,54 +102,47 @@
                                 </span>
                             </td>
 
-                            {{-- Specs --}}
+                            {{-- Combined Status --}}
                             <td class="px-6 py-4">
-                                <p class="text-sm font-semibold text-gray-800">{{ $alsintan->merk ?? '-' }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ $alsintan->capacity ?? '-' }}</p>
-                            </td>
-
-                            {{-- Stock --}}
-                            <td class="px-6 py-4 text-center">
-                                <span class="text-sm font-extrabold text-gray-800">{{ $alsintan->stock }}</span>
-                                <span class="text-xs text-gray-400 ml-0.5">unit</span>
-                            </td>
-
-                            {{-- Status --}}
-                            <td class="px-6 py-4">
-                                @if($alsintan->farmerProfile->status === 'tersedia')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded-full border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                        Tersedia
-                                    </span>
-                                @elseif($alsintan->farmerProfile->status === 'rusak')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-[11px] font-bold rounded-full border border-red-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                                        Rusak
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 text-[11px] font-bold rounded-full border border-amber-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                        Dipinjam
-                                    </span>
-                                @endif
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="flex items-center justify-between text-[10px] font-bold px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                        <span class="uppercase tracking-wider">Tersedia</span>
+                                        <span class="bg-white px-1.5 py-0.5 rounded shadow-sm">{{ $alsintan->available_stock }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-[10px] font-bold px-2 py-1 rounded bg-amber-50 text-amber-700 border border-amber-100 {{ $alsintan->borrowed_count == 0 ? 'opacity-50 grayscale' : '' }}">
+                                        <span class="uppercase tracking-wider">Dipinjam</span>
+                                        <span class="bg-white px-1.5 py-0.5 rounded shadow-sm">{{ $alsintan->borrowed_count }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-[10px] font-bold px-2 py-1 rounded bg-red-50 text-red-700 border border-red-100 {{ $alsintan->broken_count == 0 ? 'opacity-50 grayscale' : '' }}">
+                                        <span class="uppercase tracking-wider">Rusak</span>
+                                        <span class="bg-white px-1.5 py-0.5 rounded shadow-sm">{{ $alsintan->broken_count }}</span>
+                                    </div>
+                                </div>
                             </td>
 
                             {{-- Actions --}}
-                            <td class="px-6 py-4">
-                                <div class="flex items-center justify-end gap-2">
+                            <td class="px-6 py-4 flex justify-center">
+                                <div class="flex flex-col items-end gap-1.5">
+                                    <a href="{{ route('admin.alsintan.show', $alsintan) }}"
+                                       class="inline-flex items-center gap-1.5 w-24 px-3 py-1.5 text-[11px] font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                        Detail
+                                    </a>
                                     <a href="{{ route('admin.alsintan.edit', $alsintan) }}"
-                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors">
+                                       class="inline-flex items-center gap-1.5 w-24 px-3 py-1.5 text-[11px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                         </svg>
                                         Edit
                                     </a>
                                     <form action="{{ route('admin.alsintan.destroy', $alsintan) }}" method="POST"
-                                          onsubmit="return confirm('Yakin ingin menghapus {{ $alsintan->name }}?')">
+                                          onsubmit="return confirm('Yakin ingin menghapus {{ $alsintan->name }}?')" class="block">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-100 transition-colors">
+                                                class="inline-flex items-center gap-1.5 w-24 px-3 py-1.5 text-[11px] font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-100 transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
@@ -163,7 +154,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-20 text-center">
+                            <td colspan="4" class="px-6 py-20 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
                                         <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

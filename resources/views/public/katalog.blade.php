@@ -101,7 +101,7 @@
                                 <span class="text-xs text-gray-400 font-medium">
                                     Stok: <strong class="text-gray-700" x-text="item.stock + ' unit'"></strong>
                                 </span>
-                                <template x-if="item.status === 'tersedia'">
+                                <template x-if="item.available_stock > 0">
                                     <div>
                                         @auth
                                             @if(auth()->user()->isApproved())
@@ -126,11 +126,18 @@
                                         @endauth
                                     </div>
                                 </template>
-                                <template x-if="item.status === 'tidak_tersedia'">
-                                    <span class="text-xs font-bold text-amber-600">Sedang Dipinjam</span>
-                                </template>
-                                <template x-if="item.status === 'rusak'">
-                                    <span class="text-xs font-bold text-red-600">Dalam Perbaikan</span>
+                                <template x-if="item.available_stock <= 0">
+                                    <div class="flex gap-2">
+                                        <template x-if="item.borrowed_count > 0">
+                                            <span class="text-xs font-bold text-amber-600">Sedang Dipinjam</span>
+                                        </template>
+                                        <template x-if="item.broken_count > 0 && item.borrowed_count === 0">
+                                            <span class="text-xs font-bold text-red-600">Dalam Perbaikan</span>
+                                        </template>
+                                        <template x-if="item.borrowed_count === 0 && item.broken_count === 0">
+                                            <span class="text-xs font-bold text-gray-500">Stok Habis</span>
+                                        </template>
+                                    </div>
                                 </template>
                             </div>
                         </div>
@@ -249,8 +256,21 @@
                                     <p class="text-sm font-bold text-gray-900" x-text="selected.capacity"></p>
                                 </div>
                                 <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 col-span-2">
-                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Ketersediaan Unit</p>
-                                    <p class="text-sm font-bold text-gray-900" x-text="selected.stock + ' Unit di Gudang DTPH'"></p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Ketersediaan Unit</p>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div class="text-center bg-white rounded-xl p-2 border border-gray-100 shadow-sm">
+                                            <p class="text-[10px] font-bold text-gray-400 uppercase">Total</p>
+                                            <p class="text-sm font-black text-gray-900" x-text="selected.stock"></p>
+                                        </div>
+                                        <div class="text-center bg-amber-50 rounded-xl p-2 border border-amber-100 shadow-sm">
+                                            <p class="text-[10px] font-bold text-amber-600 uppercase">Dipinjam</p>
+                                            <p class="text-sm font-black text-amber-700" x-text="selected.borrowed_count"></p>
+                                        </div>
+                                        <div class="text-center bg-emerald-50 rounded-xl p-2 border border-emerald-100 shadow-sm">
+                                            <p class="text-[10px] font-bold text-emerald-600 uppercase">Tersedia</p>
+                                            <p class="text-sm font-black text-emerald-700" x-text="selected.available_stock"></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -271,19 +291,14 @@
 
                 {{-- Drawer Footer --}}
                 <div class="sticky bottom-0 bg-white border-t border-gray-100 p-5 flex gap-3">
-                    <template x-if="selected && selected.status === 'tersedia'">
+                    <template x-if="selected && selected.available_stock > 0">
                         <a href="{{ route('login') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
                             Ajukan Pinjaman Sekarang
                         </a>
                     </template>
-                    <template x-if="selected && selected.status === 'tidak_tersedia'">
-                        <div class="flex-1 bg-amber-50 text-amber-600 py-3.5 rounded-2xl text-sm font-bold text-center border border-amber-100 cursor-not-allowed">
-                            Sedang Dipinjam
-                        </div>
-                    </template>
-                    <template x-if="selected && selected.status === 'rusak'">
-                        <div class="flex-1 bg-red-50 text-red-600 py-3.5 rounded-2xl text-sm font-bold text-center border border-red-100 cursor-not-allowed">
-                            Dalam Perbaikan
+                    <template x-if="selected && selected.available_stock <= 0">
+                        <div class="flex-1 bg-gray-100 text-gray-500 py-3.5 rounded-2xl text-sm font-bold text-center border border-gray-200 cursor-not-allowed">
+                            Saat ini Stok Tidak Tersedia
                         </div>
                     </template>
                     <button @click="drawer = false" class="px-5 py-3.5 border border-gray-200 rounded-2xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">
@@ -320,7 +335,9 @@
                     merk: item.merk || '-',
                     capacity: item.capacity || '-',
                     stock: item.stock,
-                    status: item.status,
+                    available_stock: item.available_stock,
+                    borrowed_count: item.borrowed_count,
+                    broken_count: item.broken_count,
                     description: item.description || '',
                     image: item.image ? '{{ asset("storage") }}/' + item.image : 'https://picsum.photos/seed/' + item.id + '/800/500'
                 })),

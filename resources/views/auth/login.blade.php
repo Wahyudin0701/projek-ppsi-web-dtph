@@ -191,12 +191,12 @@
                             </div>
 
                             <!-- Register Button -->
-                            <div>
-                                <a href="{{ route('register') }}" class="w-full flex justify-center items-center py-3.5 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-[#19A148] bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
-                                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                    </svg>
-                                    Daftar Akun Baru
+                            <div class="grid grid-cols-2 gap-3">
+                                <a href="{{ route('register', ['role' => 'petani']) }}" class="w-full flex justify-center items-center py-3.5 px-2 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-sm font-bold text-[#19A148] bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
+                                    Kelompok Tani
+                                </a>
+                                <a href="{{ route('register', ['role' => 'umum']) }}" class="w-full flex justify-center items-center py-3.5 px-2 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-sm font-bold text-[#19A148] bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
+                                    Umum
                                 </a>
                             </div>
 

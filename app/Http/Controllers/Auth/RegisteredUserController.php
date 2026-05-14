@@ -20,9 +20,10 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('auth.register');
+        $role = $request->query('role', 'petani');
+        return view('auth.register', compact('role'));
     }
 
     /**
@@ -32,36 +33,57 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'nama_ketua' => ['required', 'string', 'max:255'],
-            'nik_ketua' => ['required', 'string', 'size:16'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'no_wa' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'grade' => ['required', 'string', 'in:Pemula,Madya,Utama'],
-            'luas_lahan' => ['required', 'numeric', 'min:0'],
-            'alamat' => ['required', 'string'],
-        ]);
+        $role = $request->input('role', 'petani');
 
-        $user = DB::transaction(function () use ($request) {
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:petani,umum'],
+        ];
+
+        if ($role === 'petani') {
+            $rules = array_merge($rules, [
+                'nama_ketua' => ['required', 'string', 'max:255'],
+                'nik_ketua' => ['required', 'string', 'size:16'],
+                'no_wa' => ['required', 'string', 'max:20'],
+                'grade' => ['required', 'string', 'in:Pemula,Madya,Utama'],
+                'luas_lahan' => ['required', 'numeric', 'min:0'],
+                'komoditi' => ['required', 'array', 'min:1'],
+                'komoditi.*' => ['string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
+                'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
+                'kecamatan' => ['required', 'string', 'max:255'],
+                'alamat' => ['required', 'string'],
+            ]);
+        }
+
+        $request->validate($rules);
+
+        $user = DB::transaction(function () use ($request, $role) {
+            $dbRole = $role === 'petani' ? 'user' : 'umum';
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'user',
+                'role' => $dbRole,
             ]);
 
-            $user->farmerProfile()->create([
-                'nama_kelompok' => $request->name,
-                'ketua' => $request->nama_ketua,
-                'nik_ketua' => $request->nik_ketua,
-                'kontak' => $request->no_wa,
-                'grade' => $request->grade,
-                'luas_lahan' => $request->luas_lahan,
-                'alamat' => $request->alamat,
-                'status' => 'menunggu',
-            ]);
+            if ($role === 'petani') {
+                $user->farmerProfile()->create([
+                    'nama_kelompok' => $request->name,
+                    'ketua' => $request->nama_ketua,
+                    'nik_ketua' => $request->nik_ketua,
+                    'kontak' => $request->no_wa,
+                    'grade' => $request->grade,
+                    'luas_lahan' => $request->luas_lahan,
+                    'komoditi' => implode(', ', $request->komoditi),
+                    'komoditi_utama' => $request->komoditi_utama,
+                    'kecamatan' => $request->kecamatan,
+                    'alamat' => $request->alamat,
+                    'status' => 'menunggu',
+                ]);
+            }
 
             return $user;
         });

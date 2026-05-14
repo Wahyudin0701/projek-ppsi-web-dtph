@@ -15,8 +15,17 @@ class Alsintan extends Model
         'merk',
         'capacity',
         'stock',
+        'borrowed_count',
+        'broken_count',
         'description',
         'image',
-        'status',
     ];
+
+    /**
+     * Get the available stock.
+     */
+    public function getAvailableStockAttribute(): int
+    {
+        return max(0, $this->stock - $this->borrowed_count - $this->broken_count);
+    }
 }
