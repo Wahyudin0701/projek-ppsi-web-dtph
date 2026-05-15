@@ -116,9 +116,9 @@
                         <form method="POST" action="{{ route('login') }}" class="space-y-5">
                             @csrf
 
-                            <!-- NIK / Email -->
+                            <!-- Email -->
                             <div>
-                                <label for="email" class="block text-sm font-bold text-gray-800 mb-2">NIK / Email</label>
+                                <label for="email" class="block text-sm font-bold text-gray-800 mb-2">Email</label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-green-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,7 +127,7 @@
                                     </div>
                                     <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all sm:text-sm bg-white"
-                                        placeholder="Masukkan NIK 16 digit atau Email">
+                                        placeholder="Masukkan Email yang terdaftar">
                                 </div>
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
