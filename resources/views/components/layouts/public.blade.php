@@ -79,7 +79,7 @@
                     </div>
 
                     <a href="{{ route('katalog') }}" class="text-sm font-bold transition whitespace-nowrap {{ request()->routeIs('katalog') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">Katalog Alsintan</a>
-                    <a href="{{ route('program') }}" class="text-sm font-bold transition {{ request()->routeIs('program') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">Program</a>
+                    {{-- <a href="{{ route('program') }}" class="text-sm font-bold transition {{ request()->routeIs('program') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">Program</a> --}}
                     <a href="{{ route('kontak') }}" class="text-sm font-bold transition {{ request()->routeIs('kontak') ? 'text-primary-600' : 'text-gray-600 hover:text-primary-600' }}">Kontak</a>
 
                     <div class="h-6 w-px bg-gray-200 mx-1"></div>
@@ -227,7 +227,7 @@
                     </div>
 
                     <a href="{{ route('katalog') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('katalog') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}">Katalog Alsintan</a>
-                    <a href="{{ route('program') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('program') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}">Program Bantuan</a>
+                    {{-- <a href="{{ route('program') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('program') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}">Program Bantuan</a> --}}
                     <a href="{{ route('kontak') }}" @click="mobileMenuOpen = false" class="block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors {{ request()->routeIs('kontak') ? 'bg-primary-50 text-primary-700' : 'text-gray-800 hover:bg-primary-50' }}">Kontak</a>
                 </div>
             </nav>
@@ -293,7 +293,7 @@
                     <ul class="space-y-3">
                         <li><a href="{{ route('home') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>E-Proposal Alsintan</a></li>
                         <li><a href="{{ route('katalog') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Katalog Alsintan</a></li>
-                        <li><a href="{{ route('program') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Program Bantuan</a></li>
+                        {{-- <li><a href="{{ route('program') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Program Bantuan</a></li> --}}
                         <li><a href="{{ route('informasi.berita-artikel') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Berita &amp; Artikel</a></li>
                         <li><a href="{{ route('informasi.unduh-dokumen') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>Unduh Dokumen</a></li>
                         <li><a href="{{ route('informasi.faq') }}" class="text-sm text-gray-500 hover:text-emerald-400 transition-colors flex items-center gap-2 group"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700 group-hover:bg-emerald-400 transition-colors flex-shrink-0"></span>FAQ (Tanya Jawab)</a></li>

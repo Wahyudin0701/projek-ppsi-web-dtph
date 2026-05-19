@@ -292,9 +292,21 @@
                 {{-- Drawer Footer --}}
                 <div class="sticky bottom-0 bg-white border-t border-gray-100 p-5 flex gap-3">
                     <template x-if="selected && selected.available_stock > 0">
-                        <a href="{{ route('login') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
-                            Ajukan Pinjaman Sekarang
-                        </a>
+                        @auth
+                            @if(auth()->user()->isApproved())
+                                <a :href="'{{ url('farmer/proposals/alsintan') }}/' + selected.id" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                    Ajukan Pinjaman Sekarang
+                                </a>
+                            @else
+                                <a href="{{ route('dashboard') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                    Lengkapi Profil Untuk Meminjam
+                                </a>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                Ajukan Pinjaman Sekarang
+                            </a>
+                        @endauth
                     </template>
                     <template x-if="selected && selected.available_stock <= 0">
                         <div class="flex-1 bg-gray-100 text-gray-500 py-3.5 rounded-2xl text-sm font-bold text-center border border-gray-200 cursor-not-allowed">
@@ -339,6 +351,7 @@
                     borrowed_count: item.borrowed_count,
                     broken_count: item.broken_count,
                     description: item.description || '',
+                    status: item.available_stock > 0 ? 'tersedia' : (item.borrowed_count > 0 ? 'tidak_tersedia' : (item.broken_count > 0 ? 'rusak' : 'tidak_tersedia')),
                     image: item.image ? '{{ asset("storage") }}/' + item.image : 'https://picsum.photos/seed/' + item.id + '/800/500'
                 })),
                 init() {

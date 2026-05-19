@@ -49,8 +49,51 @@
             </div>
         </div>
 
+        {{-- Profile Card / Data Lengkap Pemohon --}}
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+            <h3 class="text-lg font-extrabold text-gray-900 mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                Data Lengkap Pemohon (Terdaftar)
+            </h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-sm">
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Kelompok Tani</p>
+                    <p class="font-extrabold text-gray-900 text-base">{{ auth()->user()->farmerProfile->nama_kelompok ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Ketua Kelompok</p>
+                    <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->ketua ?? auth()->user()->name }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">NIK Ketua</p>
+                    <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->nik_ketua ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">No. Telepon / WhatsApp</p>
+                    <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->kontak ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Komoditi Utama</p>
+                    <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->komoditi_utama ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Luas Lahan Terdaftar</p>
+                    <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->luas_lahan ?? '-' }} Ha</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Kecamatan</p>
+                    <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->kecamatan ?? '-' }}</p>
+                </div>
+                <div class="sm:col-span-2">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Alamat Lengkap Kelompok</p>
+                    <p class="font-medium text-gray-700">{{ auth()->user()->farmerProfile->alamat ?? '-' }}</p>
+                </div>
+            </div>
+        </div>
+
         {{-- Form --}}
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8" x-data="{ showConfirm: false, agreed: false }">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8" x-data="{ showConfirm: false, agreed: false, durasi: '{{ old('rencana_durasi_hari', '') }}' }">
             <h3 class="text-lg font-extrabold text-gray-900 mb-6">Lengkapi Data Pengajuan</h3>
 
             <form id="proposalForm" x-ref="proposalForm" action="{{ route('farmer.proposals.alsintan.store', $alsintan->id) }}" method="POST" class="space-y-6" @submit.prevent="showConfirm = true">
@@ -69,6 +112,23 @@
                             placeholder="Tuliskan alamat lengkap atau koordinat lokasi lahan yang akan menggunakan alat ini...">{{ old('lokasi_lahan') }}</textarea>
                     </div>
                     @error('lokasi_lahan')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="rencana_durasi_hari" class="block text-sm font-bold text-gray-700 mb-2">
+                        Rencana Durasi Pemakaian Alat (dalam Hari) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <input type="number" name="rencana_durasi_hari" id="rencana_durasi_hari" min="1" max="365" required x-model="durasi"
+                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all sm:text-sm @error('rencana_durasi_hari') border-red-400 @enderror"
+                            placeholder="Tuliskan durasi peminjaman dalam hari, misal: 7">
+                    </div>
+                    @error('rencana_durasi_hari')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -127,6 +187,10 @@
                                     <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Alat yang Dipinjam</p>
                                         <p class="font-bold text-gray-900 text-lg">{{ $alsintan->name }}</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Rencana Durasi Pemakaian</p>
+                                        <p class="font-bold text-[#19A148] text-lg"><span x-text="durasi || '-'"></span> Hari</p>
                                     </div>
                                     <p class="text-sm text-gray-600 leading-relaxed">
                                         Setelah dikirim, proposal Anda akan masuk ke tahap verifikasi oleh Admin DTPH. Anda dapat memantau statusnya di halaman riwayat proposal.

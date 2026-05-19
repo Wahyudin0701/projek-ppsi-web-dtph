@@ -5,7 +5,7 @@
     <section class="relative text-white overflow-hidden py-24 md:py-32">
         {{-- Background Image & Overlay --}}
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('build/assets/img_dtph.png') }}" class="w-full h-full object-cover" alt="Background">
+            <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Background">
             {{-- Darker Overlays for contrast --}}
             <div class="absolute inset-0 bg-black/50"></div>
             <div class="absolute inset-0 bg-gradient-to-br from-primary-950/90 via-primary-900/60 to-emerald-950/90"></div>

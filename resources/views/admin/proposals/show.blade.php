@@ -30,19 +30,24 @@
 
         @php
             $isAlsintan = $proposal->alsintan_id !== null;
-            $statusConfig = [
-                'pending_verifikasi' => ['bg' => 'bg-yellow-100 text-yellow-700', 'label' => 'Menunggu Verifikasi'],
-                'disetujui'          => ['bg' => 'bg-green-100 text-green-700', 'label' => 'Disetujui'],
-                'ditolak'            => ['bg' => 'bg-red-100 text-red-700', 'label' => 'Ditolak'],
-            ];
-            $sc = $statusConfig[$proposal->status] ?? ['bg' => 'bg-gray-100 text-gray-600', 'label' => $proposal->status];
+            $sc = match($proposal->status) {
+                'pending_verifikasi'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Menunggu Verifikasi'],
+                'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Menunggu Pimpinan'],
+                'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Disposisi ke Kabid'],
+                'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Surat Tugas Terbit'],
+                'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
+                'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Keputusan Akhir'],
+                'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
+                'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
+                default                    => ['bg' => 'bg-gray-100 text-gray-600',       'label' => $proposal->statusLabel],
+            };
         @endphp
 
-        {{-- Top Summary Card --}}
+        {{-- Summary Card --}}
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3 mb-2 flex-wrap">
-                    <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
                         {{ $isAlsintan ? 'Peminjaman Alsintan' : 'Program Bantuan' }}
                     </span>
                     <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ $sc['bg'] }}">
@@ -56,12 +61,26 @@
             </div>
 
             {{-- Action Buttons --}}
-            @if($proposal->status === 'pending_verifikasi')
+            @if($proposal->status === 'disetujui')
+                <div class="flex gap-3 w-full sm:w-auto">
+                    @if($isAlsintan)
+                        <a href="{{ route('documents.surat-perjanjian', $proposal) }}" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Cetak Surat Perjanjian
+                        </a>
+                    @else
+                        <a href="{{ route('documents.sk-bantuan', $proposal) }}" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Cetak SK Bantuan
+                        </a>
+                    @endif
+                </div>
+            @elseif($proposal->status === 'pending_verifikasi')
                 <div class="flex flex-wrap gap-3 w-full sm:w-auto" x-data="{ showApprove: false, showReject: false }">
                     <button @click="showApprove = true"
-                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#19A148] text-white text-sm font-bold rounded-xl hover:bg-green-700 transition-colors shadow-sm">
+                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        Setujui
+                        Terima & Verifikasi
                     </button>
                     <button @click="showReject = true"
                         class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-red-500 text-white text-sm font-bold rounded-xl hover:bg-red-600 transition-colors shadow-sm">
@@ -69,65 +88,88 @@
                         Tolak
                     </button>
 
-                    {{-- Approve Confirm Modal --}}
+                    {{-- Approve Modal --}}
                     <template x-if="showApprove">
                         <div class="fixed inset-0 z-[999] overflow-y-auto">
                             <div class="flex items-center justify-center min-h-screen px-4">
                                 <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showApprove = false"></div>
-                                <div class="relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 border border-gray-100">
+                                <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
                                     <div class="flex items-center gap-4 mb-5">
-                                        <div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center">
-                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <div class="w-12 h-12 bg-primary-50 rounded-2xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         </div>
                                         <div>
-                                            <h3 class="text-lg font-black text-gray-900">Konfirmasi Persetujuan</h3>
-                                            <p class="text-sm text-gray-500">Tindakan ini tidak dapat diurungkan.</p>
+                                            <h3 class="text-lg font-black text-gray-900">Verifikasi Proposal</h3>
+                                            <p class="text-sm text-gray-500">Proposal akan diteruskan ke Pimpinan.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-6">Anda akan <strong class="text-green-600">menyetujui</strong> proposal <strong>{{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
-                                    <div class="flex flex-row-reverse gap-3">
-                                        <form action="{{ route('admin.proposals.approve', $proposal) }}" method="POST" class="flex-1">
-                                            @csrf @method('PATCH')
-                                            <button type="submit" class="w-full px-6 py-3 bg-[#19A148] text-white font-bold rounded-xl hover:bg-green-700 transition-colors text-sm">Ya, Setujui</button>
-                                        </form>
-                                        <button @click="showApprove = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
-                                    </div>
+                                    <p class="text-sm text-gray-600 mb-6">Anda telah memeriksa kelengkapan berkas dan menyatakan proposal ini <strong class="text-primary-600">layak</strong> untuk diproses lebih lanjut.</p>
+                                    <form action="{{ route('admin.proposals.approve', $proposal) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <div class="mb-5">
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Catatan Verifikasi (opsional)</label>
+                                            <textarea name="admin_notes" rows="3" placeholder="Tambahkan catatan jika diperlukan..."
+                                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"></textarea>
+                                        </div>
+                                        <div class="flex flex-row-reverse gap-3">
+                                            <button type="submit" class="flex-1 px-6 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors text-sm">Ya, Verifikasi</button>
+                                            <button type="button" @click="showApprove = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </template>
 
-                    {{-- Reject Confirm Modal --}}
+                    {{-- Reject Modal --}}
                     <template x-if="showReject">
                         <div class="fixed inset-0 z-[999] overflow-y-auto">
                             <div class="flex items-center justify-center min-h-screen px-4">
                                 <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showReject = false"></div>
-                                <div class="relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 border border-gray-100">
+                                <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
                                     <div class="flex items-center gap-4 mb-5">
                                         <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center">
                                             <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                         </div>
                                         <div>
-                                            <h3 class="text-lg font-black text-gray-900">Konfirmasi Penolakan</h3>
-                                            <p class="text-sm text-gray-500">Tindakan ini tidak dapat diurungkan.</p>
+                                            <h3 class="text-lg font-black text-gray-900">Tolak Proposal</h3>
+                                            <p class="text-sm text-gray-500">Proposal akan ditolak secara permanen.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-6">Anda akan <strong class="text-red-600">menolak</strong> proposal <strong>{{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
-                                    <div class="flex flex-row-reverse gap-3">
-                                        <form action="{{ route('admin.proposals.reject', $proposal) }}" method="POST" class="flex-1">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="w-full px-6 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors text-sm">Ya, Tolak</button>
-                                        </form>
-                                        <button @click="showReject = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
-                                    </div>
+                                    <p class="text-sm text-gray-600 mb-4">Anda akan <strong class="text-red-600">menolak</strong> proposal <strong>{{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
+                                    <form action="{{ route('admin.proposals.reject', $proposal) }}" method="POST">
+                                        @csrf @method('DELETE')
+                                        <div class="mb-5">
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Alasan Penolakan <span class="text-red-500">*</span></label>
+                                            <textarea name="admin_notes" rows="3" required placeholder="Tulis alasan penolakan..."
+                                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 resize-none"></textarea>
+                                        </div>
+                                        <div class="flex flex-row-reverse gap-3">
+                                            <button type="submit" class="flex-1 px-6 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors text-sm">Ya, Tolak</button>
+                                            <button type="button" @click="showReject = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </template>
                 </div>
+            @elseif($proposal->status === 'surat_tugas_terbit')
+                <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+                    <a href="{{ route('admin.proposals.cetak-surat-tugas', $proposal) }}" target="_blank"
+                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        Cetak Surat Tugas
+                    </a>
+                    <a href="{{ route('admin.proposals.cpcl.create', $proposal) }}"
+                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                        Input Verifikasi CPCL
+                    </a>
+                </div>
             @else
-                <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $proposal->status === 'disetujui' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-600 border border-red-100' }}">
-                    {{ $proposal->status === 'disetujui' ? 'Sudah Disetujui' : 'Sudah Ditolak' }}
+                <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $sc['bg'] }} border border-transparent shadow-sm">
+                    {{ $sc['label'] }}
                 </span>
             @endif
         </div>
@@ -139,7 +181,6 @@
                 {{-- Petani Info --}}
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
                     <h4 class="font-bold text-gray-900 mb-6 text-lg border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         Informasi Pengaju
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
@@ -170,10 +211,8 @@
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
                     <h4 class="font-bold text-gray-900 mb-6 text-lg border-b border-gray-100 pb-3 flex items-center gap-2">
                         @if($isAlsintan)
-                            <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"/></svg>
                             Detail Alat yang Dipinjam
                         @else
-                            <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             Detail Program yang Diajukan
                         @endif
                     </h4>
@@ -194,6 +233,10 @@
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Stok Tersedia (saat ini)</p>
                                 <p class="text-gray-900 font-medium">{{ $proposal->alsintan->available_stock }} unit</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rencana Durasi Pemakaian</p>
+                                <p class="text-[#19A148] font-bold text-base">{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</p>
                             </div>
                         </div>
                     @else
@@ -222,76 +265,224 @@
             {{-- Sidebar Timeline --}}
             <div class="space-y-6">
                 <div class="bg-gray-50 rounded-2xl border border-gray-200 shadow-sm p-6">
-                    <h4 class="font-bold text-gray-900 mb-5 border-b border-gray-200 pb-3">Timeline Pengajuan</h4>
-                    <div class="relative border-l-2 border-primary-200 ml-3 space-y-6 pb-2">
+                    <h4 class="font-bold text-gray-900 mb-5 border-b border-gray-200 pb-3 flex items-center justify-between">
+                        Timeline Pengajuan
+                        <span class="text-[10px] font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">Real-time</span>
+                    </h4>
+                    
+                    @php
+                        $disposition = $proposal->dispositionLogs->sortByDesc('created_at')->first();
+                        $surveyAssignment = $proposal->surveyAssignments->sortByDesc('created_at')->first();
+                        $beritaAcara = $proposal->beritaAcara;
+                    @endphp
 
+                    <div class="relative border-l-2 border-primary-200 ml-3 space-y-8 pb-2">
+                        
+                        {{-- 1. Submitted --}}
                         <div class="relative">
                             <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                             <div class="pl-4">
-                                <p class="text-sm font-bold text-gray-900">Pengajuan Diterima</p>
-                                <p class="text-xs text-gray-500 mt-1">{{ $proposal->submission_date?->translatedFormat('d M Y - H:i') }} WIB</p>
+                                <p class="text-sm font-bold text-gray-900">Pengajuan Dikirim</p>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->submission_date->translatedFormat('d M Y - H:i') }} WIB</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Dikirim oleh: {{ $proposal->user->name }}</p>
                             </div>
                         </div>
 
+                        {{-- 2. Admin Review --}}
                         <div class="relative">
-                            @if($proposal->status === 'pending_verifikasi')
+                            @if($proposal->reviewed_at)
+                                <div class="absolute -left-[21px] {{ $proposal->status === 'ditolak' && !$proposal->decided_at ? 'bg-red-500' : 'bg-primary-500' }} w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold {{ $proposal->status === 'ditolak' && !$proposal->decided_at ? 'text-red-600' : 'text-gray-900' }}">Diverifikasi Admin</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->reviewed_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs {{ $proposal->status === 'ditolak' && !$proposal->decided_at ? 'text-red-500' : 'text-gray-500' }} mt-0.5">
+                                        {{ $proposal->status === 'ditolak' && !$proposal->decided_at ? 'Ditolak: ' . ($proposal->admin_notes ?? '-') : 'Berkas dinyatakan lengkap & layak.' }}
+                                    </p>
+                                    @if($proposal->admin_notes && $proposal->status !== 'ditolak')
+                                        <div class="mt-3 flex items-start gap-2 bg-amber-50/70 border-l-4 border-amber-500/80 p-3 rounded-r-xl whitespace-pre-line leading-relaxed shadow-sm">
+                                            <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                            </svg>
+                                            <div class="text-xs">
+                                                <span class="font-bold text-amber-900 block mb-0.5">Catatan Verifikasi Admin:</span>
+                                                <span class="text-amber-800/90 font-medium">{{ $proposal->admin_notes }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
                                 <div class="absolute -left-[21px] bg-yellow-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Menunggu Keputusan</p>
-                                    <p class="text-xs text-gray-500 mt-1">Sedang dalam antrian verifikasi</p>
+                                    <p class="text-sm font-bold text-gray-900">Proses Verifikasi</p>
+                                    <p class="text-xs text-gray-500">Admin perlu memeriksa dokumen.</p>
                                 </div>
-                            @elseif($proposal->status === 'disetujui')
+                            @endif
+                        </div>
+
+                        {{-- 3. Pimpinan Disposition --}}
+                        <div class="relative">
+                            @if($proposal->status === 'ditolak' && !$disposition && $proposal->decided_at)
+                                <div class="absolute -left-[21px] bg-red-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-red-600">Ditolak Pimpinan</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-red-500 mt-0.5">Ditolak: {{ $proposal->pimpinan_notes ?? '-' }}</p>
+                                </div>
+                            @elseif($disposition)
+                                <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-gray-900">Disposisi Pimpinan</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $disposition->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $disposition->toUser->name ?? '-' }}</p>
+                                </div>
+                            @elseif($proposal->status === 'diteruskan_ke_pimpinan')
+                                <div class="absolute -left-[21px] bg-indigo-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-indigo-600">Menunggu Pimpinan</p>
+                                    <p class="text-xs text-gray-400">Pimpinan perlu meninjau proposal.</p>
+                                </div>
+                            @else
+                                <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Disposisi Pimpinan</p></div>
+                            @endif
+                        </div>
+
+                        {{-- 4. Kabid Assignment --}}
+                        <div class="relative">
+                            @if($surveyAssignment)
+                                <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-gray-900">Surat Tugas Terbit</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $surveyAssignment->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Nomor: {{ $surveyAssignment->nomor_surat }}</p>
+                                </div>
+                            @elseif($proposal->status === 'didisposisi_kabid')
+                                <div class="absolute -left-[21px] bg-amber-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-amber-600">Penugasan Tim Survei</p>
+                                    <p class="text-xs text-gray-400">Menunggu Kabid membentuk tim.</p>
+                                </div>
+                            @else
+                                <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Penugasan Survei</p></div>
+                            @endif
+                        </div>
+
+                        {{-- 5. Survey Execution --}}
+                        <div class="relative">
+                            @if($proposal->status === 'surat_tugas_terbit')
+                                <div class="absolute -left-[21px] bg-blue-500 w-3 h-3 rounded-full border-4 border-white animate-bounce"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-blue-600">Survei Sedang Jalan</p>
+                                    <p class="text-xs text-gray-500">Menunggu input hasil CPCL offline.</p>
+                                </div>
+                            @elseif(in_array($proposal->status, ['survei_selesai', 'menunggu_approval_ba', 'disetujui']) || ($proposal->status === 'ditolak' && $proposal->cpclVerifications->count() > 0))
+                                <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-gray-900">Verifikasi CPCL Selesai</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Hasil survei telah diinput ke sistem.</p>
+                                </div>
+                            @else
+                                <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Pelaksanaan Survei</p></div>
+                            @endif
+                        </div>
+
+                        {{-- 6. Berita Acara --}}
+                        <div class="relative">
+                            @if($beritaAcara)
+                                <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-gray-900">Berita Acara Terbit</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $beritaAcara->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">BA & Rekomendasi sudah diupload.</p>
+                                </div>
+                            @elseif($proposal->status === 'survei_selesai')
+                                <div class="absolute -left-[21px] bg-orange-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-orange-600">Penyusunan BA</p>
+                                    <p class="text-xs text-gray-400">Tim sedang menyusun laporan.</p>
+                                </div>
+                            @else
+                                <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Berita Acara</p></div>
+                            @endif
+                        </div>
+
+                        {{-- 7. Final Decision --}}
+                        <div class="relative">
+                            @if($proposal->status === 'disetujui')
                                 <div class="absolute -left-[21px] bg-green-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-green-700">Proposal Disetujui</p>
-                                    <p class="text-xs text-gray-500 mt-1">Verifikasi selesai & berhasil</p>
+                                    <p class="text-sm font-bold text-green-700">Selesai - Disetujui</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $proposal->pimpinan_notes ?? 'Keputusan telah diambil.' }}</p>
                                 </div>
                             @elseif($proposal->status === 'ditolak')
                                 <div class="absolute -left-[21px] bg-red-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-red-600">Proposal Ditolak</p>
-                                    <p class="text-xs text-gray-500 mt-1">Tidak lolos proses verifikasi</p>
+                                    <p class="text-sm font-bold text-red-600">Proses Dihentikan</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ ($proposal->decided_at ?? $proposal->reviewed_at ?? $proposal->updated_at)->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-red-500 mt-0.5">Proposal ditolak dan tidak dapat dilanjutkan.</p>
                                 </div>
+                            @elseif($proposal->status === 'menunggu_approval_ba')
+                                <div class="absolute -left-[21px] bg-purple-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-purple-700">Keputusan Akhir</p>
+                                    <p class="text-xs text-gray-400">Menunggu persetujuan final Pimpinan.</p>
+                                </div>
+                            @else
+                                <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Keputusan Akhir</p></div>
                             @endif
                         </div>
                     </div>
                 </div>
 
                 {{-- Contact Info --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                    <h4 class="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-3">Kontak Pengaju</h4>
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <h4 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            Kontak Pengaju
+                        </h4>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="flex items-center p-3 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors group">
+                                <div class="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary-600 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Akun</p>
+                                    <p class="text-sm font-black text-gray-900">{{ $proposal->user->name }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Nama Akun</p>
-                                <p class="text-sm font-bold text-gray-800">{{ $proposal->user->name }}</p>
+                            <div class="flex items-center p-3 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors group">
+                                <div class="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary-600 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </div>
+                                <div class="ml-3 min-w-0 flex-1">
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Email</p>
+                                    <p class="text-sm font-black text-gray-900 break-all">{{ $proposal->user->email }}</p>
+                                </div>
                             </div>
+                            @if($proposal->user->farmerProfile?->no_telp)
+                            <div class="flex items-center p-3 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors group">
+                                <div class="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary-600 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">No. Telepon</p>
+                                    <p class="text-sm font-black text-gray-900">{{ $proposal->user->farmerProfile->no_telp }}</p>
+                                </div>
+                            </div>
+                            @endif
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Email</p>
-                                <p class="text-sm font-bold text-gray-800">{{ $proposal->user->email }}</p>
-                            </div>
-                        </div>
-                        @if($proposal->user->farmerProfile?->no_telp)
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">No. Telepon</p>
-                                <p class="text-sm font-bold text-gray-800">{{ $proposal->user->farmerProfile->no_telp }}</p>
-                            </div>
-                        </div>
-                        @endif
+                    </div>
+                    <div class="bg-gray-50 px-6 py-3 border-t border-gray-100">
+                        <p class="text-[10px] font-bold text-gray-400 text-center uppercase tracking-widest italic">Data terverifikasi sistem</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

@@ -46,7 +46,8 @@
                 <!-- Navigation Links -->
                 <div class="p-6 space-y-6">
                     {{-- Global Link --}}
-                    <ul class="space-y-2">
+                    @if(auth()->user()->isUser() || auth()->user()->role === 'umum')
+                    <ul class="space-y-2 mb-6">
                         <li>
                             <a href="{{ route('home') }}" 
                                class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm text-[#64748B] hover:bg-green-50 hover:text-[#19A148] transition-all duration-300">
@@ -57,11 +58,13 @@
                             </a>
                         </li>
                     </ul>
+                    @endif
 
                     <!-- Menu Utama -->
                     <div>
                         <h3 class="text-[11px] font-extrabold text-[#94A3B8] uppercase tracking-[0.15em] mb-4 px-3">Menu Utama</h3>
                         <ul class="space-y-2">
+                            @unless(auth()->user()->isPimpinan() || auth()->user()->isKabid())
                             <li>
                                 <a href="{{ route('dashboard') }}" 
                                    class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
@@ -71,6 +74,7 @@
                                     Dashboard
                                 </a>
                             </li>
+                            @endunless
 
                             @if(auth()->user()->isAdmin())
                                 @php
@@ -128,6 +132,62 @@
                                         @endif
                                     </a>
                                 </li>
+                            @elseif(auth()->user()->isPimpinan())
+                                <li>
+                                    <a href="{{ route('pimpinan.dashboard') }}"
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.dashboard') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-[#64748B] hover:bg-indigo-50 hover:text-indigo-600' }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                        </svg>
+                                        Dashboard Pimpinan
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('pimpinan.proposals.index') }}"
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.*') && !request()->has('status') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-[#64748B] hover:bg-indigo-50 hover:text-indigo-600' }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                        Tinjau Proposal
+                                        @php $pimpinanPending = \App\Models\Proposal::whereIn('status', ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])->count(); @endphp
+                                        @if($pimpinanPending > 0)
+                                            <span class="ml-auto bg-indigo-200 text-indigo-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pimpinanPending }}</span>
+                                        @endif
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('pimpinan.proposals.index', ['status' => 'disetujui']) }}"
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->fullUrlIs(route('pimpinan.proposals.index', ['status' => 'disetujui'])) ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-[#64748B] hover:bg-indigo-50 hover:text-indigo-600' }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                                        Arsip Keputusan
+                                    </a>
+                                </li>
+                            @elseif(auth()->user()->isKabid())
+                                <li>
+                                    <a href="{{ route('kabid.dashboard') }}"
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('kabid.dashboard') ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/30' : 'text-[#64748B] hover:bg-amber-50 hover:text-amber-600' }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                        </svg>
+                                        Dashboard Kabid
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('kabid.proposals.index') }}"
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('kabid.proposals.*') ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/30' : 'text-[#64748B] hover:bg-amber-50 hover:text-amber-600' }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                        Kelola Disposisi
+                                        @php $kabidPending = \App\Models\Proposal::where('kabid_id', auth()->id())->whereIn('status', ['didisposisi_kabid', 'survei_selesai'])->count(); @endphp
+                                        @if($kabidPending > 0)
+                                            <span class="ml-auto bg-amber-200 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $kabidPending }}</span>
+                                        @endif
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('kabid.tim-survei.index') }}"
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('kabid.tim-survei.*') ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/30' : 'text-[#64748B] hover:bg-amber-50 hover:text-amber-600' }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                        Tim Survei
+                                    </a>
+                                </li>
                             @elseif(auth()->user()->isApproved())
                                 <li>
                                     <a href="{{ route('farmer.proposals.pilih') }}" 
@@ -152,12 +212,31 @@
                     </div>
 
                     <!-- Akun -->
+                    @php
+                        $roleColor = match(true) {
+                            auth()->user()->isPimpinan() => [
+                                'active' => 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30',
+                                'hover'  => 'text-[#64748B] hover:bg-indigo-50 hover:text-indigo-600',
+                                'avatar' => 'bg-indigo-600'
+                            ],
+                            auth()->user()->isKabid() => [
+                                'active' => 'bg-amber-600 text-white shadow-lg shadow-amber-600/30',
+                                'hover'  => 'text-[#64748B] hover:bg-amber-50 hover:text-amber-600',
+                                'avatar' => 'bg-amber-600'
+                            ],
+                            default => [
+                                'active' => 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30',
+                                'hover'  => 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]',
+                                'avatar' => 'bg-[#19A148]'
+                            ]
+                        };
+                    @endphp
                     <div>
                         <h3 class="text-[11px] font-extrabold text-[#94A3B8] uppercase tracking-[0.15em] mb-4 px-3">Akun</h3>
                         <ul class="space-y-2">
                             <li>
                                 <a href="{{ route('profile.edit') }}" 
-                                   class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('profile.edit') ? 'bg-[#19A148] text-white shadow-lg shadow-[#19A148]/30' : 'text-[#64748B] hover:bg-green-50 hover:text-[#19A148]' }}">
+                                   class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('profile.edit') ? $roleColor['active'] : $roleColor['hover'] }}">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
@@ -173,7 +252,7 @@
             <div class="p-6 border-t border-gray-50 bg-gray-50/30">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-full bg-[#19A148] border-2 border-white shadow-sm flex items-center justify-center font-extrabold text-white">
+                        <div class="w-11 h-11 rounded-full {{ $roleColor['avatar'] }} border-2 border-white shadow-sm flex items-center justify-center font-extrabold text-white">
                             {{ substr(auth()->user()->name, 0, 1) }}
                         </div>
                         <div class="flex flex-col">
@@ -295,25 +374,31 @@
                         </div>
                         <div>
                             <div class="font-extrabold text-white text-sm leading-tight">{{ auth()->user()->name }}</div>
-                            <div class="text-white/70 text-xs mt-0.5">{{ auth()->user()->isAdmin() ? 'Administrator' : 'Kelompok Tani' }}</div>
+                                <div class="text-white/70 text-xs mt-0.5">
+                                    {{ auth()->user()->roleLabel }}
+                                </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Drawer Nav Links --}}
                 <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                    @if(auth()->user()->isUser() || auth()->user()->role === 'umum')
                     <a href="{{ route('home') }}" @click="mobileMenuOpen = false"
                        class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-gray-600 hover:bg-green-50 hover:text-[#19A148] mb-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                         Beranda
                     </a>
+                    @endif
 
                     <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest px-3 mb-2">MENU UTAMA</p>
+                    @unless(auth()->user()->isPimpinan())
                     <a href="{{ route('dashboard') }}" @click="mobileMenuOpen = false"
                        class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('dashboard') ? 'bg-[#19A148] text-white' : 'text-gray-600 hover:bg-green-50 hover:text-[#19A148]' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         Dashboard
                     </a>
+                    @endunless
 
                     @if(auth()->user()->isAdmin())
                         <a href="{{ route('admin.users.list') }}" @click="mobileMenuOpen = false"
@@ -338,6 +423,22 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
                             </svg>
                             Manajemen Alsintan
+                        </a>
+                    @elseif(auth()->user()->isPimpinan())
+                        <a href="{{ route('pimpinan.dashboard') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('pimpinan.dashboard') ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                            Dashboard Pimpinan
+                        </a>
+                        <a href="{{ route('pimpinan.proposals.index') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->routeIs('pimpinan.proposals.*') && !request()->has('status') ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                            Tinjau Proposal
+                        </a>
+                        <a href="{{ route('pimpinan.proposals.index', ['status' => 'disetujui']) }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm {{ request()->fullUrlIs(route('pimpinan.proposals.index', ['status' => 'disetujui'])) ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                            Arsip Keputusan
                         </a>
                     @elseif(auth()->user()->isApproved())
                         <a href="{{ route('farmer.proposals.pilih') }}" @click="mobileMenuOpen = false"

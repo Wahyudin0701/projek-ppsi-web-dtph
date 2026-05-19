@@ -7,7 +7,6 @@
     @else
         {{-- ===== FARMER DASHBOARD CONTENT ===== --}}
     <div class="max-w-7xl mx-auto space-y-8">
-
         {{-- ===== WELCOME CARD ===== --}}
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#19A148] via-[#15883c] to-[#0f6b2e] p-7 text-white shadow-lg shadow-green-900/20">
 
@@ -49,22 +48,22 @@
         {{-- ===== STAT CARDS ===== --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-[#19A148] mb-2">Total Pengajuan</p>
+                <p class="text-[11px] font-extrabold text-emerald-600 uppercase tracking-[0.1em] mb-4">Total Pengajuan</p>
                 <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['total'] ?? 0 }}</p>
             </div>
 
             <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-2">Sedang Diproses</p>
+                <p class="text-[11px] font-extrabold text-blue-600 uppercase tracking-[0.1em] mb-4">Sedang Diproses</p>
                 <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['proses'] ?? 0 }}</p>
             </div>
 
             <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2">Disetujui</p>
+                <p class="text-[11px] font-extrabold text-emerald-600 uppercase tracking-[0.1em] mb-4">Disetujui</p>
                 <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['disetujui'] ?? 0 }}</p>
             </div>
 
             <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-red-600 mb-2">Ditolak</p>
+                <p class="text-[11px] font-extrabold text-red-600 uppercase tracking-[0.1em] mb-4">Ditolak</p>
                 <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['ditolak'] ?? 0 }}</p>
             </div>
         </div>
@@ -148,6 +147,52 @@
             </div>
         </div>
 
+        {{-- ===== KATALOG ALSINTAN (GRID LAYOUT) ===== --}}
+        <div>
+            <div class="flex items-center justify-between mb-5 px-1">
+                <div>
+                    <h3 class="font-extrabold text-gray-800 text-lg">Katalog Alsintan</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Pilih alat dan mesin pertanian yang ingin Anda pinjam</p>
+                </div>
+                <a href="{{ route('farmer.proposals.alsintan') }}"
+                   class="inline-flex items-center gap-1 text-sm font-bold text-[#19A148] hover:underline">
+                    Lihat Semua Alat
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse($alsintans as $alsintan)
+                <a href="{{ route('farmer.proposals.alsintan.create', $alsintan) }}" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-lg hover:border-[#19A148]/30 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="mb-4 flex items-center justify-between">
+                            <span class="inline-block rounded-lg bg-sky-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-sky-600">
+                                {{ $alsintan->category }}
+                            </span>
+                        </div>
+                        <h4 class="mb-2 font-black text-gray-800 text-lg leading-tight group-hover:text-[#19A148] transition-colors">{{ $alsintan->name }}</h4>
+                        <p class="mb-6 text-sm text-gray-500 leading-relaxed line-clamp-2">
+                            {{ $alsintan->description ?? 'Alat pertanian berkualitas untuk menunjang produktivitas kelompok tani.' }}
+                        </p>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-gray-50 flex items-center justify-between">
+                        <div class="text-[11px] text-gray-400">
+                            Stok Tersedia: <span class="font-bold text-gray-700 block text-xs">{{ $alsintan->available_stock }} Unit</span>
+                        </div>
+                        <div class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 group-hover:bg-[#19A148] group-hover:shadow-lg group-hover:shadow-green-900/20">
+                            Ajukan Proposal
+                        </div>
+                    </div>
+                </a>
+                @empty
+                <div class="col-span-full bg-white p-12 text-center rounded-2xl border border-dashed border-gray-200">
+                    <p class="text-gray-400 font-medium">Saat ini belum ada alat pertanian yang tersedia.</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+
         {{-- ===== PROGRAM TERBUKA (GRID LAYOUT) ===== --}}
         <div>
             <div class="flex items-center justify-between mb-5 px-1">
@@ -155,21 +200,23 @@
                     <h3 class="font-extrabold text-gray-800 text-lg">Program Terbuka</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Pilih program bantuan yang tersedia untuk kelompok tani Anda</p>
                 </div>
+                <a href="{{ route('farmer.proposals.bantuan') }}"
+                   class="inline-flex items-center gap-1 text-sm font-bold text-[#19A148] hover:underline">
+                    Lihat Semua Program
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($programs as $program)
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+                <a href="{{ route('farmer.proposals.create', $program) }}" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-lg hover:border-primary-600/30 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
                     <div>
                         <div class="mb-4 flex items-center justify-between">
                             <span class="inline-block rounded-lg bg-primary-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-primary-600">
                                 {{ str_replace('_', ' ', $program->type) }}
                             </span>
-                            <div class="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary-600 group-hover:text-white transition-colors">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                            </div>
                         </div>
-                        <h4 class="mb-2 font-black text-gray-800 text-lg leading-tight">{{ $program->name }}</h4>
+                        <h4 class="mb-2 font-black text-gray-800 text-lg leading-tight group-hover:text-primary-600 transition-colors">{{ $program->name }}</h4>
                         <p class="mb-6 text-sm text-gray-500 leading-relaxed">
                             Program bantuan distribusi alsintan untuk peningkatan produktivitas pertanian daerah.
                         </p>
@@ -179,12 +226,11 @@
                         <div class="text-[11px] text-gray-400">
                             Batas Akhir: <span class="font-bold text-gray-700 block text-xs">{{ $program->close_date?->format('d M Y') ?? 'Tanpa Batas' }}</span>
                         </div>
-                        <a href="{{ route('farmer.proposals.create', $program) }}"
-                           class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-900/20">
-                            Ajukan Sekarang
-                        </a>
+                        <div class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 group-hover:bg-primary-600 group-hover:shadow-lg group-hover:shadow-primary-900/20">
+                            Ajukan Proposal
+                        </div>
                     </div>
-                </div>
+                </a>
                 @empty
                 <div class="col-span-full bg-white p-12 text-center rounded-2xl border border-dashed border-gray-200">
                     <p class="text-gray-400 font-medium">Saat ini belum ada program bantuan yang dibuka.</p>

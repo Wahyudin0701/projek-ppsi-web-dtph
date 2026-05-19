@@ -10,7 +10,7 @@ class ProgramController extends Controller
 {
     public function index()
     {
-        $programs = Program::orderByRaw("open_date ASC")->get();
+        $programs = Program::orderBy('open_date', 'asc')->get();
         return view('admin.programs.index', compact('programs'));
     }
 

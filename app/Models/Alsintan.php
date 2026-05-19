@@ -9,6 +9,8 @@ class Alsintan extends Model
 {
     use HasFactory;
 
+    protected $appends = ['available_stock'];
+
     protected $fillable = [
         'name',
         'category',

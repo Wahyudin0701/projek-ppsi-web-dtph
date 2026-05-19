@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Program;
 use App\Models\Proposal;
+use App\Models\Alsintan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,30 +24,67 @@ class DashboardController extends Controller
             return view('admin.dashboard');
         }
 
+        if ($user->isPimpinan()) {
+            return redirect()->route('pimpinan.dashboard');
+        }
+
+        if ($user->isKabid()) {
+            return redirect()->route('kabid.dashboard');
+        }
+
         if (!$user->isApproved()) {
             return view('farmer.dashboard');
         }
 
         // Farmer/User dashboard data
-        $proposals = Proposal::where('user_id', $user->id)->get();
+        $allUserProposals = Proposal::where('user_id', $user->id)
+            ->with('program')
+            ->get();
 
         $stats = [
-            'total'     => $proposals->count(),
-            'proses'    => $proposals->whereIn('status', ['pending_verifikasi', 'dalam_proses'])->count(),
-            'disetujui' => $proposals->where('status', 'disetujui')->count(),
-            'ditolak'   => $proposals->where('status', 'ditolak')->count(),
+            'total'     => $allUserProposals->count(),
+            'proses'    => $allUserProposals->whereIn('status', [
+                                'pending_verifikasi', 'diteruskan_ke_pimpinan',
+                                'didisposisi_kabid', 'surat_tugas_terbit',
+                                'survei_selesai', 'menunggu_approval_ba',
+                            ])->count(),
+            'disetujui' => $allUserProposals->where('status', 'disetujui')->count(),
+            'ditolak'   => $allUserProposals->where('status', 'ditolak')->count(),
         ];
 
-        $recentProposals = Proposal::where('user_id', $user->id)
-            ->with(['program', 'alsintan'])
-            ->latest('submission_date')
-            ->take(5)
-            ->get();
+        $recentProposals = $allUserProposals->sortByDesc('submission_date')->take(5);
+
+        // IDs and Types already applied for
+        $activeProposals = $allUserProposals->whereIn('status', ['pending_verifikasi', 'diteruskan_ke_pimpinan', 'disetujui']);
+        
+        $activeProposalProgramTypes = $activeProposals->whereNotNull('program_id')
+            ->pluck('program.type')
+            ->filter()
+            ->unique()
+            ->toArray();
+
+        $activeProposalAlsintanIds = $activeProposals->whereNotNull('alsintan_id')
+            ->pluck('alsintan_id')
+            ->toArray();
 
         $programs = Program::where('is_open', true)
-            ->orderBy('created_at', 'desc')
+            ->whereNotIn('type', $activeProposalProgramTypes)
+            ->whereNotNull('open_date')
+            ->where('open_date', '<=', now()->startOfDay())
+            ->where(function ($query) {
+                $query->whereNull('close_date')
+                      ->orWhere('close_date', '>=', now()->startOfDay());
+            })
+            ->latest()
+            ->take(3)
             ->get();
 
-        return view('farmer.dashboard', compact('stats', 'recentProposals', 'programs'));
+        $alsintans = Alsintan::whereNotIn('id', $activeProposalAlsintanIds)
+            ->whereRaw('(stock - borrowed_count - broken_count) > 0')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('farmer.dashboard', compact('stats', 'recentProposals', 'programs', 'alsintans'));
     }
 }

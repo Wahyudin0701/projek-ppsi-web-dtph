@@ -10,7 +10,7 @@ class ProgramDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        Program::truncate();
+        // Program::truncate(); - Removed because migrate:fresh already empties the table and MySQL blocks truncate on FK referenced tables.
 
         $programs = [
             [

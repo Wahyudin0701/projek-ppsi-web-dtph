@@ -148,6 +148,13 @@
             <td class="colon">:</td>
             <td>{{ $proposal->lokasi_lahan }}</td>
         </tr>
+        @if($proposal->alsintan_id)
+        <tr>
+            <th>Rencana Durasi Pemakaian</th>
+            <td class="colon">:</td>
+            <td><strong>{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</strong></td>
+        </tr>
+        @endif
     </table>
 
     <div class="footer">
@@ -157,7 +164,20 @@
             <tr>
                 <td style="width: 60%; vertical-align: top;">
                     <p style="margin-top: 0;"><strong>Status Saat Ini:</strong><br>
-                    <span style="color: #19A148; font-weight: bold;">Menunggu Verifikasi Administrasi</span></p>
+                    @php
+                        $statusColors = [
+                            'pending_verifikasi'       => '#EAB308',
+                            'diteruskan_ke_pimpinan'   => '#6366F1',
+                            'didisposisi_kabid'        => '#F59E0B',
+                            'surat_tugas_terbit'       => '#3B82F6',
+                            'survei_selesai'           => '#F97316',
+                            'menunggu_approval_ba'     => '#A855F7',
+                            'disetujui'                => '#19A148',
+                            'ditolak'                  => '#EF4444',
+                        ];
+                        $statusColor = $statusColors[$proposal->status] ?? '#6B7280';
+                    @endphp
+                    <span style="color: {{ $statusColor }}; font-weight: bold;">{{ $proposal->statusLabel }}</span></p>
                 </td>
                 <td style="width: 40%; text-align: center;">
                     <p style="font-size: 10px; margin-bottom: 5px; font-weight: bold; margin-top: 0;">Tanda Tangan Digital:</p>

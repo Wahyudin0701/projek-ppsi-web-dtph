@@ -67,11 +67,53 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is a pimpinan (leader).
+     */
+    public function isPimpinan(): bool
+    {
+        return $this->role === 'pimpinan';
+    }
+
+    /**
+     * Check if user is a Kepala Bidang (either PSP or TP).
+     */
+    public function isKabid(): bool
+    {
+        return in_array($this->role, ['kabid_psp', 'kabid_tp']);
+    }
+
+    public function isKabidPsp(): bool
+    {
+        return $this->role === 'kabid_psp';
+    }
+
+    public function isKabidTp(): bool
+    {
+        return $this->role === 'kabid_tp';
+    }
+
+    /**
+     * Human-readable label for role.
+     */
+    public function getRoleLabelAttribute(): string
+    {
+        return match($this->role) {
+            'admin'      => 'Admin Dinas',
+            'pimpinan'   => 'Pimpinan / Kepala Dinas',
+            'kabid_psp'  => 'Kepala Bidang PSP',
+            'kabid_tp'   => 'Kepala Bidang Tanaman Pangan',
+            'user'       => 'Kelompok Tani',
+            'umum'       => 'Umum',
+            default      => ucfirst($this->role),
+        };
+    }
+
+    /**
      * Check if user account is approved.
      */
     public function isApproved(): bool
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin() || $this->isPimpinan()) {
             return true;
         }
 
@@ -93,4 +135,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Proposal::class);
     }
+
+    /**
+     * Proposals assigned to this kabid.
+     */
+    public function assignedProposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class, 'kabid_id');
+    }
+
+    /**
+     * Survey teams created by this kabid.
+     */
+    public function surveyTeams(): HasMany
+    {
+        return $this->hasMany(SurveyTeam::class, 'kabid_id');
+    }
+
 }

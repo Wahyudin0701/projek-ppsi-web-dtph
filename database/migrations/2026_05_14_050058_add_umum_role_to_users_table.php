@@ -13,19 +13,33 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
-        DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin', 'umum'))");
+        $driver = DB::getDriverName();
+
+        if ($driver === 'pgsql') {
+            DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin', 'umum'))");
+        } else {
+            try {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT users_role_check");
+            } catch (\Exception $e) { }
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin', 'umum'))");
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
-        // Revert 'umum' users to 'user' or just delete them, here we just revert the constraint
-        // If there are 'umum' users, we might want to change them to 'user' first
-        DB::unprepared("UPDATE users SET role = 'user' WHERE role = 'umum'");
-        DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin'))");
+        $driver = DB::getDriverName();
+
+        if ($driver === 'pgsql') {
+            DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
+            DB::unprepared("UPDATE users SET role = 'user' WHERE role = 'umum'");
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin'))");
+        } else {
+            try {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT users_role_check");
+            } catch (\Exception $e) { }
+            DB::unprepared("UPDATE users SET role = 'user' WHERE role = 'umum'");
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin'))");
+        }
     }
 };

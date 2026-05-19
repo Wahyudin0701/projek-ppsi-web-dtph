@@ -32,8 +32,6 @@ class ProposalController extends Controller
      */
     public function alsintanList()
     {
-        $alsintans = \App\Models\Alsintan::latest()->get();
-
         // IDs alsintan yang sudah memiliki proposal aktif (belum selesai diverifikasi)
         $activeAlsintanIds = Proposal::where('user_id', Auth::id())
             ->whereNotNull('alsintan_id')
@@ -41,7 +39,15 @@ class ProposalController extends Controller
             ->pluck('alsintan_id')
             ->toArray();
 
-        return view('farmer.proposals.alsintan.list', compact('alsintans', 'activeAlsintanIds'));
+        $all = \App\Models\Alsintan::latest()->get();
+
+        // Tersedia: stok ada & belum ada proposal aktif
+        $alsintans = $all->filter(fn($a) => $a->available_stock > 0 && !in_array($a->id, $activeAlsintanIds))->values();
+
+        // Tidak tersedia: stok habis ATAU sudah ada proposal aktif
+        $unavailableAlsintans = $all->filter(fn($a) => $a->available_stock <= 0 || in_array($a->id, $activeAlsintanIds))->values();
+
+        return view('farmer.proposals.alsintan.list', compact('alsintans', 'unavailableAlsintans', 'activeAlsintanIds'));
     }
 
     /**
@@ -90,15 +96,17 @@ class ProposalController extends Controller
         }
 
         $request->validate([
-            'lokasi_lahan' => 'required|string|max:500',
+            'lokasi_lahan'        => 'required|string|max:500',
+            'rencana_durasi_hari' => 'required|integer|min:1|max:365',
         ]);
 
         $proposal = Proposal::create([
-            'user_id'         => $user->id,
-            'alsintan_id'     => $alsintan->id,
-            'lokasi_lahan'    => $request->lokasi_lahan,
-            'status'          => 'pending_verifikasi',
-            'submission_date' => now(),
+            'user_id'             => $user->id,
+            'alsintan_id'         => $alsintan->id,
+            'lokasi_lahan'        => $request->lokasi_lahan,
+            'rencana_durasi_hari' => $request->rencana_durasi_hari,
+            'status'              => 'pending_verifikasi',
+            'submission_date'     => now(),
         ]);
 
         return redirect()->route('farmer.proposals.success', $proposal->id);
@@ -109,13 +117,17 @@ class ProposalController extends Controller
      */
     public function bantuanList()
     {
-        $programs = Program::where('jenis', '!=', 'alsintan')
+        $all = Program::where('jenis', '!=', 'alsintan')
             ->withCount('proposals')
-            ->orderBy('close_date', 'asc')
-            ->get()
-            ->filter(fn($p) => $p->status === 'berjalan');
+            ->get();
 
-        return view('farmer.proposals.bantuan.list', compact('programs'));
+        // Program yang masih bisa diajukan
+        $programs = $all->filter(fn($p) => $p->is_open)->values();
+
+        // Program yang sudah tutup
+        $closedPrograms = $all->filter(fn($p) => !$p->is_open)->values();
+
+        return view('farmer.proposals.bantuan.list', compact('programs', 'closedPrograms'));
     }
 
     /**
@@ -123,7 +135,9 @@ class ProposalController extends Controller
      */
     public function form()
     {
-        $alsintans = \App\Models\Alsintan::where('status', 'tersedia')->get();
+        $alsintans = \App\Models\Alsintan::latest()->get()
+            ->filter(fn($a) => $a->available_stock > 0)
+            ->values();
         $programs = Program::where('jenis', '!=', 'alsintan')
             ->orderBy('close_date', 'asc')
             ->get()
@@ -167,7 +181,7 @@ class ProposalController extends Controller
             abort(403);
         }
 
-        $proposal->load(['program', 'alsintan', 'user.farmerProfile']);
+        $proposal->load(['program', 'alsintan', 'user.farmerProfile', 'latestDispositionLog', 'surveyAssignments', 'cpclVerifications', 'surveyDocumentations', 'beritaAcara']);
 
         return view('farmer.proposals.show', compact('proposal'));
     }

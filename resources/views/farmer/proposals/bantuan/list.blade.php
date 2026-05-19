@@ -24,10 +24,11 @@
             <div class="p-4 bg-red-50 text-red-700 rounded-xl border border-red-200 text-sm font-medium">{{ session('error') }}</div>
         @endif
 
+        {{-- ===== PROGRAM YANG BISA DIAJUKAN ===== --}}
         <div class="space-y-4">
             @forelse($programs as $program)
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row group">
-                    {{-- Icon/Image Placeholder --}}
+                    {{-- Icon --}}
                     <div class="w-full sm:w-48 h-48 sm:h-auto bg-slate-50 flex-shrink-0 flex items-center justify-center border-r border-gray-50">
                         <div class="w-20 h-20 bg-white rounded-3xl shadow-sm border border-gray-100 flex items-center justify-center text-primary-600 group-hover:scale-110 transition-transform duration-500">
                             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,6 +87,69 @@
                 </div>
             @endforelse
         </div>
+
+        {{-- ===== PROGRAM YANG SUDAH DITUTUP (COLLAPSIBLE) ===== --}}
+        @if($closedPrograms->isNotEmpty())
+            <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 overflow-hidden">
+                {{-- Toggle Header --}}
+                <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-gray-200 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-600 text-sm">Pendaftaran Sudah Ditutup</p>
+                            <p class="text-xs text-gray-400">{{ $closedPrograms->count() }} program tidak lagi menerima pengajuan</p>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+
+                {{-- Collapsed Content --}}
+                <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
+                     class="divide-y divide-gray-100 bg-white">
+                    @foreach($closedPrograms as $program)
+                        <div class="flex flex-col sm:flex-row opacity-70 hover:opacity-90 transition-opacity">
+                            {{-- Icon --}}
+                            <div class="w-full sm:w-40 h-36 sm:h-auto bg-gray-50 flex-shrink-0 flex items-center justify-center border-r border-gray-100">
+                                <div class="w-16 h-16 bg-white rounded-2xl border border-gray-100 flex items-center justify-center text-gray-300">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {{-- Info --}}
+                            <div class="flex-1 p-5 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <h3 class="font-bold text-gray-600 text-base">{{ $program->name }}</h3>
+                                        <span class="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+                                            {{ str_replace('_', ' ', $program->type) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-xs text-gray-400 mb-2">
+                                        <span>Batas Akhir: <span class="font-bold text-gray-500">{{ $program->close_date?->format('d M Y') ?? 'Tanpa Batas' }}</span></span>
+                                        <span>Terdaftar: <span class="font-bold text-gray-500">{{ $program->proposals_count ?? '0' }}</span></span>
+                                    </div>
+                                    @if($program->description)
+                                        <p class="text-sm text-gray-400 leading-relaxed line-clamp-1">{{ $program->description }}</p>
+                                    @endif
+                                </div>
+
+                                <div class="mt-3 pt-3 border-t border-gray-50">
+                                    <span class="inline-flex items-center gap-2 px-5 py-2 bg-gray-100 text-gray-400 font-bold text-xs rounded-xl cursor-not-allowed">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                        Pendaftaran Ditutup
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
 
     </div>
 </x-app-layout>

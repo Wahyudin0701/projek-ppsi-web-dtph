@@ -1,9 +1,9 @@
 <x-app-layout>
     <x-slot name="header">{{ __('Pengajuan Berhasil') }}</x-slot>
 
-    <div class="max-w-7xl mx-auto">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl shadow-gray-200/50 sm:rounded-2xl border border-gray-100 text-center px-8 py-8 sm:px-12 sm:py-10">
+    <div class="max-w-7xl mx-auto space-y-6">
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-white overflow-hidden shadow-xl shadow-gray-200/50 sm:rounded-2xl border border-gray-100 text-center px-8 py-10 sm:px-16 sm:py-14">
 
                 {{-- Icon --}}
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -45,9 +45,9 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Download Bukti PDF
                     </a>
-                    <a href="{{ route('farmer.proposals.index') }}"
+                    <a href="{{ route('farmer.proposals.show', $proposal->id) }}"
                        class="w-full sm:w-auto px-8 py-3 bg-white text-gray-700 border border-gray-300 font-bold rounded-xl hover:bg-gray-50 transition-colors text-sm">
-                        Lihat Riwayat
+                        Detail Pengajuan
                     </a>
                 </div>
 

@@ -22,6 +22,13 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm font-medium">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100">
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
@@ -63,13 +70,29 @@
                                     @php
                                         $statusColors = [
                                             'pending_verifikasi' => 'bg-yellow-100 text-yellow-700',
+                                            'diteruskan_ke_pimpinan' => 'bg-indigo-100 text-indigo-700',
+                                            'didisposisi_kabid' => 'bg-amber-100 text-amber-700',
+                                            'surat_tugas_terbit' => 'bg-blue-100 text-blue-700',
+                                            'survei_selesai' => 'bg-orange-100 text-orange-700',
+                                            'menunggu_approval_ba' => 'bg-purple-100 text-purple-700',
                                             'disetujui'          => 'bg-green-100 text-green-700',
                                             'ditolak'            => 'bg-red-100 text-red-700',
                                         ];
                                         $color = $statusColors[$proposal->status] ?? 'bg-gray-100 text-gray-700';
+                                        $statusLabel = match($proposal->status) {
+                                            'pending_verifikasi' => 'Verifikasi',
+                                            'diteruskan_ke_pimpinan'  => 'Pimpinan',
+                                            'didisposisi_kabid'  => 'Di Kabid',
+                                            'surat_tugas_terbit' => 'Surat Tugas',
+                                            'survei_selesai' => 'Survei',
+                                            'menunggu_approval_ba' => 'Finalisasi',
+                                            'disetujui'          => 'Disetujui',
+                                            'ditolak'            => 'Ditolak',
+                                            default              => $proposal->status,
+                                        };
                                     @endphp
                                     <span class="inline-flex px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ $color }}">
-                                        {{ str_replace('_', ' ', $proposal->status === 'pending_verifikasi' ? 'Menunggu' : $proposal->status) }}
+                                        {{ $statusLabel }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-center">

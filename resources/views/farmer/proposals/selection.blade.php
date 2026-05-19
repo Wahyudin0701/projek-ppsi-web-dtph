@@ -11,7 +11,7 @@
         </div>
 
         {{-- ===== SELECTION CARDS ===== --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 gap-4 max-w-2xl mx-auto">
 
             {{-- ALSINTAN OPTION --}}
             <a href="{{ route('farmer.proposals.alsintan') }}"
@@ -37,7 +37,8 @@
                 </div>
             </a>
 
-            {{-- PROGRAM BANTUAN OPTION --}}
+            {{-- PROGRAM BANTUAN OPTION (HIDDEN SEMENTARA) --}}
+            {{-- 
             <a href="{{ route('farmer.proposals.bantuan') }}"
                class="proposal-card group relative bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex flex-row items-start gap-4 overflow-hidden transition-all duration-300
                hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-600/10 hover:border-emerald-200">
@@ -60,6 +61,7 @@
                     </span>
                 </div>
             </a>
+            --}}
         </div>
 
         {{-- ===== INFO SECTION ===== --}}

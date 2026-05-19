@@ -25,7 +25,7 @@
         <div class="hidden lg:flex lg:w-1/2 relative flex-col justify-between overflow-hidden opacity-0 animate-fade-in">
             {{-- Background Image & Overlay --}}
             <div class="absolute inset-0 z-0">
-                <img src="{{ asset('build/assets/img_dtph.png') }}" class="w-full h-full object-cover" alt="Branding Background">
+                <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Branding Background">
                 <div class="absolute inset-0 bg-black/70"></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-950/90 via-primary-900/40 to-emerald-950/80"></div>
             </div>
@@ -79,7 +79,7 @@
         <div class="w-full lg:w-1/2 relative">
             {{-- Mobile: Fixed Background (doesn't scroll) --}}
             <div class="lg:hidden fixed top-0 left-0 right-0 h-64 sm:h-72 z-0 bg-primary-900 opacity-0 animate-fade-in">
-                <img src="{{ asset('build/assets/img_dtph.png') }}" class="w-full h-full object-cover opacity-60" alt="Hero">
+                <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover opacity-60" alt="Hero">
                 <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-primary-900/50 to-primary-900"></div>
 
                 {{-- Content: Logo kiri + Teks rata kiri (rata atas) --}}

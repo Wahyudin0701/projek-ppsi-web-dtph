@@ -12,19 +12,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Drop the existing constraint
-        DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check');
-
-        // Add the updated constraint including 'reviewed' and 'rejected'
-        DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ('pending', 'reviewed', 'verifying', 'approved', 'rejected'))");
+        $driver = DB::getDriverName();
+        if ($driver === 'pgsql') {
+            DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check');
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ('pending', 'reviewed', 'verifying', 'approved', 'rejected'))");
+        } else {
+            try {
+                DB::unprepared('ALTER TABLE users DROP CONSTRAINT users_status_check');
+            } catch (\Exception $e) { }
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ('pending', 'reviewed', 'verifying', 'approved', 'rejected'))");
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check');
-        DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ('pending', 'approved'))");
+        $driver = DB::getDriverName();
+        if ($driver === 'pgsql') {
+            DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check');
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ('pending', 'approved'))");
+        } else {
+            try {
+                DB::unprepared('ALTER TABLE users DROP CONSTRAINT users_status_check');
+            } catch (\Exception $e) { }
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ('pending', 'approved'))");
+        }
     }
 };

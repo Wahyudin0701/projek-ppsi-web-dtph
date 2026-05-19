@@ -59,7 +59,11 @@ return new class extends Migration
 
         // 3. Drop constraints on users table related to status
         try {
-            DB::unprepared("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check");
+            if (DB::getDriverName() === 'pgsql') {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check");
+            } else {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT users_status_check");
+            }
         } catch (\Exception $e) {}
 
         // 4. Drop the columns from users table

@@ -23,14 +23,113 @@
         </div>
 
         <div class="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 p-8">
-            <div class="mb-8 pb-6 border-b border-gray-100 flex items-center gap-4">
-                <div class="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center shrink-0">
-                    <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            {{-- Program Information Detail --}}
+            <div class="mb-8 p-6 sm:p-8 bg-gray-50/50 rounded-3xl border border-gray-100">
+                <div class="flex flex-col sm:flex-row items-start gap-5 mb-6 pb-6 border-b border-gray-200/60">
+                    <div class="w-16 h-16 bg-primary-100/50 rounded-2xl flex items-center justify-center shrink-0 border border-primary-100">
+                        <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="text-[10px] font-bold text-primary-700 uppercase tracking-widest bg-primary-100 px-2.5 py-1 rounded-lg">Program Bantuan</span>
+                            <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest bg-white px-2.5 py-1 rounded-lg border border-gray-200">{{ str_replace('_', ' ', $program->type) }}</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-gray-900 leading-tight">{{ $program->name }}</h3>
+                        @if($program->description)
+                            <p class="text-gray-500 text-sm mt-3 leading-relaxed">{{ $program->description }}</p>
+                        @endif
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[10px] font-bold text-primary-600 uppercase tracking-widest bg-primary-50 px-2 py-1 rounded-md">Informasi Program</span>
-                    <h3 class="text-2xl font-black text-gray-900 mt-1">{{ $program->name }}</h3>
-                    <p class="text-gray-500 text-sm mt-0.5">Tipe: <span class="font-bold text-gray-700 capitalize">{{ str_replace('_', ' ', $program->type) }}</span></p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-center">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sasaran</p>
+                        <p class="text-sm font-bold text-gray-900 line-clamp-2">{{ $program->sasaran ?? '-' }}</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-center">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kuota</p>
+                        <p class="text-sm font-bold text-gray-900">{{ $program->kuota ?? '-' }}</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-center">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Jadwal Buka</p>
+                        <p class="text-sm font-bold text-gray-900">{{ $program->open_date?->translatedFormat('d F Y') ?? '-' }}</p>
+                    </div>
+                    <div class="bg-red-50/30 rounded-2xl p-4 border border-red-100 shadow-sm flex flex-col justify-center">
+                        <p class="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">Jadwal Tutup</p>
+                        <p class="text-sm font-bold text-red-600">{{ $program->close_date?->translatedFormat('d F Y') ?? '-' }}</p>
+                    </div>
+                </div>
+
+                @if($program->requirements && is_array($program->requirements) && count($program->requirements) > 0)
+                <div class="mb-6 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                    <h4 class="text-xs font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        Persyaratan Khusus
+                    </h4>
+                    <ul class="space-y-3">
+                        @foreach($program->requirements as $req)
+                        <li class="flex items-start gap-3 text-sm text-gray-600">
+                            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            <span class="leading-relaxed">{{ $req }}</span>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                @if($program->sop_description)
+                <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h4 class="text-sm font-bold text-blue-900">Alur / SOP Pengajuan</h4>
+                    </div>
+                    <p class="text-sm text-blue-800/80 leading-relaxed whitespace-pre-line">{{ $program->sop_description }}</p>
+                </div>
+                @endif
+            </div>
+
+            {{-- Profile Card / Data Lengkap Pemohon --}}
+            <div class="mb-8 p-6 sm:p-8 bg-white rounded-3xl border border-gray-100 shadow-sm">
+                <h3 class="text-lg font-extrabold text-gray-900 mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Data Lengkap Pemohon (Terdaftar)
+                </h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-sm">
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Kelompok Tani</p>
+                        <p class="font-extrabold text-gray-900 text-base">{{ auth()->user()->farmerProfile->nama_kelompok ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Ketua Kelompok</p>
+                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->ketua ?? auth()->user()->name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">NIK Ketua</p>
+                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->nik_ketua ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">No. Telepon / WhatsApp</p>
+                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->kontak ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Komoditi Utama</p>
+                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->komoditi_utama ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Luas Lahan Terdaftar</p>
+                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->luas_lahan ?? '-' }} Ha</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Kecamatan</p>
+                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->kecamatan ?? '-' }}</p>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Alamat Lengkap Kelompok</p>
+                        <p class="font-medium text-gray-700">{{ auth()->user()->farmerProfile->alamat ?? '-' }}</p>
+                    </div>
                 </div>
             </div>
 

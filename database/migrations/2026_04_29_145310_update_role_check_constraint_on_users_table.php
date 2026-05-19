@@ -10,20 +10,43 @@ return new class extends Migration
 
     public function up(): void
     {
-        // 1. Drop old constraint (allows petani/admin)
-        DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
+        $driver = DB::getDriverName();
 
-        // 2. Update existing 'petani' rows to 'user'
-        DB::unprepared("UPDATE users SET role = 'user' WHERE role = 'petani'");
-
-        // 3. Add new constraint (allows user/admin)
-        DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin'))");
+        if ($driver === 'pgsql') {
+            // Drop old constraint (allows petani/admin)
+            DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
+            // Update existing 'petani' rows to 'user'
+            DB::unprepared("UPDATE users SET role = 'user' WHERE role = 'petani'");
+            // Add new constraint (allows user/admin)
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin'))");
+        } else {
+            // MySQL or others
+            DB::unprepared("UPDATE users SET role = 'user' WHERE role = 'petani'");
+            // MySQL 8.0.16+ supports CHECK constraints but syntax for dropping is different
+            // For fresh local DB, we might not even need to drop it if it doesn't exist
+            try {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT users_role_check");
+            } catch (\Exception $e) {
+                // Ignore if not exists
+            }
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin'))");
+        }
     }
 
     public function down(): void
     {
-        DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
-        DB::unprepared("UPDATE users SET role = 'petani' WHERE role = 'user'");
-        DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('petani', 'admin'))");
+        $driver = DB::getDriverName();
+        
+        if ($driver === 'pgsql') {
+            DB::unprepared('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
+            DB::unprepared("UPDATE users SET role = 'petani' WHERE role = 'user'");
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('petani', 'admin'))");
+        } else {
+            try {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT users_role_check");
+            } catch (\Exception $e) { }
+            DB::unprepared("UPDATE users SET role = 'petani' WHERE role = 'user'");
+            DB::unprepared("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('petani', 'admin'))");
+        }
     }
 };

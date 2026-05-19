@@ -12,9 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        $driver = DB::getDriverName();
         // 1. Drop existing constraint first to avoid violation during update
         try {
-            DB::unprepared("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check");
+            if ($driver === 'pgsql') {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check");
+            } else {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT users_status_check");
+            }
         } catch (\Exception $e) {}
 
         // 2. Update existing records
@@ -31,13 +36,15 @@ return new class extends Migration
         } catch (\Exception $e) {}
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        $driver = DB::getDriverName();
         try {
-            DB::unprepared("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check");
+            if ($driver === 'pgsql') {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check");
+            } else {
+                DB::unprepared("ALTER TABLE users DROP CONSTRAINT users_status_check");
+            }
         } catch (\Exception $e) {}
 
         DB::table('users')->where('status', 'menunggu')->update(['status' => 'pending']);

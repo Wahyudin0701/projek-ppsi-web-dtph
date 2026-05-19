@@ -12,8 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'approved' => \App\Http\Middleware\EnsureAccountIsApproved::class,
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'approved'   => \App\Http\Middleware\EnsureAccountIsApproved::class,
+            'admin'      => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'pimpinan'   => \App\Http\Middleware\EnsureUserIsPimpinan::class,
+            'kabid'      => \App\Http\Middleware\EnsureUserIsKabid::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

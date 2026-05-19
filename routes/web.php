@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Route;
 
 // Public Route
 Route::get('/', function () {
+    if (auth()->check()) {
+        $user = auth()->user();
+        // Redirect internal staff to their dashboards
+        if ($user->isAdmin() || $user->isPimpinan() || $user->isKabid()) {
+            return redirect()->route('dashboard');
+        }
+    }
     return view('public.home');
 })->name('home');
 
@@ -19,7 +26,7 @@ Route::get('/katalog', function () {
 })->name('katalog');
 
 Route::get('/program', function () {
-    $programs = App\Models\Program::orderByRaw("is_open DESC, open_date DESC")->get();
+    $programs = App\Models\Program::orderBy('open_date', 'desc')->get();
     return view('public.program', compact('programs'));
 })->name('program');
 
@@ -91,7 +98,40 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/proposals/{proposal}', [App\Http\Controllers\Admin\ProposalController::class, 'show'])->name('proposals.show');
         Route::patch('/proposals/{proposal}/approve', [App\Http\Controllers\Admin\ProposalController::class, 'approve'])->name('proposals.approve');
         Route::delete('/proposals/{proposal}/reject', [App\Http\Controllers\Admin\ProposalController::class, 'reject'])->name('proposals.reject');
+        
+        // Surat Tugas & Verifikasi CPCL Offline
+        Route::get('/proposals/{proposal}/surat-tugas/cetak', [App\Http\Controllers\Admin\ProposalController::class, 'cetakSuratTugas'])->name('proposals.cetak-surat-tugas');
+        Route::get('/proposals/{proposal}/cpcl/create', [App\Http\Controllers\Admin\ProposalController::class, 'createCpcl'])->name('proposals.cpcl.create');
+        Route::post('/proposals/{proposal}/cpcl', [App\Http\Controllers\Admin\ProposalController::class, 'storeCpcl'])->name('proposals.cpcl.store');
     });
+
+    // Pimpinan Routes
+    Route::middleware(['pimpinan'])->prefix('pimpinan')->name('pimpinan.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Pimpinan\ProposalController::class, 'dashboard'])->name('dashboard');
+        Route::get('/proposals', [App\Http\Controllers\Pimpinan\ProposalController::class, 'index'])->name('proposals.index');
+        Route::get('/proposals/{proposal}', [App\Http\Controllers\Pimpinan\ProposalController::class, 'show'])->name('proposals.show');
+        Route::post('/proposals/{proposal}/dispose', [App\Http\Controllers\Pimpinan\ProposalController::class, 'dispose'])->name('proposals.dispose');
+        Route::patch('/proposals/{proposal}/approve', [App\Http\Controllers\Pimpinan\ProposalController::class, 'approve'])->name('proposals.approve');
+        Route::delete('/proposals/{proposal}/reject', [App\Http\Controllers\Pimpinan\ProposalController::class, 'reject'])->name('proposals.reject');
+    });
+
+    // Kabid Routes
+    Route::middleware(['kabid'])->prefix('kabid')->name('kabid.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Kabid\ProposalController::class, 'dashboard'])->name('dashboard');
+        Route::get('/proposals', [App\Http\Controllers\Kabid\ProposalController::class, 'index'])->name('proposals.index');
+        Route::get('/proposals/{proposal}', [App\Http\Controllers\Kabid\ProposalController::class, 'show'])->name('proposals.show');
+        Route::post('/proposals/{proposal}/assign-team', [App\Http\Controllers\Kabid\ProposalController::class, 'assignTeam'])->name('proposals.assign-team');
+
+        Route::get('/proposals/{proposal}/berita-acara/create', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'create'])->name('berita-acara.create');
+        Route::post('/proposals/{proposal}/berita-acara', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'store'])->name('berita-acara.store');
+        Route::get('/proposals/{proposal}/berita-acara', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'show'])->name('berita-acara.show');
+
+        Route::get('/tim-survei', [App\Http\Controllers\Kabid\TimSurveiController::class, 'index'])->name('tim-survei.index');
+        Route::get('/tim-survei/create', [App\Http\Controllers\Kabid\TimSurveiController::class, 'create'])->name('tim-survei.create');
+        Route::post('/tim-survei', [App\Http\Controllers\Kabid\TimSurveiController::class, 'store'])->name('tim-survei.store');
+        Route::delete('/tim-survei/{user}', [App\Http\Controllers\Kabid\TimSurveiController::class, 'destroy'])->name('tim-survei.destroy');
+    });
+
 
     // Farmer Routes
     Route::middleware(['approved'])->prefix('farmer/proposals')->name('farmer.proposals.')->group(function () {
@@ -112,16 +152,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/bantuan/{program}', [App\Http\Controllers\Farmer\ProposalController::class, 'create'])->name('create');
         Route::post('/bantuan/{program}', [App\Http\Controllers\Farmer\ProposalController::class, 'store'])->name('store');
 
-        // Sukses & Download (shared)
-        Route::get('/{proposal}/success', [App\Http\Controllers\Farmer\ProposalController::class, 'success'])->name('success');
-        Route::get('/{proposal}/download-receipt', [App\Http\Controllers\Farmer\ProposalController::class, 'downloadReceipt'])->name('download-receipt');
-
         // Legacy routes (tetap ada agar tidak error jika masih dipakai)
         Route::get('/programs', [App\Http\Controllers\Farmer\ProposalController::class, 'listByCategory'])->name('programs');
         Route::get('/form', [App\Http\Controllers\Farmer\ProposalController::class, 'form'])->name('form');
         Route::post('/store-unified', [App\Http\Controllers\Farmer\ProposalController::class, 'storeUnified'])->name('store-unified');
-    });
 
+        // Sukses & Download (shared, bebas waktu)
+        Route::get('/{proposal}/success', [App\Http\Controllers\Farmer\ProposalController::class, 'success'])->name('success');
+        Route::get('/{proposal}/download-receipt', [App\Http\Controllers\Farmer\ProposalController::class, 'downloadReceipt'])->name('download-receipt');
+    });
+});
+
+// Shared Document Routes (Bisa diakses asal terotentikasi & authorized di Controller)
+Route::middleware('auth')->prefix('documents')->name('documents.')->group(function () {
+    Route::get('/berita-acara/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printBeritaAcara'])->name('berita-acara');
+    Route::get('/sk-bantuan/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSKBantuan'])->name('sk-bantuan');
+    Route::get('/surat-perjanjian/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSuratPerjanjian'])->name('surat-perjanjian');
 });
 
 require __DIR__.'/auth.php';
