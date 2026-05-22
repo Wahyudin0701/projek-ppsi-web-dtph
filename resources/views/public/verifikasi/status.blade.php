@@ -11,12 +11,12 @@
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
             @if($status === 'valid')
                 {{-- VALID STATUS --}}
-                <div class="bg-gradient-to-b from-emerald-50 to-white p-8 md:p-10 text-center border-b border-emerald-100/50">
-                    <div class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <div class="bg-gradient-to-b from-primary-50 to-white p-8 md:p-10 text-center border-b border-primary-100/50">
+                    <div class="w-24 h-24 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                         <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                     </div>
-                    <h2 class="text-3xl font-black text-emerald-800 tracking-tight mb-3">DOKUMEN VALID</h2>
-                    <p class="text-emerald-700/80 font-medium">Dokumen ini diterbitkan secara sah oleh sistem E-Proposal DTPH Muaro Jambi.</p>
+                    <h2 class="text-3xl font-black text-primary-800 tracking-tight mb-3">DOKUMEN VALID</h2>
+                    <p class="text-primary-700/80 font-medium">Dokumen ini diterbitkan secara sah oleh sistem E-Proposal DTPH Muaro Jambi.</p>
                 </div>
 
                 <div class="p-8 md:p-10 space-y-6">

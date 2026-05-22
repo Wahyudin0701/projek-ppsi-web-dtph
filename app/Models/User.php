@@ -66,6 +66,11 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
+    public function isUmum(): bool
+    {
+        return $this->role === 'umum';
+    }
+
     /**
      * Check if user is a pimpinan (leader).
      */
@@ -113,7 +118,7 @@ class User extends Authenticatable
      */
     public function isApproved(): bool
     {
-        if ($this->isAdmin() || $this->isPimpinan()) {
+        if ($this->isAdmin() || $this->isPimpinan() || $this->isUmum()) {
             return true;
         }
 

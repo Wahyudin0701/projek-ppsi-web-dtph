@@ -27,7 +27,7 @@
                         {{-- Address Card --}}
                         <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-[0_6px_30px_-10px_rgba(0,0,0,0.04)] group hover:shadow-[0_16px_40px_-10px_rgba(0,0,0,0.08)] transition-all duration-500">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500 shadow-sm">
+                                <div class="w-12 h-12 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-500 group-hover:text-white transition-all duration-500 shadow-sm">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 </div>
                                 <div class="min-w-0">
@@ -74,7 +74,7 @@
                                 <div class="min-w-0">
                                     <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Jam Operasional</h3>
                                     <p class="text-sm font-bold text-gray-900 leading-snug">Senin — Jumat</p>
-                                    <p class="text-xs text-emerald-600 mt-1 font-bold">08.00 - 16.00 WIB</p>
+                                    <p class="text-xs text-primary-600 mt-1 font-bold">08.00 - 16.00 WIB</p>
                                 </div>
                             </div>
                         </div>
@@ -168,7 +168,7 @@
                             {{-- Success Message --}}
                             <div x-show="submitted" x-transition x-cloak
                                 class="absolute inset-0 bg-white/95 flex flex-col items-center justify-center text-center p-8 z-20 rounded-[3rem]">
-                                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                                <div class="w-20 h-20 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 </div>
                                 <h3 class="text-2xl font-extrabold text-gray-900 mb-2">Pesan Terkirim!</h3>

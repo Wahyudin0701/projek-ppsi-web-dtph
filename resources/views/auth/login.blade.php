@@ -191,11 +191,11 @@
                             </div>
 
                             <!-- Register Button -->
-                            <div class="grid grid-cols-2 gap-3">
-                                <a href="{{ route('register', ['role' => 'petani']) }}" class="w-full flex justify-center items-center py-3.5 px-2 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-sm font-bold text-[#19A148] bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <a href="{{ route('register', ['role' => 'petani']) }}" class="w-full flex justify-center items-center py-3.5 px-2 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-[13px] font-bold text-[#19A148] bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
                                     Kelompok Tani
                                 </a>
-                                <a href="{{ route('register', ['role' => 'umum']) }}" class="w-full flex justify-center items-center py-3.5 px-2 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-sm font-bold text-[#19A148] bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
+                                <a href="{{ route('register', ['role' => 'umum']) }}" class="w-full flex justify-center items-center py-3.5 px-2 border border-gray-300 rounded-xl shadow-sm text-xs sm:text-[13px] font-bold text-[#19A148] bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
                                     Umum
                                 </a>
                             </div>

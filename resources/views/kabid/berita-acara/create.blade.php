@@ -6,13 +6,6 @@
         {{-- Page Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <a href="{{ route('kabid.proposals.index') }}" class="hover:text-primary-600 transition-colors">Kelola Proposal</a>
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <a href="{{ route('kabid.proposals.show', $proposal) }}" class="hover:text-primary-600 transition-colors">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</a>
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="font-semibold text-gray-700">Berita Acara</span>
-                </div>
                 <h2 class="text-2xl font-extrabold text-gray-900">Buat Berita Acara Survei</h2>
                 <p class="text-gray-500 text-sm mt-1">Lengkapi laporan berita acara hasil verifikasi lapangan untuk diteruskan ke Pimpinan.</p>
             </div>
@@ -121,11 +114,6 @@
                 @error('content')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
 
-            <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Catatan Tambahan untuk Pimpinan (opsional)</label>
-                <textarea name="kabid_notes" rows="3" placeholder="Catatan atau konteks tambahan yang perlu diketahui pimpinan..."
-                          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none">{{ old('kabid_notes') }}</textarea>
-            </div>
 
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Rekomendasi *</label>

@@ -1,29 +1,25 @@
 <x-app-layout>
-    <x-slot name="header">Edit Program</x-slot>
+    <x-slot name="header">Manajemen Program</x-slot>
 
-    <div class="max-w-3xl mx-auto space-y-6">
+    <div class="max-w-5xl mx-auto space-y-6">
 
-        {{-- Back + Title --}}
-        <div class="flex items-center gap-4">
-            <a href="{{ route('admin.programs.index') }}" class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-            </a>
+        {{-- Page Header --}}
+        <div class="flex items-center justify-between mb-2">
             <div>
-                <h2 class="text-2xl font-extrabold text-gray-900">Edit Program</h2>
-                <p class="text-sm text-gray-500 mt-0.5">Perbarui data program bantuan yang sudah ada.</p>
+                <h2 class="text-2xl font-extrabold text-gray-900">Edit Program Bantuan</h2>
+                <p class="text-gray-500 text-sm mt-1">Perbarui data program bantuan yang sudah ada.</p>
             </div>
+            <a href="{{ route('admin.programs.index') }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Kembali
+            </a>
         </div>
 
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <form action="{{ route('admin.programs.update', $program) }}" method="POST" class="divide-y divide-gray-50">
-                @csrf
-                @method('PUT')
-
-                {{-- Section: Info Utama --}}
-                <div class="p-6 sm:p-8 space-y-5">
-                    <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest">Informasi Utama</h3>
+        <div class="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100">
+            <div class="p-6 sm:p-8 text-gray-900">
+                <form action="{{ route('admin.programs.update', $program) }}" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
 
                     {{-- Nama Program --}}
                     <div>
@@ -35,7 +31,7 @@
                     </div>
 
                     {{-- Jenis + Tipe --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="jenis" class="block text-sm font-bold text-gray-700 mb-2">Jenis Program</label>
                             <select name="jenis" id="jenis" required
@@ -71,7 +67,7 @@
                                   placeholder="Jelaskan program ini secara singkat untuk ditampilkan di halaman publik..."
                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">{{ old('description', $program->description) }}</textarea>
                         <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                        </div>
+                    </div>
 
                     {{-- SOP --}}
                     <div>
@@ -83,12 +79,9 @@
                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">{{ old('sop_description', $program->sop_description) }}</textarea>
                         <x-input-error :messages="$errors->get('sop_description')" class="mt-2" />
                     </div>
-                </div>
 
-                {{-- Section: Sasaran & Kuota --}}
-                <div class="p-6 sm:p-8 space-y-5">
-                    <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest">Sasaran & Kuota</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {{-- Sasaran & Kuota --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="sasaran" class="block text-sm font-bold text-gray-700 mb-2">
                                 Sasaran <span class="text-gray-400 font-normal">(Opsional)</span>
@@ -108,50 +101,46 @@
                             <x-input-error :messages="$errors->get('kuota')" class="mt-2" />
                         </div>
                     </div>
-                </div>
 
-
-                {{-- Section: Persyaratan --}}
-                <div class="p-6 sm:p-8 space-y-5" x-data="{ 
-                    requirements: {{ json_encode(old('requirements', $program->requirements ?? [''])) }},
-                    addRequirement() { this.requirements.push(''); },
-                    removeRequirement(index) { this.requirements.splice(index, 1); if(this.requirements.length === 0) this.addRequirement(); }
-                }">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest">Persyaratan Umum</h3>
-                        <button type="button" @click="addRequirement()" 
-                                class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                            </svg>
-                            Tambah Syarat
-                        </button>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <template x-for="(req, index) in requirements" :key="index">
-                            <div class="flex gap-2">
-                                <div class="flex-1">
-                                    <input type="text" :name="'requirements[' + index + ']'" x-model="requirements[index]"
-                                           placeholder="Contoh: Fotocopy KTP Ketua Kelompok"
-                                           class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm text-sm">
+                    {{-- Persyaratan --}}
+                    <div x-data="{ 
+                        requirements: {{ json_encode(old('requirements', $program->requirements ?? [''])) }},
+                        addRequirement() { this.requirements.push(''); },
+                        removeRequirement(index) { this.requirements.splice(index, 1); if(this.requirements.length === 0) this.addRequirement(); }
+                    }">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-sm font-bold text-gray-700">Persyaratan Umum</label>
+                            <button type="button" @click="addRequirement()" 
+                                    class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Tambah Syarat
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <template x-for="(req, index) in requirements" :key="index">
+                                <div class="flex gap-2">
+                                    <div class="flex-1">
+                                        <input type="text" :name="'requirements[' + index + ']'" x-model="requirements[index]"
+                                               placeholder="Contoh: Fotocopy KTP Ketua Kelompok"
+                                               class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm text-sm">
+                                    </div>
+                                    <button type="button" @click="removeRequirement(index)" 
+                                            class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button type="button" @click="removeRequirement(index)" 
-                                        class="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </template>
+                            </template>
+                        </div>
+                        <x-input-error :messages="$errors->get('requirements.*')" class="mt-2" />
                     </div>
-                    <x-input-error :messages="$errors->get('requirements.*')" class="mt-2" />
-                </div>
 
-                {{-- Section: Jadwal --}}
-                <div class="p-6 sm:p-8 space-y-5">
-                    <h3 class="text-xs font-extrabold text-gray-400 uppercase tracking-widest">Jadwal Pendaftaran</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {{-- Jadwal --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="open_date" class="block text-sm font-bold text-gray-700 mb-2">Tanggal Buka</label>
                             <input type="date" name="open_date" id="open_date" required
@@ -167,26 +156,27 @@
                             <x-input-error :messages="$errors->get('close_date')" class="mt-2" />
                         </div>
                     </div>
+
                     <div class="flex items-start gap-2.5 p-4 bg-blue-50 border border-blue-100 rounded-xl">
                         <svg class="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <p class="text-xs text-blue-700">Status program ditentukan <strong>otomatis</strong>: <em>Belum Berjalan</em> → <em>Pendaftaran Buka</em> → <em>Selesai</em>, sesuai tanggal yang diatur.</p>
                     </div>
-                </div>
 
-                {{-- Footer Buttons --}}
-                <div class="px-6 sm:px-8 py-5 flex justify-end gap-3 bg-gray-50/50">
-                    <a href="{{ route('admin.programs.index') }}"
-                       class="px-5 py-2.5 text-sm font-bold text-gray-600 bg-white hover:bg-gray-100 rounded-xl transition-colors border border-gray-200">
-                        Batal
-                    </a>
-                    <button type="submit"
-                            class="px-5 py-2.5 text-sm font-bold text-white bg-[#19A148] hover:bg-green-700 rounded-xl transition-colors shadow-sm shadow-green-200">
-                        Perbarui Program
-                    </button>
-                </div>
-            </form>
+                    {{-- Footer Buttons --}}
+                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-50">
+                        <a href="{{ route('admin.programs.index') }}"
+                           class="px-5 py-2.5 text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                            Batal
+                        </a>
+                        <button type="submit"
+                                class="px-5 py-2.5 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-colors shadow-sm">
+                            Perbarui Program
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>

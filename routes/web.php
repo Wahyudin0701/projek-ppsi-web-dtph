@@ -144,16 +144,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // --- ALSINTAN --- 
         Route::get('/alsintan', [App\Http\Controllers\Farmer\ProposalController::class, 'alsintanList'])->name('alsintan');
+        Route::get('/alsintan/{alsintan}/detail', [App\Http\Controllers\Farmer\ProposalController::class, 'alsintanShow'])->name('alsintan.show');
         Route::get('/alsintan/{alsintan}', [App\Http\Controllers\Farmer\ProposalController::class, 'alsintanCreate'])->name('alsintan.create');
         Route::post('/alsintan/{alsintan}', [App\Http\Controllers\Farmer\ProposalController::class, 'alsintanStore'])->name('alsintan.store');
 
         // --- PROGRAM BANTUAN ---
         Route::get('/bantuan', [App\Http\Controllers\Farmer\ProposalController::class, 'bantuanList'])->name('bantuan');
+        Route::get('/bantuan/{program}/detail', [App\Http\Controllers\Farmer\ProposalController::class, 'bantuanShow'])->name('bantuan.show');
         Route::get('/bantuan/{program}', [App\Http\Controllers\Farmer\ProposalController::class, 'create'])->name('create');
         Route::post('/bantuan/{program}', [App\Http\Controllers\Farmer\ProposalController::class, 'store'])->name('store');
 
-        // Legacy routes (tetap ada agar tidak error jika masih dipakai)
-        Route::get('/programs', [App\Http\Controllers\Farmer\ProposalController::class, 'listByCategory'])->name('programs');
+
         Route::get('/form', [App\Http\Controllers\Farmer\ProposalController::class, 'form'])->name('form');
         Route::post('/store-unified', [App\Http\Controllers\Farmer\ProposalController::class, 'storeUnified'])->name('store-unified');
 

@@ -41,7 +41,7 @@
             $status_pendaftaran = $status === 'berjalan' ? 'buka' : ($status === 'belum_berjalan' ? 'belum_dibuka' : 'tutup');
 
             $labelMap = [
-                'berjalan'       => ['label' => 'Pendaftaran Buka', 'labelColor' => 'bg-emerald-100 text-emerald-700', 'dotColor' => 'bg-emerald-500'],
+                'berjalan'       => ['label' => 'Pendaftaran Buka', 'labelColor' => 'bg-primary-100 text-primary-700', 'dotColor' => 'bg-primary-500'],
                 'belum_berjalan' => ['label' => 'Belum Dibuka',     'labelColor' => 'bg-amber-100 text-amber-700',    'dotColor' => 'bg-amber-500'],
                 'selesai'        => ['label' => 'Program Selesai',  'labelColor' => 'bg-gray-100 text-gray-500',      'dotColor' => 'bg-gray-400'],
             ];
@@ -175,14 +175,14 @@
             <div class="mb-24" x-show="hasVisiblePrograms('sedang_berjalan')" x-cloak>
                 <div class="flex items-center justify-between mb-6 group cursor-pointer select-none" @click="expandAktif = !expandAktif">
                     <div class="flex items-center gap-3">
-                        <span class="flex items-center gap-1.5 text-sm font-bold text-emerald-700">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="flex items-center gap-1.5 text-sm font-bold text-primary-700">
+                            <span class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
                             Program Sedang Berjalan
                         </span>
                         <span class="text-xs text-gray-400 font-medium"><span x-text="countVisible('sedang_berjalan')"></span> program berjalan</span>
                     </div>
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 group-hover:bg-emerald-50 transition-colors">
-                        <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-700 transition-transform duration-300" :class="expandAktif ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 group-hover:bg-primary-50 transition-colors">
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-700 transition-transform duration-300" :class="expandAktif ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </div>
@@ -222,7 +222,7 @@
                         <div class="px-6 sm:px-7 pb-6 grid grid-cols-2 gap-3">
                             <div class="bg-gray-50 border border-gray-100 rounded-xl p-3">
                                 <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Jadwal Buka</p>
-                                <p class="text-xs font-bold text-emerald-600 leading-snug">{{ $program['jadwal_buka'] }}</p>
+                                <p class="text-xs font-bold text-primary-600 leading-snug">{{ $program['jadwal_buka'] }}</p>
                             </div>
                             <div class="bg-gray-50 border border-gray-100 rounded-xl p-3">
                                 <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Jadwal Tutup</p>
@@ -451,7 +451,7 @@
                 <template x-if="selected && selected.status_pendaftaran === 'buka'">
                     @auth
                         @if(auth()->user()->isApproved())
-                            <a :href="'{{ url('farmer/proposals/bantuan') }}/' + selected.id" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-emerald-600/20">
+                            <a :href="'{{ url('farmer/proposals/bantuan') }}/' + selected.id" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
                                 Ajukan Proposal Sekarang
                             </a>
                         @else

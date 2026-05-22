@@ -6,11 +6,6 @@
         {{-- Page Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <a href="{{ route('admin.proposals.index') }}" class="hover:text-primary-600 transition-colors">Kelola Proposal</a>
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="font-semibold text-gray-700">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span>
-                </div>
                 <h2 class="text-2xl font-extrabold text-gray-900">Detail Pengajuan Proposal</h2>
                 <p class="text-gray-500 text-sm mt-1">Tinjau informasi lengkap dan ambil keputusan untuk proposal ini.</p>
             </div>
@@ -106,11 +101,6 @@
                                     <p class="text-sm text-gray-600 mb-6">Anda telah memeriksa kelengkapan berkas dan menyatakan proposal ini <strong class="text-primary-600">layak</strong> untuk diproses lebih lanjut.</p>
                                     <form action="{{ route('admin.proposals.approve', $proposal) }}" method="POST">
                                         @csrf @method('PATCH')
-                                        <div class="mb-5">
-                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Catatan Verifikasi (opsional)</label>
-                                            <textarea name="admin_notes" rows="3" placeholder="Tambahkan catatan jika diperlukan..."
-                                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"></textarea>
-                                        </div>
                                         <div class="flex flex-row-reverse gap-3">
                                             <button type="submit" class="flex-1 px-6 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors text-sm">Ya, Verifikasi</button>
                                             <button type="button" @click="showApprove = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
@@ -298,17 +288,7 @@
                                     <p class="text-xs {{ $proposal->status === 'ditolak' && !$proposal->decided_at ? 'text-red-500' : 'text-gray-500' }} mt-0.5">
                                         {{ $proposal->status === 'ditolak' && !$proposal->decided_at ? 'Ditolak: ' . ($proposal->admin_notes ?? '-') : 'Berkas dinyatakan lengkap & layak.' }}
                                     </p>
-                                    @if($proposal->admin_notes && $proposal->status !== 'ditolak')
-                                        <div class="mt-3 flex items-start gap-2 bg-amber-50/70 border-l-4 border-amber-500/80 p-3 rounded-r-xl whitespace-pre-line leading-relaxed shadow-sm">
-                                            <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                            </svg>
-                                            <div class="text-xs">
-                                                <span class="font-bold text-amber-900 block mb-0.5">Catatan Verifikasi Admin:</span>
-                                                <span class="text-amber-800/90 font-medium">{{ $proposal->admin_notes }}</span>
-                                            </div>
-                                        </div>
-                                    @endif
+
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-yellow-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
@@ -320,6 +300,7 @@
                         </div>
 
                         {{-- 3. Pimpinan Disposition --}}
+                        @if($proposal->status !== 'ditolak' || $disposition || $proposal->decided_at)
                         <div class="relative">
                             @if($proposal->status === 'ditolak' && !$disposition && $proposal->decided_at)
                                 <div class="absolute -left-[21px] bg-red-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -346,8 +327,10 @@
                                 <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Disposisi Pimpinan</p></div>
                             @endif
                         </div>
+                        @endif
 
                         {{-- 4. Kabid Assignment --}}
+                        @if($proposal->status !== 'ditolak' || $surveyAssignment)
                         <div class="relative">
                             @if($surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -367,8 +350,10 @@
                                 <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Penugasan Survei</p></div>
                             @endif
                         </div>
+                        @endif
 
                         {{-- 5. Survey Execution --}}
+                        @if($proposal->status !== 'ditolak' || $proposal->cpclVerifications->count() > 0)
                         <div class="relative">
                             @if($proposal->status === 'surat_tugas_terbit')
                                 <div class="absolute -left-[21px] bg-blue-500 w-3 h-3 rounded-full border-4 border-white animate-bounce"></div>
@@ -387,8 +372,10 @@
                                 <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Pelaksanaan Survei</p></div>
                             @endif
                         </div>
+                        @endif
 
                         {{-- 6. Berita Acara --}}
+                        @if($proposal->status !== 'ditolak' || $beritaAcara)
                         <div class="relative">
                             @if($beritaAcara)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -408,8 +395,10 @@
                                 <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Berita Acara</p></div>
                             @endif
                         </div>
+                        @endif
 
                         {{-- 7. Final Decision --}}
+                        @if($proposal->status !== 'ditolak' || ($proposal->status === 'ditolak' && $proposal->decided_at && $beritaAcara))
                         <div class="relative">
                             @if($proposal->status === 'disetujui')
                                 <div class="absolute -left-[21px] bg-green-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -436,6 +425,7 @@
                                 <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Keputusan Akhir</p></div>
                             @endif
                         </div>
+                        @endif
                     </div>
                 </div>
 

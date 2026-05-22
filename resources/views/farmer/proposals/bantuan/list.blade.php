@@ -1,16 +1,11 @@
 <x-app-layout>
-    <x-slot name="header">Program Bantuan - Ajukan Proposal</x-slot>
+    <x-slot name="header">Program Bantuan</x-slot>
 
     <div class="max-w-7xl mx-auto space-y-6">
 
         {{-- Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <a href="{{ route('farmer.proposals.pilih') }}" class="hover:text-primary-600 transition-colors">Ajukan Proposal</a>
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="font-semibold text-gray-700">Program Bantuan</span>
-                </div>
                 <h2 class="text-2xl font-extrabold text-gray-900">Pilih Program Bantuan</h2>
                 <p class="text-gray-500 text-sm mt-1">Pilih program yang sedang dibuka untuk mengajukan proposal bantuan.</p>
             </div>
@@ -27,7 +22,7 @@
         {{-- ===== PROGRAM YANG BISA DIAJUKAN ===== --}}
         <div class="space-y-4">
             @forelse($programs as $program)
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row group">
+                <div onclick="window.location.href='{{ route('farmer.proposals.bantuan.show', $program) }}'" class="cursor-pointer bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col sm:flex-row group">
                     {{-- Icon --}}
                     <div class="w-full sm:w-48 h-48 sm:h-auto bg-slate-50 flex-shrink-0 flex items-center justify-center border-r border-gray-50">
                         <div class="w-20 h-20 bg-white rounded-3xl shadow-sm border border-gray-100 flex items-center justify-center text-primary-600 group-hover:scale-110 transition-transform duration-500">
@@ -72,7 +67,7 @@
                         </div>
 
                         <div class="mt-5 pt-4 border-t border-gray-50">
-                            <a href="{{ route('farmer.proposals.create', $program) }}"
+                            <a href="{{ route('farmer.proposals.create', $program) }}" onclick="event.stopPropagation()"
                                class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-bold text-sm rounded-xl shadow-sm hover:bg-primary-700 hover:shadow-md transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 Ajukan Proposal

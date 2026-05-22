@@ -1,140 +1,255 @@
 <x-layouts.public>
-    <x-slot:title>Portal E-Proposal Publik</x-slot:title>
+    <x-slot:title>Beranda</x-slot:title>
 
-    {{-- HERO SECTION --}}
-    <section class="relative text-white overflow-hidden py-24 md:py-32">
-        {{-- Background Image & Overlay --}}
+    {{-- Inline styles for scroll animations --}}
+    <x-slot:head>
+    <style>
+        .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        @keyframes gradient-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .gradient-anim { background-size: 200% 200%; animation: gradient-move 8s ease infinite; }
+    </style>
+    </x-slot:head>
+
+    {{-- ============================================================ --}}
+    {{-- HERO SECTION — Full viewport, left-aligned, cinematic        --}}
+    {{-- ============================================================ --}}
+    <section class="relative min-h-screen flex items-center overflow-hidden -mt-16 md:-mt-20 pt-16 md:pt-20">
+        {{-- Background --}}
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Background">
-            {{-- Darker Overlays for contrast --}}
-            <div class="absolute inset-0 bg-black/50"></div>
-            <div class="absolute inset-0 bg-gradient-to-br from-primary-950/90 via-primary-900/60 to-emerald-950/90"></div>
+            <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Gedung DTPH Muaro Jambi" loading="eager">
+            <div class="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-950/70 to-gray-950/30"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent"></div>
         </div>
 
-        {{-- Decorations --}}
-        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
-            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[100%] rounded-full bg-white/5 blur-3xl"></div>
-            <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[80%] rounded-full bg-emerald-500/10 blur-3xl"></div>
+        {{-- Subtle grain texture --}}
+        <div class="absolute inset-0 z-[1] opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E');"></div>
+
+        {{-- Glowing orbs --}}
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+            <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full bg-[#19A148]/15 blur-[150px] float-anim"></div>
+            <div class="absolute bottom-[10%] right-[20%] w-[300px] h-[300px] rounded-full bg-emerald-500/8 blur-[120px]" style="animation: float 8s ease-in-out 2s infinite;"></div>
         </div>
 
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 animate-fade-in-up">
-                Sistem E-Proposal <br class="hidden md:block" /> <span class="text-emerald-300">Dinas Pertanian</span>
-            </h1>
-            <p class="mt-4 text-lg md:text-xl text-primary-100 max-w-3xl mx-auto leading-relaxed animate-fade-in-up delay-100">
-                Portal resmi Dinas Tanaman Pangan dan Hortikultura untuk pengajuan proposal peminjaman alat mesin pertanian (Alsintan) dan program bantuan pendanaan secara digital, transparan, dan efisien.
-            </p>
-            <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-200">
-                @guest
-                    <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl text-primary-800 bg-white hover:bg-gray-50 shadow-lg shadow-white/10 hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-95">
-                        Daftar Akun Sekarang
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+            <div class="max-w-2xl">
+
+
+                {{-- Headline --}}
+                <h1 class="reveal text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-black text-white leading-[1.08] tracking-[-0.02em] mb-6">
+                    Portal DTPH<br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400 gradient-anim">Muaro Jambi</span>
+                </h1>
+
+                {{-- Subtext --}}
+                <p class="reveal reveal-delay-1 text-[17px] md:text-lg text-white/55 leading-relaxed max-w-lg mb-10">
+                    Layanan pengajuan proposal peminjaman alsintan dan program bantuan pertanian — <span class="text-white/80 font-medium">digital, transparan, dan efisien.</span>
+                </p>
+
+                {{-- CTA Buttons --}}
+                <div class="reveal reveal-delay-2 flex flex-col sm:flex-row gap-3.5 mb-14">
+                    @guest
+                        <a href="{{ route('register') }}" class="group inline-flex items-center justify-center gap-2.5 px-7 py-[14px] bg-[#19A148] hover:bg-[#148f3d] text-white text-[15px] font-bold rounded-[14px] shadow-lg shadow-[#19A148]/25 hover:shadow-xl hover:shadow-[#19A148]/30 hover:-translate-y-0.5 transition-all duration-300">
+                            Daftar Akun Sekarang
+                            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    @else
+                        <a href="{{ route('dashboard') }}" class="group inline-flex items-center justify-center gap-2.5 px-7 py-[14px] bg-[#19A148] hover:bg-[#148f3d] text-white text-[15px] font-bold rounded-[14px] shadow-lg shadow-[#19A148]/25 hover:shadow-xl hover:shadow-[#19A148]/30 hover:-translate-y-0.5 transition-all duration-300">
+                            Masuk ke Dashboard
+                            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    @endguest
+                    <a href="#katalog" class="inline-flex items-center justify-center gap-2.5 px-7 py-[14px] bg-white/[0.07] hover:bg-white/[0.12] backdrop-blur-sm border border-white/[0.12] hover:border-white/[0.2] text-white/90 text-[15px] font-semibold rounded-[14px] transition-all duration-300">
+                        Jelajahi Katalog
                     </a>
-                @else
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl text-primary-800 bg-white hover:bg-gray-50 shadow-lg shadow-white/10 hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-95">
-                        Masuk ke Dashboard
-                    </a>
-                @endguest
-                <a href="#katalog-alsintan" class="inline-flex items-center justify-center px-8 py-3.5 border-2 border-primary-400 text-base font-bold rounded-xl text-white hover:bg-primary-600/50 hover:border-primary-300 transition-all">
-                    Lihat Katalog Alsintan
-                </a>
+                </div>
+
+                {{-- Metrics --}}
+                <div class="reveal reveal-delay-3 flex items-center gap-8 sm:gap-10">
+                    @foreach([
+                        ['value' => '500+', 'label' => 'Kelompok Tani'],
+                        ['value' => '1.200+', 'label' => 'Proposal Disetujui'],
+                        ['value' => '50+', 'label' => 'Unit Alsintan'],
+                    ] as $metric)
+                    <div>
+                        <p class="text-2xl md:text-[28px] font-black text-white tracking-tight leading-none">{{ $metric['value'] }}</p>
+                        <p class="text-[13px] text-white/40 font-medium mt-1.5">{{ $metric['label'] }}</p>
+                    </div>
+                    @endforeach
+                </div>
             </div>
-            <p class="mt-4 text-sm text-primary-200/80 animate-fade-in-up delay-300">
-                <span class="font-semibold text-white">Catatan:</span> Pendaftaran akun membutuhkan verifikasi manual oleh Admin Dinas sebelum dapat mengajukan usulan.
-            </p>
         </div>
     </section>
 
-    {{-- KATALOG ALAT PERTANIAN SECTION --}}
-    <section id="katalog-alsintan" class="py-20 bg-white">
+    {{-- ============================================================ --}}
+    {{-- LAYANAN / FEATURES SECTION                                   --}}
+    {{-- ============================================================ --}}
+    <section class="py-16 md:py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Katalog Alsintan (Pinjam Pakai)</h2>
-                <div class="mt-2 w-24 h-1.5 bg-primary-500 mx-auto rounded-full"></div>
-                <p class="mt-4 text-gray-600 text-lg">Daftar alat dan mesin pertanian yang tersedia untuk dipinjam oleh Kelompok Tani terdaftar.</p>
+            {{-- Section Header --}}
+            <div class="reveal max-w-xl mx-auto text-center mb-16">
+                <p class="text-[13px] font-bold uppercase tracking-[0.15em] text-[#19A148] mb-3">Layanan Kami</p>
+                <h2 class="text-3xl md:text-[2.5rem] font-black text-gray-900 tracking-tight leading-tight">Kemudahan layanan pertanian dalam satu platform.</h2>
+                <p class="mt-4 text-gray-500 text-[16px] leading-relaxed">Semua kebutuhan pengajuan proposal dan informasi alsintan tersedia secara digital.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {{-- Feature Cards --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+                @foreach([
+                    [
+                        'title' => 'Peminjaman Alat & Mesin Pertanian',
+                        'desc' => 'Fasilitas peminjaman berbagai jenis alsintan seperti traktor, pompa air, dan mesin panen untuk mendukung produktivitas kelompok tani di Kabupaten Muaro Jambi.',
+                        'icon' => 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z',
+                        'link' => '#katalog',
+                        'linkText' => 'Lihat Katalog Alsintan',
+                        'featured' => false,
+                    ],
+                    [
+                        'title' => 'Program Bantuan Pertanian',
+                        'desc' => 'Penyaluran dukungan pemerintah berupa bibit unggul, pupuk subsidi, serta pendanaan pengembangan infrastruktur pertanian untuk kelompok tani yang terverifikasi.',
+                        'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+                        'link' => '#program',
+                        'linkText' => 'Jelajahi Program',
+                        'featured' => false,
+                    ],
+                ] as $i => $feature)
+                <div class="reveal reveal-delay-{{ $i + 1 }} group relative rounded-[1.5rem] p-8 transition-all duration-500 hover:-translate-y-1 flex flex-col items-center text-center
+                    {{ $feature['featured']
+                        ? 'bg-[#19A148] shadow-xl shadow-[#19A148]/15'
+                        : 'bg-gray-50/80 hover:bg-white border border-gray-100/80 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-200/50' }}">
+
+
+
+                    <h3 class="text-lg font-bold mb-2.5 {{ $feature['featured'] ? 'text-white' : 'text-gray-900' }}">{{ $feature['title'] }}</h3>
+                    <p class="text-[15px] leading-relaxed mb-6 {{ $feature['featured'] ? 'text-white/70' : 'text-gray-500' }}">{{ $feature['desc'] }}</p>
+
+                    <a href="{{ $feature['link'] }}" class="inline-flex items-center gap-1.5 text-sm font-bold transition-colors
+                        {{ $feature['featured'] ? 'text-white/90 hover:text-white' : 'text-[#19A148] hover:text-[#148f3d]' }}">
+                        {{ $feature['linkText'] }}
+                        <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- ============================================================ --}}
+    {{-- KATALOG ALSINTAN SECTION                                     --}}
+    {{-- ============================================================ --}}
+    <section id="katalog" class="py-16 md:py-24 bg-gray-50/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="reveal flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+                <div>
+                    <p class="text-[13px] font-bold uppercase tracking-[0.15em] text-[#19A148] mb-3">Alsintan Tersedia</p>
+                    <h2 class="text-3xl md:text-[2.5rem] font-black text-gray-900 tracking-tight leading-tight">Katalog Alat & Mesin Pertanian</h2>
+                    <p class="mt-3 text-gray-500 max-w-md text-[16px]">Tersedia untuk dipinjam oleh kelompok tani yang telah terverifikasi.</p>
+                </div>
+                <a href="{{ route('katalog') }}" class="group inline-flex items-center gap-2 text-sm font-bold text-[#19A148] hover:text-[#148f3d] shrink-0">
+                    Lihat Semua
+                    <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @php
-                    $katalog = [
-                        ['nama' => 'Traktor Roda 4 — 45 PK', 'desc' => 'Traktor bertenaga besar untuk pengolahan lahan kering maupun sawah skala luas.', 'img' => 'tractor'],
-                        ['nama' => 'Pompa Air Centrifugal 3"', 'desc' => 'Mesin pompa untuk irigasi sawah dengan kapasitas sedot dan dorong tinggi.', 'img' => 'pump'],
-                        ['nama' => 'Combine Harvester', 'desc' => 'Mesin panen padi multifungsi yang mempercepat proses pemotongan dan perontokan.', 'img' => 'harvester'],
-                    ];
+                    $katalog = \App\Models\Alsintan::take(3)->get();
                 @endphp
 
-                @foreach($katalog as $item)
-                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:border-primary-200 transition-all duration-300 group flex flex-col">
-                    <div class="aspect-w-16 aspect-h-9 bg-gray-100 relative overflow-hidden h-48 flex items-center justify-center">
-                        {{-- Placeholder for Image --}}
-                        <div class="absolute inset-0 bg-gradient-to-tr from-gray-200 to-gray-100 group-hover:scale-105 transition-transform duration-500"></div>
-                        <svg class="w-16 h-16 text-gray-400 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <div class="absolute top-4 right-4 bg-primary-100 text-primary-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Pinjam Pakai</div>
+                @foreach($katalog as $i => $item)
+                <div class="reveal reveal-delay-{{ $i + 1 }} group bg-white rounded-[1.5rem] border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 hover:-translate-y-1 hover:border-gray-200 transition-all duration-500 flex flex-col">
+                    <div class="h-52 bg-gray-100 relative overflow-hidden flex items-center justify-center">
+                        @if($item->image)
+                            <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        @else
+                            <img src="https://picsum.photos/seed/{{ $item->id }}/800/500" alt="{{ $item->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-0"></div>
+                        
+                        <div class="absolute top-4 left-4 z-10">
+                            <span class="text-[11px] font-bold text-white bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-lg uppercase tracking-wider">{{ $item->category }}</span>
+                        </div>
+                        <div class="absolute top-4 right-4 z-10">
+                            <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-gray-800 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-gray-100 shadow-sm">
+                                <span class="w-1.5 h-1.5 bg-[#19A148] rounded-full"></span>
+                                {{ $item->available_stock }} unit
+                            </span>
+                        </div>
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
-                        <h3 class="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">{{ $item['nama'] }}</h3>
-                        <p class="mt-2 text-gray-500 text-sm flex-1">{{ $item['desc'] }}</p>
-                        <a href="{{ auth()->check() ? route('katalog') : route('login') }}" class="mt-6 w-full inline-flex justify-center items-center px-4 py-2.5 border border-gray-200 text-sm font-semibold rounded-xl text-primary-600 bg-white hover:bg-primary-50 hover:border-primary-200 transition-colors">
-                            {{ auth()->check() ? 'Lihat Detail' : 'Pinjam Alat' }}
-                            <svg class="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        <h3 class="text-[17px] font-bold text-gray-900 group-hover:text-[#19A148] transition-colors mb-2">{{ $item->name }}</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed flex-1 line-clamp-2">{{ $item->description }}</p>
+                        <a href="{{ auth()->check() ? route('katalog') : route('login') }}" class="mt-5 w-full inline-flex justify-center items-center gap-2 px-4 py-3 bg-gray-50 group-hover:bg-[#19A148] text-sm font-bold rounded-xl text-gray-600 group-hover:text-white border border-gray-100 group-hover:border-[#19A148] transition-all duration-300">
+                            {{ auth()->check() ? 'Lihat Detail' : 'Login untuk Pinjam' }}
+                            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </a>
                     </div>
                 </div>
                 @endforeach
             </div>
-            
-            <div class="mt-12 text-center">
-                <a href="{{ route('login') }}" class="text-primary-600 font-semibold hover:text-primary-800 transition inline-flex items-center gap-1">
-                    Lihat Seluruh Katalog 
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </a>
-            </div>
         </div>
     </section>
 
-    {{-- PROGRAM BANTUAN SECTION --}}
-    <section id="program-bantuan" class="py-20 bg-gray-50 border-t border-gray-100">
+    {{-- ============================================================ --}}
+    {{-- PROGRAM BANTUAN SECTION                                      --}}
+    {{-- ============================================================ --}}
+    <section id="program" class="py-16 md:py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Program Bantuan & Pendanaan</h2>
-                <div class="mt-2 w-24 h-1.5 bg-emerald-500 mx-auto rounded-full"></div>
-                <p class="mt-4 text-gray-600 text-lg">Informasi program bantuan permanen dan pendanaan untuk Kelompok Tani tahun anggaran berjalan.</p>
+            <div class="reveal flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+                <div>
+                    <p class="text-[13px] font-bold uppercase tracking-[0.15em] text-[#19A148] mb-3">Program Bantuan</p>
+                    <h2 class="text-3xl md:text-[2.5rem] font-black text-gray-900 tracking-tight leading-tight">Dukungan & Pendanaan Pertanian</h2>
+                    <p class="mt-3 text-gray-500 max-w-md text-[16px]">Informasi program bantuan dan pendanaan untuk kelompok tani tahun anggaran berjalan.</p>
+                </div>
+                <a href="{{ route('program') }}" class="group inline-flex items-center gap-2 text-sm font-bold text-[#19A148] hover:text-[#148f3d] shrink-0">
+                    Lihat Semua Program
+                    <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
             </div>
 
-            <div class="max-w-4xl mx-auto space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 @php
                     $programs = [
-                        ['nama' => 'Bantuan Pupuk Subsidi & Bibit Unggul 2025', 'tipe' => 'Bantuan Permanen', 'buka' => '01 Mei 2025', 'tutup' => '30 Jun 2025', 'status' => 'Segera Buka', 'color' => 'amber'],
-                        ['nama' => 'Pendanaan Pengembangan Irigasi Desa', 'tipe' => 'Usulan Pendanaan', 'buka' => '15 Mar 2025', 'tutup' => '15 Mei 2025', 'status' => 'Dibuka', 'color' => 'green'],
+                        ['nama' => 'Bantuan Pupuk Subsidi & Bibit Unggul 2025', 'tipe' => 'Bantuan Permanen', 'buka' => '01 Mei 2025', 'tutup' => '30 Jun 2025', 'status' => 'Segera Buka', 'status_color' => 'text-amber-600 bg-amber-50 border-amber-100', 'dot_color' => 'bg-amber-500'],
+                        ['nama' => 'Pendanaan Pengembangan Irigasi Desa', 'tipe' => 'Usulan Pendanaan', 'buka' => '15 Mar 2025', 'tutup' => '15 Mei 2025', 'status' => 'Dibuka', 'status_color' => 'text-emerald-700 bg-emerald-50 border-emerald-100', 'dot_color' => 'bg-emerald-500'],
                     ];
                 @endphp
 
-                @foreach($programs as $program)
-                <div class="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                @foreach($programs as $i => $program)
+                <div class="reveal reveal-delay-{{ $i + 1 }} group bg-white rounded-[1.5rem] p-7 border border-gray-100 hover:shadow-xl hover:shadow-gray-200/50 hover:-translate-y-1 hover:border-gray-200 transition-all duration-500 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
                     <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="bg-{{ $program['color'] }}-100 text-{{ $program['color'] }}-800 text-xs font-bold px-2.5 py-1 rounded-md">{{ $program['status'] }}</span>
-                            <span class="text-gray-500 text-sm font-medium flex items-center gap-1.5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[11px] font-bold uppercase tracking-wider {{ $program['status_color'] }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $program['dot_color'] }} animate-pulse"></span>
+                                {{ $program['status'] }}
+                            </span>
+                            <span class="text-gray-500 text-[13px] font-semibold flex items-center gap-1.5">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                                 {{ $program['tipe'] }}
                             </span>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-900">{{ $program['nama'] }}</h3>
-                        <div class="mt-3 flex items-center gap-4 text-sm text-gray-500">
-                            <span class="flex items-center gap-1.5">
+                        <h3 class="text-xl font-bold text-gray-900 group-hover:text-[#19A148] transition-colors leading-tight">{{ $program['nama'] }}</h3>
+                        <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-500">
+                            <span class="flex items-center gap-1.5 font-medium">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                Dibuka: <span class="font-medium text-gray-700">{{ $program['buka'] }}</span>
+                                Buka: <span class="text-gray-700">{{ $program['buka'] }}</span>
                             </span>
-                            <span class="flex items-center gap-1.5">
+                            <span class="flex items-center gap-1.5 font-medium">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Ditutup: <span class="font-medium text-gray-700">{{ $program['tutup'] }}</span>
+                                Tutup: <span class="text-gray-700">{{ $program['tutup'] }}</span>
                             </span>
                         </div>
                     </div>
                     
-                    <a href="{{ auth()->check() ? route('program') : route('login') }}" class="w-full md:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors flex-shrink-0">
-                        {{ auth()->check() ? 'Lihat Program' : 'Ajukan Program' }}
+                    <a href="{{ route('program') }}" class="w-full md:w-auto inline-flex justify-center items-center gap-2 px-6 py-3.5 bg-gray-50 group-hover:bg-[#19A148] text-sm font-bold rounded-xl text-gray-600 group-hover:text-white border border-gray-100 group-hover:border-[#19A148] transition-all duration-300 shrink-0">
+                        Lihat Detail
+                        <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </a>
                 </div>
                 @endforeach
@@ -142,40 +257,104 @@
         </div>
     </section>
 
-    {{-- CALL TO ACTION (CTA) SECTION --}}
-    <section class="py-20 bg-white relative overflow-hidden">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="bg-primary-900 rounded-3xl p-8 md:p-16 text-center text-white shadow-2xl overflow-hidden relative">
-                <div class="absolute inset-0 opacity-10">
+    {{-- ============================================================ --}}
+    {{-- CARA KERJA / HOW IT WORKS                                    --}}
+    {{-- ============================================================ --}}
+    <section class="py-16 md:py-24 bg-gray-50/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="reveal text-center max-w-xl mx-auto mb-20">
+                <p class="text-[13px] font-bold uppercase tracking-[0.15em] text-[#19A148] mb-3">Cara Kerja</p>
+                <h2 class="text-3xl md:text-[2.5rem] font-black text-gray-900 tracking-tight leading-tight">Empat langkah mudah untuk mengajukan proposal.</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-5 relative">
+                {{-- Connecting line --}}
+                <div class="hidden lg:block absolute top-10 left-[14%] right-[14%] h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+                @foreach([
+                    ['step' => '01', 'title' => 'Daftar Akun', 'desc' => 'Buat akun kelompok tani dan tunggu verifikasi.', 'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
+                    ['step' => '02', 'title' => 'Pilih Jenis', 'desc' => 'Pilih pengajuan alsintan atau program bantuan.', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
+                    ['step' => '03', 'title' => 'Ajukan Proposal', 'desc' => 'Isi formulir dan unggah dokumen pendukung.', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
+                    ['step' => '04', 'title' => 'Pantau & Terima', 'desc' => 'Pantau status secara real-time hingga persetujuan.', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
+                ] as $i => $s)
+                <div class="reveal reveal-delay-{{ $i + 1 }} flex flex-col items-center text-center group">
+                    <div class="relative mb-6">
+                        <div class="w-20 h-20 rounded-2xl bg-gray-50 group-hover:bg-[#19A148] border border-gray-100 group-hover:border-[#19A148] flex items-center justify-center transition-all duration-500 group-hover:shadow-lg group-hover:shadow-[#19A148]/15 group-hover:scale-105">
+                            <svg class="w-8 h-8 text-gray-400 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $s['icon'] }}"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-7 h-7 rounded-lg bg-[#19A148] text-white text-[11px] font-black flex items-center justify-center shadow-md">{{ $s['step'] }}</div>
+                    </div>
+                    <h3 class="text-[15px] font-bold text-gray-900 mb-1.5 group-hover:text-[#19A148] transition-colors">{{ $s['title'] }}</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed max-w-[200px]">{{ $s['desc'] }}</p>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+
+
+    {{-- ============================================================ --}}
+    {{-- CTA SECTION                                                  --}}
+    {{-- ============================================================ --}}
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="reveal relative overflow-hidden bg-gray-950 rounded-[2rem] p-10 md:p-16 shadow-2xl">
+                {{-- Grid pattern --}}
+                <div class="absolute inset-0 opacity-[0.04]">
                     <svg viewBox="0 0 400 400" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                        <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)" />
+                        <defs><pattern id="cta-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" stroke-width="0.5"/></pattern></defs>
+                        <rect width="100%" height="100%" fill="url(#cta-grid)" />
                     </svg>
                 </div>
-                <div class="relative z-10">
-                    <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Mulai Ajukan Proposal Anda</h2>
-                    <p class="text-primary-200 text-lg max-w-2xl mx-auto mb-10">Bergabunglah dengan ratusan Kelompok Tani lainnya yang telah memanfaatkan kemudahan layanan digital kami.</p>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        @guest
-                            <a href="{{ route('register') }}" class="w-full sm:w-auto px-8 py-4 bg-primary-500 text-white font-bold rounded-xl shadow-lg shadow-primary-500/30 hover:bg-primary-400 hover:-translate-y-1 transition-all">
-                                Daftar Akun Kelompok Tani
-                            </a>
-                            <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-white/10 text-white font-bold rounded-xl border border-white/20 hover:bg-white/20 transition-all">
-                                Sudah punya akun? Masuk
-                            </a>
-                        @else
-                            <a href="{{ route('dashboard') }}" class="w-full sm:w-auto px-12 py-4 bg-primary-500 text-white font-bold rounded-xl shadow-lg shadow-primary-500/30 hover:bg-primary-400 hover:-translate-y-1 transition-all">
-                                Masuk ke Panel Dashboard Anda
-                            </a>
-                        @endguest
+                {{-- Glow --}}
+                <div class="absolute top-0 right-0 w-96 h-96 bg-[#19A148]/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3"></div>
+
+                <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
+                    <div class="max-w-md text-center lg:text-left">
+                        <h2 class="text-3xl md:text-[2.25rem] font-black text-white tracking-tight leading-tight mb-4">Siap mengajukan proposal Anda?</h2>
+                        <p class="text-white/50 text-[16px] leading-relaxed">Bergabunglah bersama ratusan kelompok tani yang telah merasakan kemudahan layanan digital ini.</p>
                     </div>
-                    <div class="mt-8 inline-flex items-center gap-2 bg-black/20 px-4 py-2 rounded-lg text-sm text-primary-200 border border-white/5">
-                        <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Pendaftaran akun membutuhkan verifikasi manual oleh Admin Dinas.</span>
+                    <div class="flex flex-col gap-3 shrink-0 w-full lg:w-auto">
+                        @guest
+                        <a href="{{ route('register') }}" class="group w-full lg:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#19A148] hover:bg-[#148f3d] text-white text-[15px] font-bold rounded-[14px] shadow-lg shadow-[#19A148]/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                            Daftar Sekarang — Gratis
+                            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                        <a href="{{ route('login') }}" class="w-full lg:w-auto inline-flex items-center justify-center px-8 py-4 bg-white/[0.07] hover:bg-white/[0.12] text-white/80 font-semibold rounded-[14px] border border-white/[0.08] hover:border-white/[0.15] transition-all">
+                            Sudah punya akun? Masuk
+                        </a>
+                        @else
+                        <a href="{{ route('dashboard') }}" class="group w-full lg:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#19A148] hover:bg-[#148f3d] text-white text-[15px] font-bold rounded-[14px] shadow-lg shadow-[#19A148]/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                            Buka Dashboard Saya
+                            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                        @endguest
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    {{-- ============================================================ --}}
+    {{-- SCROLL REVEAL SCRIPT                                         --}}
+    {{-- ============================================================ --}}
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => observer.observe(el));
+    });
+    </script>
 
 </x-layouts.public>

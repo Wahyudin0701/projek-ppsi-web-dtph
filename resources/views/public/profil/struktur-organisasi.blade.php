@@ -17,59 +17,73 @@
             $persons = [
                 'kepala' => [
                     'jabatan' => 'Kepala Dinas',
-                    'nama'    => 'Ir. H. Ahmad Fauzi, M.Si.',
-                    'nip'     => 'NIP. 19700101 199903 1 001',
-                    'color'   => ['bg' => 'bg-emerald-600', 'ring' => 'ring-emerald-400', 'badge' => 'bg-emerald-100 text-emerald-800'],
-                    'initials'=> 'AF',
+                    'nama'    => 'Ir. Evi Syahrul, SP, M.Si',
+                    'nip'     => '',
+                    'color'   => ['bg' => 'bg-primary-600', 'ring' => 'ring-primary-400', 'badge' => 'bg-primary-100 text-primary-800'],
+                    'initials'=> 'ES',
                 ],
                 'sekretaris' => [
                     'jabatan' => 'Sekretaris',
-                    'nama'    => 'Hj. Sri Wahyuni, S.P., M.M.',
-                    'nip'     => 'NIP. 19750505 200003 2 002',
+                    'nama'    => 'M. Ridwan, SP',
+                    'nip'     => '',
                     'color'   => ['bg' => 'bg-blue-600', 'ring' => 'ring-blue-400', 'badge' => 'bg-blue-100 text-blue-800'],
-                    'initials'=> 'SW',
-                ],
-                'sub_perencanaan' => [
-                    'jabatan' => 'Kasubbag Perencanaan & Keuangan',
-                    'nama'    => 'Drs. Bambang Susilo, M.Ak.',
-                    'nip'     => 'NIP. 19800312 200604 1 003',
-                    'color'   => ['bg' => 'bg-indigo-500', 'ring' => 'ring-indigo-300', 'badge' => 'bg-indigo-100 text-indigo-800'],
-                    'initials'=> 'BS',
+                    'initials'=> 'MR',
                 ],
                 'sub_umum' => [
-                    'jabatan' => 'Kasubbag Umum & Kepegawaian',
-                    'nama'    => 'Rizki Andika, S.E.',
-                    'nip'     => 'NIP. 19850818 200904 1 004',
+                    'jabatan' => 'Kasubbag Umum Kepegawaian',
+                    'nama'    => 'Raifizen, S.Ag, MM',
+                    'nip'     => '',
                     'color'   => ['bg' => 'bg-violet-500', 'ring' => 'ring-violet-300', 'badge' => 'bg-violet-100 text-violet-800'],
-                    'initials'=> 'RA',
+                    'initials'=> 'RF',
+                ],
+                'fungsional_perencanaan' => [
+                    'jabatan' => 'Fungsional Perencanaan',
+                    'nama'    => 'E. Superatman, SP',
+                    'nip'     => '',
+                    'color'   => ['bg' => 'bg-indigo-500', 'ring' => 'ring-indigo-300', 'badge' => 'bg-indigo-100 text-indigo-800'],
+                    'initials'=> 'ES',
+                ],
+                'analisis_keuangan' => [
+                    'jabatan' => 'Fungsional Analisis Keuangan Pusat dan Daerah',
+                    'nama'    => 'Arliyanza, SE',
+                    'nip'     => '',
+                    'color'   => ['bg' => 'bg-sky-500', 'ring' => 'ring-sky-300', 'badge' => 'bg-sky-100 text-sky-800'],
+                    'initials'=> 'AL',
                 ],
                 'bidang_pangan' => [
-                    'jabatan' => 'Kabid Tanaman Pangan',
-                    'nama'    => 'Ir. Siti Nurhaliza, M.P.',
-                    'nip'     => 'NIP. 19770220 200312 2 005',
-                    'color'   => ['bg' => 'bg-green-600', 'ring' => 'ring-green-400', 'badge' => 'bg-green-100 text-green-800'],
-                    'initials'=> 'SN',
+                    'jabatan' => 'Kabid. Tanaman Pangan',
+                    'nama'    => 'Umi Kalsum, SP',
+                    'nip'     => '',
+                    'color'   => ['bg' => 'bg-primary-600', 'ring' => 'ring-primary-400', 'badge' => 'bg-primary-100 text-primary-800'],
+                    'initials'=> 'UK',
                 ],
                 'bidang_horti' => [
-                    'jabatan' => 'Kabid Hortikultura',
-                    'nama'    => 'Agus Prayitno, S.P., M.Si.',
-                    'nip'     => 'NIP. 19781005 200312 1 006',
+                    'jabatan' => 'Kabid. Hortikultura',
+                    'nama'    => 'Ir. Candrawati',
+                    'nip'     => '',
                     'color'   => ['bg' => 'bg-lime-600', 'ring' => 'ring-lime-400', 'badge' => 'bg-lime-100 text-lime-800'],
-                    'initials'=> 'AP',
+                    'initials'=> 'CW',
                 ],
                 'bidang_psp' => [
-                    'jabatan' => 'Kabid Prasarana & Sarana Pertanian',
-                    'nama'    => 'Drs. Hendra Gunawan, M.T.',
-                    'nip'     => 'NIP. 19800601 200604 1 007',
+                    'jabatan' => 'Kabid. PSP',
+                    'nama'    => 'Ahmad Sukri, SP',
+                    'nip'     => '',
                     'color'   => ['bg' => 'bg-teal-600', 'ring' => 'ring-teal-400', 'badge' => 'bg-teal-100 text-teal-800'],
-                    'initials'=> 'HG',
+                    'initials'=> 'AS',
                 ],
                 'bidang_penyuluhan' => [
-                    'jabatan' => 'Kabid Penyuluhan Pertanian',
-                    'nama'    => 'Yulia Rahmawati, S.P., M.P.',
-                    'nip'     => 'NIP. 19820714 200604 2 008',
+                    'jabatan' => 'Kabid. Penyuluhan',
+                    'nama'    => 'Luthfi Noor, SP',
+                    'nip'     => '',
                     'color'   => ['bg' => 'bg-cyan-600', 'ring' => 'ring-cyan-400', 'badge' => 'bg-cyan-100 text-cyan-800'],
-                    'initials'=> 'YR',
+                    'initials'=> 'LN',
+                ],
+                'uptd' => [
+                    'jabatan' => 'UPTD Balai Benih Utama Arang Arang',
+                    'nama'    => 'Ahmad Baikuni, S.TP',
+                    'nip'     => '',
+                    'color'   => ['bg' => 'bg-amber-500', 'ring' => 'ring-amber-300', 'badge' => 'bg-amber-100 text-amber-800'],
+                    'initials'=> 'AB',
                 ],
             ];
             @endphp
@@ -85,7 +99,7 @@
 
             {{-- Connector --}}
             <div class="flex justify-center">
-                <div class="w-0.5 h-10 bg-emerald-300"></div>
+                <div class="w-0.5 h-10 bg-primary-300"></div>
             </div>
 
             {{-- ========================================== --}}
@@ -107,10 +121,11 @@
                 <div class="absolute top-0 left-1/4 right-1/4 h-0.5 bg-blue-200"></div>
             </div>
 
-            {{-- Sub Bagian --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8 max-w-2xl mx-auto mb-2">
-                <x-profil.person-card :person="$persons['sub_perencanaan']" size="sm" />
+            {{-- Sub Bagian: Kasubbag Umum + Fungsional Perencanaan + Analisis Keuangan --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-8 max-w-4xl mx-auto mb-2">
                 <x-profil.person-card :person="$persons['sub_umum']" size="sm" />
+                <x-profil.person-card :person="$persons['fungsional_perencanaan']" size="sm" />
+                <x-profil.person-card :person="$persons['analisis_keuangan']" size="sm" />
             </div>
 
             {{-- Divider --}}
@@ -122,10 +137,10 @@
 
             {{-- Connector down to Bidang --}}
             <div class="flex justify-center mb-0">
-                <div class="w-0.5 h-4 bg-emerald-300"></div>
+                <div class="w-0.5 h-4 bg-primary-300"></div>
             </div>
             <div class="relative mb-0">
-                <div class="absolute top-0 left-[12.5%] right-[12.5%] h-0.5 bg-emerald-200"></div>
+                <div class="absolute top-0 left-[12.5%] right-[12.5%] h-0.5 bg-primary-200"></div>
             </div>
 
             {{-- ========================================== --}}
@@ -139,41 +154,40 @@
             </div>
 
             {{-- ========================================== --}}
-            {{-- UPT/BPP Section --}}
+            {{-- UPTD --}}
             {{-- ========================================== --}}
-            <div class="mt-16 border-t border-dashed border-gray-200 pt-14">
-                <p class="text-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-8">
-                    Unit Pelaksana Teknis — Balai Penyuluhan Pertanian (BPP)
-                </p>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    @foreach([
-                        ['kec' => 'Sekernan',         'koordinator' => 'Eko Prasetyo, S.P.'],
-                        ['kec' => 'Sungai Gelam',     'koordinator' => 'Dewi Lestari, S.P.'],
-                        ['kec' => 'Kumpeh',           'koordinator' => 'M. Ridwan, S.P.'],
-                        ['kec' => 'Kumpeh Ulu',       'koordinator' => 'Fitriani, S.P.'],
-                        ['kec' => 'Mestong',          'koordinator' => 'Heri Susanto, S.P.'],
-                        ['kec' => 'Jambi Luar Kota',  'koordinator' => 'Ani Maryani, S.P.'],
-                        ['kec' => 'Bahar Selatan',    'koordinator' => 'Supriadi, S.P.'],
-                        ['kec' => 'Bahar Utara',      'koordinator' => 'Yuni Astuti, S.P.'],
-                        ['kec' => 'Taman Rajo',       'koordinator' => 'Darmawan, S.P.'],
-                        ['kec' => 'Sungai Bahar',     'koordinator' => 'Ratna Wulan, S.P.'],
-                        ['kec' => 'Maro Sebo',        'koordinator' => 'Junaidi, S.P.'],
-                        ['kec' => 'Dendang',          'koordinator' => 'Sari Indah, S.P.'],
-                    ] as $upt)
-                    <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-emerald-300 hover:shadow-md transition-all duration-200 group">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="w-2 h-2 rounded-full bg-emerald-500 group-hover:scale-110 transition-transform"></div>
-                            <p class="text-xs font-bold text-gray-800 group-hover:text-emerald-700 transition-colors">BPP Kec. {{ $upt['kec'] }}</p>
-                        </div>
-                        <p class="text-xs text-gray-500 pl-4">{{ $upt['koordinator'] }}</p>
-                    </div>
-                    @endforeach
+            <div class="mt-12 flex justify-center">
+                <div class="w-0.5 h-8 bg-amber-300"></div>
+            </div>
+            <div class="flex flex-col items-center mb-0">
+                <div class="w-full max-w-sm">
+                    <x-profil.person-card :person="$persons['uptd']" size="md" />
                 </div>
             </div>
 
-            {{-- Note --}}
-            <div class="mt-8 text-center">
-                <p class="text-xs text-gray-400 italic">* Data nama dan foto bersifat sementara (dummy). Akan diperbarui sesuai data resmi.</p>
+            {{-- ========================================== --}}
+            {{-- Kelompok Jabatan Fungsional --}}
+            {{-- ========================================== --}}
+            <div class="mt-16 border-t border-dashed border-gray-200 pt-14">
+                <p class="text-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-8">
+                    Kelompok Jabatan Fungsional — Per Bidang
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    @foreach([
+                        ['label' => 'Kabid. Tanaman Pangan'],
+                        ['label' => 'Kabid. Hortikultura'],
+                        ['label' => 'Kabid. PSP'],
+                        ['label' => 'Kabid. Penyuluhan'],
+                    ] as $kelompok)
+                    <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-primary-300 hover:shadow-md transition-all duration-200 group">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-2 h-2 rounded-full bg-primary-500 group-hover:scale-110 transition-transform"></div>
+                            <p class="text-xs font-bold text-gray-800 group-hover:text-primary-700 transition-colors">Kelompok Jabatan Fungsional</p>
+                        </div>
+                        <p class="text-xs text-gray-500 pl-4">{{ $kelompok['label'] }}</p>
+                    </div>
+                    @endforeach
+                </div>
             </div>
 
         </div>

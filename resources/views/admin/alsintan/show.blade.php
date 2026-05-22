@@ -6,11 +6,6 @@
         {{-- Page Header --}}
             <div class="flex items-center justify-between mb-2">
                 <div>
-                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                        <a href="{{ route('admin.alsintan.index') }}" class="hover:text-primary-600 transition-colors">Manajemen Alsintan</a>
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        <span class="font-semibold text-gray-700">Detail Alat</span>
-                    </div>
                     <h2 class="text-2xl font-extrabold text-gray-900">Detail Alsintan</h2>
                     <p class="text-gray-500 text-sm mt-1">Dinas Tanaman Pangan dan Hortikultura</p>
                 </div>

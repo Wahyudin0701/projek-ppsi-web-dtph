@@ -6,11 +6,6 @@
         {{-- Page Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <a href="{{ route('kabid.proposals.index') }}" class="hover:text-primary-600 transition-colors">Kelola Proposal</a>
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="font-semibold text-gray-700">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span>
-                </div>
                 <h2 class="text-2xl font-extrabold text-gray-900">Detail Pengajuan Proposal</h2>
                 <p class="text-gray-500 text-sm mt-1">Tinjau informasi lengkap dan ambil keputusan untuk proposal ini.</p>
             </div>
@@ -83,12 +78,6 @@
                 <div class="sm:col-span-2">
                     <dt class="text-xs font-bold text-gray-400 uppercase tracking-wide">Catatan Disposisi Pimpinan</dt>
                     <dd class="font-semibold text-gray-700 mt-1">{{ $proposal->latestDispositionLog->instruction ?? '-' }}</dd>
-                </div>
-                @endif
-                @if($proposal->admin_notes)
-                <div class="sm:col-span-2"> 
-                    <dt class="text-xs font-bold text-gray-400 uppercase tracking-wide">Catatan Admin</dt>
-                    <dd class="font-semibold text-gray-700 mt-1">{{ $proposal->admin_notes }}</dd>
                 </div>
                 @endif
             </dl>

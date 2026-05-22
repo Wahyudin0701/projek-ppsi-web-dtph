@@ -52,7 +52,7 @@ class DashboardController extends Controller
             'ditolak'   => $allUserProposals->where('status', 'ditolak')->count(),
         ];
 
-        $recentProposals = $allUserProposals->sortByDesc('submission_date')->take(5);
+        $recentProposals = $allUserProposals->sortByDesc('submission_date')->take(3);
 
         // IDs and Types already applied for
         $activeProposals = $allUserProposals->whereIn('status', ['pending_verifikasi', 'diteruskan_ke_pimpinan', 'disetujui']);

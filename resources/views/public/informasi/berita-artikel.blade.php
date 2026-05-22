@@ -34,8 +34,8 @@
                     'slug'      => 'pendaftaran-e-proposal-alsintan-tahap-2',
                     'kategori'  => 'program',
                     'label'     => 'Program',
-                    'labelColor'=> 'bg-emerald-100 text-emerald-700',
-                    'accent'    => 'from-emerald-700 to-emerald-950',
+                    'labelColor'=> 'bg-primary-100 text-primary-700',
+                    'accent'    => 'from-primary-700 to-primary-950',
                     'foto'      => 'https://picsum.photos/seed/agriculture2/800/600',
                     'judul'     => 'Pendaftaran E-Proposal Alsintan Tahap II Resmi Dibuka',
                     'ringkasan' => 'Petani dan kelompok tani di wilayah Kabupaten Muaro Jambi kini dapat mengajukan proposal bantuan alsintan secara digital melalui portal E-Proposal DTPH.',
@@ -102,14 +102,14 @@
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16">
                 {{-- All Categories --}}
                 <button @click="activeCategory = 'semua'" 
-                        :class="activeCategory === 'semua' ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-600/20' : 'bg-white border-gray-100 hover:border-emerald-200 shadow-sm'"
+                        :class="activeCategory === 'semua' ? 'bg-primary-600 border-primary-600 shadow-lg shadow-primary-600/20' : 'bg-white border-gray-100 hover:border-primary-200 shadow-sm'"
                         class="p-5 rounded-3xl border transition-all duration-300 text-left group">
-                    <div :class="activeCategory === 'semua' ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-600'" 
+                    <div :class="activeCategory === 'semua' ? 'bg-white/20 text-white' : 'bg-primary-50 text-primary-600'" 
                          class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </div>
                     <p :class="activeCategory === 'semua' ? 'text-white' : 'text-gray-900'" class="font-bold text-sm">Semua</p>
-                    <p :class="activeCategory === 'semua' ? 'text-emerald-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Total Artikel</p>
+                    <p :class="activeCategory === 'semua' ? 'text-primary-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Total Artikel</p>
                 </button>
 
                 {{-- Berita --}}
@@ -126,14 +126,14 @@
 
                 {{-- Program --}}
                 <button @click="activeCategory = 'program'" 
-                        :class="activeCategory === 'program' ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-600/20' : 'bg-white border-gray-100 hover:border-emerald-200 shadow-sm'"
+                        :class="activeCategory === 'program' ? 'bg-primary-600 border-primary-600 shadow-lg shadow-primary-600/20' : 'bg-white border-gray-100 hover:border-primary-200 shadow-sm'"
                         class="p-5 rounded-3xl border transition-all duration-300 text-left group">
-                    <div :class="activeCategory === 'program' ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-600'" 
+                    <div :class="activeCategory === 'program' ? 'bg-white/20 text-white' : 'bg-primary-50 text-primary-600'" 
                          class="w-10 h-10 rounded-2xl flex items-center justify-center mb-4 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                     </div>
                     <p :class="activeCategory === 'program' ? 'text-white' : 'text-gray-900'" class="font-bold text-sm">Program</p>
-                    <p :class="activeCategory === 'program' ? 'text-emerald-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Bantuan & Alsintan</p>
+                    <p :class="activeCategory === 'program' ? 'text-primary-100' : 'text-gray-400'" class="text-[10px] font-medium uppercase tracking-wider mt-1">Bantuan & Alsintan</p>
                 </button>
 
                 {{-- Artikel --}}
@@ -210,7 +210,7 @@
                         </div>
 
                         <a href="{{ route('informasi.berita-artikel.detail', $article['slug']) }}" class="block flex-1">
-                            <h2 class="text-base font-bold text-gray-900 leading-snug mb-3 group-hover:text-emerald-700 transition-colors line-clamp-2">
+                            <h2 class="text-base font-bold text-gray-900 leading-snug mb-3 group-hover:text-primary-700 transition-colors line-clamp-2">
                                 {{ $article['judul'] }}
                             </h2>
                             <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">{{ $article['ringkasan'] }}</p>
@@ -218,7 +218,7 @@
 
                         <div class="flex items-center justify-between pt-5 mt-5 border-t border-gray-50">
                             <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 font-bold text-[10px] flex-shrink-0">
+                                <div class="w-7 h-7 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 font-bold text-[10px] flex-shrink-0">
                                     {{ strtoupper(substr($article['penulis'], 0, 2)) }}
                                 </div>
                                 <div>
@@ -226,7 +226,7 @@
                                     <p class="text-[10px] text-gray-400 mt-0.5">{{ $article['waktu'] }}</p>
                                 </div>
                             </div>
-                            <a href="{{ route('informasi.berita-artikel.detail', $article['slug']) }}" class="flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-all hover:translate-x-0.5">
+                            <a href="{{ route('informasi.berita-artikel.detail', $article['slug']) }}" class="flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
                                 Selengkapnya
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                             </a>
@@ -242,7 +242,7 @@
                 <button class="w-10 h-10 rounded-2xl bg-white border border-gray-100 text-gray-400 hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <button class="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-bold text-sm shadow-lg shadow-emerald-600/20">1</button>
+                <button class="w-10 h-10 rounded-2xl bg-primary-600 text-white font-bold text-sm shadow-lg shadow-primary-600/20">1</button>
                 <button class="w-10 h-10 rounded-2xl bg-white border border-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-colors shadow-sm">2</button>
                 <button class="w-10 h-10 rounded-2xl bg-white border border-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-colors shadow-sm">3</button>
                 <button class="w-10 h-10 rounded-2xl bg-white border border-gray-100 text-gray-400 hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center">

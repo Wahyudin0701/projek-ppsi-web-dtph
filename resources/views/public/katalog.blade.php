@@ -59,8 +59,8 @@
 
                             {{-- Status Badge --}}
                             <div class="absolute top-4 left-4">
-                                <span x-show="item.status === 'tersedia'" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-emerald-700 text-xs font-bold border border-emerald-100 shadow-sm">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span x-show="item.status === 'tersedia'" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-primary-700 text-xs font-bold border border-primary-100 shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse"></span>
                                     Tersedia
                                 </span>
                                 <span x-show="item.status === 'tidak_tersedia'" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-amber-700 text-xs font-bold border border-amber-100 shadow-sm">
@@ -85,7 +85,7 @@
                             <p class="text-sm text-gray-500 leading-relaxed mb-5 line-clamp-2" x-text="item.description"></p>
 
                             {{-- Specs --}}
-                            <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="grid grid-cols-2 gap-3 mb-4">
                                 <div class="bg-gray-50 border border-gray-100 rounded-xl p-3">
                                     <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Merk / Tipe</p>
                                     <p class="text-sm font-bold text-gray-800 truncate" x-text="item.merk"></p>
@@ -96,16 +96,29 @@
                                 </div>
                             </div>
 
+                            {{-- Stock Info Badges --}}
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-200/80 text-[11px]">
+                                    Tersedia: <strong class="ml-1 text-green-800" x-text="item.available_stock"></strong>
+                                </span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200/80 text-[11px]">
+                                    Dipinjam: <strong class="ml-1 text-amber-800" x-text="item.borrowed_count"></strong>
+                                </span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200/80 text-[11px]">
+                                    Rusak: <strong class="ml-1 text-red-800" x-text="item.broken_count"></strong>
+                                </span>
+                            </div>
+
                             {{-- Footer --}}
                             <div class="flex items-center justify-between pt-5 mt-auto border-t border-gray-50">
                                 <span class="text-xs text-gray-400 font-medium">
-                                    Stok: <strong class="text-gray-700" x-text="item.stock + ' unit'"></strong>
+                                    Total: <strong class="text-gray-700" x-text="item.stock + ' unit'"></strong>
                                 </span>
                                 <template x-if="item.available_stock > 0">
                                     <div>
                                         @auth
                                             @if(auth()->user()->isApproved())
-                                                <a :href="`{{ route('farmer.proposals.programs') }}?kategori_pengajuan=alsintan&alsintan_id=${item.id}`" @click.stop
+                                                <a :href="`{{ url('farmer/proposals/alsintan') }}/${item.id}`" @click.stop
                                                    class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
                                                     Ajukan Pinjaman
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
@@ -219,8 +232,8 @@
                             <div class="flex items-center gap-3 mb-5">
                                 <span class="px-2.5 py-1 bg-primary-50 text-primary-600 text-[10px] font-bold rounded-full uppercase tracking-wider border border-primary-100" x-text="getCategoryName(selected.category_id)"></span>
                                 <template x-if="selected.status === 'tersedia'">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-50 text-primary-700 text-[10px] font-bold border border-primary-100">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse"></span>
                                         Tersedia
                                     </span>
                                 </template>
@@ -266,9 +279,9 @@
                                             <p class="text-[10px] font-bold text-amber-600 uppercase">Dipinjam</p>
                                             <p class="text-sm font-black text-amber-700" x-text="selected.borrowed_count"></p>
                                         </div>
-                                        <div class="text-center bg-emerald-50 rounded-xl p-2 border border-emerald-100 shadow-sm">
-                                            <p class="text-[10px] font-bold text-emerald-600 uppercase">Tersedia</p>
-                                            <p class="text-sm font-black text-emerald-700" x-text="selected.available_stock"></p>
+                                        <div class="text-center bg-primary-50 rounded-xl p-2 border border-primary-100 shadow-sm">
+                                            <p class="text-[10px] font-bold text-primary-600 uppercase">Tersedia</p>
+                                            <p class="text-sm font-black text-primary-700" x-text="selected.available_stock"></p>
                                         </div>
                                     </div>
                                 </div>

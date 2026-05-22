@@ -18,7 +18,7 @@
             {{-- ============================================ --}}
             <section class="mb-16">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-600/20">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shadow-lg shadow-primary-600/20">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                         </svg>
@@ -26,7 +26,7 @@
                     <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">Tugas Pokok</h2>
                 </div>
 
-                <div class="bg-gradient-to-br from-emerald-600 to-green-700 rounded-2xl p-7 md:p-10 shadow-lg shadow-emerald-600/20 relative overflow-hidden">
+                <div class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-7 md:p-10 shadow-lg shadow-primary-600/20 relative overflow-hidden">
                     <div class="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full"></div>
                     <div class="absolute -bottom-10 -left-8 w-52 h-52 bg-white/5 rounded-full"></div>
                     <div class="relative z-10">
@@ -43,7 +43,7 @@
             {{-- ============================================ --}}
             <section class="mb-16">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-600/20">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shadow-lg shadow-primary-600/20">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                         </svg>
@@ -66,9 +66,9 @@
 
                 <div class="space-y-4">
                     @foreach($fungsi as $index => $item)
-                    <div class="flex gap-5 bg-white rounded-2xl border border-gray-100 p-5 hover:border-emerald-200 hover:shadow-md transition-all duration-200 group">
-                        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center group-hover:bg-emerald-600 group-hover:border-emerald-600 transition-all duration-200">
-                            <span class="text-sm font-extrabold text-emerald-600 group-hover:text-white transition-colors duration-200">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                    <div class="flex gap-5 bg-white rounded-2xl border border-gray-100 p-5 hover:border-primary-200 hover:shadow-md transition-all duration-200 group">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-primary-50 border-2 border-primary-200 flex items-center justify-center group-hover:bg-primary-600 group-hover:border-primary-600 transition-all duration-200">
+                            <span class="text-sm font-extrabold text-primary-600 group-hover:text-white transition-colors duration-200">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
                         </div>
                         <p class="text-gray-700 text-sm md:text-base leading-relaxed pt-1.5 text-justify">{{ $item }}</p>
                     </div>
@@ -81,7 +81,7 @@
             {{-- ============================================ --}}
             <section>
                 <div class="flex items-center gap-4 mb-8">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-600/20">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shadow-lg shadow-primary-600/20">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                         </svg>

@@ -1,14 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Manajemen Program</x-slot>
 
-    <div class="max-w-7xl mx-auto space-y-6" x-data="{ 
-        showDetail: false, 
-        selectedProgram: null,
-        openDetail(program) {
-            this.selectedProgram = program;
-            this.showDetail = true;
-        }
-    }">
+    <div class="max-w-7xl mx-auto space-y-6">
 
         {{-- Page Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -68,10 +61,10 @@
                     <thead>
                         <tr class="border-b border-gray-100 bg-gray-50/80">
                             <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Nama Program</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Jenis</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">Periode</th>
+                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-center">Jenis</th>
+                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-center">Periode</th>
                             <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-center">Status</th>
-                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-right">Aksi</th>
+                            <th class="px-6 py-4 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -85,7 +78,7 @@
                             </td>
 
                             {{-- Jenis --}}
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 flex justify-center">
                                 @php
                                     $jenisLabels = ['alsintan'=>'Alsintan','benih'=>'Benih','pupuk'=>'Pupuk','infrastruktur'=>'Infrastruktur','pelatihan'=>'Pelatihan'];
                                     $jenisLabel = $jenisLabels[$program->jenis] ?? ucfirst($program->jenis ?? '-');
@@ -96,7 +89,7 @@
                             </td>
 
                             {{-- Periode --}}
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center">
                                 <p class="text-sm font-semibold text-gray-800">{{ $program->open_date?->format('d M Y') ?? '-' }}</p>
                                 <p class="text-xs text-gray-400 mt-0.5">s/d {{ $program->close_date?->format('d M Y') ?? '-' }}</p>
                             </td>
@@ -122,41 +115,28 @@
                             </td>
 
                             {{-- Actions --}}
-                            <td class="px-6 py-4">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button @click="openDetail({
-                                                name: '{{ $program->name }}',
-                                                type_label: '{{ str_replace('_', ' ', $program->type) }}',
-                                                jenis: '{{ $program->jenis }}',
-                                                description: '{{ addslashes($program->description) }}',
-                                                sasaran: '{{ $program->sasaran ?? '-' }}',
-                                                kuota: '{{ $program->kuota ?? '-' }}',
-                                                open_date: '{{ $program->open_date?->translatedFormat('d F Y') ?? '-' }}',
-                                                close_date: '{{ $program->close_date?->translatedFormat('d F Y') ?? '-' }}',
-                                                status: '{{ $program->status }}',
-                                                requirements: {{ json_encode($program->requirements ?? []) }},
-                                                sop_description: '{{ addslashes($program->sop_description) }}'
-                                            })"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-100 transition-colors">
+                            <td class="px-6 py-4 flex justify-center">
+                                <div class="flex flex-col items-end gap-1.5">
+                                    <a href="{{ route('admin.programs.show', $program) }}"
+                                       class="inline-flex items-center gap-1.5 w-24 px-3 py-1.5 text-[11px] font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                         </svg>
                                         Detail
-                                    </button>
+                                    </a>
                                     <a href="{{ route('admin.programs.edit', $program) }}"
-                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors">
+                                       class="inline-flex items-center gap-1.5 w-24 px-3 py-1.5 text-[11px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                         </svg>
                                         Edit
                                     </a>
                                     <form action="{{ route('admin.programs.destroy', $program) }}" method="POST"
-                                          onsubmit="return confirm('Yakin ingin menghapus program {{ $program->name }}?')">
+                                          onsubmit="return confirm('Yakin ingin menghapus program {{ $program->name }}?')" class="block">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-100 transition-colors">
+                                                class="inline-flex items-center gap-1.5 w-24 px-3 py-1.5 text-[11px] font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-100 transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
@@ -192,104 +172,5 @@
                 </table>
             </div>
         </div>
-
-        {{-- Detail Modal --}}
-        <div x-show="showDetail" 
-             class="fixed inset-0 z-50 overflow-y-auto" 
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             style="display: none;">
-            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity" aria-hidden="true" @click="showDetail = false">
-                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                <div class="inline-block align-bottom bg-white rounded-[2rem] text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                     x-transition:leave="transition ease-in duration-200"
-                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-                    
-                    <div class="bg-white px-6 pt-6 pb-4 sm:p-8 sm:pb-4">
-                        <div class="flex items-start justify-between mb-6">
-                            <div>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-100 text-primary-700 uppercase tracking-wider mb-2" x-text="selectedProgram?.type_label"></span>
-                                <h3 class="text-xl font-extrabold text-gray-900" x-text="selectedProgram?.name"></h3>
-                            </div>
-                            <button @click="showDetail = false" class="text-gray-400 hover:text-gray-500 transition-colors">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div class="space-y-6 text-sm">
-                            <div>
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Deskripsi</h4>
-                                <p class="text-gray-600 leading-relaxed" x-text="selectedProgram?.description || 'Tidak ada deskripsi.'"></p>
-                            </div>
-
-                            <div x-show="selectedProgram?.sop_description">
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Alur / SOP Program</h4>
-                                <p class="text-gray-600 leading-relaxed" x-text="selectedProgram?.sop_description"></p>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sasaran</h4>
-                                    <p class="font-bold text-gray-900" x-text="selectedProgram?.sasaran"></p>
-                                </div>
-                                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kuota</h4>
-                                    <p class="font-bold text-gray-900" x-text="selectedProgram?.kuota"></p>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Jadwal Buka</h4>
-                                    <p class="font-bold text-gray-900" x-text="selectedProgram?.open_date"></p>
-                                </div>
-                                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 text-red-400">Jadwal Tutup</h4>
-                                    <p class="font-bold text-red-600" x-text="selectedProgram?.close_date"></p>
-                                </div>
-                            </div>
-
-                            <div x-show="selectedProgram?.requirements && selectedProgram?.requirements.length > 0">
-                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Persyaratan Khusus</h4>
-                                <ul class="space-y-2">
-                                    <template x-for="req in selectedProgram?.requirements" :key="req">
-                                        <li class="flex items-start gap-2.5 text-gray-600">
-                                            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                            </svg>
-                                            <span x-text="req"></span>
-                                        </li>
-                                    </template>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-50 px-6 py-4 sm:px-8 sm:flex sm:flex-row-reverse">
-                        <button type="button" 
-                                class="w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-bold text-gray-700 hover:bg-gray-50 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
-                                @click="showDetail = false">
-                            Tutup
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </x-app-layout>

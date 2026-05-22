@@ -23,7 +23,7 @@
             </div>
 
             {{-- Article Content --}}
-            <article class="prose prose-emerald max-w-none prose-lg text-gray-600 leading-relaxed">
+            <article class="prose prose-primary max-w-none prose-lg text-gray-600 leading-relaxed">
                 
                 <h4 class="text-xl font-bold text-gray-900 mb-4">Profil Singkat</h4>
                 
@@ -41,7 +41,7 @@
                     Dinas Tanaman Pangan dan Hortikultura Kabupaten Muaro Jambi mempunyai tugas:
                 </p>
 
-                <blockquote class="border-l-4 border-emerald-500 pl-4 italic bg-emerald-50/50 py-3 pr-4 rounded-r-lg mb-6 text-gray-700">
+                <blockquote class="border-l-4 border-primary-500 pl-4 italic bg-primary-50/50 py-3 pr-4 rounded-r-lg mb-6 text-gray-700">
                     "Melaksanakan urusan pemerintahan daerah di bidang tanaman pangan dan hortikultura berdasarkan asas otonomi dan tugas pembantuan."
                 </blockquote>
 
@@ -63,7 +63,7 @@
                 <p class="mb-4 text-justify">
                     Sebagai Organisasi Perangkat Daerah (OPD), Dinas Tanaman Pangan dan Hortikultura Kabupaten Muaro Jambi dipimpin oleh seorang Kepala Dinas. Dalam melaksanakan operasionalnya, Kepala Dinas dibantu oleh:
                 </p>
-                <ul class="list-disc pl-6 mb-4 space-y-2 text-justify marker:text-emerald-500">
+                <ul class="list-disc pl-6 mb-4 space-y-2 text-justify marker:text-primary-500">
                     <li class="pl-2">Sekretariat (Membawahi Sub Bagian Perencanaan & Keuangan, serta Sub Bagian Umum & Kepegawaian)</li>
                     <li class="pl-2">Bidang Tanaman Pangan</li>
                     <li class="pl-2">Bidang Hortikultura</li>
@@ -87,7 +87,7 @@
                 <p class="mb-4 text-justify">
                     Untuk menunjang pelaksanaan tugas dan pelayanan kepada masyarakat tani, DTPH Kabupaten Muaro Jambi dilengkapi dengan berbagai fasilitas, antara lain:
                 </p>
-                <ul class="list-disc pl-6 mb-10 space-y-2 text-justify marker:text-emerald-500">
+                <ul class="list-disc pl-6 mb-10 space-y-2 text-justify marker:text-primary-500">
                     <li class="pl-2">Balai Penyuluhan Pertanian (BPP) di setiap kecamatan</li>
                     <li class="pl-2">Brigade Alsintan (Alat dan Mesin Pertanian)</li>
                     <li class="pl-2">Laboratorium dan Klinik Pertanian (Pengendalian Hama & Penyakit)</li>
@@ -103,18 +103,18 @@
                 <div class="space-y-6 mb-10">
                     <div>
                         <h5 class="font-bold text-gray-900">1. Awal Pembentukan Kabupaten</h5>
-                        <p class="font-semibold text-emerald-700 mb-2">Dinas Pertanian Terpadu</p>
+                        <p class="font-semibold text-primary-700 mb-2">Dinas Pertanian Terpadu</p>
                         <p class="text-justify">Pada awal berdirinya Kabupaten Muaro Jambi, urusan pertanian, perkebunan, dan peternakan digabung dalam satu atap kedinasan untuk merintis pondasi pembangunan pertanian di wilayah otonomi baru.</p>
                     </div>
                     <div>
                         <h5 class="font-bold text-gray-900">2. Pemisahan Instansi</h5>
-                        <p class="font-semibold text-emerald-700 mb-2">Fokus pada Sektor Spesifik</p>
+                        <p class="font-semibold text-primary-700 mb-2">Fokus pada Sektor Spesifik</p>
                         <p class="text-justify mb-2">Seiring dengan meningkatnya kebutuhan fokus pembangunan pertanian yang lebih intensif, urusan tanaman pangan dan hortikultura dipisahkan menjadi instansi mandiri sesuai regulasi pembentukan SOTK terbaru.</p>
                         <p class="text-justify">Pemisahan ini bertujuan untuk mempertajam fokus peningkatan produksi pangan pokok (padi, palawija) dan komoditas hortikultura strategis di Kabupaten Muaro Jambi.</p>
                     </div>
                     <div>
                         <h5 class="font-bold text-gray-900">3. Era Digitalisasi & Modernisasi (Sekarang)</h5>
-                        <p class="font-semibold text-emerald-700 mb-2">Dinas Tanaman Pangan dan Hortikultura (DTPH)</p>
+                        <p class="font-semibold text-primary-700 mb-2">Dinas Tanaman Pangan dan Hortikultura (DTPH)</p>
                         <p class="text-justify mb-2">Saat ini, DTPH Kabupaten Muaro Jambi terus bertransformasi menuju pelayanan publik yang lebih modern, transparan, dan berbasis digital.</p>
                         <p class="text-justify">Salah satu wujud nyata dari transformasi ini adalah pengembangan sistem portal E-Proposal Alsintan yang memudahkan kelompok tani untuk mengajukan bantuan secara online dan terpantau.</p>
                     </div>

@@ -31,8 +31,8 @@
         'pendaftaran-e-proposal-alsintan-tahap-2' => [
             'kategori'  => 'program',
             'label'     => 'Program',
-            'labelColor'=> 'bg-emerald-100 text-emerald-700',
-            'accent'    => 'from-emerald-700 to-emerald-950',
+            'labelColor'=> 'bg-primary-100 text-primary-700',
+            'accent'    => 'from-primary-700 to-primary-950',
             'foto'      => 'https://picsum.photos/seed/agriculture2/1400/600',
             'judul'     => 'Pendaftaran E-Proposal Alsintan Tahap II Resmi Dibuka',
             'ringkasan' => 'Petani dan kelompok tani di wilayah Kabupaten Muaro Jambi kini dapat mengajukan proposal bantuan alsintan secara digital melalui portal E-Proposal DTPH.',
@@ -150,7 +150,7 @@
         {{-- 404 State - Formal & Minimalist --}}
         <div class="min-h-[80vh] flex items-center justify-center px-4 relative overflow-hidden">
             {{-- Decorative Background Elements --}}
-            <div class="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-50 rounded-full blur-3xl opacity-40"></div>
+            <div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary-50 rounded-full blur-3xl opacity-40"></div>
             <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-40"></div>
             
             <div class="relative max-w-2xl w-full text-center">
@@ -160,8 +160,8 @@
                 </div>
 
                 <div class="flex flex-col items-center">
-                    <div class="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mb-8 border border-emerald-100 shadow-sm">
-                        <svg class="w-10 h-10 text-emerald-600/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-20 h-20 rounded-full bg-primary-50 flex items-center justify-center mb-8 border border-primary-100 shadow-sm">
+                        <svg class="w-10 h-10 text-primary-600/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                         </svg>
                     </div>
@@ -172,7 +172,7 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
-                        <a href="{{ route('informasi.berita-artikel') }}" class="inline-flex items-center gap-2 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-emerald-600/20 hover:-translate-y-0.5">
+                        <a href="{{ route('informasi.berita-artikel') }}" class="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold text-sm rounded-2xl transition-all shadow-lg shadow-primary-600/20 hover:-translate-y-0.5">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
                             Kembali ke Daftar Berita
                         </a>
@@ -236,7 +236,7 @@
                 {{-- Article Body --}}
                 <div class="px-8 md:px-16 pt-12">
                     {{-- Lead / Intro --}}
-                    <p class="text-lg md:text-xl text-gray-700 leading-relaxed font-medium border-l-4 border-emerald-500 pl-6 mb-10 italic">
+                    <p class="text-lg md:text-xl text-gray-700 leading-relaxed font-medium border-l-4 border-primary-500 pl-6 mb-10 italic">
                         {{ $article['isi']['intro'] }}
                     </p>
 
@@ -248,8 +248,8 @@
                     </div>
 
                     {{-- Closing --}}
-                    <div class="mt-10 p-6 bg-emerald-50 border border-emerald-100 rounded-2xl">
-                        <p class="text-emerald-800 font-medium text-sm leading-relaxed">
+                    <div class="mt-10 p-6 bg-primary-50 border border-primary-100 rounded-2xl">
+                        <p class="text-primary-800 font-medium text-sm leading-relaxed">
                             <span class="font-extrabold">Catatan Redaksi: </span>{{ $article['isi']['penutup'] }}
                         </p>
                     </div>
@@ -259,7 +259,7 @@
                 <div class="px-8 md:px-16 py-8 border-t border-gray-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                     <div class="flex flex-wrap gap-2">
                         @foreach($article['tags'] as $tag)
-                        <span class="px-3 py-1 bg-gray-100 hover:bg-emerald-50 hover:text-emerald-700 text-gray-600 text-xs font-bold rounded-xl cursor-pointer transition-colors">#{{ $tag }}</span>
+                        <span class="px-3 py-1 bg-gray-100 hover:bg-primary-50 hover:text-primary-700 text-gray-600 text-xs font-bold rounded-xl cursor-pointer transition-colors">#{{ $tag }}</span>
                         @endforeach
                     </div>
                     <div class="flex items-center gap-3 flex-shrink-0">
@@ -276,7 +276,7 @@
 
             {{-- Back Button --}}
             <div class="flex justify-start pt-12">
-                <a href="{{ route('informasi.berita-artikel') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white border border-gray-200 text-gray-700 font-bold text-sm rounded-2xl hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all duration-300 shadow-sm">
+                <a href="{{ route('informasi.berita-artikel') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white border border-gray-200 text-gray-700 font-bold text-sm rounded-2xl hover:bg-primary-50 hover:border-primary-200 hover:text-primary-700 transition-all duration-300 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     Kembali ke Daftar Artikel
                 </a>

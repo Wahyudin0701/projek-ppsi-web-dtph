@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Pendaftaran Kelompok Tani - E-Proposal Alsintan</title>
+    <title>Pendaftaran {{ $role === 'umum' ? 'Umum' : 'Kelompok Tani' }} - E-Proposal Alsintan</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +49,11 @@
                     Wujudkan <br/> <span class="text-emerald-400">Pertanian Modern</span> <br/> yang Maju
                 </h1>
                 <p class="text-gray-200 text-lg max-w-md mx-auto leading-relaxed font-medium opacity-0 animate-fade-in-up delay-200">
-                    Daftarkan Kelompok Tani Anda untuk mendapatkan kemudahan akses bantuan dan peminjaman alat mesin pertanian secara digital.
+                    @if($role === 'umum')
+                        Daftarkan diri atau instansi Anda untuk mendapatkan kemudahan akses bantuan dan peminjaman alat mesin pertanian secara digital.
+                    @else
+                        Daftarkan Kelompok Tani Anda untuk mendapatkan kemudahan akses bantuan dan peminjaman alat mesin pertanian secara digital.
+                    @endif
                 </p>
 
                 {{-- Trust Badges / Stats --}}
@@ -106,7 +110,7 @@
                         <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-2">
                             Daftar Akun <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-primary-800">Baru</span>
                         </h2>
-                        <p class="text-gray-500 text-sm leading-relaxed">Lengkapi formulir di bawah ini dengan data kelompok tani yang valid.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Lengkapi formulir di bawah ini dengan data {{ $role === 'umum' ? 'diri / instansi' : 'kelompok tani' }} yang valid.</p>
                     </div>
 
                 {{-- Form --}}
@@ -181,14 +185,20 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Nama Kelompok Tani / Umum -->
                             <div class="md:col-span-2">
-                                <label for="name" class="block text-sm font-bold text-gray-800 mb-2">{{ $role === 'umum' ? 'Nama Lengkap' : 'Nama Kelompok Tani' }}</label>
+                                <label for="name" class="block text-sm font-bold text-gray-800 mb-2">
+                                    @if($role === 'umum')
+                                        Nama Lengkap / Instansi
+                                    @else
+                                        Nama Kelompok Tani
+                                    @endif
+                                </label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                     </div>
                                     <input type="text" name="name" id="name" value="{{ old('name') }}" :required="step === 1" autofocus
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
-                                        placeholder="{{ $role === 'umum' ? 'Masukkan nama lengkap' : 'Masukkan nama kelompok tani' }}">
+                                        placeholder="{{ $role === 'umum' ? 'Masukkan nama lengkap atau nama instansi' : 'Masukkan nama kelompok tani' }}">
                                 </div>
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>

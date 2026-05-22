@@ -51,6 +51,14 @@ class ProposalController extends Controller
     }
 
     /**
+     * Show Alsintan detail page.
+     */
+    public function alsintanShow(\App\Models\Alsintan $alsintan)
+    {
+        return view('farmer.proposals.alsintan.show', compact('alsintan'));
+    }
+
+    /**
      * Show form to submit Alsintan borrowing proposal.
      */
     public function alsintanCreate(\App\Models\Alsintan $alsintan)
@@ -148,29 +156,7 @@ class ProposalController extends Controller
         return view('farmer.proposals.unified-create', compact('alsintans', 'programs'));
     }
 
-    /**
-     * Display programs based on category.
-     */
-    public function listByCategory(Request $request)
-    {
-        $category = $request->query('category', 'alsintan');
-        
-        $query = Program::orderBy('close_date', 'asc');
 
-        if ($category === 'alsintan') {
-            $query->where('jenis', 'alsintan');
-            $title = 'Program Bantuan Alsintan';
-        } else {
-            $query->where('jenis', '!=', 'alsintan');
-            $title = 'Program Bantuan Lainnya';
-        }
-
-        $programs = $query->get()->filter(function($p) {
-            return $p->status === 'berjalan';
-        });
-
-        return view('farmer.proposals.programs', compact('programs', 'title', 'category'));
-    }
 
     /**
      * Show the details of a proposal.
@@ -184,6 +170,14 @@ class ProposalController extends Controller
         $proposal->load(['program', 'alsintan', 'user.farmerProfile', 'latestDispositionLog', 'surveyAssignments', 'cpclVerifications', 'surveyDocumentations', 'beritaAcara']);
 
         return view('farmer.proposals.show', compact('proposal'));
+    }
+
+    /**
+     * Show the details of a program.
+     */
+    public function bantuanShow(Program $program)
+    {
+        return view('farmer.proposals.bantuan.show', compact('program'));
     }
 
     /**
