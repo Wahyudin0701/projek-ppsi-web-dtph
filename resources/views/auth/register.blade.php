@@ -145,7 +145,8 @@
                                   komoditi: this.selectedKomoditi.length > 0 ? this.selectedKomoditi.join(', ') : '',
                                   komoditi_utama: document.getElementById('komoditi_utama') ? document.getElementById('komoditi_utama').value : '',
                                   kecamatan: document.getElementById('kecamatan') ? document.getElementById('kecamatan').value : '',
-                                  alamat: document.getElementById('alamat') ? document.getElementById('alamat').value : ''
+                                  alamat: document.getElementById('alamat') ? document.getElementById('alamat').value : '',
+                                  anggota: Array.from(document.querySelectorAll('.input-anggota')).map(el => el.value).filter(val => val.trim() !== '').join(', ')
                               }
                           }
                       }" 
@@ -316,6 +317,31 @@
                                 </div>
                                 <x-input-error :messages="$errors->get('no_wa')" class="mt-2" />
                             </div>
+
+                            <!-- Anggota Kelompok -->
+                            <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: [''] }">
+                                <label class="block text-sm font-bold text-gray-800 mb-3">Daftar Anggota Kelompok</label>
+                                <template x-for="(item, index) in anggota" :key="index">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="relative group flex-1">
+                                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                                <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                            </div>
+                                            <input type="text" x-bind:name="'anggota[' + index + ']'" x-model="anggota[index]" :required="step === 2"
+                                                class="input-anggota block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                                placeholder="Nama Anggota">
+                                        </div>
+                                        <button type="button" @click="anggota.splice(index, 1)" x-show="anggota.length > 1" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                        </button>
+                                    </div>
+                                </template>
+                                <button type="button" @click="anggota.push('')" class="text-sm font-bold text-[#19A148] flex items-center gap-2 hover:text-[#15883c] transition-colors mt-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    Tambah Anggota Lainnya
+                                </button>
+                                <x-input-error :messages="$errors->get('anggota')" class="mt-2" />
+                            </div>
                         </div>
                     </div>
 
@@ -477,6 +503,10 @@
                                 <div class="sm:col-span-2">
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Alamat Lengkap</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.alamat"></p>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Anggota Kelompok</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.anggota ? review.anggota : '-'"></p>
                                 </div>
                             </div>
                         </div>

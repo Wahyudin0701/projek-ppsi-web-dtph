@@ -1,11 +1,11 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+        <h2 class="text-lg font-bold text-gray-900">
+            {{ auth()->user()->role === 'user' ? 'Informasi Akun' : 'Informasi Profil' }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+            {{ auth()->user()->role === 'user' ? 'Perbarui alamat email akun Anda.' : 'Perbarui informasi profil dan alamat email akun Anda.' }}
         </p>
     </header>
 
@@ -18,9 +18,18 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            @if(auth()->user()->role === 'user')
+                <input type="hidden" name="name" value="{{ $user->name }}">
+            @else
+                @if(auth()->user()->role === 'umum')
+                    <x-input-label for="name" :value="__('Nama Lengkap / Instansi')" />
+                    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+                @else
+                    <x-input-label for="name" :value="__('Name')" />
+                    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+                @endif
+                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            @endif
         </div>
 
         <div>
@@ -48,7 +57,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#19A148] border border-transparent rounded-xl font-bold text-xs text-white uppercase tracking-widest hover:bg-[#158C3D] active:bg-[#158C3D] focus:outline-none focus:ring-2 focus:ring-[#19A148] focus:ring-offset-2 transition ease-in-out duration-150">Simpan</button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -57,7 +66,7 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                >Tersimpan.</p>
             @endif
         </div>
     </form>

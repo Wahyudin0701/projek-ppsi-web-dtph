@@ -41,30 +41,32 @@
         {{-- Summary Card --}}
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-                <div class="flex items-center gap-3 mb-2 flex-wrap">
-                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
-                        {{ $isAlsintan ? 'Peminjaman Alsintan' : 'Program Bantuan' }}
-                    </span>
-                    <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ $sc['bg'] }}">
+                <div class="mb-2">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest inline-block {{ $sc['bg'] }}">
                         {{ $sc['label'] }}
                     </span>
                 </div>
                 <h3 class="text-2xl font-black text-gray-900">
                     {{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}
                 </h3>
-                <p class="text-gray-500 text-sm mt-1">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
+                <p class="text-gray-500 text-sm mt-1 mb-3">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md inline-block {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
+                        {{ $isAlsintan ? 'Peminjaman Alsintan' : 'Program Bantuan' }}
+                    </span>
+                </div>
             </div>
 
             {{-- Action Buttons --}}
             @if($proposal->status === 'disetujui')
                 <div class="flex gap-3 w-full sm:w-auto">
                     @if($isAlsintan)
-                        <a href="{{ route('documents.surat-perjanjian', $proposal) }}" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+                        <a href="{{ route('documents.surat-perjanjian', $proposal) }}" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             Cetak Surat Perjanjian
                         </a>
                     @else
-                        <a href="{{ route('documents.sk-bantuan', $proposal) }}" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+                        <a href="{{ route('documents.sk-bantuan', $proposal) }}" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             Cetak SK Bantuan
                         </a>
@@ -73,7 +75,7 @@
             @elseif($proposal->status === 'pending_verifikasi')
                 <div class="flex flex-wrap gap-3 w-full sm:w-auto" x-data="{ showApprove: false, showReject: false }">
                     <button @click="showApprove = true"
-                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         Terima & Verifikasi
                     </button>
@@ -102,7 +104,7 @@
                                     <form action="{{ route('admin.proposals.approve', $proposal) }}" method="POST">
                                         @csrf @method('PATCH')
                                         <div class="flex flex-row-reverse gap-3">
-                                            <button type="submit" class="flex-1 px-6 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors text-sm">Ya, Verifikasi</button>
+                                            <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors text-sm">Ya, Verifikasi</button>
                                             <button type="button" @click="showApprove = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
                                         </div>
                                     </form>
@@ -152,7 +154,7 @@
                         Cetak Surat Tugas
                     </a>
                     <a href="{{ route('admin.proposals.cpcl.create', $proposal) }}"
-                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
                         Input Verifikasi CPCL
                     </a>
@@ -226,7 +228,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rencana Durasi Pemakaian</p>
-                                <p class="text-[#19A148] font-bold text-base">{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</p>
+                                <p class="text-blue-600 font-bold text-base">{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</p>
                             </div>
                         </div>
                     @else
@@ -477,3 +479,4 @@
         </div>
     </div>
 </x-app-layout>
+

@@ -41,7 +41,19 @@
                 <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6 sm:p-8 text-center">
                     <h3 class="font-bold text-gray-900 mb-2">Ingin Meminjam Alat Ini?</h3>
                     <p class="text-sm text-gray-500 mb-6">Ajukan proposal peminjaman sekarang dengan melengkapi form yang tersedia.</p>
-                    @if($alsintan->available_stock > 0)
+                    @php
+                        $hasActiveProposal = auth()->check() && \App\Models\Proposal::where('user_id', auth()->id())
+                            ->where('alsintan_id', $alsintan->id)
+                            ->whereIn('status', ['menunggu_verifikasi', 'diproses'])
+                            ->exists();
+                    @endphp
+
+                    @if($hasActiveProposal)
+                        <button disabled class="w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-yellow-50 border border-yellow-200 text-yellow-600 font-bold text-base rounded-2xl cursor-not-allowed shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Sedang Diproses
+                        </button>
+                    @elseif($alsintan->available_stock > 0)
                         <a href="{{ route('farmer.proposals.alsintan.create', $alsintan->id) }}"
                            class="group w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#19A148] text-white font-bold text-base rounded-2xl hover:bg-green-700 hover:shadow-xl hover:shadow-green-900/20 hover:-translate-y-1 transition-all duration-300">
                             Ajukan Proposal

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Program;
 use App\Models\Proposal;
 use App\Models\Alsintan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,37 @@ class DashboardController extends Controller
         }
 
         if ($user->isAdmin()) {
-            return view('admin.dashboard');
+            $pendingUsersCount = User::where('role', 'user')->whereHas('farmerProfile', function($q) {
+                $q->whereIn('status', ['menunggu', 'reviewed']);
+            })->count();
+
+            $pendingProposalsCount = Proposal::where('status', 'pending_verifikasi')->count();
+            $activeProgramsCount = Program::all()->filter(fn($p) => $p->status === 'berjalan')->count();
+            $totalProposalsCount = Proposal::count();
+
+            $stats = [
+                'pending_users'     => $pendingUsersCount,
+                'pending_proposals' => $pendingProposalsCount,
+                'active_programs'   => $activeProgramsCount,
+                'total_proposals'   => $totalProposalsCount,
+            ];
+
+            $latestPendingUsers = User::with('farmerProfile')
+                ->where('role', 'user')
+                ->whereHas('farmerProfile', function($q) {
+                    $q->whereIn('status', ['menunggu', 'reviewed']);
+                })
+                ->latest()
+                ->take(3)
+                ->get();
+
+            $latestPendingProposals = Proposal::with(['user.farmerProfile', 'program', 'alsintan'])
+                ->where('status', 'pending_verifikasi')
+                ->latest('updated_at')
+                ->take(5)
+                ->get();
+
+            return view('admin.dashboard', compact('stats', 'latestPendingUsers', 'latestPendingProposals'));
         }
 
         if ($user->isPimpinan()) {

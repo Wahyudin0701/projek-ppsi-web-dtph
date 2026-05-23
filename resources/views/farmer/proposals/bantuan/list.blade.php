@@ -23,14 +23,7 @@
         <div class="space-y-4">
             @forelse($programs as $program)
                 <div onclick="window.location.href='{{ route('farmer.proposals.bantuan.show', $program) }}'" class="cursor-pointer bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col sm:flex-row group">
-                    {{-- Icon --}}
-                    <div class="w-full sm:w-48 h-48 sm:h-auto bg-slate-50 flex-shrink-0 flex items-center justify-center border-r border-gray-50">
-                        <div class="w-20 h-20 bg-white rounded-3xl shadow-sm border border-gray-100 flex items-center justify-center text-primary-600 group-hover:scale-110 transition-transform duration-500">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                            </svg>
-                        </div>
-                    </div>
+
 
                     {{-- Info --}}
                     <div class="flex-1 p-6 flex flex-col justify-between">
@@ -105,15 +98,8 @@
                 <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
                      class="divide-y divide-gray-100 bg-white">
                     @foreach($closedPrograms as $program)
-                        <div class="flex flex-col sm:flex-row opacity-70 hover:opacity-90 transition-opacity">
-                            {{-- Icon --}}
-                            <div class="w-full sm:w-40 h-36 sm:h-auto bg-gray-50 flex-shrink-0 flex items-center justify-center border-r border-gray-100">
-                                <div class="w-16 h-16 bg-white rounded-2xl border border-gray-100 flex items-center justify-center text-gray-300">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                                    </svg>
-                                </div>
-                            </div>
+                        <div onclick="window.location.href='{{ route('farmer.proposals.bantuan.show', $program) }}'" class="cursor-pointer flex flex-col sm:flex-row opacity-70 hover:opacity-90 transition-opacity">
+
 
                             {{-- Info --}}
                             <div class="flex-1 p-5 flex flex-col justify-between">

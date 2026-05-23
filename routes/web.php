@@ -71,7 +71,7 @@ Route::prefix('informasi')->name('informasi.')->group(function () {
 Route::get('/verifikasi/proposal/{id}/{hash}', [\App\Http\Controllers\VerificationController::class, 'verifyProposal'])->name('verification.proposal');
 
 // Protected Routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
@@ -80,6 +80,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Farmer Profile Request Change
+    Route::post('/farmer/profile/request-change', [App\Http\Controllers\FarmerProfileController::class, 'requestChange'])->name('farmer.profile.request-change');
+
     // Admin Routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('users.index');
@@ -87,7 +90,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('users.show');
         Route::post('/users/{user}/reviewed', [App\Http\Controllers\Admin\AdminController::class, 'markAsReviewed'])->name('users.reviewed');
         Route::patch('/users/{user}/approve', [App\Http\Controllers\Admin\AdminController::class, 'approve'])->name('users.approve');
+        Route::patch('/users/{user}/revisi', [App\Http\Controllers\Admin\AdminController::class, 'revise'])->name('users.revisi');
         Route::delete('/users/{user}/reject', [App\Http\Controllers\Admin\AdminController::class, 'reject'])->name('users.reject');
+        Route::patch('/users/{user}/respond-change', [App\Http\Controllers\Admin\AdminController::class, 'respondChangeRequest'])->name('users.respond-change');
         
         Route::resource('programs', App\Http\Controllers\Admin\ProgramController::class);
         
@@ -109,6 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['pimpinan'])->prefix('pimpinan')->name('pimpinan.')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Pimpinan\ProposalController::class, 'dashboard'])->name('dashboard');
         Route::get('/proposals', [App\Http\Controllers\Pimpinan\ProposalController::class, 'index'])->name('proposals.index');
+        Route::get('/proposals/archives', [App\Http\Controllers\Pimpinan\ProposalController::class, 'archives'])->name('proposals.archives');
         Route::get('/proposals/{proposal}', [App\Http\Controllers\Pimpinan\ProposalController::class, 'show'])->name('proposals.show');
         Route::post('/proposals/{proposal}/dispose', [App\Http\Controllers\Pimpinan\ProposalController::class, 'dispose'])->name('proposals.dispose');
         Route::patch('/proposals/{proposal}/approve', [App\Http\Controllers\Pimpinan\ProposalController::class, 'approve'])->name('proposals.approve');
@@ -132,6 +138,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/tim-survei/{user}', [App\Http\Controllers\Kabid\TimSurveiController::class, 'destroy'])->name('tim-survei.destroy');
     });
 
+
+    // Farmer Profile Edit (For Revision)
+    Route::prefix('farmer/profile')->name('farmer.profile.')->group(function () {
+        Route::get('/edit', [App\Http\Controllers\FarmerProfileController::class, 'edit'])->name('edit');
+        Route::patch('/update', [App\Http\Controllers\FarmerProfileController::class, 'update'])->name('update');
+    });
 
     // Farmer Routes
     Route::middleware(['approved'])->prefix('farmer/proposals')->name('farmer.proposals.')->group(function () {

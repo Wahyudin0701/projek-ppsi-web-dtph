@@ -29,7 +29,7 @@
 </head>
 <body>
     <div class="no-print" style="margin-bottom: 20px; text-align: center;">
-        <button onclick="window.print()" style="padding: 10px 20px; background: #19A148; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Cetak Dokumen</button>
+        <button onclick="window.print()" style="padding: 10px 20px; background: #2563EB; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Cetak Dokumen</button>
     </div>
 
     <div class="header">
@@ -79,3 +79,4 @@
     </div>
 </body>
 </html>
+

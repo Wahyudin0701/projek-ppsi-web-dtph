@@ -33,6 +33,12 @@
     <body class="bg-[#F8FAFC] text-slate-900 antialiased overflow-hidden flex h-screen" x-data="{ mobileMenuOpen: false }">
         @php
             $roleColor = match(true) {
+                auth()->user()->isAdmin() => [
+                    'active' => 'bg-blue-600 text-white',
+                    'hover'  => 'text-[#64748B] hover:bg-blue-50 hover:text-blue-600',
+                    'avatar' => 'bg-blue-600',
+                    'bg'     => 'bg-blue-600'
+                ],
                 auth()->user()->isPimpinan() => [
                     'active' => 'bg-indigo-600 text-white',
                     'hover'  => 'text-[#64748B] hover:bg-indigo-50 hover:text-indigo-600',
@@ -140,8 +146,10 @@
                                 <li>
                                     <a href="{{ route('admin.alsintan.index') }}" 
                                        class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.alsintan.*') ? $roleColor['active'] : $roleColor['hover'] }}">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"/>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h9l1 7M4 11V4M8 10V4M18 5c-.6 0-1 .4-1 1v5.6m-7-.6 11 .9c.6 0 1 .5 1 1.1v.5c0 1.7-1.3 3-3 3h-1.4"/>
+                                            <circle cx="7" cy="15" r="5" stroke-width="2"/>
+                                            <circle cx="18" cy="18" r="2" stroke-width="2"/>
                                         </svg>
                                         Manajemen Alsintan
                                     </a>
@@ -171,7 +179,7 @@
                                 </li>
                                 <li>
                                     <a href="{{ route('pimpinan.proposals.index') }}"
-                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.*') && !request()->has('status') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.index') || request()->routeIs('pimpinan.proposals.show') ? $roleColor['active'] : $roleColor['hover'] }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                                         Tinjau Proposal
                                         @php $pimpinanPending = \App\Models\Proposal::whereIn('status', ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])->count(); @endphp
@@ -181,8 +189,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('pimpinan.proposals.index', ['status' => 'disetujui']) }}"
-                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->fullUrlIs(route('pimpinan.proposals.index', ['status' => 'disetujui'])) ? $roleColor['active'] : $roleColor['hover'] }}">
+                                    <a href="{{ route('pimpinan.proposals.archives') }}"
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.archives') ? $roleColor['active'] : $roleColor['hover'] }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                                         Arsip Keputusan
                                     </a>
@@ -238,6 +246,7 @@
                         </ul>
                     </div>
 
+                    @if(auth()->user()->isUser() || auth()->user()->isUmum())
                     <div>
                         <h3 class="text-[11px] font-extrabold text-[#94A3B8] uppercase tracking-[0.15em] mb-4 px-3">Akun</h3>
                         <ul class="space-y-2">
@@ -252,6 +261,7 @@
                             </li>
                         </ul>
                     </div>
+                    @endif
                 </div>
             </div>
 
@@ -324,10 +334,12 @@
                                 <p class="text-xs font-bold text-gray-800 leading-tight truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-[10px] text-gray-500 font-medium truncate mt-0.5">{{ auth()->user()->email }}</p>
                             </div>
+                            @if(auth()->user()->isUser() || auth()->user()->isUmum())
                             <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                 Profil Saya
                             </a>
+                            @endif
                             <div class="my-1 border-t border-gray-50"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -462,7 +474,7 @@
                             Dashboard Pimpinan
                         </a>
                         <a href="{{ route('pimpinan.proposals.index') }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.*') && !request()->has('status') ? $roleColor['active'] : $roleColor['hover'] }}">
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.index') || request()->routeIs('pimpinan.proposals.show') ? $roleColor['active'] : $roleColor['hover'] }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                             Tinjau Proposal
                             @php $pimpinanPending = \App\Models\Proposal::whereIn('status', ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])->count(); @endphp
@@ -470,8 +482,8 @@
                                 <span class="ml-auto bg-indigo-200 text-indigo-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pimpinanPending }}</span>
                             @endif
                         </a>
-                        <a href="{{ route('pimpinan.proposals.index', ['status' => 'disetujui']) }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->fullUrlIs(route('pimpinan.proposals.index', ['status' => 'disetujui'])) ? $roleColor['active'] : $roleColor['hover'] }}">
+                        <a href="{{ route('pimpinan.proposals.archives') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.archives') ? $roleColor['active'] : $roleColor['hover'] }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                             Arsip Keputusan
                         </a>
@@ -508,6 +520,7 @@
                         </a>
                     @endif
 
+                    @if(auth()->user()->isUser() || auth()->user()->isUmum())
                     <div class="border-t border-gray-100 my-2 pt-2">
                         <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest px-3 mb-2">AKUN</p>
                         <a href="{{ route('profile.edit') }}" @click="mobileMenuOpen = false"
@@ -516,6 +529,7 @@
                             Profil Saya
                         </a>
                     </div>
+                    @endif
                 </nav>
 
                 {{-- Drawer Footer: Logout --}}
@@ -571,10 +585,12 @@
                                 <p class="text-xs font-bold text-gray-800 leading-tight truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-[10px] text-gray-500 font-medium truncate mt-0.5">{{ auth()->user()->email }}</p>
                             </div>
+                            @if(auth()->user()->isUser() || auth()->user()->isUmum())
                             <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 font-medium transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                 Profil Saya
                             </a>
+                            @endif
                             <div class="my-1 border-t border-gray-50"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

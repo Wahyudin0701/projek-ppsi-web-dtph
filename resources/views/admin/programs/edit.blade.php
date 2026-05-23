@@ -51,7 +51,6 @@
                                     class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
                                 <option value="" disabled>Pilih Tipe</option>
                                 <option value="bantuan_permanen" {{ old('type', $program->type) == 'bantuan_permanen' ? 'selected' : '' }}>Bantuan Permanen (Hibah)</option>
-                                <option value="pinjam_alat" {{ old('type', $program->type) == 'pinjam_alat' ? 'selected' : '' }}>Peminjaman Alat</option>
                                 <option value="usulan_pendanaan" {{ old('type', $program->type) == 'usulan_pendanaan' ? 'selected' : '' }}>Usulan Pendanaan</option>
                             </select>
                             <x-input-error :messages="$errors->get('type')" class="mt-2" />
@@ -171,7 +170,7 @@
                             Batal
                         </a>
                         <button type="submit"
-                                class="px-5 py-2.5 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-colors shadow-sm">
+                                class="px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-sm">
                             Perbarui Program
                         </button>
                     </div>
@@ -181,3 +180,4 @@
 
     </div>
 </x-app-layout>
+

@@ -84,7 +84,7 @@ class User extends Authenticatable
      */
     public function isKabid(): bool
     {
-        return in_array($this->role, ['kabid_psp', 'kabid_tp']);
+        return in_array($this->role, ['kabid_psp', 'kabid_tp', 'kabid_hortikultura']);
     }
 
     public function isKabidPsp(): bool
@@ -97,6 +97,11 @@ class User extends Authenticatable
         return $this->role === 'kabid_tp';
     }
 
+    public function isKabidHortikultura()
+    {
+        return $this->role === 'kabid_hortikultura';
+    }
+
     /**
      * Human-readable label for role.
      */
@@ -107,6 +112,7 @@ class User extends Authenticatable
             'pimpinan'   => 'Pimpinan / Kepala Dinas',
             'kabid_psp'  => 'Kepala Bidang PSP',
             'kabid_tp'   => 'Kepala Bidang Tanaman Pangan',
+            'kabid_hortikultura' => 'Kepala Bidang Hortikultura',
             'user'       => 'Kelompok Tani',
             'umum'       => 'Umum',
             default      => ucfirst($this->role),

@@ -18,7 +18,7 @@ class DocumentController extends Controller
         if ($user->role === 'user' && $proposal->user_id !== $user->id) {
             abort(403, 'Akses ditolak.');
         }
-        if ($user->role === 'kabid_psp' || $user->role === 'kabid_tp') {
+        if (in_array($user->role, ['kabid_psp', 'kabid_tp', 'kabid_hortikultura'])) {
             if ($proposal->kabid_id && $proposal->kabid_id !== $user->id) {
                 abort(403, 'Bukan wewenang Anda.');
             }

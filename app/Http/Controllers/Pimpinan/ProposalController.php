@@ -53,11 +53,13 @@ class ProposalController extends Controller
         $query = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'kabid'])
             ->latest('submission_date');
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        } else {
-            $query->whereIn('status', ['diteruskan_ke_pimpinan', 'menunggu_approval_ba']);
-        }
+        $query->whereIn('status', [
+            'diteruskan_ke_pimpinan', 
+            'didisposisi_kabid', 
+            'surat_tugas_terbit', 
+            'survei_selesai', 
+            'menunggu_approval_ba'
+        ]);
 
         if ($request->filled('type')) {
             if ($request->type === 'alsintan') {
@@ -94,7 +96,42 @@ class ProposalController extends Controller
             'total'          => (int) ($statsRaw->total ?? 0),
         ];
 
-        return view('pimpinan.proposals.index', compact('proposals', 'stats'));
+        $isArchive = false;
+        return view('pimpinan.proposals.index', compact('proposals', 'stats', 'isArchive'));
+    }
+
+    /**
+     * Daftar arsip keputusan proposal.
+     */
+    public function archives(Request $request)
+    {
+        $query = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'kabid'])
+            ->latest('submission_date');
+
+        $query->whereIn('status', ['disetujui', 'ditolak']);
+
+        if ($request->filled('type')) {
+            if ($request->type === 'alsintan') {
+                $query->whereNotNull('alsintan_id');
+            } else {
+                $query->whereNotNull('program_id');
+            }
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('alsintan', fn($a) => $a->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('program', fn($p) => $p->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $proposals = $query->paginate(15)->withQueryString();
+
+        $isArchive = true;
+
+        return view('pimpinan.proposals.index', compact('proposals', 'isArchive'));
     }
 
     /**
@@ -109,7 +146,7 @@ class ProposalController extends Controller
         ]);
 
         // Kabid yang tersedia untuk disposisi
-        $kabidList = User::whereIn('role', ['kabid_psp', 'kabid_tp'])->get();
+        $kabidList = User::whereIn('role', ['kabid_psp', 'kabid_tp', 'kabid_hortikultura'])->get();
 
         return view('pimpinan.proposals.show', compact('proposal', 'kabidList'));
     }
@@ -135,10 +172,10 @@ class ProposalController extends Controller
 
         // Simpan disposisi
         DispositionLog::create([
-            'proposal_id'  => $proposal->id,
-            'from_user_id' => Auth::id(),
-            'to_user_id'   => $kabid->id,
-            'instruction'  => $request->disposition_notes,
+            'proposal_id' => $proposal->id,
+            'disposed_by' => Auth::id(),
+            'disposed_to' => $kabid->id,
+            'notes'       => $request->disposition_notes,
         ]);
 
         // Update proposal

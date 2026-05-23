@@ -90,7 +90,7 @@
                         <a href="{{ route('admin.alsintan.index') }}" class="px-5 py-2.5 text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
                             Batal
                         </a>
-                        <button type="submit" class="px-5 py-2.5 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-colors shadow-sm">
+                        <button type="submit" class="px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-sm">
                             Simpan Alsintan
                         </button>
                     </div>
@@ -99,3 +99,4 @@
         </div>
     </div>
 </x-app-layout>
+

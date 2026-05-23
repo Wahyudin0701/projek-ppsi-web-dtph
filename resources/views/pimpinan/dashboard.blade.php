@@ -34,27 +34,47 @@
         {{-- ===== STAT CARDS ===== --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {{-- Total Pengajuan --}}
-            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-extrabold text-emerald-600 uppercase tracking-[0.1em] mb-4">TOTAL PENGAJUAN</p>
-                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['total'] }}</p>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Total Pengajuan</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['total'] }}</p>
+                </div>
             </div>
 
             {{-- Sedang Diproses --}}
-            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-extrabold text-blue-600 uppercase tracking-[0.1em] mb-4">SEDANG DIPROSES</p>
-                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['menunggu'] }}</p>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-blue-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Sedang Diproses</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['menunggu'] }}</p>
+                </div>
             </div>
 
             {{-- Disetujui --}}
-            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-extrabold text-emerald-600 uppercase tracking-[0.1em] mb-4">DISETUJUI</p>
-                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['disetujui'] }}</p>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Disetujui</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['disetujui'] }}</p>
+                </div>
             </div>
 
             {{-- Ditolak --}}
-            <div class="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                <p class="text-[11px] font-extrabold text-red-600 uppercase tracking-[0.1em] mb-4">DITOLAK</p>
-                <p class="text-4xl font-black text-slate-800 leading-none">{{ $stats['ditolak'] }}</p>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-red-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Ditolak</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['ditolak'] }}</p>
+                </div>
             </div>
         </div>
 

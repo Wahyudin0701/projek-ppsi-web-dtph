@@ -39,18 +39,20 @@
         {{-- Summary + Actions --}}
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-                <div class="flex items-center gap-3 mb-2 flex-wrap">
-                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
-                        {{ $isAlsintan ? 'Peminjaman Alsintan' : 'Program Bantuan' }}
-                    </span>
-                    <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ $sc['bg'] }}">
+                <div class="mb-2">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest inline-block {{ $sc['bg'] }}">
                         {{ $sc['label'] }}
                     </span>
                 </div>
                 <h3 class="text-2xl font-black text-gray-900">
                     {{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}
                 </h3>
-                <p class="text-gray-500 text-sm mt-1">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
+                <p class="text-gray-500 text-sm mt-1 mb-3">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md inline-block {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
+                        {{ $isAlsintan ? 'Peminjaman Alsintan' : 'Program Bantuan' }}
+                    </span>
+                </div>
             </div>
 
             {{-- Action Buttons --}}
@@ -114,7 +116,7 @@
                                                 class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
                                         </div>
                                         <div class="flex flex-row-reverse gap-3">
-                                            <button type="submit" class="flex-1 px-6 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors text-sm">Disposisi →</button>
+                                            <button type="submit" class="flex-1 px-6 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors text-sm">Disposisi</button>
                                             <button type="button" @click="showDispose = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
                                         </div>
                                     </form>

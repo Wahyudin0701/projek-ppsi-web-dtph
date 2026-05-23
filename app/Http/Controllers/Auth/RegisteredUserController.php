@@ -54,6 +54,8 @@ class RegisteredUserController extends Controller
                 'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
                 'kecamatan' => ['required', 'string', 'max:255'],
                 'alamat' => ['required', 'string'],
+                'anggota' => ['required', 'array', 'min:1'],
+                'anggota.*' => ['required', 'string', 'max:255'],
             ]);
         }
 
@@ -70,7 +72,7 @@ class RegisteredUserController extends Controller
             ]);
 
             if ($role === 'petani') {
-                $user->farmerProfile()->create([
+                $profile = $user->farmerProfile()->create([
                     'nama_kelompok' => $request->name,
                     'ketua' => $request->nama_ketua,
                     'nik_ketua' => $request->nik_ketua,
@@ -83,6 +85,12 @@ class RegisteredUserController extends Controller
                     'alamat' => $request->alamat,
                     'status' => 'menunggu',
                 ]);
+
+                if ($request->has('anggota') && is_array($request->anggota)) {
+                    foreach ($request->anggota as $namaAnggota) {
+                        $profile->members()->create(['nama' => $namaAnggota]);
+                    }
+                }
             }
 
             return $user;

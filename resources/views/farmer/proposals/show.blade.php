@@ -18,33 +18,38 @@
             {{-- Header Card --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <div class="flex items-center gap-3 mb-2">
-                        <h3 class="text-2xl font-black text-gray-900">
-                            @if($proposal->alsintan_id)
-                                {{ $proposal->alsintan->name }}
-                            @else
-                                {{ $proposal->program->name }}
-                            @endif
-                        </h3>
-                        @php
-                            $statusColors = [
-                                'pending_verifikasi'       => 'bg-yellow-100 text-yellow-700',
-                                'diteruskan_ke_pimpinan'   => 'bg-indigo-100 text-indigo-700',
-                                'didisposisi_kabid'        => 'bg-amber-100 text-amber-700',
-                                'surat_tugas_terbit'       => 'bg-blue-100 text-blue-700',
-                                'survei_selesai'           => 'bg-orange-100 text-orange-700',
-                                'menunggu_approval_ba'     => 'bg-purple-100 text-purple-700',
-                                'disetujui'                => 'bg-green-100 text-green-700',
-                                'ditolak'                  => 'bg-red-100 text-red-700',
-                            ];
-                            $color = $statusColors[$proposal->status] ?? 'bg-gray-100 text-gray-700';
-                            $statusLabel = $proposal->statusLabel;
-                        @endphp
-                        <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ $color }}">
+                    @php
+                        $statusColors = [
+                            'pending_verifikasi'       => 'bg-yellow-100 text-yellow-700',
+                            'diteruskan_ke_pimpinan'   => 'bg-indigo-100 text-indigo-700',
+                            'didisposisi_kabid'        => 'bg-amber-100 text-amber-700',
+                            'surat_tugas_terbit'       => 'bg-blue-100 text-blue-700',
+                            'survei_selesai'           => 'bg-orange-100 text-orange-700',
+                            'menunggu_approval_ba'     => 'bg-purple-100 text-purple-700',
+                            'disetujui'                => 'bg-green-100 text-green-700',
+                            'ditolak'                  => 'bg-red-100 text-red-700',
+                        ];
+                        $color = $statusColors[$proposal->status] ?? 'bg-gray-100 text-gray-700';
+                        $statusLabel = $proposal->statusLabel;
+                    @endphp
+                    <div class="mb-2">
+                        <span class="px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest inline-block {{ $color }}">
                             {{ $statusLabel }}
                         </span>
                     </div>
-                    <p class="text-gray-500 text-sm">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
+                    <h3 class="text-2xl font-black text-gray-900">
+                        @if($proposal->alsintan_id)
+                            {{ $proposal->alsintan->name }}
+                        @else
+                            {{ $proposal->program->name }}
+                        @endif
+                    </h3>
+                    <p class="text-gray-500 text-sm mt-1 mb-3">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md inline-block {{ $proposal->alsintan_id ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
+                            {{ $proposal->alsintan_id ? 'Peminjaman Alsintan' : 'Program Bantuan' }}
+                        </span>
+                    </div>
                 </div>
                 <div class="flex gap-3 w-full sm:w-auto">
                     @if($proposal->status === 'disetujui')

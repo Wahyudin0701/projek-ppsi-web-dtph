@@ -23,7 +23,7 @@ class ProgramController extends Controller
     {
         $request->validate([
             'name'        => 'required|string|max:255',
-            'type'        => 'required|in:bantuan_permanen,pinjam_alat,usulan_pendanaan',
+            'type'        => 'required|in:bantuan_permanen,usulan_pendanaan',
             'jenis'       => 'required|in:alsintan,benih,pupuk,infrastruktur,pelatihan',
             'open_date'   => 'required|date',
             'close_date'  => 'required|date|after_or_equal:open_date',
@@ -56,7 +56,7 @@ class ProgramController extends Controller
     {
         $request->validate([
             'name'        => 'required|string|max:255',
-            'type'        => 'required|in:bantuan_permanen,pinjam_alat,usulan_pendanaan',
+            'type'        => 'required|in:bantuan_permanen,usulan_pendanaan',
             'jenis'       => 'required|in:alsintan,benih,pupuk,infrastruktur,pelatihan',
             'open_date'   => 'required|date',
             'close_date'  => 'required|date|after_or_equal:open_date',

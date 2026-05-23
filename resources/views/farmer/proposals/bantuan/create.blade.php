@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">Program Bantuan - Ajukan Proposal</x-slot>
 
-    <div class="max-w-5xl mx-auto space-y-6" x-data="{ showConfirm: false, agreed: false }">
+    <div class="max-w-7xl mx-auto space-y-6">
         
         {{-- Page Header --}}
         <div class="flex items-center justify-between mb-2">
             <div>
                 <h2 class="text-2xl font-extrabold text-gray-900">Form Pengajuan Program</h2>
-                <p class="text-gray-500 text-sm mt-1">Silakan lengkapi formulir di bawah ini untuk mengajukan bantuan pada program {{ $program->name }}.</p>
+                <p class="text-gray-500 text-sm mt-1">Lengkapi data untuk mengajukan bantuan pada program {{ $program->name }}.</p>
             </div>
             <a href="{{ route('farmer.proposals.bantuan') }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -15,207 +15,207 @@
             </a>
         </div>
 
-        <div class="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 p-8">
-            {{-- Program Information Detail --}}
-            <div class="mb-8 p-6 sm:p-8 bg-gray-50/50 rounded-3xl border border-gray-100">
-                <div class="flex flex-col sm:flex-row items-start gap-5 mb-6 pb-6 border-b border-gray-200/60">
-                    <div class="w-16 h-16 bg-primary-100/50 rounded-2xl flex items-center justify-center shrink-0 border border-primary-100">
-                        <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                    </div>
-                    <div>
-                        <div class="flex flex-wrap items-center gap-2 mb-2">
-                            <span class="text-[10px] font-bold text-primary-700 uppercase tracking-widest bg-primary-100 px-2.5 py-1 rounded-lg">Program Bantuan</span>
-                            <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest bg-white px-2.5 py-1 rounded-lg border border-gray-200">{{ str_replace('_', ' ', $program->type) }}</span>
-                        </div>
-                        <h3 class="text-2xl font-black text-gray-900 leading-tight">{{ $program->name }}</h3>
-                        @if($program->description)
-                            <p class="text-gray-500 text-sm mt-3 leading-relaxed">{{ $program->description }}</p>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-center">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sasaran</p>
-                        <p class="text-sm font-bold text-gray-900 line-clamp-2">{{ $program->sasaran ?? '-' }}</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-center">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kuota</p>
-                        <p class="text-sm font-bold text-gray-900">{{ $program->kuota ?? '-' }}</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-center">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Jadwal Buka</p>
-                        <p class="text-sm font-bold text-gray-900">{{ $program->open_date?->translatedFormat('d F Y') ?? '-' }}</p>
-                    </div>
-                    <div class="bg-red-50/30 rounded-2xl p-4 border border-red-100 shadow-sm flex flex-col justify-center">
-                        <p class="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">Jadwal Tutup</p>
-                        <p class="text-sm font-bold text-red-600">{{ $program->close_date?->translatedFormat('d F Y') ?? '-' }}</p>
-                    </div>
-                </div>
-
-                @if($program->requirements && is_array($program->requirements) && count($program->requirements) > 0)
-                <div class="mb-6 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                    <h4 class="text-xs font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        Persyaratan Khusus
-                    </h4>
-                    <ul class="space-y-3">
-                        @foreach($program->requirements as $req)
-                        <li class="flex items-start gap-3 text-sm text-gray-600">
-                            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                            <span class="leading-relaxed">{{ $req }}</span>
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                @if($program->sop_description)
-                <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5">
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <h4 class="text-sm font-bold text-blue-900">Alur / SOP Pengajuan</h4>
-                    </div>
-                    <p class="text-sm text-blue-800/80 leading-relaxed whitespace-pre-line">{{ $program->sop_description }}</p>
-                </div>
-                @endif
-            </div>
-
-            {{-- Profile Card / Data Lengkap Pemohon --}}
-            <div class="mb-8 p-6 sm:p-8 bg-white rounded-3xl border border-gray-100 shadow-sm">
-                <h3 class="text-lg font-extrabold text-gray-900 mb-6 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    Data Lengkap Pemohon (Terdaftar)
-                </h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            
+            {{-- Left Column: Summaries --}}
+            <div class="lg:col-span-1 space-y-6">
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-sm">
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Kelompok Tani</p>
-                        <p class="font-extrabold text-gray-900 text-base">{{ auth()->user()->farmerProfile->nama_kelompok ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Ketua Kelompok</p>
-                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->ketua ?? auth()->user()->name }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">NIK Ketua</p>
-                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->nik_ketua ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">No. Telepon / WhatsApp</p>
-                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->kontak ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Komoditi Utama</p>
-                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->komoditi_utama ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Luas Lahan Terdaftar</p>
-                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->luas_lahan ?? '-' }} Ha</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Kecamatan</p>
-                        <p class="font-bold text-gray-800">{{ auth()->user()->farmerProfile->kecamatan ?? '-' }}</p>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Alamat Lengkap Kelompok</p>
-                        <p class="font-medium text-gray-700">{{ auth()->user()->farmerProfile->alamat ?? '-' }}</p>
-                    </div>
-                </div>
-            </div>
-
-            @if(session('error'))
-                <div class="mb-6 p-4 bg-red-50 text-red-700 rounded-xl border border-red-200 font-medium text-sm flex items-center gap-3">
-                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <form id="programForm" x-ref="programForm" action="{{ route('farmer.proposals.store', $program) }}" method="POST" class="space-y-6" @submit.prevent="showConfirm = true">
-                @csrf
-                
-                <div>
-                    <label for="lokasi_lahan" class="block text-sm font-bold text-gray-700 mb-2">Lokasi Lahan (Alamat/Koordinat) <span class="text-red-500">*</span></label>
-                    <div class="relative">
-                        <div class="absolute top-3 left-3.5 pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        </div>
-                        <textarea name="lokasi_lahan" id="lokasi_lahan" rows="3" required
-                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all sm:text-sm resize-none"
-                            placeholder="Contoh: Desa Makmur, RT 01/RW 02. Tuliskan lokasi lahan yang akan menjadi objek program/bantuan ini.">{{ old('lokasi_lahan') }}</textarea>
-                    </div>
-                    <x-input-error class="mt-2" :messages="$errors->get('lokasi_lahan')" />
-                </div>
-
-                <div class="p-4 bg-blue-50/50 rounded-xl border border-blue-100 flex items-start gap-3">
-                    <svg class="w-5 h-5 text-blue-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <p class="text-sm text-blue-900 leading-relaxed">
-                        Dengan mengajukan proposal ini, Anda menyatakan bahwa permohonan ini sah atas nama Kelompok Tani <strong>{{ auth()->user()->farmerProfile->nama_kelompok }}</strong> dan data yang diisi adalah benar.
-                    </p>
-                </div>
-
-                <div class="flex items-start gap-3 py-2">
-                    <div class="flex items-center h-5">
-                        <input id="agreement" type="checkbox" x-model="agreed" required
-                            class="w-5 h-5 text-primary-600 border-gray-300 rounded-lg focus:ring-primary-500 cursor-pointer">
-                    </div>
-                    <label for="agreement" class="text-sm text-gray-600 leading-snug cursor-pointer select-none">
-                        Saya menyatakan bertanggung jawab penuh atas kebenaran data yang diajukan dan berkomitmen untuk mengikuti seluruh tahapan program sesuai ketentuan yang berlaku.
-                    </label>
-                </div>
-
-                <div class="flex items-center gap-4 pt-4">
-                    <button type="submit" :disabled="!agreed" :class="agreed ? 'bg-primary-600 hover:bg-primary-700' : 'bg-gray-300 cursor-not-allowed'"
-                        class="px-8 py-3.5 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-2">
-                        Kirim Proposal
-                    </button>
-                    <a href="{{ route('farmer.proposals.bantuan') }}" class="text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Batal</a>
-                </div>
-            </form>
-
-            {{-- Confirmation Modal --}}
-            <template x-if="showConfirm">
-                <div class="fixed inset-0 z-[999] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="showConfirm = false"></div>
-                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100">
-                            <div class="bg-white p-8">
-                                <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-primary-50 rounded-2xl flex items-center justify-center shrink-0">
-                                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-xl font-black text-gray-900">Konfirmasi Pengajuan</h3>
-                                        <p class="text-sm text-gray-500">Kirim usulan proposal sekarang?</p>
-                                    </div>
-                                </div>
-                                <div class="space-y-4">
-                                    <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
-                                        <p class="font-bold text-gray-900 text-lg">{{ $program->name }}</p>
-                                    </div>
-                                    <p class="text-sm text-gray-600 leading-relaxed">
-                                        Setelah dikirim, proposal Anda akan masuk ke tahap verifikasi. Pastikan lokasi lahan dan data pendukung lainnya sudah benar.
-                                    </p>
-                                </div>
+                {{-- Program Detail Card --}}
+                <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden relative">
+                    <div class="p-6">
+                        <span class="inline-block rounded-xl bg-primary-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary-600 border border-primary-100 mb-4">{{ str_replace('_', ' ', $program->type) }}</span>
+                        <h3 class="text-xl font-black text-gray-900 mb-5 line-clamp-2">{{ $program->name }}</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
+                                <span class="text-gray-500 font-medium">Sasaran</span>
+                                <span class="font-bold text-gray-800 text-right w-1/2 line-clamp-1">{{ $program->sasaran ?? '-' }}</span>
                             </div>
-                            <div class="bg-gray-50 px-8 py-6 flex flex-row-reverse gap-3">
-                                <button type="button" @click="$refs.programForm.submit()"
-                                    class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-lg shadow-primary-600/20">
-                                    Ya, Kirim Sekarang
-                                </button>
-                                <button type="button" @click="showConfirm = false"
-                                    class="w-full sm:w-auto px-8 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
-                                    Periksa Kembali
-                                </button>
+                            <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
+                                <span class="text-gray-500 font-medium">Kuota</span>
+                                <span class="font-bold text-gray-800">{{ $program->kuota ?? '-' }}</span>
+                            </div>
+                            <div class="flex flex-col text-sm border-b border-gray-50 pb-3 gap-1">
+                                <span class="text-gray-500 font-medium text-xs">Jadwal Buka</span>
+                                <span class="font-bold text-gray-800">{{ $program->open_date?->translatedFormat('d F Y') ?? '-' }}</span>
+                            </div>
+                            <div class="flex flex-col text-sm gap-1">
+                                <span class="text-gray-500 font-medium text-xs">Jadwal Tutup</span>
+                                <span class="font-black text-red-600">{{ $program->close_date?->translatedFormat('d F Y') ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </template>
-        </div>
-    </div>
+
+                {{-- Profile Card --}}
+                <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6">
+                    <h3 class="text-sm font-extrabold text-gray-900 mb-5 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[#19A148]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        Pemohon Terdaftar
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Kelompok Tani</p>
+                            <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->nama_kelompok ?? '-' }}</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Ketua</p>
+                                <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->ketua ?? auth()->user()->name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Telepon</p>
+                                <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->kontak ?? '-' }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Alamat Kelompok</p>
+                            <p class="text-sm font-medium text-gray-700 leading-relaxed">{{ auth()->user()->farmerProfile->alamat ?? '-' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- Right Column: Form --}}
+            <div class="lg:col-span-2 space-y-6">
+
+                @if(session('error'))
+                    <div class="mb-6 p-4 bg-red-50 text-red-700 rounded-2xl border border-red-200 font-medium text-sm flex items-start gap-3">
+                        <svg class="w-6 h-6 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="leading-relaxed">{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 sm:p-10" x-data="{ showConfirm: false, agreed: false }">
+                    <h3 class="text-2xl font-black text-gray-900 mb-8">Formulir Pengajuan</h3>
+
+                    @if($program->description || ($program->requirements && is_array($program->requirements) && count($program->requirements) > 0) || $program->sop_description)
+                        <div class="mb-10 space-y-5">
+                            @if($program->description)
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ $program->description }}</p>
+                            @endif
+
+                            @if($program->requirements && is_array($program->requirements) && count($program->requirements) > 0)
+                            <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100">
+                                <h4 class="text-xs font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-[#19A148]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                    Persyaratan Khusus
+                                </h4>
+                                <ul class="space-y-2.5">
+                                    @foreach($program->requirements as $req)
+                                    <li class="flex items-start gap-2 text-sm text-gray-600">
+                                        <svg class="w-4 h-4 text-[#19A148] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <span class="leading-relaxed">{{ $req }}</span>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
+
+                            @if($program->sop_description)
+                            <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <h4 class="text-sm font-bold text-blue-900">Alur / SOP Pengajuan</h4>
+                                </div>
+                                <p class="text-sm text-blue-800/80 leading-relaxed whitespace-pre-line">{{ $program->sop_description }}</p>
+                            </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    <form id="programForm" x-ref="programForm" action="{{ route('farmer.proposals.store', $program) }}" method="POST" @submit.prevent="showConfirm = true">
+                        @csrf
+
+                        <div class="space-y-6">
+                            <div>
+                                <label for="lokasi_lahan" class="block text-sm font-bold text-gray-700 mb-2">
+                                    Lokasi Lahan / Sasaran <span class="text-red-500">*</span>
+                                </label>
+                                <textarea name="lokasi_lahan" id="lokasi_lahan" rows="4" required
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm resize-none @error('lokasi_lahan') border-red-400 bg-red-50 @enderror"
+                                    placeholder="Contoh: Desa Makmur, RT 01/RW 02. Tuliskan lokasi lahan yang akan menjadi objek program/bantuan ini...">{{ old('lokasi_lahan') }}</textarea>
+                                @error('lokasi_lahan')
+                                    <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mt-10 p-5 bg-[#19A148]/5 rounded-2xl border border-[#19A148]/10 flex items-start gap-4">
+                            <svg class="w-6 h-6 text-[#19A148] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            <div>
+                                <h4 class="font-bold text-[#19A148] text-sm mb-1.5">Pernyataan Komitmen</h4>
+                                <p class="text-sm text-[#19A148]/80 leading-relaxed">
+                                    Dengan mengajukan proposal ini, Anda menyatakan permohonan sah atas nama kelompok tani terdaftar dan <strong class="text-[#19A148]">tidak dipungut biaya apapun (GRATIS)</strong>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex items-start gap-3">
+                            <div class="flex items-center h-5 mt-1">
+                                <input id="agreement" type="checkbox" x-model="agreed" required
+                                    class="w-5 h-5 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] cursor-pointer">
+                            </div>
+                            <label for="agreement" class="text-sm text-gray-600 leading-relaxed cursor-pointer select-none">
+                                Saya bertanggung jawab penuh atas kebenaran data dan berkomitmen untuk mengikuti seluruh tahapan program sesuai ketentuan yang berlaku.
+                            </label>
+                        </div>
+
+                        <div class="mt-10 flex items-center justify-end gap-4 pt-6 border-t border-gray-100">
+                            <a href="{{ route('farmer.proposals.bantuan') }}" class="px-6 py-3.5 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
+                                Batal
+                            </a>
+                            <button type="submit" :disabled="!agreed" :class="agreed ? 'bg-[#19A148] text-white hover:bg-green-700 hover:shadow-xl hover:shadow-green-900/20 hover:-translate-y-1' : 'bg-gray-100 text-gray-400 cursor-not-allowed'"
+                                class="px-8 py-3.5 font-bold rounded-2xl transition-all duration-300">
+                                Kirim Proposal
+                            </button>
+                        </div>
+                    </form>
+
+                    {{-- Confirmation Modal --}}
+                    <template x-teleport="body">
+                        <div x-show="showConfirm" x-cloak class="fixed inset-0 z-[999] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+                                     x-show="showConfirm" x-transition.opacity @click="showConfirm = false"></div>
+                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100"
+                                     x-show="showConfirm" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                                    <div class="bg-white p-8">
+                                        <div class="flex items-center gap-4 mb-6">
+                                            <div class="w-12 h-12 bg-[#19A148]/10 rounded-2xl flex items-center justify-center shrink-0">
+                                                <svg class="w-6 h-6 text-[#19A148]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-xl font-black text-gray-900">Konfirmasi Pengajuan</h3>
+                                                <p class="text-sm text-gray-500">Kirim usulan proposal sekarang?</p>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-4">
+                                            <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
+                                                <p class="font-bold text-gray-900 text-lg">{{ $program->name }}</p>
+                                            </div>
+                                            <p class="text-sm text-gray-600 leading-relaxed">
+                                                Setelah dikirim, proposal Anda akan masuk ke tahap verifikasi. Pastikan lokasi lahan dan data pendukung lainnya sudah benar.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 px-8 py-6 flex flex-col-reverse sm:flex-row-reverse gap-3">
+                                        <button type="button" @click="document.getElementById('programForm').submit()"
+                                            class="w-full sm:w-auto px-8 py-3 bg-[#19A148] text-white font-bold rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-[#19A148]/20">
+                                            Ya, Kirim Sekarang
+                                        </button>
+                                        <button type="button" @click="showConfirm = false"
+                                            class="w-full sm:w-auto px-8 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
+                                            Periksa Kembali
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+            </div>
 </x-app-layout>

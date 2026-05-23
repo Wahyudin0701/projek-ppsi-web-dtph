@@ -127,7 +127,7 @@
                      x-transition:leave-end="opacity-0 -translate-y-2"
                      class="divide-y divide-gray-100 bg-white">
                     @foreach($unavailableAlsintans as $alsintan)
-                        <div class="flex flex-col sm:flex-row opacity-70 hover:opacity-90 transition-opacity">
+                        <div onclick="window.location.href='{{ route('farmer.proposals.alsintan.show', $alsintan) }}'" class="cursor-pointer flex flex-col sm:flex-row opacity-70 hover:opacity-90 transition-opacity">
                             {{-- Image --}}
                             <div class="w-full sm:w-40 h-36 sm:h-auto bg-gray-50 flex-shrink-0 overflow-hidden flex items-center justify-center border-r border-gray-100">
                                 @if($alsintan->image)

@@ -125,8 +125,8 @@ class ProposalController extends Controller
      */
     public function bantuanList()
     {
-        $all = Program::where('jenis', '!=', 'alsintan')
-            ->withCount('proposals')
+        $all = Program::withCount('proposals')
+            ->orderBy('close_date', 'asc')
             ->get();
 
         // Program yang masih bisa diajukan
@@ -146,8 +146,7 @@ class ProposalController extends Controller
         $alsintans = \App\Models\Alsintan::latest()->get()
             ->filter(fn($a) => $a->available_stock > 0)
             ->values();
-        $programs = Program::where('jenis', '!=', 'alsintan')
-            ->orderBy('close_date', 'asc')
+        $programs = Program::orderBy('close_date', 'asc')
             ->get()
             ->filter(function($p) {
                 return $p->status === 'berjalan';

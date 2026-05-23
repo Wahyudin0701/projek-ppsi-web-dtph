@@ -152,15 +152,17 @@
                     </form>
 
                     {{-- Confirmation Modal --}}
-                    <template x-if="showConfirm">
-                        <div class="fixed inset-0 z-[999] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                    <template x-teleport="body">
+                        <div x-show="showConfirm" x-cloak class="fixed inset-0 z-[999] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                                 {{-- Backdrop --}}
-                                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="showConfirm = false"></div>
+                                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+                                     x-show="showConfirm" x-transition.opacity @click="showConfirm = false"></div>
 
                                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                                <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100">
+                                <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100"
+                                     x-show="showConfirm" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                                     <div class="bg-white p-8 sm:p-10">
                                         <div class="flex items-center gap-5 mb-8">
                                             <div class="w-14 h-14 bg-[#19A148]/10 rounded-2xl flex items-center justify-center shrink-0">
@@ -190,7 +192,7 @@
                                             class="w-full sm:w-auto px-8 py-3.5 bg-white text-gray-600 font-bold rounded-2xl border border-gray-200 hover:bg-gray-100 transition-colors">
                                             Periksa Kembali
                                         </button>
-                                        <button type="button" @click="$refs.proposalForm.submit()"
+                                        <button type="button" @click="document.getElementById('proposalForm').submit()"
                                             class="w-full sm:w-auto px-8 py-3.5 bg-[#19A148] text-white font-bold rounded-2xl hover:bg-green-700 hover:shadow-lg hover:shadow-green-900/20 hover:-translate-y-0.5 transition-all">
                                             Ya, Kirim Sekarang
                                         </button>

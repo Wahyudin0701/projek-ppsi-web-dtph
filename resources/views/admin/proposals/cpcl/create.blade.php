@@ -92,10 +92,11 @@
 
             <div class="bg-gray-50 px-8 py-5 border-t border-gray-100 flex justify-end gap-3">
                 <a href="{{ route('admin.proposals.show', $proposal) }}" class="px-6 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-colors text-sm">Batal</a>
-                <button type="submit" class="px-6 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors text-sm">
+                <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors text-sm">
                     Simpan Hasil Survei
                 </button>
             </div>
         </form>
     </div>
 </x-app-layout>
+

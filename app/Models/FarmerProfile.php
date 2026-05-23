@@ -25,6 +25,7 @@ class FarmerProfile extends Model
         'status',
         'rejection_reason',
         'is_verified_acknowledged',
+        'change_request_reason',
     ];
 
     protected $casts = [
@@ -35,5 +36,15 @@ class FarmerProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function verificationLogs()
+    {
+        return $this->hasMany(FarmerVerificationLog::class)->latest();
+    }
+
+    public function members()
+    {
+        return $this->hasMany(FarmerGroupMember::class);
     }
 }
