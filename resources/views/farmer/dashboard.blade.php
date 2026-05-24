@@ -290,7 +290,7 @@
                         <div class="text-[11px] text-gray-400">
                             Batas Akhir: <span class="font-bold text-gray-700 block text-xs">{{ $program->close_date?->format('d M Y') ?? 'Tanpa Batas' }}</span>
                         </div>
-                        <a href="{{ route('farmer.proposals.create', $program) }}" onclick="event.stopPropagation()" class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 group-hover:bg-primary-600 group-hover:shadow-lg group-hover:shadow-primary-900/20">
+                        <a href="{{ route('farmer.proposals.create', $program) }}" onclick="event.stopPropagation()" class="inline-flex items-center justify-center rounded-xl bg-primary-600 px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-900/20">
                             Ajukan Proposal
                         </a>
                     </div>

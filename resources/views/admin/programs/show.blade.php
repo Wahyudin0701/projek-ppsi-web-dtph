@@ -96,7 +96,7 @@
                         </div>
                     </div>
 
-                    @if($program->requirements && count($program->requirements) > 0)
+                    @if($program->requirements && (is_array($program->requirements) || is_object($program->requirements)) && count($program->requirements) > 0)
                         <div class="mb-6">
                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Persyaratan Khusus</h4>
                             <ul class="space-y-2 text-sm text-gray-600">

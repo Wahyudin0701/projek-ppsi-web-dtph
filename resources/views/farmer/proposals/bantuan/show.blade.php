@@ -93,7 +93,7 @@
                         {{ $program->description ?? 'Belum ada deskripsi lengkap untuk program bantuan ini.' }}
                     </p>
 
-                    @if($program->requirements)
+                    @if($program->requirements && (is_array($program->requirements) || is_object($program->requirements)) && count($program->requirements) > 0)
                         <h3 class="font-bold text-lg text-gray-900 mb-3 border-t border-gray-100 pt-8">Persyaratan Khusus</h3>
                         <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 mb-8">
                             <ul class="space-y-3">
