@@ -399,12 +399,12 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-red-500 mt-0.5">Ditolak: {{ $proposal->pimpinan_notes ?? '-' }}</p>
                                 </div>
-                            @elseif($disposition)
+                            @elseif($disposition || in_array($proposal->status, ['didisposisi_kabid', 'surat_tugas_terbit', 'survei_selesai', 'menunggu_approval_ba', 'disetujui']))
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-gray-900">Disposisi Pimpinan</p>
-                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $disposition->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $disposition->toUser->name ?? '-' }}</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ ($disposition ? $disposition->created_at : $proposal->updated_at)->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $proposal->kabid->name ?? ($disposition->toUser->name ?? '-') }}</p>
                                 </div>
                             @elseif($proposal->status === 'diteruskan_ke_pimpinan')
                                 <div class="absolute -left-[21px] bg-indigo-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
@@ -433,7 +433,7 @@
                                 <div class="absolute -left-[21px] bg-amber-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-amber-600">Penugasan Tim Survei</p>
-                                    <p class="text-xs text-gray-400">Menunggu Kabid membentuk tim.</p>
+                                    <p class="text-xs text-gray-400">Menunggu {{ $proposal->kabid->name ?? 'Kabid' }} membentuk tim.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
