@@ -27,6 +27,9 @@
                         <x-nav-link :href="route('admin.programs.index')" :active="request()->routeIs('admin.programs.*')">
                             {{ __('Manajemen Program') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
+                            {{ __('Struktur Organisasi') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('farmer.proposals.index')" :active="request()->routeIs('farmer.proposals.*')">
                             {{ __('Riwayat Usulan') }}
@@ -98,6 +101,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.programs.index')" :active="request()->routeIs('admin.programs.*')">
                     {{ __('Manajemen Program') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.employees.index')" :active="request()->routeIs('admin.employees.*')">
+                    {{ __('Struktur Organisasi') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('farmer.proposals.index')" :active="request()->routeIs('farmer.proposals.*')">

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Berita Acara Survei</x-slot>
 
-    <div class="max-w-3xl mx-auto space-y-6">
+    <div class="max-w-5xl mx-auto space-y-6">
         {{-- Action Buttons --}}
         <div class="flex items-center justify-between">
             <a href="{{ route('kabid.proposals.show', $proposal) }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-amber-600 transition-colors">

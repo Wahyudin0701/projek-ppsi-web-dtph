@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Detail Proposal</x-slot>
 
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
 
         {{-- Breadcrumb --}}
         <div class="flex items-center justify-between">
@@ -106,7 +106,7 @@
                                             <select name="kabid_id" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500">
                                                 <option value="">-- Pilih Kepala Bidang --</option>
                                                 @foreach($kabidList as $kabid)
-                                                <option value="{{ $kabid->id }}">{{ $kabid->name }} ({{ $kabid->roleLabel }})</option>
+                                                <option value="{{ $kabid->id }}">{{ $kabid->displayName }} ({{ $kabid->roleLabel }})</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -354,6 +354,16 @@
                         $disposition = $proposal->dispositionLogs->sortByDesc('created_at')->first();
                         $surveyAssignment = $proposal->surveyAssignments->sortByDesc('created_at')->first();
                         $beritaAcara = $proposal->beritaAcara;
+
+                        $toUser = $proposal->kabid ?? ($disposition ? $disposition->toUser : null);
+                        $kabidLabel = $toUser ? (
+                            match($toUser->role) {
+                                'kabid_psp' => 'Kabid PSP',
+                                'kabid_tp' => 'Kabid Tanaman Pangan',
+                                'kabid_hortikultura' => 'Kabid Hortikultura',
+                                default => $toUser->roleLabel
+                            }
+                        ) : 'Kabid';
                     @endphp
 
                     <div class="relative border-l-2 border-primary-200 ml-3 space-y-8 pb-2">
@@ -404,7 +414,7 @@
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-gray-900">Disposisi Pimpinan</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ ($disposition ? $disposition->created_at : $proposal->updated_at)->translatedFormat('d M Y - H:i') }} WIB</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $proposal->kabid->name ?? ($disposition->toUser->name ?? '-') }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $kabidLabel }}</p>
                                 </div>
                             @elseif($proposal->status === 'diteruskan_ke_pimpinan')
                                 <div class="absolute -left-[21px] bg-indigo-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
@@ -433,7 +443,7 @@
                                 <div class="absolute -left-[21px] bg-amber-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-amber-600">Penugasan Tim Survei</p>
-                                    <p class="text-xs text-gray-400">Menunggu {{ $proposal->kabid->name ?? 'Kabid' }} membentuk tim.</p>
+                                    <p class="text-xs text-gray-400">Menunggu {{ $kabidLabel }} membentuk tim survey.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>

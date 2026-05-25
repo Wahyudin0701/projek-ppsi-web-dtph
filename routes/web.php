@@ -1,12 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LocationController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
+
+// Public API Routes
+Route::get('/api/villages', [LocationController::class, 'getVillages'])->name('api.villages');
 
 // Public Route
 Route::get('/', function () {
@@ -17,7 +21,8 @@ Route::get('/', function () {
             return redirect()->route('dashboard');
         }
     }
-    return view('public.home');
+    $employees = \App\Models\Employee::all();
+    return view('public.home', compact('employees'));
 })->name('home');
 
 Route::get('/katalog', function () {
@@ -42,7 +47,8 @@ Route::prefix('profil')->name('profil.')->group(function () {
         return view('public.profil.visi-misi');
     })->name('visi-misi');
     Route::get('/struktur-organisasi', function () {
-        return view('public.profil.struktur-organisasi');
+        $employees = \App\Models\Employee::all();
+        return view('public.profil.struktur-organisasi', compact('employees'));
     })->name('struktur-organisasi');
     Route::get('/tugas-fungsi', function () {
         return view('public.profil.tugas-fungsi');
@@ -108,6 +114,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/proposals/{proposal}/surat-tugas/cetak', [App\Http\Controllers\Admin\ProposalController::class, 'cetakSuratTugas'])->name('proposals.cetak-surat-tugas');
         Route::get('/proposals/{proposal}/cpcl/create', [App\Http\Controllers\Admin\ProposalController::class, 'createCpcl'])->name('proposals.cpcl.create');
         Route::post('/proposals/{proposal}/cpcl', [App\Http\Controllers\Admin\ProposalController::class, 'storeCpcl'])->name('proposals.cpcl.store');
+        Route::get('/proposals/{proposal}/cpcl/edit', [App\Http\Controllers\Admin\ProposalController::class, 'editCpcl'])->name('proposals.cpcl.edit');
+        Route::patch('/proposals/{proposal}/cpcl', [App\Http\Controllers\Admin\ProposalController::class, 'updateCpcl'])->name('proposals.cpcl.update');
+        // Manajemen Struktur Organisasi (Pegawai)
+        Route::resource('employees', App\Http\Controllers\Admin\EmployeeController::class)->except(['show']);
     });
 
     // Pimpinan Routes
@@ -126,10 +136,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Kabid\ProposalController::class, 'dashboard'])->name('dashboard');
         Route::get('/proposals', [App\Http\Controllers\Kabid\ProposalController::class, 'index'])->name('proposals.index');
         Route::get('/proposals/{proposal}', [App\Http\Controllers\Kabid\ProposalController::class, 'show'])->name('proposals.show');
+        Route::get('/proposals/{proposal}/assign-team', [App\Http\Controllers\Kabid\ProposalController::class, 'showAssignTeamForm'])->name('proposals.assign-team.form');
         Route::post('/proposals/{proposal}/assign-team', [App\Http\Controllers\Kabid\ProposalController::class, 'assignTeam'])->name('proposals.assign-team');
+        Route::get('/proposals/{proposal}/survey-assignments/{assignment}/edit', [App\Http\Controllers\Kabid\ProposalController::class, 'editAssignment'])->name('proposals.assignment.edit');
+        Route::patch('/proposals/{proposal}/survey-assignments/{assignment}', [App\Http\Controllers\Kabid\ProposalController::class, 'updateAssignment'])->name('proposals.assignment.update');
 
-        Route::get('/proposals/{proposal}/berita-acara/create', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'create'])->name('berita-acara.create');
-        Route::post('/proposals/{proposal}/berita-acara', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'store'])->name('berita-acara.store');
         Route::get('/proposals/{proposal}/berita-acara', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'show'])->name('berita-acara.show');
 
         Route::get('/tim-survei', [App\Http\Controllers\Kabid\TimSurveiController::class, 'index'])->name('tim-survei.index');
@@ -178,6 +189,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Shared Document Routes (Bisa diakses asal terotentikasi & authorized di Controller)
 Route::middleware('auth')->prefix('documents')->name('documents.')->group(function () {
+    Route::get('/cpcl/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printCpcl'])->name('cpcl');
     Route::get('/berita-acara/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printBeritaAcara'])->name('berita-acara');
     Route::get('/sk-bantuan/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSKBantuan'])->name('sk-bantuan');
     Route::get('/surat-perjanjian/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSuratPerjanjian'])->name('surat-perjanjian');

@@ -55,7 +55,6 @@
                             @php
                                 $typeLabels = [
                                     'bantuan_permanen' => 'Bantuan Permanen (Hibah)',
-                                    'pinjam_alat' => 'Peminjaman Alat',
                                     'usulan_pendanaan' => 'Usulan Pendanaan / Hibah Dana'
                                 ];
                                 $typeLabel = $typeLabels[$program->type] ?? str_replace('_', ' ', $program->type);

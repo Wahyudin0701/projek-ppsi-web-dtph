@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Detail Proposal</x-slot>
 
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
 
         {{-- Page Header --}}
         <div class="flex items-center justify-between">
@@ -148,10 +148,10 @@
                 </div>
             @elseif($proposal->status === 'surat_tugas_terbit')
                 <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-                    <a href="{{ route('admin.proposals.cetak-surat-tugas', $proposal) }}" target="_blank"
+                    <a href="{{ route('admin.proposals.cetak-surat-tugas', $proposal) }}"
                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                        Cetak Surat Tugas
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download Surat Tugas
                     </a>
                     <a href="{{ route('admin.proposals.cpcl.create', $proposal) }}"
                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
@@ -160,9 +160,21 @@
                     </a>
                 </div>
             @else
-                <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $sc['bg'] }} border border-transparent shadow-sm">
-                    {{ $sc['label'] }}
-                </span>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $sc['bg'] }} border border-transparent shadow-sm">
+                        {{ $sc['label'] }}
+                    </span>
+                    @if($proposal->cpclVerifications->isNotEmpty())
+                        <a href="{{ route('admin.proposals.cpcl.edit', $proposal) }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-blue-600 text-sm font-bold rounded-xl hover:bg-blue-50 hover:border-blue-200 transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            Edit CPCL
+                        </a>
+                        <a href="{{ route('documents.cpcl', $proposal) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            Cetak BA CPCL
+                        </a>
+                    @endif
+                </div>
             @endif
         </div>
 
@@ -266,6 +278,16 @@
                         $disposition = $proposal->dispositionLogs->sortByDesc('created_at')->first();
                         $surveyAssignment = $proposal->surveyAssignments->sortByDesc('created_at')->first();
                         $beritaAcara = $proposal->beritaAcara;
+
+                        $toUser = $proposal->kabid ?? ($disposition ? $disposition->toUser : null);
+                        $kabidLabel = $toUser ? (
+                            match($toUser->role) {
+                                'kabid_psp' => 'Kabid PSP',
+                                'kabid_tp' => 'Kabid Tanaman Pangan',
+                                'kabid_hortikultura' => 'Kabid Hortikultura',
+                                default => $toUser->roleLabel
+                            }
+                        ) : 'Kabid';
                     @endphp
 
                     <div class="relative border-l-2 border-primary-200 ml-3 space-y-8 pb-2">
@@ -316,7 +338,7 @@
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-gray-900">Disposisi Pimpinan</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ ($disposition ? $disposition->created_at : $proposal->updated_at)->translatedFormat('d M Y - H:i') }} WIB</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $proposal->kabid->name ?? ($disposition->toUser->name ?? '-') }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $kabidLabel }}</p>
                                 </div>
                             @elseif($proposal->status === 'diteruskan_ke_pimpinan')
                                 <div class="absolute -left-[21px] bg-indigo-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
@@ -345,7 +367,7 @@
                                 <div class="absolute -left-[21px] bg-amber-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-amber-600">Penugasan Tim Survei</p>
-                                    <p class="text-xs text-gray-400">Menunggu {{ $proposal->kabid->name ?? 'Kabid' }} membentuk tim.</p>
+                                    <p class="text-xs text-gray-400">Menunggu {{ $kabidLabel }} membentuk tim survey.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>

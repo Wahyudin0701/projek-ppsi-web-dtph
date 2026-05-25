@@ -132,8 +132,26 @@
                           maxStep: {{ $role === 'petani' ? 4 : 1 }},
                           selectedKomoditi: [],
                           komoditiUtama: '',
+                          villages: [],
+                          loadingVillages: false,
                           review: {},
+                          fetchVillages(kecamatan) {
+                              this.villages = [];
+                              if (!kecamatan) return;
+                              this.loadingVillages = true;
+                              fetch(`/api/villages?kecamatan=${encodeURIComponent(kecamatan)}`)
+                                  .then(res => res.json())
+                                  .then(data => {
+                                      this.villages = data;
+                                      this.loadingVillages = false;
+                                      // Reset desa selection
+                                      const desaEl = document.getElementById('alamat');
+                                      if (desaEl) desaEl.value = '';
+                                  })
+                                  .catch(() => { this.loadingVillages = false; });
+                          },
                           updateReview() {
+                              const desaEl = document.getElementById('alamat');
                               this.review = {
                                   name: document.getElementById('name').value,
                                   email: document.getElementById('email').value,
@@ -145,7 +163,7 @@
                                   komoditi: this.selectedKomoditi.length > 0 ? this.selectedKomoditi.join(', ') : '',
                                   komoditi_utama: document.getElementById('komoditi_utama') ? document.getElementById('komoditi_utama').value : '',
                                   kecamatan: document.getElementById('kecamatan') ? document.getElementById('kecamatan').value : '',
-                                  alamat: document.getElementById('alamat') ? document.getElementById('alamat').value : '',
+                                  alamat: desaEl ? (desaEl.options[desaEl.selectedIndex]?.text || desaEl.value) : '',
                                   anggota: Array.from(document.querySelectorAll('.input-anggota')).map(el => el.value).filter(val => val.trim() !== '').join(', ')
                               }
                           }
@@ -420,6 +438,7 @@
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     </div>
                                     <select name="kecamatan" id="kecamatan" :required="step === 3"
+                                        @change="fetchVillages($event.target.value)"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white">
                                         <option value="" disabled selected>Pilih Kecamatan</option>
                                         <option value="BAHAR SELATAN">BAHAR SELATAN</option>
@@ -438,17 +457,27 @@
                                 <x-input-error :messages="$errors->get('kecamatan')" class="mt-2" />
                             </div>
 
-                            <!-- Alamat Lengkap / Titik Lokasi -->
-                            <div class="md:col-span-2">
-                                <label for="alamat" class="block text-sm font-bold text-gray-800 mb-2">Alamat Lengkap / Titik Lokasi</label>
+                            <!-- Nama Desa -->
+                            <div>
+                                <label for="alamat" class="block text-sm font-bold text-gray-800 mb-2">Nama Desa</label>
                                 <div class="relative group">
-                                    <div class="absolute top-3 left-3.5 flex items-start pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+                                        <svg x-show="!loadingVillages" class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        <svg x-show="loadingVillages" x-cloak class="h-5 w-5 text-[#19A148] animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
                                     </div>
-                                    <textarea name="alamat" id="alamat" rows="3" :required="step === 3"
-                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm resize-none"
-                                        placeholder="Detail alamat sekretariat kelompok tani..."></textarea>
+                                    <select name="alamat" id="alamat" :required="step === 3"
+                                        :disabled="villages.length === 0"
+                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
+                                        <option value="" disabled selected>
+                                            <template x-if="villages.length === 0">Pilih Kecamatan dulu...</template>
+                                            <template x-if="villages.length > 0">Pilih Desa/Kelurahan</template>
+                                        </option>
+                                        <template x-for="village in villages" :key="village.id">
+                                            <option :value="village.name" x-text="village.name + ' (' + village.status + ')'"></option>
+                                        </template>
+                                    </select>
                                 </div>
+                                <p x-show="villages.length === 0 && !loadingVillages" class="text-xs text-gray-400 mt-1">Pilih kecamatan terlebih dahulu untuk menampilkan daftar desa.</p>
                                 <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
                             </div>
                         </div>
@@ -501,7 +530,7 @@
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.kecamatan"></p>
                                 </div>
                                 <div class="sm:col-span-2">
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Alamat Lengkap</p>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Desa</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.alamat"></p>
                                 </div>
                                 <div class="sm:col-span-2">

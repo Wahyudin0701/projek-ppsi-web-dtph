@@ -14,76 +14,96 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 
             @php
+            $getEmp = function($roleTitle) use ($employees) {
+                $normalizedSearch = strtolower(str_replace(['.', ' '], '', $roleTitle));
+                return $employees->first(function($employee) use ($normalizedSearch) {
+                    $normalizedRole = strtolower(str_replace(['.', ' '], '', $employee->role));
+                    return $normalizedRole === $normalizedSearch || 
+                           str_contains($normalizedRole, $normalizedSearch) || 
+                           str_contains($normalizedSearch, $normalizedRole);
+                });
+            };
+
             $persons = [
                 'kepala' => [
                     'jabatan' => 'Kepala Dinas',
-                    'nama'    => 'Ir. Evi Syahrul, SP, M.Si',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Kepala Dinas')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Kepala Dinas')?->nip ?? '',
+                    'photo'   => $getEmp('Kepala Dinas')?->foto ? 'storage/' . $getEmp('Kepala Dinas')->foto : null,
                     'color'   => ['bg' => 'bg-primary-600', 'ring' => 'ring-primary-400', 'badge' => 'bg-primary-100 text-primary-800'],
-                    'initials'=> 'ES',
+                    'initials'=> 'KD',
                 ],
                 'sekretaris' => [
                     'jabatan' => 'Sekretaris',
-                    'nama'    => 'M. Ridwan, SP',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Sekretaris')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Sekretaris')?->nip ?? '',
+                    'photo'   => $getEmp('Sekretaris')?->foto ? 'storage/' . $getEmp('Sekretaris')->foto : null,
                     'color'   => ['bg' => 'bg-blue-600', 'ring' => 'ring-blue-400', 'badge' => 'bg-blue-100 text-blue-800'],
-                    'initials'=> 'MR',
+                    'initials'=> 'SK',
                 ],
                 'sub_umum' => [
                     'jabatan' => 'Kasubbag Umum Kepegawaian',
-                    'nama'    => 'Raifizen, S.Ag, MM',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Kasubbag Umum Kepegawaian')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Kasubbag Umum Kepegawaian')?->nip ?? '',
+                    'photo'   => $getEmp('Kasubbag Umum Kepegawaian')?->foto ? 'storage/' . $getEmp('Kasubbag Umum Kepegawaian')->foto : null,
                     'color'   => ['bg' => 'bg-violet-500', 'ring' => 'ring-violet-300', 'badge' => 'bg-violet-100 text-violet-800'],
-                    'initials'=> 'RF',
+                    'initials'=> 'KU',
                 ],
                 'fungsional_perencanaan' => [
                     'jabatan' => 'Fungsional Perencanaan',
-                    'nama'    => 'E. Superatman, SP',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Fungsional Perencanaan')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Fungsional Perencanaan')?->nip ?? '',
+                    'photo'   => $getEmp('Fungsional Perencanaan')?->foto ? 'storage/' . $getEmp('Fungsional Perencanaan')->foto : null,
                     'color'   => ['bg' => 'bg-indigo-500', 'ring' => 'ring-indigo-300', 'badge' => 'bg-indigo-100 text-indigo-800'],
-                    'initials'=> 'ES',
+                    'initials'=> 'FP',
                 ],
                 'analisis_keuangan' => [
                     'jabatan' => 'Fungsional Analisis Keuangan Pusat dan Daerah',
-                    'nama'    => 'Arliyanza, SE',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Fungsional Analisis Keuangan Pusat dan Daerah')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Fungsional Analisis Keuangan Pusat dan Daerah')?->nip ?? '',
+                    'photo'   => $getEmp('Fungsional Analisis Keuangan Pusat dan Daerah')?->foto ? 'storage/' . $getEmp('Fungsional Analisis Keuangan Pusat dan Daerah')->foto : null,
                     'color'   => ['bg' => 'bg-sky-500', 'ring' => 'ring-sky-300', 'badge' => 'bg-sky-100 text-sky-800'],
-                    'initials'=> 'AL',
+                    'initials'=> 'AK',
                 ],
                 'bidang_pangan' => [
                     'jabatan' => 'Kabid. Tanaman Pangan',
-                    'nama'    => 'Umi Kalsum, SP',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Kabid. Tanaman Pangan')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Kabid. Tanaman Pangan')?->nip ?? '',
+                    'photo'   => $getEmp('Kabid. Tanaman Pangan')?->foto ? 'storage/' . $getEmp('Kabid. Tanaman Pangan')->foto : null,
                     'color'   => ['bg' => 'bg-primary-600', 'ring' => 'ring-primary-400', 'badge' => 'bg-primary-100 text-primary-800'],
-                    'initials'=> 'UK',
+                    'initials'=> 'TP',
                 ],
                 'bidang_horti' => [
                     'jabatan' => 'Kabid. Hortikultura',
-                    'nama'    => 'Ir. Candrawati',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Kabid. Hortikultura')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Kabid. Hortikultura')?->nip ?? '',
+                    'photo'   => $getEmp('Kabid. Hortikultura')?->foto ? 'storage/' . $getEmp('Kabid. Hortikultura')->foto : null,
                     'color'   => ['bg' => 'bg-lime-600', 'ring' => 'ring-lime-400', 'badge' => 'bg-lime-100 text-lime-800'],
-                    'initials'=> 'CW',
+                    'initials'=> 'HT',
                 ],
                 'bidang_psp' => [
                     'jabatan' => 'Kabid. PSP',
-                    'nama'    => 'Ahmad Sukri, SP',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Kabid. PSP')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Kabid. PSP')?->nip ?? '',
+                    'photo'   => $getEmp('Kabid. PSP')?->foto ? 'storage/' . $getEmp('Kabid. PSP')->foto : null,
                     'color'   => ['bg' => 'bg-teal-600', 'ring' => 'ring-teal-400', 'badge' => 'bg-teal-100 text-teal-800'],
-                    'initials'=> 'AS',
+                    'initials'=> 'PS',
                 ],
                 'bidang_penyuluhan' => [
                     'jabatan' => 'Kabid. Penyuluhan',
-                    'nama'    => 'Luthfi Noor, SP',
-                    'nip'     => '',
+                    'nama'    => $getEmp('Kabid. Penyuluhan')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('Kabid. Penyuluhan')?->nip ?? '',
+                    'photo'   => $getEmp('Kabid. Penyuluhan')?->foto ? 'storage/' . $getEmp('Kabid. Penyuluhan')->foto : null,
                     'color'   => ['bg' => 'bg-cyan-600', 'ring' => 'ring-cyan-400', 'badge' => 'bg-cyan-100 text-cyan-800'],
-                    'initials'=> 'LN',
+                    'initials'=> 'PN',
                 ],
                 'uptd' => [
                     'jabatan' => 'UPTD Balai Benih Utama Arang Arang',
-                    'nama'    => 'Ahmad Baikuni, S.TP',
-                    'nip'     => '',
+                    'nama'    => $getEmp('UPTD Balai Benih Utama Arang Arang')?->name ?? 'Belum Diisi',
+                    'nip'     => $getEmp('UPTD Balai Benih Utama Arang Arang')?->nip ?? '',
+                    'photo'   => $getEmp('UPTD Balai Benih Utama Arang Arang')?->foto ? 'storage/' . $getEmp('UPTD Balai Benih Utama Arang Arang')->foto : null,
                     'color'   => ['bg' => 'bg-amber-500', 'ring' => 'ring-amber-300', 'badge' => 'bg-amber-100 text-amber-800'],
-                    'initials'=> 'AB',
+                    'initials'=> 'UP',
                 ],
             ];
             @endphp

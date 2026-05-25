@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Proposal;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProposalController extends Controller
 {
@@ -123,7 +124,11 @@ class ProposalController extends Controller
         $assignment = $proposal->surveyAssignments->last();
         if (!$assignment) abort(404, 'Data surat tugas tidak ditemukan.');
 
-        return view('admin.proposals.cetak-surat-tugas', compact('proposal', 'assignment'));
+        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
+
+        $pdf = Pdf::loadView('admin.proposals.cetak-surat-tugas', compact('proposal', 'assignment', 'kepalaDinas'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->download('Surat_Tugas_Survei_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
 
     /**
@@ -148,6 +153,7 @@ class ProposalController extends Controller
         }
 
         $request->validate([
+            // Verifikasi Teknis
             'status_kepemilikan'  => 'required|string',
             'luas_lahan'          => 'required|numeric',
             'kondisi_lahan'       => 'required|string',
@@ -155,6 +161,22 @@ class ProposalController extends Controller
             'rekomendasi_surveyor'=> 'required|string',
             'catatan'             => 'nullable|string',
             'foto_lahan'          => 'nullable|image|max:5120',
+            'foto_pemetaan_data'  => 'nullable|image|max:5120',
+            // Verifikasi Administrasi
+            'is_surat_permohonan_sesuai' => 'required|boolean',
+            'ket_surat_permohonan'       => 'nullable|string',
+            'is_ktp_sesuai'              => 'required|boolean',
+            'ket_ktp'                    => 'nullable|string',
+            'is_sk_desa_sesuai'          => 'required|boolean',
+            'ket_sk_desa'                => 'nullable|string',
+            'is_simluhtan_sesuai'        => 'required|boolean',
+            'ket_simluhtan'              => 'nullable|string',
+            'is_notula_rapat_sesuai'     => 'required|boolean',
+            'ket_notula_rapat'           => 'nullable|string',
+            'is_titik_koordinat_sesuai'  => 'required|boolean',
+            'ket_titik_koordinat'        => 'nullable|string',
+            'is_tidak_menerima_bantuan_sama' => 'required|boolean',
+            'ket_tidak_menerima_bantuan_sama'=> 'nullable|string',
         ]);
 
         $assignment = $proposal->surveyAssignments->last();
@@ -162,25 +184,43 @@ class ProposalController extends Controller
             return back()->with('error', 'Data surat tugas tidak ditemukan.');
         }
 
-        $path = null;
-        if ($request->hasFile('foto_lahan')) {
-            $path = $request->file('foto_lahan')->store('survey_dokumentasi', 'public');
-        }
-
-        $proposal->cpclVerifications()->create([
+        $assignment->cpclVerifications()->create([
             'survey_assignment_id' => $assignment->id,
+            // Teknis
             'status_kepemilikan'   => $request->status_kepemilikan,
             'luas_lahan'           => $request->luas_lahan,
             'kondisi_lahan'        => $request->kondisi_lahan,
             'kesesuaian_komoditas' => $request->kesesuaian_komoditas,
             'rekomendasi_surveyor' => $request->rekomendasi_surveyor,
             'catatan'              => $request->catatan,
+            // Administrasi
+            'is_surat_permohonan_sesuai' => $request->is_surat_permohonan_sesuai,
+            'ket_surat_permohonan'       => $request->ket_surat_permohonan,
+            'is_ktp_sesuai'              => $request->is_ktp_sesuai,
+            'ket_ktp'                    => $request->ket_ktp,
+            'is_sk_desa_sesuai'          => $request->is_sk_desa_sesuai,
+            'ket_sk_desa'                => $request->ket_sk_desa,
+            'is_simluhtan_sesuai'        => $request->is_simluhtan_sesuai,
+            'ket_simluhtan'              => $request->ket_simluhtan,
+            'is_notula_rapat_sesuai'     => $request->is_notula_rapat_sesuai,
+            'ket_notula_rapat'           => $request->ket_notula_rapat,
+            'is_titik_koordinat_sesuai'  => $request->is_titik_koordinat_sesuai,
+            'ket_titik_koordinat'        => $request->ket_titik_koordinat,
+            'is_tidak_menerima_bantuan_sama' => $request->is_tidak_menerima_bantuan_sama,
+            'ket_tidak_menerima_bantuan_sama'=> $request->ket_tidak_menerima_bantuan_sama,
         ]);
 
-        if ($path) {
+        if ($request->hasFile('foto_lahan')) {
             $proposal->surveyDocumentations()->create([
-                'file_path' => $path,
+                'file_path' => $request->file('foto_lahan')->store('survey_dokumentasi', 'public'),
                 'keterangan' => 'Foto Lahan Survei CPCL',
+            ]);
+        }
+
+        if ($request->hasFile('foto_pemetaan_data')) {
+            $proposal->surveyDocumentations()->create([
+                'file_path' => $request->file('foto_pemetaan_data')->store('survey_dokumentasi', 'public'),
+                'keterangan' => 'Foto Hasil Pemetaan Data',
             ]);
         }
 
@@ -189,5 +229,107 @@ class ProposalController extends Controller
 
         return redirect()->route('admin.proposals.show', $proposal)
             ->with('success', 'Data Hasil Verifikasi CPCL berhasil disimpan. Status menjadi "Survei Selesai".');
+    }
+
+    /**
+     * Tampilkan form edit hasil verifikasi CPCL.
+     */
+    public function editCpcl(Proposal $proposal)
+    {
+        $assignment = $proposal->surveyAssignments->last();
+        if (!$assignment || !$assignment->cpclVerifications->count()) {
+            return back()->with('error', 'Data CPCL tidak ditemukan untuk proposal ini.');
+        }
+
+        $cpcl = $assignment->cpclVerifications->last();
+
+        return view('admin.proposals.cpcl.edit', compact('proposal', 'cpcl'));
+    }
+
+    /**
+     * Update hasil verifikasi CPCL.
+     */
+    public function updateCpcl(Request $request, Proposal $proposal)
+    {
+        $request->validate([
+            // Verifikasi Teknis
+            'status_kepemilikan'  => 'required|string',
+            'luas_lahan'          => 'required|numeric',
+            'kondisi_lahan'       => 'required|string',
+            'kesesuaian_komoditas'=> 'required|boolean',
+            'rekomendasi_surveyor'=> 'required|string',
+            'catatan'             => 'nullable|string',
+            'foto_lahan'          => 'nullable|image|max:5120',
+            'foto_pemetaan_data'  => 'nullable|image|max:5120',
+            // Verifikasi Administrasi
+            'is_surat_permohonan_sesuai' => 'required|boolean',
+            'ket_surat_permohonan'       => 'nullable|string',
+            'is_ktp_sesuai'              => 'required|boolean',
+            'ket_ktp'                    => 'nullable|string',
+            'is_sk_desa_sesuai'          => 'required|boolean',
+            'ket_sk_desa'                => 'nullable|string',
+            'is_simluhtan_sesuai'        => 'required|boolean',
+            'ket_simluhtan'              => 'nullable|string',
+            'is_notula_rapat_sesuai'     => 'required|boolean',
+            'ket_notula_rapat'           => 'nullable|string',
+            'is_titik_koordinat_sesuai'  => 'required|boolean',
+            'ket_titik_koordinat'        => 'nullable|string',
+            'is_tidak_menerima_bantuan_sama' => 'required|boolean',
+            'ket_tidak_menerima_bantuan_sama'=> 'nullable|string',
+        ]);
+
+        $assignment = $proposal->surveyAssignments->last();
+        if (!$assignment) {
+            return back()->with('error', 'Data surat tugas tidak ditemukan.');
+        }
+
+        $cpcl = $assignment->cpclVerifications->last();
+        if (!$cpcl) {
+            return back()->with('error', 'Data CPCL belum dibuat.');
+        }
+
+        $cpcl->update([
+            // Teknis
+            'status_kepemilikan'   => $request->status_kepemilikan,
+            'luas_lahan'           => $request->luas_lahan,
+            'kondisi_lahan'        => $request->kondisi_lahan,
+            'kesesuaian_komoditas' => $request->kesesuaian_komoditas,
+            'rekomendasi_surveyor' => $request->rekomendasi_surveyor,
+            'catatan'              => $request->catatan,
+            // Administrasi
+            'is_surat_permohonan_sesuai' => $request->is_surat_permohonan_sesuai,
+            'ket_surat_permohonan'       => $request->ket_surat_permohonan,
+            'is_ktp_sesuai'              => $request->is_ktp_sesuai,
+            'ket_ktp'                    => $request->ket_ktp,
+            'is_sk_desa_sesuai'          => $request->is_sk_desa_sesuai,
+            'ket_sk_desa'                => $request->ket_sk_desa,
+            'is_simluhtan_sesuai'        => $request->is_simluhtan_sesuai,
+            'ket_simluhtan'              => $request->ket_simluhtan,
+            'is_notula_rapat_sesuai'     => $request->is_notula_rapat_sesuai,
+            'ket_notula_rapat'           => $request->ket_notula_rapat,
+            'is_titik_koordinat_sesuai'  => $request->is_titik_koordinat_sesuai,
+            'ket_titik_koordinat'        => $request->ket_titik_koordinat,
+            'is_tidak_menerima_bantuan_sama' => $request->is_tidak_menerima_bantuan_sama,
+            'ket_tidak_menerima_bantuan_sama'=> $request->ket_tidak_menerima_bantuan_sama,
+        ]);
+
+        if ($request->hasFile('foto_lahan')) {
+            // Kita bisa menggunakan create untuk menambah foto baru, tapi idealnya kita update record foto yg sudah ada. 
+            // Karena relasi bersifat One-to-Many tanpa identifier spesifik di schema, menambah record baru yang lebih baru bisa jadi strategi jika diperlukan.
+            $proposal->surveyDocumentations()->create([
+                'file_path' => $request->file('foto_lahan')->store('survey_dokumentasi', 'public'),
+                'keterangan' => 'Foto Lahan Survei CPCL',
+            ]);
+        }
+
+        if ($request->hasFile('foto_pemetaan_data')) {
+            $proposal->surveyDocumentations()->create([
+                'file_path' => $request->file('foto_pemetaan_data')->store('survey_dokumentasi', 'public'),
+                'keterangan' => 'Foto Hasil Pemetaan Data',
+            ]);
+        }
+
+        return redirect()->route('admin.proposals.show', $proposal)
+            ->with('success', 'Data Hasil Verifikasi CPCL berhasil diperbarui.');
     }
 }

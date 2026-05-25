@@ -183,6 +183,97 @@
             </div>
         </div>
 
+        {{-- ===== PROPOSAL DISPOSISI KABID ===== --}}
+        <div>
+            <div class="flex items-center justify-between mb-5 px-1">
+                <div>
+                    <h3 class="font-extrabold text-gray-800 text-lg">Disposisi Kabid & Tindak Lanjut Survei</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Proposal yang siap diterbitkan surat tugas dan diinput hasil verifikasi CPCL</p>
+                </div>
+                <a href="{{ route('admin.proposals.index', ['status' => 'surat_tugas_terbit']) }}"
+                   class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline">
+                    Lihat Semua
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            @if($dispositionedProposals->isEmpty())
+                <div class="bg-white rounded-2xl border border-dashed border-gray-200 p-12 text-center">
+                    <svg class="w-14 h-14 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                    <p class="text-gray-400 font-semibold">Tidak ada proposal dalam tahap tindak lanjut survei.</p>
+                </div>
+            @else
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50/50 border-b border-gray-100 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                                    <th class="px-6 py-4">No. Proposal</th>
+                                    <th class="px-6 py-4">Kelompok Tani</th>
+                                    <th class="px-6 py-4">Bantuan / Program</th>
+                                    <th class="px-6 py-4">Masa Berlaku Survei</th>
+                                    <th class="px-6 py-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                @foreach($dispositionedProposals as $prop)
+                                    @php 
+                                        $isAlsintan = $prop->alsintan_id !== null; 
+                                        $assignment = $prop->surveyAssignments->last();
+                                    @endphp
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="px-6 py-4 font-bold text-gray-900 text-sm align-middle">
+                                            #PRP-{{ str_pad($prop->id, 5, '0', STR_PAD_LEFT) }}
+                                        </td>
+                                        <td class="px-6 py-4 align-middle">
+                                            <p class="font-bold text-gray-900 text-sm leading-tight">{{ $prop->user->farmerProfile->nama_kelompok ?? $prop->user->name }}</p>
+                                            <p class="text-[11px] text-gray-400 mt-0.5">{{ $prop->user->farmerProfile->desa ?? 'N/A' }}, {{ $prop->user->farmerProfile->kecamatan ?? 'N/A' }}</p>
+                                        </td>
+                                        <td class="px-6 py-4 align-middle">
+                                            <div class="flex flex-col items-start gap-1">
+                                                <span class="inline-block text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-md {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
+                                                    {{ $isAlsintan ? 'Alsintan' : 'Bantuan' }}
+                                                </span>
+                                                <span class="text-xs text-gray-700 font-medium max-w-[200px] truncate">
+                                                    {{ $isAlsintan ? $prop->alsintan->name : $prop->program->name }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 align-middle text-xs text-gray-600 font-medium">
+                                            @if($assignment)
+                                                <span class="block text-gray-800 font-semibold">{{ $assignment->valid_from->translatedFormat('d M Y') }}</span>
+                                                <span class="text-[10px] text-gray-400">s/d {{ $assignment->valid_until->translatedFormat('d M Y') }}</span>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-right align-middle">
+                                            <div class="inline-flex items-center gap-2">
+                                                <a href="{{ route('admin.proposals.cetak-surat-tugas', $prop) }}"
+                                                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold rounded-xl transition-colors border border-sky-100">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                                    Cetak Surat Tugas
+                                                </a>
+                                                <a href="{{ route('admin.proposals.cpcl.create', $prop) }}"
+                                                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition-colors border border-emerald-100">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                                    Input CPCL
+                                                </a>
+                                                <a href="{{ route('admin.proposals.show', $prop) }}"
+                                                   class="inline-flex items-center px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-bold rounded-xl transition-colors border border-gray-100">
+                                                    Detail
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+        </div>
+
     </div>
 </x-app-layout>
 

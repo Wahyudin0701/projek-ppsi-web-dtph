@@ -52,7 +52,13 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
 
-            return view('admin.dashboard', compact('stats', 'latestPendingUsers', 'latestPendingProposals'));
+            $dispositionedProposals = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'surveyAssignments'])
+                ->where('status', 'surat_tugas_terbit')
+                ->latest('updated_at')
+                ->take(5)
+                ->get();
+
+            return view('admin.dashboard', compact('stats', 'latestPendingUsers', 'latestPendingProposals', 'dispositionedProposals'));
         }
 
         if ($user->isPimpinan()) {

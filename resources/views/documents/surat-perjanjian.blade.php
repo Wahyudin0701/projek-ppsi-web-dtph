@@ -44,7 +44,7 @@
             <tr>
                 <td>Nama</td>
                 <td>:</td>
-                <td>Nama Kepala Dinas / PPK</td>
+                <td>{{ $kepalaDinas?->name ?? 'Nama Kepala Dinas / PPK' }}</td>
             </tr>
             <tr>
                 <td>Jabatan</td>
@@ -103,8 +103,8 @@
                     <div class="qrcode" style="margin-top: 10px; margin-bottom: 10px; background: transparent; border: none;">
                         {!! QrCode::size(80)->generate(route('documents.surat-perjanjian', $proposal->id)) !!}
                     </div>
-                    <u>.......................</u><br>
-                    NIP. .......................
+                    <u>{{ $kepalaDinas?->name ?? '.......................' }}</u><br>
+                    NIP. {{ $kepalaDinas?->nip ?? '.......................' }}
                 </td>
             </tr>
         </table>

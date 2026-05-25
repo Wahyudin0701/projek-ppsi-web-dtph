@@ -71,8 +71,8 @@
                     <div class="qrcode" style="background: transparent; border: none;">
                         {!! QrCode::size(80)->generate(route('documents.sk-bantuan', $proposal->id)) !!}
                     </div>
-                    <u>Nama Kepala Dinas</u><br>
-                    NIP. .......................
+                    <u>{{ $kepalaDinas?->name ?? 'Nama Kepala Dinas' }}</u><br>
+                    NIP. {{ $kepalaDinas?->nip ?? '.......................' }}
                 </td>
             </tr>
         </table>

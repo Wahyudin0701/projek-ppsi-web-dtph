@@ -163,4 +163,44 @@ class User extends Authenticatable
         return $this->hasMany(SurveyTeam::class, 'kabid_id');
     }
 
+    /**
+     * Get associated Employee record based on role
+     */
+    public function getEmployeeAttribute()
+    {
+        $roleMap = [
+            'pimpinan' => 'Kepala Dinas',
+            'kabid_psp' => 'Kabid. PSP',
+            'kabid_tp' => 'Kabid. Tanaman Pangan',
+            'kabid_hortikultura' => 'Kabid. Hortikultura'
+        ];
+        
+        if (isset($roleMap[$this->role])) {
+            return \App\Models\Employee::where('role', $roleMap[$this->role])->first();
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get display name, falling back to original name
+     */
+    public function getDisplayNameAttribute()
+    {
+        if ($emp = $this->employee) {
+            return $emp->name;
+        }
+        return $this->name;
+    }
+    
+    /**
+     * Get display NIP
+     */
+    public function getDisplayNipAttribute()
+    {
+        if ($emp = $this->employee) {
+            return $emp->nip ?: '-';
+        }
+        return '-';
+    }
 }

@@ -166,6 +166,16 @@
                             $disposition = $proposal->latestDispositionLog;
                             $surveyAssignment = $proposal->surveyAssignments->last();
                             $beritaAcara = $proposal->beritaAcara;
+
+                            $toUser = $proposal->kabid ?? ($disposition ? $disposition->toUser : null);
+                            $kabidLabel = $toUser ? (
+                                match($toUser->role) {
+                                    'kabid_psp' => 'Kabid PSP',
+                                    'kabid_tp' => 'Kabid Tanaman Pangan',
+                                    'kabid_hortikultura' => 'Kabid Hortikultura',
+                                    default => $toUser->roleLabel
+                                }
+                            ) : 'Kabid';
                         @endphp
 
                         <div class="relative border-l-2 border-primary-200 ml-3 space-y-8 pb-2">
@@ -215,7 +225,7 @@
                                     <div class="pl-4">
                                         <p class="text-sm font-bold text-gray-900">Disposisi Pimpinan</p>
                                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ ($disposition ? $disposition->created_at : $proposal->updated_at)->translatedFormat('d M Y - H:i') }} WIB</p>
-                                        <p class="text-xs text-gray-500 mt-1">Diteruskan ke: {{ $proposal->kabid->name ?? ($disposition->toUser->name ?? '-') }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">Diteruskan ke: {{ $kabidLabel }}</p>
                                     </div>
                                 @elseif($proposal->status === 'diteruskan_ke_pimpinan')
                                     <div class="absolute -left-[21px] bg-indigo-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
@@ -244,7 +254,7 @@
                                     <div class="absolute -left-[21px] bg-amber-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                     <div class="pl-4">
                                         <p class="text-sm font-bold text-amber-600">Persiapan Survei</p>
-                                        <p class="text-xs text-gray-400">{{ $proposal->kabid->name ?? 'Kabid' }} sedang mengatur jadwal dan tim survei.</p>
+                                        <p class="text-xs text-gray-400">{{ $kabidLabel }} sedang mengatur jadwal dan tim survei.</p>
                                     </div>
                                 @else
                                     <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>

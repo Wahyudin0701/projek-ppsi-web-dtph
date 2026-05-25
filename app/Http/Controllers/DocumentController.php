@@ -26,6 +26,25 @@ class DocumentController extends Controller
     }
 
     /**
+     * Cetak Hasil Verifikasi CPCL
+     */
+    public function printCpcl(Proposal $proposal)
+    {
+        $this->authorizeAccess($proposal);
+
+        if ($proposal->cpclVerifications->isEmpty()) {
+            abort(404, 'Data Verifikasi CPCL belum diinput.');
+        }
+
+        $proposal->load(['user.farmerProfile', 'surveyAssignments', 'cpclVerifications']);
+        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
+
+        $pdf = Pdf::loadView('documents.cpcl', compact('proposal', 'kepalaDinas'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Berita_Acara_Verifikasi_CPCL_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
+    }
+
+    /**
      * Cetak Berita Acara (BA)
      */
     public function printBeritaAcara(Proposal $proposal)
@@ -37,8 +56,9 @@ class DocumentController extends Controller
         }
 
         $proposal->load(['user.farmerProfile', 'beritaAcara.kabid', 'cpclVerifications']);
+        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
 
-        $pdf = Pdf::loadView('documents.berita-acara', compact('proposal'));
+        $pdf = Pdf::loadView('documents.berita-acara', compact('proposal', 'kepalaDinas'));
         return $pdf->stream('Berita_Acara_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
 
@@ -54,8 +74,9 @@ class DocumentController extends Controller
         }
 
         $proposal->load(['user.farmerProfile', 'program']);
+        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
 
-        $pdf = Pdf::loadView('documents.sk-bantuan', compact('proposal'));
+        $pdf = Pdf::loadView('documents.sk-bantuan', compact('proposal', 'kepalaDinas'));
         return $pdf->stream('SK_Bantuan_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
 
@@ -71,8 +92,9 @@ class DocumentController extends Controller
         }
 
         $proposal->load(['user.farmerProfile', 'alsintan']);
+        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
 
-        $pdf = Pdf::loadView('documents.surat-perjanjian', compact('proposal'));
+        $pdf = Pdf::loadView('documents.surat-perjanjian', compact('proposal', 'kepalaDinas'));
         return $pdf->stream('Surat_Perjanjian_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
 }

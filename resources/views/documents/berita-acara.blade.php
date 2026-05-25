@@ -86,8 +86,9 @@
                     Mengetahui,<br>
                     <strong>Kepala Bidang</strong><br>
                     <br><br><br><br>
-                    <u>{{ $proposal->beritaAcara->kabid->name ?? '.......................' }}</u><br>
-                    NIP. .......................
+                    @php $kabidEmp = $proposal->beritaAcara?->kabid?->employee; @endphp
+                    <u>{{ $proposal->beritaAcara?->kabid?->display_name ?? '.......................' }}</u><br>
+                    NIP. {{ $kabidEmp?->nip ?? '.......................' }}
                 </td>
                 <td>
                     Mengesahkan,<br>
@@ -95,8 +96,8 @@
                     <div class="qrcode" style="margin-top: 10px; margin-bottom: 10px; background: transparent; border: none;">
                         {!! QrCode::size(80)->generate(route('documents.berita-acara', $proposal->id)) !!}
                     </div>
-                    <u>.......................</u><br>
-                    NIP. .......................
+                    <u>{{ $kepalaDinas?->name ?? '.......................' }}</u><br>
+                    NIP. {{ $kepalaDinas?->nip ?? '.......................' }}
                 </td>
             </tr>
         </table>
