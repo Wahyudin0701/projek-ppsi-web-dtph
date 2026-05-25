@@ -53,15 +53,15 @@
 
             {{-- Table --}}
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full min-w-[950px] text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-50/50">
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">No. Registrasi</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Pengaju</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Jenis & Objek</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Tgl. Pengajuan</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Status</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Aksi</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 whitespace-nowrap" style="width: 15%">No. Registrasi</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100" style="width: 30%">Pengaju</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100" style="width: 25%">Jenis & Objek</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center whitespace-nowrap" style="width: 15%">Tgl. Pengajuan</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center whitespace-nowrap" style="width: 5%">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center whitespace-nowrap" style="width: 10%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -81,7 +81,7 @@
                                     $isAlsintan = $proposal->alsintan_id !== null;
                                 @endphp
                             <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="font-bold text-gray-900 text-sm">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span>
                                 </td>
                                 <td class="px-6 py-4">

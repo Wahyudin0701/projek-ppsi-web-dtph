@@ -124,18 +124,37 @@
                         </div>
                     @endif
 
-                    <form id="programForm" x-ref="programForm" action="{{ route('farmer.proposals.store', $program) }}" method="POST" @submit.prevent="showConfirm = true">
+                    <form id="programForm" x-ref="programForm" action="{{ route('farmer.proposals.store', $program) }}" method="POST" enctype="multipart/form-data" @submit.prevent="showConfirm = true">
                         @csrf
 
                         <div class="space-y-6">
+
+
                             <div>
-                                <label for="lokasi_lahan" class="block text-sm font-bold text-gray-700 mb-2">
-                                    Lokasi Lahan / Sasaran <span class="text-red-500">*</span>
+                                <label for="file_proposal" class="block text-sm font-bold text-gray-700 mb-2">
+                                    Dokumen Proposal (PDF/Word) <span class="text-red-500">*</span>
                                 </label>
-                                <textarea name="lokasi_lahan" id="lokasi_lahan" rows="4" required
-                                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm resize-none @error('lokasi_lahan') border-red-400 bg-red-50 @enderror"
-                                    placeholder="Contoh: Desa Makmur, RT 01/RW 02. Tuliskan lokasi lahan yang akan menjadi objek program/bantuan ini...">{{ old('lokasi_lahan') }}</textarea>
-                                @error('lokasi_lahan')
+                                <input type="file" name="file_proposal" id="file_proposal" accept=".pdf,.doc,.docx" required
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20 @error('file_proposal') border-red-400 bg-red-50 @enderror">
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Upload file proposal resmi Anda. Maksimal 5MB.</p>
+                                @error('file_proposal')
+                                    <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="rencana_durasi_hari" class="block text-sm font-bold text-gray-700 mb-2">
+                                    Rencana Durasi Pemakaian (Hari) <span class="text-gray-400 font-normal ml-1">(Opsional)</span>
+                                </label>
+                                <div class="relative max-w-sm">
+                                    <input type="number" name="rencana_durasi_hari" id="rencana_durasi_hari" min="1" max="365"
+                                        class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-5 pr-16 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm @error('rencana_durasi_hari') border-red-400 bg-red-50 @enderror"
+                                        placeholder="Misal: 7">
+                                    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+                                        <span class="text-sm font-bold text-gray-400">Hari</span>
+                                    </div>
+                                </div>
+                                @error('rencana_durasi_hari')
                                     <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
                                 @enderror
                             </div>

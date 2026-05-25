@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('farmer.proposals.store-unified') }}" method="POST" class="space-y-6">
+                    <form action="{{ route('farmer.proposals.store-unified') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
                         
                         {{-- STEP 1: KATEGORI PENGAJUAN --}}
@@ -164,20 +164,27 @@
                             </div>
                         </div>
 
-                        {{-- STEP 3: LOKASI DAN KONFIRMASI --}}
+                        {{-- STEP 3: DOKUMEN DAN KONFIRMASI --}}
                         <div x-show="step === 3" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-6">
                             
                             <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                                <label class="block text-sm font-bold text-gray-800 mb-2">Lokasi Lahan / Penggunaan <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <div class="absolute top-3 left-3.5 flex items-start pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <label for="file_proposal" class="block text-sm font-bold text-gray-800 mb-2">Dokumen Proposal (PDF/Word) <span class="text-red-500">*</span></label>
+                                <input type="file" name="file_proposal" id="file_proposal" accept=".pdf,.doc,.docx" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100" x-bind:required="step === 3">
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Upload file proposal resmi Anda. Maksimal 5MB.</p>
+                                <x-input-error class="mt-2" :messages="$errors->get('file_proposal')" />
+                            </div>
+
+                            <div class="bg-gray-50 p-5 rounded-xl border border-gray-200" x-show="kategori === 'alsintan'">
+                                <label for="rencana_durasi_hari" class="block text-sm font-bold text-gray-800 mb-2">Rencana Durasi Pemakaian (Hari) <span class="text-red-500">*</span></label>
+                                <div class="relative max-w-sm">
+                                    <input type="number" name="rencana_durasi_hari" id="rencana_durasi_hari" min="1" max="365"
+                                        class="block w-full pl-5 pr-16 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all sm:text-sm"
+                                        placeholder="Misal: 7" x-bind:required="step === 3 && kategori === 'alsintan'">
+                                    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+                                        <span class="text-sm font-bold text-gray-400">Hari</span>
                                     </div>
-                                    <textarea name="lokasi_lahan" id="lokasi_lahan" rows="3" x-bind:required="step === 3"
-                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all sm:text-sm resize-none"
-                                        placeholder="Tuliskan alamat lengkap atau koordinat lokasi lahan yang akan menjadi objek penggunaan..."></textarea>
                                 </div>
-                                <x-input-error class="mt-2" :messages="$errors->get('lokasi_lahan')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('rencana_durasi_hari')" />
                             </div>
 
                             <div class="p-4 bg-blue-50/50 rounded-xl border border-blue-100 flex items-start gap-3">

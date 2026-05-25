@@ -53,7 +53,7 @@
                     <p class="text-xs text-gray-400 mt-0.5">Proposal yang perlu segera ditindaklanjuti</p>
                 </div>
                 <a href="{{ route('kabid.proposals.index') }}"
-                   class="inline-flex items-center gap-1 text-sm font-bold text-amber-600 hover:underline">
+                   class="inline-flex items-center gap-1 text-sm font-bold text-amber-600 hover:underline whitespace-nowrap">
                     Lihat Semua
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>

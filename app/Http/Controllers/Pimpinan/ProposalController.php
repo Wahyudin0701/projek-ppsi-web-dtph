@@ -20,7 +20,7 @@ class ProposalController extends Controller
             COUNT(*) as total,
             SUM(CASE WHEN status = 'diteruskan_ke_pimpinan' THEN 1 ELSE 0 END) as menunggu,
             SUM(CASE WHEN status = 'didisposisi_kabid' THEN 1 ELSE 0 END) as disposisi,
-            SUM(CASE WHEN status IN ('surat_tugas_terbit', 'survei_selesai') THEN 1 ELSE 0 END) as survei,
+            SUM(CASE WHEN status IN ('surat_tugas_terbit', 'survei_selesai', 'menunggu_review_kabid') THEN 1 ELSE 0 END) as survei,
             SUM(CASE WHEN status = 'menunggu_approval_ba' THEN 1 ELSE 0 END) as menunggu_akhir,
             SUM(CASE WHEN status = 'disetujui' THEN 1 ELSE 0 END) as disetujui,
             SUM(CASE WHEN status = 'ditolak' THEN 1 ELSE 0 END) as ditolak
@@ -58,6 +58,7 @@ class ProposalController extends Controller
             'didisposisi_kabid', 
             'surat_tugas_terbit', 
             'survei_selesai', 
+            'menunggu_review_kabid',
             'menunggu_approval_ba'
         ]);
 

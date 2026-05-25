@@ -52,19 +52,7 @@
                     </div>
                 </div>
                 <div class="flex gap-3 w-full sm:w-auto">
-                    @if($proposal->status === 'disetujui')
-                        @if($proposal->alsintan_id)
-                            <a href="{{ route('documents.surat-perjanjian', $proposal) }}" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white text-sm font-bold rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Cetak Surat Perjanjian
-                            </a>
-                        @else
-                            <a href="{{ route('documents.sk-bantuan', $proposal) }}" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white text-sm font-bold rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Cetak SK Bantuan
-                            </a>
-                        @endif
-                    @endif
+
                     <a href="{{ route('farmer.proposals.download-receipt', $proposal->id) }}" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Unduh Bukti
@@ -87,16 +75,32 @@
                                 <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->ketua ?? '-' }}</p>
                             </div>
                             <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">NIK Ketua</p>
+                                <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->nik_ketua ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kontak / No. Telepon</p>
+                                <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->kontak ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kelas / Grade</p>
+                                <p class="text-gray-900 font-medium capitalize">{{ $proposal->user->farmerProfile->grade ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Luas Lahan</p>
+                                <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->luas_lahan ?? '-' }} Ha</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Komoditi Keseluruhan</p>
+                                <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->komoditi ?? '-' }}</p>
+                            </div>
+                            <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Komoditi Utama</p>
                                 <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->komoditi_utama ?? '-' }}</p>
                             </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kecamatan</p>
-                                <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</p>
-                            </div>
                             <div class="sm:col-span-2">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Lokasi Lahan Penggunaan</p>
-                                <p class="text-gray-900 font-medium">{{ $proposal->lokasi_lahan }}</p>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Alamat Lengkap</p>
+                                <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->alamat ?? '-' }}, Kec. {{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</p>
                             </div>
                             @if($proposal->alsintan_id)
                             <div class="sm:col-span-2">
@@ -105,56 +109,22 @@
                             </div>
                             @endif
                         </div>
-                    </div>
 
-                    {{-- Data Survei Lapangan (CPCL) --}}
-                    @if($proposal->cpclVerifications->isNotEmpty())
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 p-6 sm:p-8 mt-6">
-                        <h4 class="font-bold text-gray-900 mb-6 text-lg border-b border-gray-100 pb-3 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-                            Hasil Survei Lapangan (CPCL)
-                        </h4>
-                        
-                        @php $cpcl = $proposal->cpclVerifications->last(); @endphp
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-6">
+                        @if($proposal->file_proposal)
+                        <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Status Kepemilikan</p>
-                                <p class="text-gray-900 font-medium">{{ $cpcl->status_kepemilikan ?? '-' }}</p>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">File Dokumen Proposal</p>
+                                <p class="text-sm font-medium text-gray-600">Dokumen PDF/Word yang diajukan</p>
                             </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Luas Lahan</p>
-                                <p class="text-gray-900 font-medium">{{ $cpcl->luas_lahan ?? '-' }} Ha</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kondisi Lahan</p>
-                                <p class="text-gray-900 font-medium">{{ $cpcl->kondisi_lahan ?? '-' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kesesuaian Komoditas</p>
-                                <p class="font-medium {{ $cpcl->kesesuaian_komoditas ? 'text-green-700' : 'text-red-600' }}">
-                                    {{ $cpcl->kesesuaian_komoditas ? 'Sesuai ✓' : 'Tidak Sesuai ✗' }}
-                                </p>
-                            </div>
-                            <div class="col-span-2">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rekomendasi Petugas</p>
-                                <p class="text-gray-900 font-medium">{{ $cpcl->rekomendasi_surveyor ?? '-' }}</p>
-                            </div>
-                        </div>
-
-                        @if($proposal->surveyDocumentations->isNotEmpty())
-                        <div>
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Foto Dokumentasi</p>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                @foreach($proposal->surveyDocumentations as $doc)
-                                <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="block rounded-xl overflow-hidden border border-gray-200 hover:opacity-90 transition-opacity">
-                                    <img src="{{ Storage::url($doc->file_path) }}" alt="{{ $doc->keterangan }}" class="w-full h-32 object-cover">
-                                </a>
-                                @endforeach
-                            </div>
+                            <a href="{{ Storage::url($proposal->file_proposal) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-sm font-bold rounded-xl transition-colors border border-indigo-100 w-full sm:w-auto">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                Lihat Dokumen
+                            </a>
                         </div>
                         @endif
                     </div>
-                    @endif
+
+                    {{-- Data Survei Lapangan (CPCL) disembunyikan untuk sisi user --}}
                 </div>
 
                 {{-- Sidebar Info --}}
@@ -286,30 +256,7 @@
                             </div>
                             @endif
 
-                            {{-- 6. Berita Acara / Rekomendasi --}}
-                            @if($proposal->status !== 'ditolak' || $beritaAcara)
-                            <div class="relative">
-                                @if($beritaAcara)
-                                    <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
-                                    <div class="pl-4">
-                                        <p class="text-sm font-bold text-gray-900">Laporan Hasil Survei</p>
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $beritaAcara->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
-                                        <p class="text-xs text-gray-500 mt-1">Berita Acara dan rekomendasi teknis telah diterbitkan.</p>
-                                    </div>
-                                @elseif($proposal->status === 'survei_selesai')
-                                    <div class="absolute -left-[21px] bg-orange-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
-                                    <div class="pl-4">
-                                        <p class="text-sm font-bold text-orange-600">Penyusunan Berita Acara</p>
-                                        <p class="text-xs text-gray-400">Tim sedang menyusun laporan hasil pemeriksaan lapangan.</p>
-                                    </div>
-                                @else
-                                    <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
-                                    <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400">Laporan & Rekomendasi</p></div>
-                                @endif
-                            </div>
-                            @endif
-
-                            {{-- 7. Final Decision --}}
+                            {{-- 6. Final Decision --}}
                             @if($proposal->status !== 'ditolak' || ($proposal->status === 'ditolak' && $proposal->decided_at && $beritaAcara))
                             <div class="relative">
                                 @if($proposal->status === 'disetujui')

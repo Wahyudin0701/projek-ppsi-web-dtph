@@ -86,18 +86,18 @@
                 <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 sm:p-10" x-data="{ showConfirm: false, agreed: false, durasi: '{{ old('rencana_durasi_hari', '') }}' }">
                     <h3 class="text-2xl font-black text-gray-900 mb-8">Formulir Pengajuan</h3>
 
-                    <form id="proposalForm" x-ref="proposalForm" action="{{ route('farmer.proposals.alsintan.store', $alsintan->id) }}" method="POST" @submit.prevent="showConfirm = true">
+                    <form id="proposalForm" x-ref="proposalForm" action="{{ route('farmer.proposals.alsintan.store', $alsintan->id) }}" method="POST" enctype="multipart/form-data" @submit.prevent="showConfirm = true">
                         @csrf
 
                         <div class="space-y-6">
                             <div>
-                                <label for="lokasi_lahan" class="block text-sm font-bold text-gray-700 mb-2">
-                                    Lokasi Lahan / Penggunaan <span class="text-red-500">*</span>
+                                <label for="file_proposal" class="block text-sm font-bold text-gray-700 mb-2">
+                                    Dokumen Proposal (PDF/Word) <span class="text-red-500">*</span>
                                 </label>
-                                <textarea name="lokasi_lahan" id="lokasi_lahan" rows="4" required
-                                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm resize-none @error('lokasi_lahan') border-red-400 bg-red-50 @enderror"
-                                    placeholder="Tuliskan alamat lengkap atau koordinat lokasi lahan tempat alat ini akan digunakan...">{{ old('lokasi_lahan') }}</textarea>
-                                @error('lokasi_lahan')
+                                <input type="file" name="file_proposal" id="file_proposal" accept=".pdf,.doc,.docx" required
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20 @error('file_proposal') border-red-400 bg-red-50 @enderror">
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Upload file proposal resmi Anda. Maksimal 5MB.</p>
+                                @error('file_proposal')
                                     <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
                                 @enderror
                             </div>

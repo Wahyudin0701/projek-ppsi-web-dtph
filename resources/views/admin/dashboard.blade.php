@@ -87,7 +87,7 @@
                         <p class="text-xs text-gray-400 mt-0.5">Menunggu verifikasi Anda</p>
                     </div>
                     <a href="{{ route('admin.users.index') }}"
-                       class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline">
+                       class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline whitespace-nowrap flex-shrink-0">
                         Lihat Semua
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
@@ -139,7 +139,7 @@
                         <p class="text-xs text-gray-400 mt-0.5">Pengajuan yang perlu diverifikasi administratif</p>
                     </div>
                     <a href="{{ route('admin.proposals.index') }}"
-                       class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline">
+                       class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline whitespace-nowrap flex-shrink-0">
                         Lihat Semua
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
@@ -191,7 +191,7 @@
                     <p class="text-xs text-gray-400 mt-0.5">Proposal yang siap diterbitkan surat tugas dan diinput hasil verifikasi CPCL</p>
                 </div>
                 <a href="{{ route('admin.proposals.index', ['status' => 'surat_tugas_terbit']) }}"
-                   class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline">
+                   class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline whitespace-nowrap flex-shrink-0">
                     Lihat Semua
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
@@ -212,7 +212,7 @@
                                     <th class="px-6 py-4">Kelompok Tani</th>
                                     <th class="px-6 py-4">Bantuan / Program</th>
                                     <th class="px-6 py-4">Masa Berlaku Survei</th>
-                                    <th class="px-6 py-4 text-right">Aksi</th>
+                                    <th class="px-6 py-4 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50">
@@ -248,19 +248,19 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-right align-middle">
-                                            <div class="inline-flex items-center gap-2">
-                                                <a href="{{ route('admin.proposals.cetak-surat-tugas', $prop) }}"
-                                                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold rounded-xl transition-colors border border-sky-100">
+                                            <div class="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-2">
+                                                <a href="{{ route('documents.surat-tugas', $prop) }}" target="_blank"
+                                                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold rounded-xl transition-colors border border-sky-100 whitespace-nowrap">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                                     Cetak Surat Tugas
                                                 </a>
                                                 <a href="{{ route('admin.proposals.cpcl.create', $prop) }}"
-                                                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition-colors border border-emerald-100">
+                                                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition-colors border border-emerald-100 whitespace-nowrap">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                                                     Input CPCL
                                                 </a>
                                                 <a href="{{ route('admin.proposals.show', $prop) }}"
-                                                   class="inline-flex items-center px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-bold rounded-xl transition-colors border border-gray-100">
+                                                   class="inline-flex items-center px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-bold rounded-xl transition-colors border border-gray-100 whitespace-nowrap">
                                                     Detail
                                                 </a>
                                             </div>

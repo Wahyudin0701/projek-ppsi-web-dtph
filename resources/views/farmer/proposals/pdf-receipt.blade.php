@@ -144,9 +144,9 @@
             </td>
         </tr>
         <tr>
-            <th>Lokasi Lahan Penggunaan</th>
+            <th>Alamat Kelompok</th>
             <td class="colon">:</td>
-            <td>{{ $proposal->lokasi_lahan }}</td>
+            <td>{{ $proposal->user->farmerProfile->alamat ?? '-' }}</td>
         </tr>
         @if($proposal->alsintan_id)
         <tr>

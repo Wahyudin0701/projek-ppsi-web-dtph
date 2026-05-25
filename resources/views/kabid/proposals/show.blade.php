@@ -73,6 +73,18 @@
                     <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $sc['bg'] }} border border-transparent shadow-sm">
                         {{ $sc['label'] }} (Menunggu Admin)
                     </span>
+                @elseif($proposal->status === 'menunggu_review_kabid' && $proposal->beritaAcara)
+                    <form action="{{ route('kabid.berita-acara.approve', $proposal) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-green-500 text-white text-sm font-bold rounded-xl hover:bg-green-600 transition-colors shadow-sm" onclick="return confirm('Apakah Anda yakin meneruskan Berita Acara ini ke Pimpinan? TTE akan digenerate otomatis.')">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Teruskan ke Pimpinan
+                        </button>
+                    </form>
+                    <a href="{{ route('kabid.berita-acara.show', $proposal) }}"
+                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-500 text-white text-sm font-bold rounded-xl hover:bg-amber-600 transition-colors shadow-sm">
+                        Lihat Berita Acara
+                    </a>
                 @elseif($proposal->beritaAcara)
                     <a href="{{ route('documents.berita-acara', $proposal) }}" target="_blank"
                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
@@ -119,30 +131,43 @@
                             <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->nik_ketua ?? '-' }}</p>
                         </div>
                         <div>
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Telp / Kontak</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kontak / No. Telepon</p>
                             <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->kontak ?? '-' }}</p>
                         </div>
                         <div>
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kecamatan</p>
-                            <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kelas / Grade</p>
+                            <p class="text-gray-900 font-semibold text-sm capitalize">{{ $proposal->user->farmerProfile->grade ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Luas Lahan</p>
+                            <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->luas_lahan ?? '-' }} Ha</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Komoditi Keseluruhan</p>
+                            <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->komoditi ?? '-' }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Komoditi Utama</p>
                             <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->komoditi_utama ?? '-' }}</p>
                         </div>
-                        <div>
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Luas Lahan Kelompok</p>
-                            <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->luas_lahan ?? '-' }} Ha</p>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Grade Kelompok</p>
-                            <p class="text-gray-900 font-semibold text-sm">{{ $proposal->user->farmerProfile->grade ?? '-' }}</p>
-                        </div>
                         <div class="sm:col-span-2">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Alamat Kelompok</p>
-                            <p class="text-gray-900 font-semibold text-sm leading-relaxed">{{ $proposal->user->farmerProfile->alamat ?? '-' }}</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Alamat Lengkap</p>
+                            <p class="text-gray-900 font-semibold text-sm leading-relaxed">{{ $proposal->user->farmerProfile->alamat ?? '-' }}, Kec. {{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</p>
                         </div>
                     </div>
+
+                    @if($proposal->file_proposal)
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">File Dokumen Proposal</p>
+                            <p class="text-sm font-medium text-gray-600">Dokumen PDF/Word yang diajukan oleh kelompok tani</p>
+                        </div>
+                        <a href="{{ Storage::url($proposal->file_proposal) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-sm font-bold rounded-xl transition-colors border border-indigo-100 w-full sm:w-auto">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                            Lihat Dokumen
+                        </a>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- Detail Pengajuan (Alsintan / Program) --}}
@@ -168,10 +193,6 @@
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rencana Durasi Pemakaian</p>
                                 <p class="text-amber-600 font-bold text-base">{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</p>
                             </div>
-                            <div class="sm:col-span-2">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Lokasi Lahan</p>
-                                <p class="text-gray-900 font-semibold text-sm">{{ $proposal->lokasi_lahan }}</p>
-                            </div>
                         </div>
                     @else
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
@@ -190,10 +211,6 @@
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kuota Program</p>
                                 <p class="text-gray-900 font-semibold text-sm">{{ $proposal->program->kuota ?? '-' }}</p>
-                            </div>
-                            <div class="sm:col-span-2">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Lokasi Lahan</p>
-                                <p class="text-gray-900 font-semibold text-sm">{{ $proposal->lokasi_lahan }}</p>
                             </div>
                         </div>
                     @endif

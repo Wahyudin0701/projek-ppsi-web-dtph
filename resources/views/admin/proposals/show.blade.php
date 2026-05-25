@@ -148,10 +148,15 @@
                 </div>
             @elseif($proposal->status === 'surat_tugas_terbit')
                 <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-                    <a href="{{ route('admin.proposals.cetak-surat-tugas', $proposal) }}"
+                    <a href="{{ route('documents.surat-tugas', $proposal) }}" target="_blank"
                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         Download Surat Tugas
+                    </a>
+                    <a href="{{ route('documents.form-cpcl-blank', $proposal) }}" target="_blank"
+                       class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Download Form CPCL
                     </a>
                     <a href="{{ route('admin.proposals.cpcl.create', $proposal) }}"
                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
@@ -197,18 +202,48 @@
                             <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->ketua ?? $proposal->user->name }}</p>
                         </div>
                         <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">NIK Ketua</p>
+                            <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->nik_ketua ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kontak / No. Telepon</p>
+                            <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->kontak ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kelas / Grade</p>
+                            <p class="text-gray-900 font-medium capitalize">{{ $proposal->user->farmerProfile->grade ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Luas Lahan</p>
+                            <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->luas_lahan ?? '-' }} Ha</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Komoditi Keseluruhan</p>
+                            <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->komoditi ?? '-' }}</p>
+                        </div>
+                        <div>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Komoditi Utama</p>
                             <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->komoditi_utama ?? '-' }}</p>
                         </div>
-                        <div>
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kecamatan</p>
-                            <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</p>
-                        </div>
                         <div class="sm:col-span-2">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Lokasi Lahan / Penggunaan</p>
-                            <p class="text-gray-900 font-medium">{{ $proposal->lokasi_lahan }}</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Alamat Lengkap</p>
+                            <p class="text-gray-900 font-medium">{{ $proposal->user->farmerProfile->alamat ?? '-' }}, Kec. {{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</p>
                         </div>
+
                     </div>
+
+                    @if($proposal->file_proposal)
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">File Dokumen Proposal</p>
+                            <p class="text-sm font-medium text-gray-600">Dokumen PDF/Word yang diajukan oleh kelompok tani</p>
+                        </div>
+                        <a href="{{ Storage::url($proposal->file_proposal) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-sm font-bold rounded-xl transition-colors border border-indigo-100 w-full sm:w-auto">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                            Lihat Dokumen
+                        </a>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- Object Detail --}}

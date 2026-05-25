@@ -113,7 +113,6 @@
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">No. Registrasi</th>
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">Tanggal</th>
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">Objek Proposal</th>
-                            <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest text-center">Lokasi Lahan</th>
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest text-center">Status</th>
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest text-center">Aksi</th>
                         </tr>
@@ -138,9 +137,6 @@
                                     @else
                                         <p class="font-bold text-gray-900">-</p>
                                     @endif
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <p class="text-sm text-gray-600 line-clamp-1">{{ $proposal->lokasi_lahan }}</p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @php

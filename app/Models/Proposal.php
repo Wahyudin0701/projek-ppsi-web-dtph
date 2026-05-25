@@ -19,7 +19,6 @@ class Proposal extends Model
         'alsintan_id',
         'status',
         'submission_date',
-        'lokasi_lahan',
         'rencana_durasi_hari',
         'reviewed_at',
         'decided_at',
@@ -30,6 +29,7 @@ class Proposal extends Model
         'kabid_notes',
         'foto_lahan',
         'foto_pemetaan',
+        'file_proposal',
     ];
 
     protected $casts = [
@@ -41,8 +41,9 @@ class Proposal extends Model
     /**
      * Status flow (Hybrid Digital-Physical):
      * pending_verifikasi → diteruskan_ke_pimpinan → didisposisi_kabid
-     * → surat_tugas_terbit (Kabid terbitkan, survei fisik) → survei_selesai (Admin input CPCL)
-     * → menunggu_approval_ba (Kabid buat BA) → disetujui | ditolak
+     * → surat_tugas_terbit (Kabid terbitkan, survei fisik)
+     * → menunggu_review_kabid (Admin input CPCL & generate BA, Kabid review)
+     * → menunggu_approval_ba (Kabid teruskan ke Pimpinan) → disetujui | ditolak
      */
     public function getStatusLabelAttribute(): string
     {
@@ -51,7 +52,8 @@ class Proposal extends Model
             'diteruskan_ke_pimpinan' => 'Diteruskan ke Pimpinan',
             'didisposisi_kabid'      => 'Didisposisi ke Kabid',
             'surat_tugas_terbit'     => 'Surat Tugas Terbit',
-            'survei_selesai'         => 'Survei Selesai (Menunggu BA)',
+            'survei_selesai'         => 'Survei Selesai',
+            'menunggu_review_kabid'  => 'Menunggu Review Kabid',
             'menunggu_approval_ba'   => 'Menunggu Persetujuan BA',
             'disetujui'              => 'Disetujui',
             'ditolak'                => 'Ditolak',

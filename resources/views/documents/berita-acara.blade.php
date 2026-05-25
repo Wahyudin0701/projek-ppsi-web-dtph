@@ -52,8 +52,8 @@
                 <td>: {{ $proposal->alsintan_id ? $proposal->alsintan->name : $proposal->program->name }}</td>
             </tr>
             <tr>
-                <td>Lokasi Lahan</td>
-                <td>: {{ $proposal->lokasi_lahan }}</td>
+                <td>Alamat Kelompok</td>
+                <td>: {{ $proposal->user->farmerProfile->alamat ?? '-' }}</td>
             </tr>
         </table>
 
@@ -83,21 +83,37 @@
         <table>
             <tr>
                 <td>
-                    Mengetahui,<br>
-                    <strong>Kepala Bidang</strong><br>
-                    <br><br><br><br>
-                    @php $kabidEmp = $proposal->beritaAcara?->kabid?->employee; @endphp
-                    <u>{{ $proposal->beritaAcara?->kabid?->display_name ?? '.......................' }}</u><br>
-                    NIP. {{ $kabidEmp?->nip ?? '.......................' }}
+                    Tim Survei Lapangan<br>
+                    <strong>(Tim Survei / Surveyor)</strong><br>
+                    
+                    @if(isset($signatureSurveyor) && $signatureSurveyor)
+                        <div class="qrcode" style="margin-top: 10px; margin-bottom: 10px; background: transparent; border: none;">
+                            <img src="data:image/svg+xml;base64,{{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate(url('/verify/' . $signatureSurveyor->uuid))) }}" alt="QR Code" style="width: 80px; height: 80px;">
+                        </div>
+                        <u>{{ $signatureSurveyor->signer->name }}</u><br>
+                        NIP. {{ $signatureSurveyor->signer->employee->nip ?? '-' }}
+                    @else
+                        <br><br><br><br>
+                        <u>.......................</u><br>
+                        NIP. .......................
+                    @endif
                 </td>
                 <td>
-                    Mengesahkan,<br>
-                    <strong>Kepala Dinas TPH</strong><br>
-                    <div class="qrcode" style="margin-top: 10px; margin-bottom: 10px; background: transparent; border: none;">
-                        {!! QrCode::size(80)->generate(route('documents.berita-acara', $proposal->id)) !!}
-                    </div>
-                    <u>{{ $kepalaDinas?->name ?? '.......................' }}</u><br>
-                    NIP. {{ $kepalaDinas?->nip ?? '.......................' }}
+                    Mengetahui,<br>
+                    <strong>Kepala Bidang</strong><br>
+                    
+                    @if(isset($signatureKabid) && $signatureKabid)
+                        <div class="qrcode" style="margin-top: 10px; margin-bottom: 10px; background: transparent; border: none;">
+                            <img src="data:image/svg+xml;base64,{{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate(url('/verify/' . $signatureKabid->uuid))) }}" alt="QR Code" style="width: 80px; height: 80px;">
+                        </div>
+                        <u>{{ $signatureKabid->signer->name }}</u><br>
+                        NIP. {{ $signatureKabid->signer->employee->nip ?? '-' }}
+                    @else
+                        <br><br><br><br>
+                        @php $kabidEmp = $proposal->beritaAcara?->kabid?->employee; @endphp
+                        <u>{{ $proposal->beritaAcara?->kabid?->display_name ?? '.......................' }}</u><br>
+                        NIP. {{ $kabidEmp?->nip ?? '.......................' }}
+                    @endif
                 </td>
             </tr>
         </table>

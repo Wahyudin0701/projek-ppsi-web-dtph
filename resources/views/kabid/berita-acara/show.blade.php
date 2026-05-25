@@ -30,7 +30,7 @@
                     <tr class="border-b border-gray-50"><td class="py-2 text-gray-500 w-40">No. Proposal</td><td class="py-2 font-semibold">PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</td></tr>
                     <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Nama Pengajuan</td><td class="py-2 font-semibold">{{ $proposal->program?->name ?? $proposal->alsintan?->name }}</td></tr>
                     <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Pemohon</td><td class="py-2 font-semibold">{{ $proposal->user->farmerProfile?->nama_kelompok ?? $proposal->user->name }}</td></tr>
-                    <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Lokasi Lahan</td><td class="py-2 font-semibold">{{ $proposal->lokasi_lahan }}</td></tr>
+                    <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Alamat Kelompok</td><td class="py-2 font-semibold">{{ $proposal->user->farmerProfile->alamat ?? '-' }}</td></tr>
                     <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Tanggal Survei</td><td class="py-2 font-semibold">{{ $beritaAcara->survey_date->format('d F Y') }}</td></tr>
                     <tr><td class="py-2 text-gray-500">Lokasi Survei</td><td class="py-2 font-semibold">{{ $beritaAcara->location }}</td></tr>
                 </table>

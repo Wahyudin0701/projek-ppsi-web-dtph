@@ -33,4 +33,21 @@ class VerificationController extends Controller
             'proposal' => $proposal
         ]);
     }
+
+    public function verifySignature($uuid)
+    {
+        $signature = \App\Models\DocumentSignature::with('signer')->where('uuid', $uuid)->first();
+
+        if (!$signature) {
+            return view('verify.show', [
+                'status' => 'not_found',
+                'message' => 'Tanda tangan digital tidak ditemukan atau tidak valid.'
+            ]);
+        }
+
+        return view('verify.show', [
+            'status' => 'valid',
+            'signature' => $signature
+        ]);
+    }
 }

@@ -104,15 +104,17 @@ class ProposalController extends Controller
         }
 
         $request->validate([
-            'lokasi_lahan'        => 'required|string|max:500',
             'rencana_durasi_hari' => 'required|integer|min:1|max:365',
+            'file_proposal'       => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
+
+        $filePath = $request->file('file_proposal')->store('proposals', 'public');
 
         $proposal = Proposal::create([
             'user_id'             => $user->id,
             'alsintan_id'         => $alsintan->id,
-            'lokasi_lahan'        => $request->lokasi_lahan,
             'rencana_durasi_hari' => $request->rencana_durasi_hari,
+            'file_proposal'       => $filePath,
             'status'              => 'pending_verifikasi',
             'submission_date'     => now(),
         ]);
@@ -218,13 +220,17 @@ class ProposalController extends Controller
         }
 
         $request->validate([
-            'lokasi_lahan' => 'required|string|max:255',
+            'rencana_durasi_hari' => 'nullable|integer|min:1|max:365',
+            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
+
+        $filePath = $request->file('file_proposal')->store('proposals', 'public');
 
         $proposal = Proposal::create([
             'user_id' => $user->id,
             'program_id' => $program->id,
-            'lokasi_lahan' => $request->lokasi_lahan,
+            'rencana_durasi_hari' => $request->rencana_durasi_hari,
+            'file_proposal' => $filePath,
             'status' => 'pending_verifikasi',
             'submission_date' => now(),
         ]);
@@ -240,18 +246,23 @@ class ProposalController extends Controller
 
         $request->validate([
             'kategori_pengajuan' => 'required|in:alsintan,bantuan',
-            'lokasi_lahan' => 'required|string|max:255',
+            'rencana_durasi_hari' => 'nullable|integer|min:1|max:365',
+            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
+
+        $filePath = $request->file('file_proposal')->store('proposals', 'public');
 
         if ($request->kategori_pengajuan === 'alsintan') {
             $request->validate([
                 'alsintan_id' => 'required|exists:alsintans,id',
+                'rencana_durasi_hari' => 'required|integer|min:1|max:365',
             ]);
 
             $proposal = Proposal::create([
                 'user_id' => $user->id,
                 'alsintan_id' => $request->alsintan_id,
-                'lokasi_lahan' => $request->lokasi_lahan,
+                'rencana_durasi_hari' => $request->rencana_durasi_hari,
+                'file_proposal' => $filePath,
                 'status' => 'pending_verifikasi',
                 'submission_date' => now(),
             ]);
@@ -283,7 +294,8 @@ class ProposalController extends Controller
             $proposal = Proposal::create([
                 'user_id' => $user->id,
                 'program_id' => $program->id,
-                'lokasi_lahan' => $request->lokasi_lahan,
+                'rencana_durasi_hari' => $request->rencana_durasi_hari,
+                'file_proposal' => $filePath,
                 'status' => 'pending_verifikasi',
                 'submission_date' => now(),
             ]);

@@ -66,9 +66,9 @@
                 <td>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</td>
             </tr>
             <tr>
-                <td>Alamat Lahan</td>
+                <td>Alamat Kelompok</td>
                 <td>:</td>
-                <td>{{ $proposal->lokasi_lahan }}</td>
+                <td>{{ $proposal->user->farmerProfile->alamat ?? '-' }}</td>
             </tr>
         </table>
         <p style="margin-left: 20px;">Selanjutnya disebut <strong>PIHAK KEDUA</strong>.</p>

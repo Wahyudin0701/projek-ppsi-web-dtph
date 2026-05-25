@@ -194,8 +194,6 @@
         </tbody>
     </table>
 
-    <div class="page-break"></div>
-
     <p class="font-bold mb-2">B. Hasil Verifikasi Teknis</p>
     <table class="table-bordered mb-4">
         <thead>
@@ -209,15 +207,15 @@
         <tbody>
             @php
                 $teknis = [
-                    ['Status Kepemilikan Lahan', $cpcl->status_kepemilikan ?? '', 'Milik Sendiri / Sewa / Pinjam Pakai'],
-                    ['Luas Lahan', ($cpcl->luas_lahan ?? '') . ($cpcl->luas_lahan ? ' Ha' : ''), ''],
+                    ['Status Kepemilikan Lahan', $cpcl?->status_kepemilikan ?? '', 'Milik Sendiri / Sewa / Pinjam Pakai'],
+                    ['Luas Lahan', ($cpcl?->luas_lahan ?? '') . ($cpcl?->luas_lahan ? ' Ha' : ''), ''],
                     ['Jenis Tanah', '', ''],
                     ['Sumber Air Budidaya', '', 'Sungai/Kolam/Embung/Sumur'],
-                    ['Kondisi Lahan', $cpcl->kondisi_lahan ?? '', 'Semak Belukar/Bekas Budidaya'],
+                    ['Kondisi Lahan', $cpcl?->kondisi_lahan ?? '', 'Semak Belukar/Bekas Budidaya'],
                     ['Rawan Bencana', '', 'Banjir/Kebakaran Hutan'],
                     ['Pemanfaatan Lahan Sebelumnya', '', ''],
                     ['Pengalaman Budidaya', '', ''],
-                    ['Informasi Lainnya', $cpcl->catatan ?? '', ''],
+                    ['Informasi Lainnya', $cpcl?->catatan ?? '', ''],
                 ];
             @endphp
             @foreach($teknis as $idx => $item)

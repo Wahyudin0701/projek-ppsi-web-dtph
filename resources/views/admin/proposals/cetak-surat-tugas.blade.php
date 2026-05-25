@@ -75,16 +75,25 @@
             </tbody>
         </table>
 
-        <p>Untuk melaksanakan kunjungan dan verifikasi teknis Calon Petani Calon Lokasi (CPCL) atas proposal pengajuan {{ $proposal->alsintan_id ? 'peminjaman alsintan ' . $proposal->alsintan->name : 'program bantuan ' . $proposal->program->name }} dari pemohon/kelompok tani <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> yang berlokasi di <strong>{{ $proposal->lokasi_lahan }}</strong>.</p>
+        <p>Untuk melaksanakan kunjungan dan verifikasi teknis Calon Petani Calon Lokasi (CPCL) atas proposal pengajuan {{ $proposal->alsintan_id ? 'peminjaman alsintan ' . $proposal->alsintan->name : 'program bantuan ' . $proposal->program->name }} dari pemohon/kelompok tani <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> yang beralamat di <strong>{{ $proposal->user->farmerProfile->alamat ?? '-' }}</strong>.</p>
 
         <p>Surat tugas ini berlaku sejak tanggal <strong>{{ $assignment->valid_from->translatedFormat('d F Y') }}</strong> sampai dengan <strong>{{ $assignment->valid_until->translatedFormat('d F Y') }}</strong>. Demikian Surat Tugas ini dibuat untuk dilaksanakan dengan penuh tanggung jawab.</p>
     </div>
 
     <div class="signature">
         <p>Sengeti, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Dinas,</p>
-        <div class="name">{{ $kepalaDinas?->name ?? '.......................' }}</div>
-        <p>NIP. {{ $kepalaDinas?->nip ?? '.......................' }}</p>
+        <p>{{ $signature ? $signature->signer->role_label : 'Kepala Dinas' }},</p>
+        
+        @if($signature)
+            <div style="margin: 15px 0;">
+                <img src="data:image/svg+xml;base64,{{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate(url('/verify/' . $signature->uuid))) }}" alt="QR Code" style="width: 80px; height: 80px;">
+            </div>
+            <div class="name">{{ $signature->signer->name }}</div>
+            <p>NIP. {{ $signature->signer->employee->nip ?? '-' }}</p>
+        @else
+            <div class="name">{{ $kepalaDinas?->name ?? '.......................' }}</div>
+            <p>NIP. {{ $kepalaDinas?->nip ?? '.......................' }}</p>
+        @endif
     </div>
 </body>
 </html>

@@ -124,11 +124,33 @@ class ProposalController extends Controller
         $assignment = $proposal->surveyAssignments->last();
         if (!$assignment) abort(404, 'Data surat tugas tidak ditemukan.');
 
+        $signature = \App\Models\DocumentSignature::with('signer')
+            ->where('document_type', 'surat_tugas')
+            ->where('document_id', $assignment->id)
+            ->first();
         $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
 
-        $pdf = Pdf::loadView('admin.proposals.cetak-surat-tugas', compact('proposal', 'assignment', 'kepalaDinas'));
+        $pdf = Pdf::loadView('admin.proposals.cetak-surat-tugas', compact('proposal', 'assignment', 'kepalaDinas', 'signature'));
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download('Surat_Tugas_Survei_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
+    }
+
+    /**
+     * Cetak Form Verifikasi CPCL (Blank/Template)
+     */
+    public function cetakFormCpcl(Proposal $proposal)
+    {
+        if (!in_array($proposal->status, ['surat_tugas_terbit', 'survei_selesai', 'menunggu_review_kabid', 'menunggu_approval_ba', 'disetujui'])) {
+            abort(403, 'Form CPCL belum tersedia.');
+        }
+
+        $proposal->load(['user.farmerProfile', 'surveyAssignments']);
+        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
+
+        // Menggunakan view documents.cpcl yang bisa menghandle cpclVerifications kosong sebagai template
+        $pdf = Pdf::loadView('documents.cpcl', compact('proposal', 'kepalaDinas'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->download('Form_Verifikasi_CPCL_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
 
     /**
@@ -224,11 +246,29 @@ class ProposalController extends Controller
             ]);
         }
 
-        // Update status ke selesai_survei
-        $proposal->update(['status' => 'survei_selesai']);
+        // Buat Berita Acara Otomatis
+        $beritaAcara = $proposal->beritaAcara()->create([
+            'kabid_id'       => $proposal->kabid_id,
+            'content'        => $request->catatan ?? 'Telah dilakukan verifikasi teknis dan administrasi pada kelompok ' . ($proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name),
+            'survey_date'    => now(),
+            'location'       => $proposal->user->farmerProfile->alamat ?? '-',
+            'recommendation' => $request->rekomendasi_surveyor,
+        ]);
+
+        // Generate TTE QR Code (Signature) for Surveyor (Tim Survei)
+        \App\Models\DocumentSignature::create([
+            'uuid' => \Illuminate\Support\Str::uuid(),
+            'document_type' => 'berita_acara_surveyor',
+            'document_id' => $beritaAcara->id,
+            'signed_by' => auth()->id(),
+            'signed_at' => now(),
+        ]);
+
+        // Update status ke menunggu_review_kabid
+        $proposal->update(['status' => 'menunggu_review_kabid']);
 
         return redirect()->route('admin.proposals.show', $proposal)
-            ->with('success', 'Data Hasil Verifikasi CPCL berhasil disimpan. Status menjadi "Survei Selesai".');
+            ->with('success', 'Data Hasil Verifikasi CPCL dan Berita Acara berhasil disimpan. Diteruskan ke Kabid untuk direview.');
     }
 
     /**

@@ -25,12 +25,12 @@ class ProposalController extends Controller
             'total'           => $allProposals->count(),
             'menunggu_survei' => $allProposals->whereIn('status', ['didisposisi_kabid'])->count(),
             'dalam_survei'    => $allProposals->where('status', 'surat_tugas_terbit')->count(),
-            'survei_selesai'  => $allProposals->where('status', 'survei_selesai')->count(),
+            'survei_selesai'  => $allProposals->whereIn('status', ['survei_selesai', 'menunggu_review_kabid'])->count(),
             'selesai'         => $allProposals->whereIn('status', ['menunggu_approval_ba', 'disetujui', 'ditolak'])->count(),
         ];
 
         $pendingAction = Proposal::where('kabid_id', $kabid->id)
-            ->whereIn('status', ['didisposisi_kabid', 'survei_selesai'])
+            ->whereIn('status', ['didisposisi_kabid', 'survei_selesai', 'menunggu_review_kabid'])
             ->with(['user.farmerProfile', 'program', 'alsintan'])
             ->latest('updated_at')
             ->take(5)
@@ -122,7 +122,7 @@ class ProposalController extends Controller
         }
 
         $request->validate([
-            'nomor_surat'   => 'required|string|max:255',
+            'nomor_surat'   => 'required|string|max:255|unique:survey_assignments,nomor_surat',
             'valid_from'    => 'required|date',
             'valid_until'   => 'required|date|after_or_equal:valid_from',
             'team_members'  => 'required|array|min:1',
@@ -132,12 +132,21 @@ class ProposalController extends Controller
         ]);
 
         // Buat assignment dengan nomor surat custom dari input
-        SurveyAssignment::create([
+        $assignment = SurveyAssignment::create([
             'proposal_id'  => $proposal->id,
             'nomor_surat'  => $request->nomor_surat,
             'valid_from'   => $request->valid_from,
             'valid_until'  => $request->valid_until,
             'team_members' => $request->team_members,
+        ]);
+
+        // Generate TTE QR Code (Signature) for Kabid
+        \App\Models\DocumentSignature::create([
+            'uuid' => \Illuminate\Support\Str::uuid(),
+            'document_type' => 'surat_tugas',
+            'document_id' => $assignment->id,
+            'signed_by' => auth()->id(),
+            'signed_at' => now(),
         ]);
 
         $proposal->update(['status' => 'surat_tugas_terbit']);
@@ -175,7 +184,7 @@ class ProposalController extends Controller
         }
 
         $request->validate([
-            'nomor_surat'   => 'required|string|max:255',
+            'nomor_surat'   => 'required|string|max:255|unique:survey_assignments,nomor_surat,' . $assignment->id,
             'valid_from'    => 'required|date',
             'valid_until'   => 'required|date|after_or_equal:valid_from',
             'team_members'  => 'required|array|min:1',

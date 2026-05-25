@@ -57,14 +57,14 @@
 
             {{-- Table --}}
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full min-w-[950px] text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-50/50">
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">No. Registrasi</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Pengaju</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Jenis & Objek</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Status</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Aksi</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 whitespace-nowrap" style="width: 15%">No. Registrasi</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 min-w-[250px]" style="width: 35%">Pengaju</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100" style="width: 20%">Jenis & Objek</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center whitespace-nowrap" style="width: 15%">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-left whitespace-nowrap" style="width: 15%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -82,7 +82,7 @@
                                 $isAlsintan = $proposal->alsintan_id !== null;
                             @endphp
                             <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="font-bold text-gray-900 text-sm">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span>
                                     <p class="text-[11px] text-gray-400 mt-0.5">{{ $proposal->updated_at->diffForHumans() }}</p>
                                 </td>
@@ -99,22 +99,60 @@
                                     </p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ $sc['bg'] }}">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-widest {{ $sc['bg'] }}">
                                         {{ $sc['label'] }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-center">
-                                    <div class="flex items-center justify-center gap-2">
+                                <td class="px-6 py-4 text-left whitespace-nowrap">
+                                    <div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-start gap-2">
                                         <a href="{{ route('kabid.proposals.show', $proposal) }}"
-                                           class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-all">
+                                           class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl transition-all whitespace-nowrap">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                             Detail
                                         </a>
+
                                         @if($proposal->status === 'didisposisi_kabid')
                                             <a href="{{ route('kabid.proposals.assign-team.form', $proposal) }}"
-                                               class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-amber-500/20">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                               class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm shadow-amber-500/20 whitespace-nowrap">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                                 Bentuk Tim
                                             </a>
+
+                                        @elseif($proposal->status === 'surat_tugas_terbit')
+                                            <a href="{{ route('documents.surat-tugas', $proposal) }}" target="_blank"
+                                               class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold rounded-xl transition-all border border-blue-100 whitespace-nowrap">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                                Surat Tugas
+                                            </a>
+                                            <a href="{{ route('documents.form-cpcl-blank', $proposal) }}" target="_blank"
+                                               class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold rounded-xl transition-all border border-indigo-100 whitespace-nowrap">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                                Form CPCL
+                                            </a>
+
+                                        @elseif($proposal->status === 'survei_selesai')
+                                            <span class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-orange-50 text-orange-600 text-xs font-bold rounded-xl border border-orange-100 whitespace-nowrap">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                Menunggu Admin
+                                            </span>
+
+                                        @elseif($proposal->status === 'menunggu_approval_ba')
+                                            <span class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-purple-50 text-purple-600 text-xs font-bold rounded-xl border border-purple-100 whitespace-nowrap">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                Menunggu Keputusan
+                                            </span>
+
+                                        @elseif($proposal->status === 'disetujui')
+                                            <span class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-green-50 text-green-600 text-xs font-bold rounded-xl border border-green-100 whitespace-nowrap">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                Disetujui
+                                            </span>
+
+                                        @elseif($proposal->status === 'ditolak')
+                                            <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-500 text-xs font-bold rounded-xl border border-red-100">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                Ditolak
+                                            </span>
                                         @endif
                                     </div>
                                 </td>
