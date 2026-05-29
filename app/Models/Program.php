@@ -24,6 +24,7 @@ class Program extends Model
     ];
 
     protected $casts = [
+        'is_open'      => 'boolean',
         'open_date'    => 'date',
         'close_date'   => 'date',
         'requirements' => 'array',

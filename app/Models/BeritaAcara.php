@@ -21,6 +21,7 @@ class BeritaAcara extends Model
 
     protected $casts = [
         'survey_date' => 'date',
+        'is_approved_by_pimpinan' => 'boolean',
     ];
 
     /**
