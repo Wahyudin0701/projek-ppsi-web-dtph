@@ -123,9 +123,9 @@ class UserSeeder extends Seeder
         ]);
 
         \App\Models\FarmerGroupMember::insert([
-            ['farmer_profile_id' => $profile1->id, 'nik' => '5203011111110001', 'nama' => 'Supriyanto', 'alamat' => 'Tanjung Lebar', 'luas_lahan' => 1.5, 'created_at' => now(), 'updated_at' => now()],
-            ['farmer_profile_id' => $profile1->id, 'nik' => '5203012222220002', 'nama' => 'Joko', 'alamat' => 'Tanjung Lebar', 'luas_lahan' => 2.0, 'created_at' => now(), 'updated_at' => now()],
-            ['farmer_profile_id' => $profile1->id, 'nik' => '5203013333330003', 'nama' => 'Wahyudi', 'alamat' => 'Tanjung Lebar', 'luas_lahan' => 1.0, 'created_at' => now(), 'updated_at' => now()],
+            ['farmer_profile_id' => $profile1->id, 'nik' => '5203011111110001', 'nama' => 'Supriyanto', 'jabatan' => 'Sekretaris', 'alamat' => 'Tanjung Lebar', 'luas_lahan' => 1.5, 'created_at' => now(), 'updated_at' => now()],
+            ['farmer_profile_id' => $profile1->id, 'nik' => '5203012222220002', 'nama' => 'Joko', 'jabatan' => 'Bendahara', 'alamat' => 'Tanjung Lebar', 'luas_lahan' => 2.0, 'created_at' => now(), 'updated_at' => now()],
+            ['farmer_profile_id' => $profile1->id, 'nik' => '5203013333330003', 'nama' => 'Wahyudi', 'jabatan' => 'Anggota', 'alamat' => 'Tanjung Lebar', 'luas_lahan' => 1.0, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // Kelompok Tani 2
@@ -153,9 +153,9 @@ class UserSeeder extends Seeder
         ]);
 
         \App\Models\FarmerGroupMember::insert([
-            ['farmer_profile_id' => $profile2->id, 'nik' => '5203021111110001', 'nama' => 'Slamet', 'alamat' => 'Kasang Pudak', 'luas_lahan' => 2.5, 'created_at' => now(), 'updated_at' => now()],
-            ['farmer_profile_id' => $profile2->id, 'nik' => '5203022222220002', 'nama' => 'Hasan', 'alamat' => 'Kasang Pudak', 'luas_lahan' => 1.5, 'created_at' => now(), 'updated_at' => now()],
-            ['farmer_profile_id' => $profile2->id, 'nik' => '5203023333330003', 'nama' => 'Udin', 'alamat' => 'Kasang Pudak', 'luas_lahan' => 3.0, 'created_at' => now(), 'updated_at' => now()],
+            ['farmer_profile_id' => $profile2->id, 'nik' => '5203021111110001', 'nama' => 'Slamet', 'jabatan' => 'Sekretaris', 'alamat' => 'Kasang Pudak', 'luas_lahan' => 2.5, 'created_at' => now(), 'updated_at' => now()],
+            ['farmer_profile_id' => $profile2->id, 'nik' => '5203022222220002', 'nama' => 'Hasan', 'jabatan' => 'Bendahara', 'alamat' => 'Kasang Pudak', 'luas_lahan' => 1.5, 'created_at' => now(), 'updated_at' => now()],
+            ['farmer_profile_id' => $profile2->id, 'nik' => '5203023333330003', 'nama' => 'Udin', 'jabatan' => 'Anggota', 'alamat' => 'Kasang Pudak', 'luas_lahan' => 3.0, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

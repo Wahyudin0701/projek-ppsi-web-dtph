@@ -13,6 +13,7 @@ class FarmerProfile extends Model
     protected $fillable = [
         'user_id',
         'nama_kelompok',
+        'no_sk',
         'ketua',
         'nik_ketua',
         'kontak',
@@ -23,9 +24,11 @@ class FarmerProfile extends Model
         'alamat',
         'kecamatan',
         'status',
+        'sk_pengukuhan_path',
         'rejection_reason',
         'is_verified_acknowledged',
         'change_request_reason',
+        'foto_ktp',
     ];
 
     protected $casts = [

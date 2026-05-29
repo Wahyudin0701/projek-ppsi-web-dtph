@@ -143,7 +143,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/proposals/{proposal}/survey-assignments/{assignment}/edit', [App\Http\Controllers\Kabid\ProposalController::class, 'editAssignment'])->name('proposals.assignment.edit');
         Route::patch('/proposals/{proposal}/survey-assignments/{assignment}', [App\Http\Controllers\Kabid\ProposalController::class, 'updateAssignment'])->name('proposals.assignment.update');
 
-        Route::get('/proposals/{proposal}/berita-acara', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'show'])->name('berita-acara.show');
         Route::post('/proposals/{proposal}/berita-acara/approve', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'approve'])->name('berita-acara.approve');
 
         Route::get('/tim-survei', [App\Http\Controllers\Kabid\TimSurveiController::class, 'index'])->name('tim-survei.index');

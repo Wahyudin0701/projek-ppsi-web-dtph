@@ -109,9 +109,33 @@
                         <input type="number" step="0.01" name="luas_lahan" value="{{ old('luas_lahan', $cpcl->luas_lahan) }}" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
                         <p class="text-[10px] text-gray-400 mt-1">Isi 0 jika tidak relevan.</p>
                     </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Jenis Tanah</label>
+                        <input type="text" name="jenis_tanah" value="{{ old('jenis_tanah', $cpcl->jenis_tanah) }}" placeholder="Contoh: Gambut / Mineral" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Sumber Air Budidaya</label>
+                        <input type="text" name="sumber_air" value="{{ old('sumber_air', $cpcl->sumber_air) }}" placeholder="Contoh: Sungai / Sumur Bor / Tadah Hujan" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
+
                     <div class="sm:col-span-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Kondisi Lahan *</label>
                         <input type="text" name="kondisi_lahan" value="{{ old('kondisi_lahan', $cpcl->kondisi_lahan) }}" required placeholder="Contoh: Rata, Bebas Banjir / Terdapat saluran irigasi baik / N/A" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Rawan Bencana</label>
+                        <input type="text" name="rawan_bencana" value="{{ old('rawan_bencana', $cpcl->rawan_bencana) }}" placeholder="Contoh: Banjir / Karhutla / Aman" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Pemanfaatan Lahan Sebelumnya</label>
+                        <input type="text" name="pemanfaatan_lahan_sebelumnya" value="{{ old('pemanfaatan_lahan_sebelumnya', $cpcl->pemanfaatan_lahan_sebelumnya) }}" placeholder="Contoh: Belukar / Kebun Sawit" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Pengalaman Budidaya</label>
+                        <input type="text" name="pengalaman_budidaya" value="{{ old('pengalaman_budidaya', $cpcl->pengalaman_budidaya) }}" placeholder="Contoh: 5 Tahun bertani padi" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
                     </div>
                 </div>
 
@@ -138,13 +162,28 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Catatan Lapangan (Opsional)</label>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Informasi Lainnya (Opsional)</label>
                         <textarea name="catatan" rows="4" placeholder="Temuan khusus di lapangan..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50 resize-none">{{ old('catatan', $cpcl->catatan) }}</textarea>
                     </div>
                 </div>
 
                 <div class="border-b border-gray-100 pb-4 mb-4 pt-4">
-                    <h4 class="text-lg font-bold text-gray-900">D. Dokumentasi</h4>
+                    <h4 class="text-lg font-bold text-gray-900">C. Dokumentasi Lapangan</h4>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Petugas Dokumentasi</label>
+                        <input type="text" name="petugas_dokumentasi" value="{{ old('petugas_dokumentasi', $cpcl->petugas_dokumentasi) }}" placeholder="Nama Petugas Dokumentasi" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Petugas Pemetaan</label>
+                        <input type="text" name="petugas_pemetaan" value="{{ old('petugas_pemetaan', $cpcl->petugas_pemetaan) }}" placeholder="Nama Petugas Pemetaan" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">No. HP Petugas Pemetaan</label>
+                        <input type="text" name="no_hp_pemetaan" value="{{ old('no_hp_pemetaan', $cpcl->no_hp_pemetaan) }}" placeholder="Contoh: 081234567890" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-gray-50">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -158,7 +197,18 @@
                         <input type="file" name="foto_lahan" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 transition-colors">
                         <p class="text-[10px] text-gray-400 mt-2">Biarkan kosong jika tidak ingin mengubah foto sebelumnya.</p>
                     </div>
+                    
+                    <div class="sm:col-span-2 mt-4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Upload Dokumen Fisik CPCL (Sudah Di-TTD) (Update Opsional)</label>
+                        <input type="file" name="dokumen_fisik" accept=".pdf,image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 transition-colors">
+                        @if($cpcl->dokumen_fisik_path)
+                            <p class="text-xs text-green-600 mt-2 font-medium">Dokumen fisik saat ini sudah diunggah. <a href="{{ Storage::url($cpcl->dokumen_fisik_path) }}" target="_blank" class="underline hover:text-green-700">Lihat File</a></p>
+                        @endif
+                        <p class="text-[10px] text-gray-400 mt-2">Biarkan kosong jika tidak ingin mengubah dokumen fisik sebelumnya. Format: PDF/JPG/PNG, Maksimal: 5MB.</p>
+                    </div>
                 </div>
+
+
                 
             </div>
 

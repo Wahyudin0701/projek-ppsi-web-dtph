@@ -55,16 +55,18 @@
                     <tbody class="divide-y divide-gray-50">
                         @forelse($proposals as $proposal)
                                 @php
-                                    $sc = match($proposal->status) {
-                                        'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Menunggu'],
+                                    $statusConfig = [
+                                        'pending_verifikasi'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Verifikasi'],
+                                        'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Pimpinan'],
                                         'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
-                                        'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Surat Tugas'],
-                                        'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Selesai Survei'],
+                                        'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
+                                        'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
+                                        'menunggu_review_kabid'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Review Kabid'],
                                         'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
-                                        'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
+                                        'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],
                                         'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
-                                        default                    => ['bg' => 'bg-gray-100 text-gray-600',       'label' => $proposal->statusLabel],
-                                    };
+                                    ];
+                                    $sc = $statusConfig[$proposal->status] ?? ['bg' => 'bg-gray-100 text-gray-600', 'label' => $proposal->statusLabel];
                                     $isAlsintan = $proposal->alsintan_id !== null;
                                 @endphp
                             <tr class="hover:bg-gray-50/50 transition-colors">
@@ -88,7 +90,7 @@
                                     <p class="text-xs text-gray-500">{{ $proposal->submission_date?->translatedFormat('H:i') }} WIB</p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ $sc['bg'] }}">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border {{ $sc['bg'] }} {{ str_replace('bg-', 'border-', explode(' ', $sc['bg'])[0]) }}">
                                         {{ $sc['label'] }}
                                     </span>
                                 </td>

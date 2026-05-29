@@ -54,8 +54,13 @@ class RegisteredUserController extends Controller
                 'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
                 'kecamatan' => ['required', 'string', 'max:255'],
                 'alamat' => ['required', 'string'],
-                'anggota' => ['required', 'array', 'min:1'],
-                'anggota.*' => ['required', 'string', 'max:255'],
+                'anggota_nama' => ['required', 'array', 'min:1'],
+                'anggota_nama.*' => ['required', 'string', 'max:255'],
+                'anggota_jabatan' => ['required', 'array', 'min:1'],
+                'anggota_jabatan.*' => ['required', 'string', 'max:255'],
+                'no_sk' => ['required', 'string', 'max:255'],
+                'file_sk' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+                'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
             ]);
         }
 
@@ -83,12 +88,19 @@ class RegisteredUserController extends Controller
                     'komoditi_utama' => $request->komoditi_utama,
                     'kecamatan' => $request->kecamatan,
                     'alamat' => $request->alamat,
+                    'no_sk' => $request->no_sk,
+                    'sk_pengukuhan_path' => $request->hasFile('file_sk') ? $request->file('file_sk')->store('sk_kelompok', 'public') : null,
+                    'foto_ktp' => $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('ktp_ketua', 'public') : null,
                     'status' => 'menunggu',
                 ]);
 
-                if ($request->has('anggota') && is_array($request->anggota)) {
-                    foreach ($request->anggota as $namaAnggota) {
-                        $profile->members()->create(['nama' => $namaAnggota]);
+                if ($request->has('anggota_nama') && is_array($request->anggota_nama)) {
+                    foreach ($request->anggota_nama as $index => $namaAnggota) {
+                        $jabatanAnggota = $request->anggota_jabatan[$index] ?? null;
+                        $profile->members()->create([
+                            'nama' => $namaAnggota,
+                            'jabatan' => $jabatanAnggota,
+                        ]);
                     }
                 }
             }

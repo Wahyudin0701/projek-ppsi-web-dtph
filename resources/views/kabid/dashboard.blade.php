@@ -66,36 +66,78 @@
                 </div>
             @else
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                    <div class="divide-y divide-gray-50">
-                        @foreach($pendingAction as $proposal)
-                        <div class="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors group">
-                            <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 border border-amber-100 transition-colors">
-                                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-bold text-sm text-gray-900 truncate">
-                                    {{ $proposal->program?->name ?? $proposal->alsintan?->name ?? 'Proposal #'.$proposal->id }}
-                                </p>
-                                <p class="text-xs text-gray-500 mt-0.5">
-                                    {{ $proposal->user->farmerProfile?->nama_kelompok ?? $proposal->user->name }}
-                                </p>
-                            </div>
-                            <div class="flex-shrink-0 flex items-center gap-2">
-                                @if($proposal->status === 'didisposisi_kabid')
-                                    <a href="{{ route('kabid.proposals.assign-team.form', $proposal) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-lg hover:bg-amber-200 transition-colors">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                        Bentuk Tim
-                                    </a>
-                                @endif
-                                <a href="{{ route('kabid.proposals.show', $proposal) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-200 transition-colors">
-                                    Detail Proposal
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                </a>
-                            </div>
-                        </div>
-                        @endforeach
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50/50 border-b border-gray-100 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                                    <th class="px-6 py-4">No. Proposal</th>
+                                    <th class="px-6 py-4">Kelompok Tani</th>
+                                    <th class="px-6 py-4">Bantuan / Program</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                @foreach($pendingAction as $proposal)
+                                    @php 
+                                        $isAlsintan = $proposal->alsintan_id !== null; 
+                                        $sc = match($proposal->status) {
+                                            'pending_verifikasi' => ['bg' => 'bg-amber-100 text-amber-700', 'label' => 'Menunggu Verifikasi Admin'],
+                                            'diteruskan_ke_pimpinan' => ['bg' => 'bg-purple-100 text-purple-700', 'label' => 'Review Pimpinan'],
+                                            'didisposisi_kabid' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Menunggu Bentuk Tim'],
+                                            'survei_berlangsung' => ['bg' => 'bg-sky-100 text-sky-700', 'label' => 'Survei Berlangsung'],
+                                            'survei_selesai' => ['bg' => 'bg-orange-100 text-orange-700', 'label' => 'Menunggu Verifikasi CPCL'],
+                                            'menunggu_review_kabid' => ['bg' => 'bg-teal-100 text-teal-700', 'label' => 'Menunggu Keputusan Akhir'],
+                                            'menunggu_approval_ba' => ['bg' => 'bg-indigo-100 text-indigo-700', 'label' => 'Menunggu Keputusan Pimpinan'],
+                                            'surat_tugas_terbit' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Sedang Survei'],
+                                            'disetujui' => ['bg' => 'bg-green-100 text-green-700', 'label' => 'Disetujui'],
+                                            'ditolak' => ['bg' => 'bg-red-100 text-red-700', 'label' => 'Ditolak'],
+                                            default => ['bg' => 'bg-gray-100 text-gray-700', 'label' => ucfirst(str_replace('_', ' ', $proposal->status))]
+                                        };
+                                    @endphp
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="px-6 py-4 font-bold text-gray-900 text-sm align-middle">
+                                            #PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}
+                                        </td>
+                                        <td class="px-6 py-4 align-middle">
+                                            <p class="font-bold text-gray-900 text-sm leading-tight">{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</p>
+                                            <p class="text-[11px] text-gray-400 mt-0.5">{{ $proposal->user->farmerProfile->desa ?? 'N/A' }}, {{ $proposal->user->farmerProfile->kecamatan ?? 'N/A' }}</p>
+                                        </td>
+                                        <td class="px-6 py-4 align-middle">
+                                            <div class="flex flex-col items-start gap-1">
+                                                <span class="inline-block text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-md {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
+                                                    {{ $isAlsintan ? 'Alsintan' : 'Bantuan' }}
+                                                </span>
+                                                <span class="text-xs text-gray-700 font-medium max-w-[200px] truncate">
+                                                    {{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 align-middle">
+                                            <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md {{ $sc['bg'] }}">
+                                                {{ $sc['label'] }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right align-middle">
+                                            <div class="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-2">
+                                                @if($proposal->status === 'didisposisi_kabid')
+                                                    <a href="{{ route('kabid.proposals.assign-team.form', $proposal) }}"
+                                                       class="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-xl transition-colors border border-amber-100 whitespace-nowrap">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                                        Bentuk Tim
+                                                    </a>
+                                                @endif
+                                                <a href="{{ route('kabid.proposals.show', $proposal) }}"
+                                                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-bold rounded-xl transition-colors border border-gray-100 whitespace-nowrap">
+                                                    Detail Proposal
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             @endif

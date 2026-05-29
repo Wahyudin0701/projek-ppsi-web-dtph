@@ -67,8 +67,8 @@ class DocumentController extends Controller
         $proposal->load(['user.farmerProfile', 'surveyAssignments']);
         $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
 
-        // Menggunakan view documents.cpcl yang bisa menghandle cpclVerifications kosong sebagai template
-        $pdf = Pdf::loadView('documents.cpcl', compact('proposal', 'kepalaDinas'));
+        // Menggunakan view cetak-form-cpcl untuk PDF rendering
+        $pdf = Pdf::loadView('documents.cetak-form-cpcl', compact('proposal', 'kepalaDinas'));
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Form_Verifikasi_CPCL_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
@@ -87,9 +87,7 @@ class DocumentController extends Controller
         $proposal->load(['user.farmerProfile', 'surveyAssignments', 'cpclVerifications']);
         $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
 
-        $pdf = Pdf::loadView('documents.cpcl', compact('proposal', 'kepalaDinas'));
-        $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream('Berita_Acara_Verifikasi_CPCL_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
+        return view('documents.cpcl', compact('proposal', 'kepalaDinas'));
     }
 
     /**

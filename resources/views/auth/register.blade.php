@@ -119,17 +119,19 @@
                     if($role === 'petani') {
                         if ($errors->has('name') || $errors->has('email') || $errors->has('password')) {
                             $initialStep = 1;
-                        } elseif ($errors->has('nama_ketua') || $errors->has('nik_ketua') || $errors->has('no_wa')) {
+                        } elseif ($errors->has('nama_ketua') || $errors->has('nik_ketua') || $errors->has('no_wa') || $errors->has('foto_ktp')) {
                             $initialStep = 2;
-                        } elseif ($errors->has('grade') || $errors->has('luas_lahan') || $errors->has('komoditi') || $errors->has('komoditi_utama') || $errors->has('kecamatan') || $errors->has('alamat')) {
+                        } elseif ($errors->has('no_sk') || $errors->has('file_sk') || $errors->has('anggota_nama') || $errors->has('anggota_jabatan')) {
                             $initialStep = 3;
+                        } elseif ($errors->has('grade') || $errors->has('luas_lahan') || $errors->has('komoditi') || $errors->has('komoditi_utama') || $errors->has('kecamatan') || $errors->has('alamat')) {
+                            $initialStep = 4;
                         }
                     }
                 @endphp
-                <form method="POST" action="{{ route('register') }}" 
+                <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data"
                       x-data="{ 
                           step: {{ $initialStep }}, 
-                          maxStep: {{ $role === 'petani' ? 4 : 1 }},
+                          maxStep: {{ $role === 'petani' ? 5 : 1 }},
                           selectedKomoditi: [],
                           komoditiUtama: '',
                           villages: [],
@@ -153,18 +155,24 @@
                           updateReview() {
                               const desaEl = document.getElementById('alamat');
                               this.review = {
-                                  name: document.getElementById('name').value,
-                                  email: document.getElementById('email').value,
+                                  name: document.getElementById('name') ? document.getElementById('name').value : (document.getElementById('name_petani') ? document.getElementById('name_petani').value : ''),
+                                  email: document.getElementById('email') ? document.getElementById('email').value : '',
+                                  no_sk: document.getElementById('no_sk') ? document.getElementById('no_sk').value : '',
+                                  file_sk: document.getElementById('file_sk') ? document.getElementById('file_sk').files[0]?.name : '',
                                   nama_ketua: document.getElementById('nama_ketua') ? document.getElementById('nama_ketua').value : '',
                                   nik_ketua: document.getElementById('nik_ketua') ? document.getElementById('nik_ketua').value : '',
                                   no_wa: document.getElementById('no_wa') ? document.getElementById('no_wa').value : '',
+                                  foto_ktp: document.getElementById('foto_ktp') ? document.getElementById('foto_ktp').files[0]?.name : '',
                                   grade: document.getElementById('grade') ? document.getElementById('grade').value : '',
                                   luas_lahan: document.getElementById('luas_lahan') ? document.getElementById('luas_lahan').value : '',
                                   komoditi: this.selectedKomoditi.length > 0 ? this.selectedKomoditi.join(', ') : '',
                                   komoditi_utama: document.getElementById('komoditi_utama') ? document.getElementById('komoditi_utama').value : '',
                                   kecamatan: document.getElementById('kecamatan') ? document.getElementById('kecamatan').value : '',
                                   alamat: desaEl ? (desaEl.options[desaEl.selectedIndex]?.text || desaEl.value) : '',
-                                  anggota: Array.from(document.querySelectorAll('.input-anggota')).map(el => el.value).filter(val => val.trim() !== '').join(', ')
+                                  anggota: Array.from(document.querySelectorAll('.input-anggota-nama')).map((el, i) => {
+                                      let jab = document.querySelectorAll('.input-anggota-jabatan')[i].value;
+                                      return el.value + (jab ? ' (' + jab + ')' : '');
+                                  }).filter(val => val.trim() !== '' && val.trim() !== '()').join(', ')
                               }
                           }
                       }" 
@@ -189,11 +197,15 @@
                             </div>
                             <div class="relative z-10 flex flex-col items-center">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 3 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">3</div>
-                                <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 3 ? 'text-[#19A148]' : 'text-gray-400'">Lahan</span>
+                                <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 3 ? 'text-[#19A148]' : 'text-gray-400'">Kelompok</span>
                             </div>
                             <div class="relative z-10 flex flex-col items-center">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 4 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">4</div>
-                                <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 4 ? 'text-[#19A148]' : 'text-gray-400'">Review</span>
+                                <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 4 ? 'text-[#19A148]' : 'text-gray-400'">Lahan</span>
+                            </div>
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 5 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">5</div>
+                                <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 5 ? 'text-[#19A148]' : 'text-gray-400'">Review</span>
                             </div>
                         </div>
                     </div>
@@ -202,14 +214,11 @@
                     <!-- STEP 1: Akun -->
                     <div x-show="step === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <!-- Nama Kelompok Tani / Umum -->
+                            @if($role === 'umum')
+                            <!-- Nama Lengkap / Instansi -->
                             <div class="md:col-span-2">
                                 <label for="name" class="block text-sm font-bold text-gray-800 mb-2">
-                                    @if($role === 'umum')
-                                        Nama Lengkap / Instansi
-                                    @else
-                                        Nama Kelompok Tani
-                                    @endif
+                                    Nama Lengkap / Instansi
                                 </label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -217,10 +226,11 @@
                                     </div>
                                     <input type="text" name="name" id="name" value="{{ old('name') }}" :required="step === 1" autofocus
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
-                                        placeholder="{{ $role === 'umum' ? 'Masukkan nama lengkap atau nama instansi' : 'Masukkan nama kelompok tani' }}">
+                                        placeholder="Masukkan nama lengkap atau nama instansi">
                                 </div>
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
+                            @endif
 
                             <!-- Email -->
                             <div class="{{ $role === 'umum' ? 'md:col-span-2' : '' }}">
@@ -336,35 +346,107 @@
                                 <x-input-error :messages="$errors->get('no_wa')" class="mt-2" />
                             </div>
 
+                            <!-- Foto KTP -->
+                            <div>
+                                <label for="foto_ktp" class="block text-sm font-bold text-gray-800 mb-2">Foto KTP Ketua (JPG/PNG max 5MB)</label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    </div>
+                                    <input type="file" name="foto_ktp" id="foto_ktp" accept=".jpg,.jpeg,.png" :required="step === 2"
+                                        class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
+                                </div>
+                                <x-input-error :messages="$errors->get('foto_ktp')" class="mt-2" />
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Kelompok -->
+                    <div x-show="step === 3" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- Nama Kelompok Tani -->
+                            <div class="md:col-span-2">
+                                <label for="name_petani" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani</label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    </div>
+                                    <input type="text" name="name" id="name_petani" value="{{ old('name') }}" :required="step === 3"
+                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                        placeholder="Masukkan nama kelompok tani">
+                                </div>
+                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                            </div>
+
+                            <!-- No SK -->
+                            <div class="md:col-span-2">
+                                <label for="no_sk" class="block text-sm font-bold text-gray-800 mb-2">No. SK Kelompok Tani</label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    </div>
+                                    <input type="text" name="no_sk" id="no_sk" value="{{ old('no_sk') }}" :required="step === 3"
+                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                        placeholder="Contoh: 123/SK/2026">
+                                </div>
+                                <x-input-error :messages="$errors->get('no_sk')" class="mt-2" />
+                            </div>
+
+                            <!-- File SK -->
+                            <div class="md:col-span-2">
+                                <label for="file_sk" class="block text-sm font-bold text-gray-800 mb-2">File SK Kelompok Tani (PDF/JPG/PNG max 5MB)</label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    </div>
+                                    <input type="file" name="file_sk" id="file_sk" accept=".pdf,.jpg,.jpeg,.png" :required="step === 3"
+                                        class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
+                                </div>
+                                <x-input-error :messages="$errors->get('file_sk')" class="mt-2" />
+                            </div>
+
                             <!-- Anggota Kelompok -->
-                            <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: [''] }">
+                            <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: [{nama: '', jabatan: ''}] }">
                                 <label class="block text-sm font-bold text-gray-800 mb-3">Daftar Anggota Kelompok</label>
                                 <template x-for="(item, index) in anggota" :key="index">
-                                    <div class="flex items-center gap-3 mb-3">
-                                        <div class="relative group flex-1">
+                                    <div class="flex items-start sm:items-center flex-col sm:flex-row gap-3 mb-3">
+                                        <div class="relative group w-full sm:w-1/2">
                                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                                 <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                             </div>
-                                            <input type="text" x-bind:name="'anggota[' + index + ']'" x-model="anggota[index]" :required="step === 2"
-                                                class="input-anggota block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                            <input type="text" x-bind:name="'anggota_nama[' + index + ']'" x-model="item.nama" :required="step === 3"
+                                                class="input-anggota-nama block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                                 placeholder="Nama Anggota">
                                         </div>
-                                        <button type="button" @click="anggota.splice(index, 1)" x-show="anggota.length > 1" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </button>
+                                        <div class="relative group w-full sm:w-1/2 flex items-center gap-3">
+                                            <div class="relative group flex-1">
+                                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                                    <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                                </div>
+                                                <input type="text" x-bind:name="'anggota_jabatan[' + index + ']'" x-model="item.jabatan" :required="step === 3"
+                                                    class="input-anggota-jabatan block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                                    placeholder="Jabatan (misal: Sekretaris)">
+                                            </div>
+                                            <button type="button" @click="anggota.splice(index, 1)" x-show="anggota.length > 1" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </template>
-                                <button type="button" @click="anggota.push('')" class="text-sm font-bold text-[#19A148] flex items-center gap-2 hover:text-[#15883c] transition-colors mt-2">
+                                <button type="button" @click="anggota.push({nama: '', jabatan: ''})" class="text-sm font-bold text-[#19A148] flex items-center gap-2 hover:text-[#15883c] transition-colors mt-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                     Tambah Anggota Lainnya
                                 </button>
-                                <x-input-error :messages="$errors->get('anggota')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('anggota_nama')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('anggota_jabatan')" class="mt-2" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- STEP 3: Lahan -->
-                    <div x-show="step === 3" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                    <!-- STEP 4: Lahan -->
+                    <div x-show="step === 4" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Grade Tani -->
                             <div>
@@ -373,7 +455,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                                     </div>
-                                    <select name="grade" id="grade" :required="step === 3"
+                                    <select name="grade" id="grade" :required="step === 4"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white">
                                         <option value="" disabled selected>Pilih Grade</option>
                                         <option value="Pemula">Pemula</option>
@@ -391,7 +473,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
                                     </div>
-                                    <input type="number" step="0.01" name="luas_lahan" id="luas_lahan" value="{{ old('luas_lahan') }}" :required="step === 3"
+                                    <input type="number" step="0.01" name="luas_lahan" id="luas_lahan" value="{{ old('luas_lahan') }}" :required="step === 4"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                         placeholder="Misal: 2.5">
                                 </div>
@@ -404,7 +486,7 @@
                                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-1">
                                     @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung', 'Cabai', 'Sayuran', 'Kelapa Sawit'] as $kom)
                                     <label class="flex items-center space-x-3 cursor-pointer group">
-                                        <input type="checkbox" name="komoditi[]" value="{{ $kom }}" x-model="selectedKomoditi" :required="selectedKomoditi.length === 0 && step === 3"
+                                        <input type="checkbox" name="komoditi[]" value="{{ $kom }}" x-model="selectedKomoditi" :required="selectedKomoditi.length === 0 && step === 4"
                                             class="w-4 h-4 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] transition-colors cursor-pointer" @change="if(!selectedKomoditi.includes(komoditiUtama)) komoditiUtama = selectedKomoditi.length > 0 ? selectedKomoditi[0] : ''">
                                         <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{{ $kom }}</span>
                                     </label>
@@ -420,7 +502,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-[#19A148]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
                                     </div>
-                                    <select name="komoditi_utama" id="komoditi_utama" x-model="komoditiUtama" :required="selectedKomoditi.length > 0 && step === 3"
+                                    <select name="komoditi_utama" id="komoditi_utama" x-model="komoditiUtama" :required="step === 4 && selectedKomoditi.length > 0"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white">
                                         <template x-for="kom in selectedKomoditi" :key="kom">
                                             <option :value="kom" x-text="kom"></option>
@@ -437,7 +519,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     </div>
-                                    <select name="kecamatan" id="kecamatan" :required="step === 3"
+                                    <select name="kecamatan" id="kecamatan" :required="step === 4"
                                         @change="fetchVillages($event.target.value)"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white">
                                         <option value="" disabled selected>Pilih Kecamatan</option>
@@ -465,7 +547,7 @@
                                         <svg x-show="!loadingVillages" class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                         <svg x-show="loadingVillages" x-cloak class="h-5 w-5 text-[#19A148] animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
                                     </div>
-                                    <select name="alamat" id="alamat" :required="step === 3"
+                                    <select name="alamat" id="alamat" :required="step === 4"
                                         :disabled="villages.length === 0"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
                                         <option value="" disabled selected>
@@ -483,8 +565,8 @@
                         </div>
                     </div>
 
-                    <!-- STEP 4: Review Data -->
-                    <div x-show="step === 4" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                    <!-- STEP 5: Review Data -->
+                    <div x-show="step === 5" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                         <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 mb-6 space-y-4">
                             <h3 class="font-bold text-gray-800 border-b border-gray-200 pb-2 mb-3">Review Data Kelompok Tani</h3>
                             
@@ -498,6 +580,14 @@
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.email"></p>
                                 </div>
                                 <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">No. SK Kelompok</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.no_sk || '-'"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">File SK</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.file_sk || 'Belum dipilih'"></p>
+                                </div>
+                                <div>
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Ketua</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.nama_ketua"></p>
                                 </div>
@@ -508,6 +598,10 @@
                                 <div>
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">No. WhatsApp</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.no_wa"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Foto KTP Ketua</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.foto_ktp || 'Belum dipilih'"></p>
                                 </div>
                                 <div>
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Grade</p>
@@ -543,7 +637,7 @@
                         <!-- Checkbox Persetujuan -->
                         <div class="flex items-start bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:border-[#19A148]/50 transition-colors cursor-pointer" @click="document.getElementById('persetujuan_data').click()">
                             <div class="flex items-center h-5 mt-1">
-                                <input id="persetujuan_data" name="persetujuan_data" type="checkbox" :required="step === 4"
+                                <input id="persetujuan_data" name="persetujuan_data" type="checkbox" :required="step === 5"
                                     class="w-5 h-5 text-[#19A148] bg-white border-gray-300 rounded focus:ring-[#19A148] focus:ring-2 cursor-pointer" @click.stop>
                             </div>
                             <div class="ml-3 text-sm">

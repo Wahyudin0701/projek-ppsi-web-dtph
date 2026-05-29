@@ -13,7 +13,16 @@ return new class extends Migration
     public function up(): void
     {
         // First ensure any existing 'pinjam_alat' records are handled (none exist based on previous check)
-        DB::statement("ALTER TABLE programs MODIFY COLUMN type ENUM('bantuan_permanen', 'usulan_pendanaan') NOT NULL");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE programs MODIFY COLUMN type ENUM('bantuan_permanen', 'usulan_pendanaan') NOT NULL");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement("ALTER TABLE programs DROP CONSTRAINT IF EXISTS programs_type_check");
+            DB::statement("ALTER TABLE programs ADD CONSTRAINT programs_type_check CHECK (type::text = ANY (ARRAY['bantuan_permanen'::character varying, 'usulan_pendanaan'::character varying]::text[]))");
+        } else {
+            Schema::table('programs', function (Blueprint $table) {
+                // sqlite or others
+            });
+        }
     }
 
     /**
@@ -21,6 +30,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE programs MODIFY COLUMN type ENUM('bantuan_permanen', 'pinjam_alat', 'usulan_pendanaan') NOT NULL");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE programs MODIFY COLUMN type ENUM('bantuan_permanen', 'pinjam_alat', 'usulan_pendanaan') NOT NULL");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement("ALTER TABLE programs DROP CONSTRAINT IF EXISTS programs_type_check");
+            DB::statement("ALTER TABLE programs ADD CONSTRAINT programs_type_check CHECK (type::text = ANY (ARRAY['bantuan_permanen'::character varying, 'pinjam_alat'::character varying, 'usulan_pendanaan'::character varying]::text[]))");
+        }
     }
 };

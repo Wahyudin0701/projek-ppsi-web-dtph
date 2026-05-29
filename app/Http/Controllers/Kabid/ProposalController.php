@@ -123,10 +123,11 @@ class ProposalController extends Controller
 
         $request->validate([
             'nomor_surat'   => 'required|string|max:255|unique:survey_assignments,nomor_surat',
+            'no_surat_pengajuan' => 'nullable|string|max:255',
             'valid_from'    => 'required|date',
             'valid_until'   => 'required|date|after_or_equal:valid_from',
             'team_members'  => 'required|array|min:1',
-            'team_members.*.name' => 'required|string',
+            'team_members.*.name' => 'required|string|distinct',
             'team_members.*.nip'  => 'nullable|string',
             'team_members.*.role' => 'required|string',
         ]);
@@ -135,6 +136,7 @@ class ProposalController extends Controller
         $assignment = SurveyAssignment::create([
             'proposal_id'  => $proposal->id,
             'nomor_surat'  => $request->nomor_surat,
+            'no_surat_pengajuan' => $request->no_surat_pengajuan,
             'valid_from'   => $request->valid_from,
             'valid_until'  => $request->valid_until,
             'team_members' => $request->team_members,
@@ -185,16 +187,18 @@ class ProposalController extends Controller
 
         $request->validate([
             'nomor_surat'   => 'required|string|max:255|unique:survey_assignments,nomor_surat,' . $assignment->id,
+            'no_surat_pengajuan' => 'nullable|string|max:255',
             'valid_from'    => 'required|date',
             'valid_until'   => 'required|date|after_or_equal:valid_from',
             'team_members'  => 'required|array|min:1',
-            'team_members.*.name' => 'required|string',
+            'team_members.*.name' => 'required|string|distinct',
             'team_members.*.nip'  => 'nullable|string',
             'team_members.*.role' => 'required|string',
         ]);
 
         $assignment->update([
             'nomor_surat'  => $request->nomor_surat,
+            'no_surat_pengajuan' => $request->no_surat_pengajuan,
             'valid_from'   => $request->valid_from,
             'valid_until'  => $request->valid_until,
             'team_members' => $request->team_members,

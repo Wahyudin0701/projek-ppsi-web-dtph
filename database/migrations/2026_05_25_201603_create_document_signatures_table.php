@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('document_type'); // 'surat_tugas', 'berita_acara'
             $table->unsignedBigInteger('document_id');
             $table->foreignId('signed_by')->constrained('users')->cascadeOnDelete();
-            $table->timestamp('signed_at')->useCurrent();
+            $table->timestamp('signed_at')->useCurrent();       
             $table->timestamps();
         });
     }

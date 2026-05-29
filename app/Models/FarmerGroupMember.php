@@ -12,6 +12,7 @@ class FarmerGroupMember extends Model
     protected $fillable = [
         'farmer_profile_id',
         'nama',
+        'jabatan',
     ];
 
     public function farmerProfile()

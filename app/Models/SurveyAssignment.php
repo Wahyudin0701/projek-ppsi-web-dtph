@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SurveyAssignment extends Model
 {
     protected $fillable = [
-        'proposal_id', 'nomor_surat', 'valid_from', 'valid_until', 'team_members',
+        'proposal_id', 'nomor_surat', 'no_surat_pengajuan', 'no_sk_kelompok_tani', 'valid_from', 'valid_until', 'team_members',
     ];
     
     protected $casts = [

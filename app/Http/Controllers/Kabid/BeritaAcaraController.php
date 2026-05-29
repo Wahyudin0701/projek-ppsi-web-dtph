@@ -14,23 +14,6 @@ class BeritaAcaraController extends Controller
 
 
     /**
-     * Show berita acara detail.
-     */
-    public function show(Proposal $proposal)
-    {
-        $this->authorizeKabid($proposal);
-        $proposal->load(['user.farmerProfile', 'program', 'alsintan', 'beritaAcara.kabid', 'cpclVerifications', 'surveyDocumentations']);
-        $beritaAcara = $proposal->beritaAcara;
-
-        if (!$beritaAcara) {
-            return redirect()->route('kabid.proposals.show', $proposal)
-                ->with('error', 'Berita acara belum dibuat.');
-        }
-
-        return view('kabid.berita-acara.show', compact('proposal', 'beritaAcara'));
-    }
-
-    /**
      * Approve berita acara dan generate TTE.
      */
     public function approve(Proposal $proposal)

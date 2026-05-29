@@ -110,7 +110,7 @@
                                     $isMasterList = $currentUser && (!$currentUser->farmerProfile || in_array($currentUser->farmerProfile->status, ['approved', 'rejected']));
                                     $pendingUserVerificationsCount = \App\Models\User::where('role', 'user')
                                         ->whereHas('farmerProfile', function ($query) {
-                                            $query->whereIn('status', ['menunggu', 'reviewed']);
+                                            $query->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi']);
                                         })->count();
                                 @endphp
                                 <li>
@@ -430,7 +430,7 @@
                             $isMasterList = $currentUser && (!$currentUser->farmerProfile || in_array($currentUser->farmerProfile->status, ['approved', 'rejected']));
                             $pendingUserVerificationsCount = \App\Models\User::where('role', 'user')
                                 ->whereHas('farmerProfile', function ($query) {
-                                    $query->whereIn('status', ['menunggu', 'reviewed']);
+                                    $query->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi']);
                                 })->count();
                             $pendingCount = \App\Models\Proposal::where('status', 'pending_verifikasi')->count();
                         @endphp

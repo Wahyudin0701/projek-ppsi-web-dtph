@@ -24,7 +24,15 @@ class CpclVerification extends Model
         'is_simluhtan_sesuai', 'ket_simluhtan',
         'is_notula_rapat_sesuai', 'ket_notula_rapat',
         'is_titik_koordinat_sesuai', 'ket_titik_koordinat',
-        'is_tidak_menerima_bantuan_sama', 'ket_tidak_menerima_bantuan_sama'
+        'is_tidak_menerima_bantuan_sama', 'ket_tidak_menerima_bantuan_sama',
+        // Teknis Lahan Baru
+        'jenis_tanah', 'sumber_air', 'rawan_bencana', 'pemanfaatan_lahan_sebelumnya', 'pengalaman_budidaya',
+        // Petugas Lapangan
+        'petugas_dokumentasi', 'petugas_pemetaan', 'no_hp_pemetaan',
+        // Tanda Tangan
+        'penandatangan_poktan_nama', 'penandatangan_poktan_jabatan',
+        'nama_ppl', 'nip_ppl',
+        'dokumen_fisik_path'
     ];
 
     protected $casts = [

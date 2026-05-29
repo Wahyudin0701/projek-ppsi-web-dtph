@@ -10,126 +10,153 @@
     </header>
 
     @if(auth()->user()->farmerProfile)
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Nama Kelompok -->
+        <div class="mt-8 space-y-8">
+            
+            <!-- INFORMASI KETUA -->
             <div>
-                <x-input-label value="Nama Kelompok Tani" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200 font-semibold">
-                    {{ auth()->user()->farmerProfile->nama_kelompok }}
-                </p>
-            </div>
-
-            <!-- Nama Ketua -->
-            <div>
-                <x-input-label value="Nama Ketua" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    {{ auth()->user()->farmerProfile->ketua }}
-                </p>
-            </div>
-
-            <!-- NIK Ketua -->
-            <div>
-                <x-input-label value="NIK Ketua" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    {{ auth()->user()->farmerProfile->nik_ketua }}
-                </p>
-            </div>
-
-            <!-- Kontak -->
-            <div>
-                <x-input-label value="Nomor HP/WhatsApp" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    {{ auth()->user()->farmerProfile->kontak }}
-                </p>
-            </div>
-
-            <!-- Grade / Kelas Kelompok -->
-            <div>
-                <x-input-label value="Kelas Kelompok" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200 uppercase">
-                    {{ auth()->user()->farmerProfile->grade }}
-                </p>
-            </div>
-
-            <!-- Luas Lahan -->
-            <div>
-                <x-input-label value="Luas Lahan (Ha)" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    {{ auth()->user()->farmerProfile->luas_lahan }} Hektar
-                </p>
-            </div>
-
-            <!-- Komoditi Utama -->
-            <div>
-                <x-input-label value="Komoditi Utama" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    {{ auth()->user()->farmerProfile->komoditi_utama ?: '-' }}
-                </p>
-            </div>
-
-            <!-- Komoditi Lainnya -->
-            <div>
-                <x-input-label value="Komoditi Lainnya" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    {{ auth()->user()->farmerProfile->komoditi ?: '-' }}
-                </p>
-            </div>
-
-            <!-- Kecamatan -->
-            <div>
-                <x-input-label value="Kecamatan" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    {{ auth()->user()->farmerProfile->kecamatan }}
-                </p>
-            </div>
-
-            <!-- Status Verifikasi -->
-            <div>
-                <x-input-label value="Status Verifikasi" />
-                <div class="mt-1">
-                    @php
-                        $status = auth()->user()->farmerProfile->status;
-                        $statusColor = match($status) {
-                            'approved' => 'bg-green-100 text-green-800 border-green-200',
-                            'rejected' => 'bg-red-100 text-red-800 border-red-200',
-                            'reviewed' => 'bg-blue-100 text-blue-800 border-blue-200',
-                            default => 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                        };
-                        $statusText = match($status) {
-                            'approved' => 'Disetujui',
-                            'rejected' => 'Ditolak',
-                            'reviewed' => 'Sedang Ditinjau',
-                            default => 'Menunggu Verifikasi'
-                        };
-                    @endphp
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border {{ $statusColor }}">
-                        {{ $statusText }}
-                    </span>
+                <h3 class="text-md font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">Informasi Ketua Kelompok</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <x-input-label value="Nama Ketua" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->ketua }}</p>
+                    </div>
+                    <div>
+                        <x-input-label value="NIK Ketua" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->nik_ketua }}</p>
+                    </div>
+                    <div>
+                        <x-input-label value="Foto KTP Ketua" />
+                        <div class="mt-1 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
+                            @if(auth()->user()->farmerProfile->foto_ktp)
+                                <a href="{{ Storage::url(auth()->user()->farmerProfile->foto_ktp) }}" target="_blank" class="text-sm font-semibold text-[#19A148] hover:underline flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    Lihat Foto KTP
+                                </a>
+                            @else
+                                <span class="text-sm text-gray-500 italic">-</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div>
+                        <x-input-label value="Nomor HP/WhatsApp" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->kontak }}</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Daftar Anggota Kelompok -->
-            <div class="md:col-span-2">
-                <x-input-label value="Daftar Anggota Kelompok" />
-                <div class="mt-1 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                    @if(auth()->user()->farmerProfile->members && auth()->user()->farmerProfile->members->count() > 0)
-                        <ul class="list-disc list-inside space-y-1">
-                            @foreach(auth()->user()->farmerProfile->members as $member)
-                                <li class="text-sm text-gray-900">{{ $member->nama }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-sm text-gray-500 italic">Belum ada data anggota.</p>
-                    @endif
+            <!-- INFORMASI KELOMPOK -->
+            <div>
+                <h3 class="text-md font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">Informasi Kelompok Tani</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <x-input-label value="Nama Kelompok Tani" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200 font-semibold">{{ auth()->user()->farmerProfile->nama_kelompok }}</p>
+                    </div>
+                    <div>
+                        <x-input-label value="No. SK Kelompok" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->no_sk ?: '-' }}</p>
+                    </div>
+                    <div>
+                        <x-input-label value="File SK Kelompok" />
+                        <div class="mt-1 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
+                            @if(auth()->user()->farmerProfile->sk_pengukuhan_path)
+                                <a href="{{ Storage::url(auth()->user()->farmerProfile->sk_pengukuhan_path) }}" target="_blank" class="text-sm font-semibold text-[#19A148] hover:underline flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                                    Lihat File SK
+                                </a>
+                            @else
+                                <span class="text-sm text-gray-500 italic">-</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <x-input-label value="Daftar Anggota Kelompok" />
+                        <div class="mt-1 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            @if(auth()->user()->farmerProfile->members && auth()->user()->farmerProfile->members->count() > 0)
+                                <ol class="list-decimal list-inside space-y-1">
+                                    @foreach(auth()->user()->farmerProfile->members as $member)
+                                        <li class="text-sm text-gray-900">
+                                            {{ $member->nama }}
+                                            @if($member->jabatan)
+                                                <span class="text-xs text-gray-500 ml-1">({{ $member->jabatan }})</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ol>
+                            @else
+                                <p class="text-sm text-gray-500 italic">Belum ada data anggota.</p>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Alamat Lengkap -->
-            <div class="md:col-span-2">
-                <x-input-label value="Alamat Lengkap" />
-                <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border border-gray-200 leading-relaxed">
-                    {{ auth()->user()->farmerProfile->alamat }}
-                </p>
+            <!-- LAHAN DAN KOMODITI -->
+            <div>
+                <h3 class="text-md font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">Lahan & Komoditi</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <x-input-label value="Kelas Kelompok" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200 uppercase">{{ auth()->user()->farmerProfile->grade }}</p>
+                    </div>
+                    <div>
+                        <x-input-label value="Luas Lahan (Ha)" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->luas_lahan }} Hektar</p>
+                    </div>
+                    <div>
+                        <x-input-label value="Komoditi Utama" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->komoditi_utama ?: '-' }}</p>
+                    </div>
+                    <div>
+                        <x-input-label value="Komoditi Lainnya" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->komoditi ?: '-' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALAMAT LOKASI -->
+            <div>
+                <h3 class="text-md font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">Lokasi & Alamat</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <x-input-label value="Kecamatan" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->kecamatan }}</p>
+                    </div>
+                    <div>
+                        <x-input-label value="Desa" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->alamat }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS VERIFIKASI -->
+            <div>
+                <h3 class="text-md font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">Status Pengajuan</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <x-input-label value="Status Verifikasi" />
+                        <div class="mt-1">
+                            @php
+                                $status = auth()->user()->farmerProfile->status;
+                                $statusColor = match($status) {
+                                    'approved' => 'bg-green-100 text-green-800 border-green-200',
+                                    'rejected' => 'bg-red-100 text-red-800 border-red-200',
+                                    'reviewed' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                    default => 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                };
+                                $statusText = match($status) {
+                                    'approved' => 'Disetujui',
+                                    'rejected' => 'Ditolak',
+                                    'reviewed' => 'Sedang Ditinjau',
+                                    default => 'Menunggu Verifikasi'
+                                };
+                            @endphp
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border {{ $statusColor }}">
+                                {{ $statusText }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             @if(auth()->user()->farmerProfile->status === 'rejected' && auth()->user()->farmerProfile->rejection_reason)

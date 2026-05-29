@@ -46,7 +46,7 @@
                         style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
                         <option value="">Semua Status</option>
                         <option value="didisposisi_kabid" {{ request('status') === 'didisposisi_kabid' ? 'selected' : '' }}>Perlu Assign Tim</option>
-                        <option value="surat_tugas_terbit" {{ request('status') === 'surat_tugas_terbit' ? 'selected' : '' }}>Surat Tugas Terbit</option>
+                        <option value="surat_tugas_terbit" {{ request('status') === 'surat_tugas_terbit' ? 'selected' : '' }}>Sedang Survei</option>
                         <option value="survei_selesai" {{ request('status') === 'survei_selesai' ? 'selected' : '' }}>Menunggu Admin</option>
                         <option value="menunggu_approval_ba" {{ request('status') === 'menunggu_approval_ba' ? 'selected' : '' }}>Menunggu Keputusan</option>
                         <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
@@ -61,24 +61,27 @@
                     <thead>
                         <tr class="bg-gray-50/50">
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 whitespace-nowrap" style="width: 15%">No. Registrasi</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 min-w-[250px]" style="width: 35%">Pengaju</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100" style="width: 35%">Pengaju</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100" style="width: 20%">Jenis & Objek</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center whitespace-nowrap" style="width: 15%">Status</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-left whitespace-nowrap" style="width: 15%">Aksi</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center whitespace-nowrap" style="width: 15%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @forelse($proposals as $proposal)
                             @php
-                                $sc = match($proposal->status) {
-                                    'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Perlu Assign Tim'],
-                                    'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Surat Tugas Terbit'],
-                                    'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Menunggu Admin'],
-                                    'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Menunggu Keputusan'],
-                                    'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
+                                $statusConfig = [
+                                    'pending_verifikasi'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Verifikasi'],
+                                    'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Pimpinan'],
+                                    'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
+                                    'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
+                                    'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
+                                    'menunggu_review_kabid'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Review Kabid'],
+                                    'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
+                                    'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],
                                     'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
-                                    default                    => ['bg' => 'bg-gray-100 text-gray-600',       'label' => $proposal->statusLabel],
-                                };
+                                ];
+                                $sc = $statusConfig[$proposal->status] ?? ['bg' => 'bg-gray-100 text-gray-600', 'label' => $proposal->statusLabel];
                                 $isAlsintan = $proposal->alsintan_id !== null;
                             @endphp
                             <tr class="hover:bg-gray-50/50 transition-colors">
@@ -99,7 +102,7 @@
                                     </p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-widest {{ $sc['bg'] }}">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border {{ $sc['bg'] }} {{ str_replace('bg-', 'border-', explode(' ', $sc['bg'])[0]) }}">
                                         {{ $sc['label'] }}
                                     </span>
                                 </td>

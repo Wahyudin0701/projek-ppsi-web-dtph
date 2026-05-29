@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class FarmerProfileController extends Controller
 {
@@ -30,8 +31,11 @@ class FarmerProfileController extends Controller
 
         $rules = [
             'nama_kelompok' => ['required', 'string', 'max:255'],
+            'no_sk' => ['nullable', 'string', 'max:255'],
+            'file_sk' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
             'ketua' => ['required', 'string', 'max:255'],
             'nik_ketua' => ['required', 'string', 'size:16'],
+            'foto_ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
             'kontak' => ['required', 'string', 'max:20'],
             'grade' => ['required', 'string', 'in:Pemula,Madya,Utama'],
             'luas_lahan' => ['required', 'numeric', 'min:0'],
@@ -40,14 +44,32 @@ class FarmerProfileController extends Controller
             'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
             'kecamatan' => ['required', 'string', 'max:255'],
             'alamat' => ['required', 'string'],
-            'anggota' => ['required', 'array', 'min:1'],
-            'anggota.*' => ['required', 'string', 'max:255'],
+            'anggota_nama' => ['required', 'array', 'min:1'],
+            'anggota_nama.*' => ['required', 'string', 'max:255'],
+            'anggota_jabatan' => ['required', 'array', 'min:1'],
+            'anggota_jabatan.*' => ['required', 'string', 'max:255'],
         ];
 
         $validated = $request->validate($rules);
 
         $validated['komoditi'] = implode(', ', $validated['komoditi']);
         $validated['status'] = 'menunggu';
+
+        if ($request->hasFile('file_sk')) {
+            if ($profile->sk_pengukuhan_path) {
+                Storage::disk('public')->delete($profile->sk_pengukuhan_path);
+            }
+            $validated['sk_pengukuhan_path'] = $request->file('file_sk')->store('sk_kelompok', 'public');
+        }
+
+        if ($request->hasFile('foto_ktp')) {
+            if ($profile->foto_ktp) {
+                Storage::disk('public')->delete($profile->foto_ktp);
+            }
+            $validated['foto_ktp'] = $request->file('foto_ktp')->store('ktp_ketua', 'public');
+        }
+
+        unset($validated['file_sk']);
 
         $profile->update($validated);
 
@@ -58,9 +80,13 @@ class FarmerProfileController extends Controller
 
         // Update members: delete all and recreate
         $profile->members()->delete();
-        if ($request->has('anggota') && is_array($request->anggota)) {
-            foreach ($request->anggota as $namaAnggota) {
-                $profile->members()->create(['nama' => $namaAnggota]);
+        if ($request->has('anggota_nama') && is_array($request->anggota_nama)) {
+            foreach ($request->anggota_nama as $index => $namaAnggota) {
+                $jabatanAnggota = $request->anggota_jabatan[$index] ?? null;
+                $profile->members()->create([
+                    'nama' => $namaAnggota,
+                    'jabatan' => $jabatanAnggota,
+                ]);
             }
         }
 

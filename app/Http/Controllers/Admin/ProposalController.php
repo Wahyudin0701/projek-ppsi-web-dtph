@@ -159,7 +159,7 @@ class ProposalController extends Controller
     public function createCpcl(Proposal $proposal)
     {
         if ($proposal->status !== 'surat_tugas_terbit') {
-            return back()->with('error', 'Hanya proposal berstatus "Surat Tugas Terbit" yang dapat diinput CPCL-nya.');
+            return back()->with('error', 'Hanya proposal berstatus "Sedang Survei" yang dapat diinput CPCL-nya.');
         }
 
         return view('admin.proposals.cpcl.create', compact('proposal'));
@@ -171,7 +171,7 @@ class ProposalController extends Controller
     public function storeCpcl(Request $request, Proposal $proposal)
     {
         if ($proposal->status !== 'surat_tugas_terbit') {
-            return back()->with('error', 'Hanya proposal berstatus "Surat Tugas Terbit" yang dapat diinput CPCL-nya.');
+            return back()->with('error', 'Hanya proposal berstatus "Sedang Survei" yang dapat diinput CPCL-nya.');
         }
 
         $request->validate([
@@ -182,8 +182,17 @@ class ProposalController extends Controller
             'kesesuaian_komoditas'=> 'required|boolean',
             'rekomendasi_surveyor'=> 'required|string',
             'catatan'             => 'nullable|string',
+            'jenis_tanah'         => 'nullable|string',
+            'sumber_air'          => 'nullable|string',
+            'rawan_bencana'       => 'nullable|string',
+            'pemanfaatan_lahan_sebelumnya' => 'nullable|string',
+            'pengalaman_budidaya' => 'nullable|string',
+            'petugas_dokumentasi' => 'nullable|string',
+            'petugas_pemetaan'    => 'nullable|string',
+            'no_hp_pemetaan'      => 'nullable|string',
             'foto_lahan'          => 'nullable|image|max:5120',
             'foto_pemetaan_data'  => 'nullable|image|max:5120',
+            'dokumen_fisik'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             // Verifikasi Administrasi
             'is_surat_permohonan_sesuai' => 'required|boolean',
             'ket_surat_permohonan'       => 'nullable|string',
@@ -215,6 +224,14 @@ class ProposalController extends Controller
             'kesesuaian_komoditas' => $request->kesesuaian_komoditas,
             'rekomendasi_surveyor' => $request->rekomendasi_surveyor,
             'catatan'              => $request->catatan,
+            'jenis_tanah'          => $request->jenis_tanah,
+            'sumber_air'           => $request->sumber_air,
+            'rawan_bencana'        => $request->rawan_bencana,
+            'pemanfaatan_lahan_sebelumnya' => $request->pemanfaatan_lahan_sebelumnya,
+            'pengalaman_budidaya'  => $request->pengalaman_budidaya,
+            'petugas_dokumentasi'  => $request->petugas_dokumentasi,
+            'petugas_pemetaan'     => $request->petugas_pemetaan,
+            'no_hp_pemetaan'       => $request->no_hp_pemetaan,
             // Administrasi
             'is_surat_permohonan_sesuai' => $request->is_surat_permohonan_sesuai,
             'ket_surat_permohonan'       => $request->ket_surat_permohonan,
@@ -230,6 +247,7 @@ class ProposalController extends Controller
             'ket_titik_koordinat'        => $request->ket_titik_koordinat,
             'is_tidak_menerima_bantuan_sama' => $request->is_tidak_menerima_bantuan_sama,
             'ket_tidak_menerima_bantuan_sama'=> $request->ket_tidak_menerima_bantuan_sama,
+            'dokumen_fisik_path'             => $request->hasFile('dokumen_fisik') ? $request->file('dokumen_fisik')->store('cpcl_fisik', 'public') : null,
         ]);
 
         if ($request->hasFile('foto_lahan')) {
@@ -299,8 +317,17 @@ class ProposalController extends Controller
             'kesesuaian_komoditas'=> 'required|boolean',
             'rekomendasi_surveyor'=> 'required|string',
             'catatan'             => 'nullable|string',
+            'jenis_tanah'         => 'nullable|string',
+            'sumber_air'          => 'nullable|string',
+            'rawan_bencana'       => 'nullable|string',
+            'pemanfaatan_lahan_sebelumnya' => 'nullable|string',
+            'pengalaman_budidaya' => 'nullable|string',
+            'petugas_dokumentasi' => 'nullable|string',
+            'petugas_pemetaan'    => 'nullable|string',
+            'no_hp_pemetaan'      => 'nullable|string',
             'foto_lahan'          => 'nullable|image|max:5120',
             'foto_pemetaan_data'  => 'nullable|image|max:5120',
+            'dokumen_fisik'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             // Verifikasi Administrasi
             'is_surat_permohonan_sesuai' => 'required|boolean',
             'ket_surat_permohonan'       => 'nullable|string',
@@ -336,6 +363,14 @@ class ProposalController extends Controller
             'kesesuaian_komoditas' => $request->kesesuaian_komoditas,
             'rekomendasi_surveyor' => $request->rekomendasi_surveyor,
             'catatan'              => $request->catatan,
+            'jenis_tanah'          => $request->jenis_tanah,
+            'sumber_air'           => $request->sumber_air,
+            'rawan_bencana'        => $request->rawan_bencana,
+            'pemanfaatan_lahan_sebelumnya' => $request->pemanfaatan_lahan_sebelumnya,
+            'pengalaman_budidaya'  => $request->pengalaman_budidaya,
+            'petugas_dokumentasi'  => $request->petugas_dokumentasi,
+            'petugas_pemetaan'     => $request->petugas_pemetaan,
+            'no_hp_pemetaan'       => $request->no_hp_pemetaan,
             // Administrasi
             'is_surat_permohonan_sesuai' => $request->is_surat_permohonan_sesuai,
             'ket_surat_permohonan'       => $request->ket_surat_permohonan,
@@ -351,6 +386,7 @@ class ProposalController extends Controller
             'ket_titik_koordinat'        => $request->ket_titik_koordinat,
             'is_tidak_menerima_bantuan_sama' => $request->is_tidak_menerima_bantuan_sama,
             'ket_tidak_menerima_bantuan_sama'=> $request->ket_tidak_menerima_bantuan_sama,
+            'dokumen_fisik_path'             => $request->hasFile('dokumen_fisik') ? $request->file('dokumen_fisik')->store('cpcl_fisik', 'public') : $cpcl->dokumen_fisik_path,
         ]);
 
         if ($request->hasFile('foto_lahan')) {

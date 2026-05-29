@@ -1,12 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">Bentuk Tim Survei</x-slot>
+    <x-slot name="header">Buat Surat Tugas dan Tim Survei</x-slot>
 
     <div class="max-w-7xl mx-auto space-y-6">
 
         {{-- Page Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-extrabold text-gray-900">Bentuk Tim Survei</h2>
+                <h2 class="text-2xl font-extrabold text-gray-900">Buat Surat Tugas dan Tim Survei</h2>
                 <p class="text-gray-500 text-sm mt-1">Tentukan masa berlaku tugas dan tunjuk anggota tim untuk melakukan verifikasi CPCL.</p>
             </div>
             <a href="{{ route('kabid.proposals.show', $proposal) }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
@@ -46,6 +46,12 @@
                            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 @error('nomor_surat') border-red-400 @enderror">
                     @error('nomor_surat')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">No. Surat Pengajuan</label>
+                    <input type="text" name="no_surat_pengajuan" value="{{ old('no_surat_pengajuan') }}" placeholder="Contoh: 123/SP/2026"
+                           class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 @error('no_surat_pengajuan') border-red-400 @enderror">
+                    @error('no_surat_pengajuan')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Berlaku Dari *</label>
                     <input type="date" name="valid_from" value="{{ old('valid_from') }}" required
@@ -73,7 +79,11 @@
                                             class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500" required>
                                         <option value="">-- Pilih Pegawai --</option>
                                         <template x-for="emp in employees" :key="emp.id">
-                                            <option :value="emp.id" :selected="member.name === emp.name" x-text="emp.name + ' (' + emp.role + ')'"></option>
+                                            <option :value="emp.id" 
+                                                    :selected="member.name === emp.name" 
+                                                    :disabled="members.some((m, idx) => m.name === emp.name && idx !== index)"
+                                                    x-text="emp.name + ' (' + emp.role + ')' + (members.some((m, idx) => m.name === emp.name && idx !== index) ? ' - Sudah Dipilih' : '')">
+                                            </option>
                                         </template>
                                     </select>
                                     

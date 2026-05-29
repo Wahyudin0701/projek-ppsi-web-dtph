@@ -330,6 +330,6 @@ class ProposalController extends Controller
         
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('farmer.proposals.pdf-receipt', compact('proposal'));
         
-        return $pdf->download('Bukti_Pengajuan_Proposal_' . $proposal->id . '.pdf');
+        return $pdf->stream('Bukti_Pengajuan_Proposal_' . $proposal->id . '.pdf');
     }
 }
