@@ -1,32 +1,127 @@
-<x-app-layout>
-    <x-slot name="header">Rangkuman Hasil Verifikasi CPCL</x-slot>
-
-    <div class="max-w-7xl mx-auto space-y-6 pb-10">
-
-        {{-- Page Header --}}
-        <div class="flex items-center justify-between mt-2 no-print">
-            <div>
-                <h2 class="text-2xl font-extrabold text-gray-900 leading-tight">Rangkuman Hasil Verifikasi CPCL</h2>
-                <p class="text-gray-500 text-sm mt-1">Data komprehensif hasil temuan tim survei di lapangan.</p>
-            </div>
-        </div>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Berita Acara Verifikasi CPCL</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="font-sans text-gray-900 antialiased bg-gray-50 pt-8">
+    <div class="max-w-4xl mx-auto space-y-6 pb-10 px-4 sm:px-6">
 
         @php
             $cpcl = $proposal->cpclVerifications->last();
             $assignment = $proposal->surveyAssignments->last();
             $farmer = $proposal->user->farmerProfile;
+            $ba = $proposal->beritaAcara;
+            
+            function terbilang($angka) {
+                $angka = abs($angka);
+                $baca = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+                $terbilang = "";
+                if ($angka < 12) {
+                    $terbilang = " " . $baca[$angka];
+                } else if ($angka < 20) {
+                    $terbilang = terbilang($angka - 10) . " Belas";
+                } else if ($angka < 100) {
+                    $terbilang = terbilang((int)($angka / 10)) . " Puluh" . terbilang($angka % 10);
+                } else if ($angka < 200) {
+                    $terbilang = " Seratus" . terbilang($angka - 100);
+                } else if ($angka < 1000) {
+                    $terbilang = terbilang((int)($angka / 100)) . " Ratus" . terbilang($angka % 100);
+                } else if ($angka < 2000) {
+                    $terbilang = " Seribu" . terbilang($angka - 1000);
+                } else if ($angka < 1000000) {
+                    $terbilang = terbilang((int)($angka / 1000)) . " Ribu" . terbilang($angka % 1000);
+                }
+                return $terbilang;
+            }
+
+            $hari = $ba ? $ba->survey_date->translatedFormat('l') : '-';
+            $tanggalTerbilang = $ba ? trim(terbilang($ba->survey_date->format('j'))) : '-';
+            $bulan = $ba ? $ba->survey_date->translatedFormat('F') : '-';
+            $tahunTerbilang = $ba ? trim(terbilang($ba->survey_date->format('Y'))) : '-';
         @endphp
 
         <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden print-card">
             
             <div class="p-5 sm:p-8 space-y-8">
 
-                <!-- Header Info (Print Only) -->
-                <div class="hidden print-header text-center border-b border-gray-200 pb-6 mb-6">
-                    <h3 class="font-bold uppercase text-xl">RANGKUMAN HASIL SURVEI</h3>
-                    <h3 class="font-bold uppercase text-lg">CALON PETANI CALON LOKASI (CPCL)</h3>
-                    <p class="mt-4 text-sm text-gray-600">Nomor Registrasi: #PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</p>
-                    <p class="text-sm text-gray-600">Kelompok Tani: {{ $farmer->nama_kelompok ?? '-' }}</p>
+                <!-- Header Info -->
+                <div class="text-center border-b border-gray-200 pb-6 mb-6">
+                    <h3 class="font-bold uppercase text-xl tracking-wide text-gray-900">BERITA ACARA</h3>
+                    <h3 class="font-bold uppercase text-lg tracking-wide text-gray-800 mt-1">VERIFIKASI CALON PETANI CALON LOKASI (CPCL)</h3>
+                </div>
+
+                <!-- Prolog Berita Acara -->
+                <div class="text-gray-800 text-sm md:text-base leading-relaxed space-y-4">
+                    <p class="indent-8 text-justify">
+                        Pada hari <strong>{{ $hari }}</strong>, Tanggal <strong>{{ $tanggalTerbilang }}</strong>, Bulan <strong>{{ $bulan }}</strong>, Tahun <strong>{{ $tahunTerbilang }}</strong>, bertempat di Desa <strong>{{ ucwords(strtolower($farmer->alamat ?? '-')) }}</strong>, Kecamatan <strong>{{ ucwords(strtolower($farmer->kecamatan ?? '-')) }}</strong>, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
+                    </p>
+                    
+                    <div class="pl-0 sm:pl-8 space-y-4 my-6">
+                        <table class="w-full text-sm">
+                            <tr>
+                                <td class="w-48 py-1">Nama Kelompok Tani</td>
+                                <td class="w-4">:</td>
+                                <td class="font-bold">{{ $farmer->nama_kelompok ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1">Desa</td>
+                                <td>:</td>
+                                <td>{{ ucwords(strtolower($farmer->alamat ?? '-')) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1">Kecamatan</td>
+                                <td>:</td>
+                                <td>{{ ucwords(strtolower($farmer->kecamatan ?? '-')) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1">No. Surat Pengajuan</td>
+                                <td>:</td>
+                                <td>{{ $proposal->no_surat_pengajuan ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1">No. SK Kelompok Tani</td>
+                                <td>:</td>
+                                <td>{{ $farmer->no_sk ?? '-' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p class="indent-8 text-justify">
+                        Yang dilakukan oleh petugas verifikasi CPCL berdasarkan Surat Tugas Kepala Dinas Tanaman Pangan dan Hortikultura Nomor : <strong>{{ $assignment->nomor_surat ?? '-' }}</strong> Tanggal <strong>{{ $assignment ? $assignment->valid_from->translatedFormat('d F Y') : '-' }}</strong>, sebagai berikut :
+                    </p>
+
+                    <div class="pl-0 sm:pl-8 space-y-4 mt-2">
+                        @if($assignment && is_array($assignment->team_members))
+                            @foreach($assignment->team_members as $member)
+                            <table class="w-full text-sm">
+                                <tr>
+                                    <td class="w-48 py-0.5">Nama</td>
+                                    <td class="w-4">:</td>
+                                    <td class="font-bold">{{ $member['name'] ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-0.5">NIP</td>
+                                    <td>:</td>
+                                    <td>{{ $member['nip'] ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-0.5">Jabatan</td>
+                                    <td>:</td>
+                                    <td>{{ $member['role'] ?? '-' }}</td>
+                                </tr>
+                            </table>
+                            @endforeach
+                        @else
+                            <p class="text-gray-500 italic">Data petugas tidak ditemukan.</p>
+                        @endif
+                    </div>
+
+                    <p class="mt-4 text-justify">
+                        Adapun hasil dari verifikasi CPCL sebagai berikut:
+                    </p>
                 </div>
 
                 <!-- A. Verifikasi Administrasi -->
@@ -88,39 +183,49 @@
                     <h4 class="text-lg font-bold text-gray-900">B. Aspek Teknis & Lahan</h4>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Status Kepemilikan Lahan</p>
-                        <p class="text-gray-900 font-bold text-base">{{ $cpcl?->status_kepemilikan ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Luas Lahan</p>
-                        <p class="text-gray-900 font-bold text-base">{{ $cpcl?->luas_lahan ?? '0' }} <span class="text-sm font-medium text-gray-500">Hektar</span></p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Jenis Tanah</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->jenis_tanah ?: '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Sumber Air Budidaya</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->sumber_air ?: '-' }}</p>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kondisi Lahan</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->kondisi_lahan ?: '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rawan Bencana</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->rawan_bencana ?: '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Pemanfaatan Lahan Sebelumnya</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->pemanfaatan_lahan_sebelumnya ?: '-' }}</p>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Pengalaman Budidaya</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->pengalaman_budidaya ?: '-' }}</p>
-                    </div>
+                <div class="overflow-x-auto border border-gray-100 rounded-xl mb-8">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 text-gray-500 font-bold uppercase text-xs">
+                            <tr>
+                                <th class="px-4 py-3 w-1/2">Parameter</th>
+                                <th class="px-4 py-3">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Status Kepemilikan Lahan</td>
+                                <td class="px-4 py-3 text-gray-600 font-bold">{{ $cpcl?->status_kepemilikan ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Luas Lahan</td>
+                                <td class="px-4 py-3 text-gray-600 font-bold">{{ $cpcl?->luas_lahan ?? '0' }} <span class="text-xs font-normal text-gray-500">Hektar</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Jenis Tanah</td>
+                                <td class="px-4 py-3 text-gray-600">{{ $cpcl?->jenis_tanah ?: '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Sumber Air Budidaya</td>
+                                <td class="px-4 py-3 text-gray-600">{{ $cpcl?->sumber_air ?: '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Kondisi Lahan</td>
+                                <td class="px-4 py-3 text-gray-600">{{ $cpcl?->kondisi_lahan ?: '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Rawan Bencana</td>
+                                <td class="px-4 py-3 text-gray-600">{{ $cpcl?->rawan_bencana ?: '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Pemanfaatan Lahan Sebelumnya</td>
+                                <td class="px-4 py-3 text-gray-600">{{ $cpcl?->pemanfaatan_lahan_sebelumnya ?: '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">Pengalaman Budidaya</td>
+                                <td class="px-4 py-3 text-gray-600">{{ $cpcl?->pengalaman_budidaya ?: '-' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- C. Kesesuaian & Rekomendasi Lapangan -->
@@ -158,16 +263,6 @@
                     <h4 class="text-lg font-bold text-gray-900">D. Dokumentasi Lapangan</h4>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Petugas Dokumentasi</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->petugas_dokumentasi ?: '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Petugas Pemetaan</p>
-                        <p class="text-gray-900 font-medium">{{ $cpcl?->petugas_pemetaan ?: '-' }} <span class="text-gray-400 text-sm ml-2">({{ $cpcl?->no_hp_pemetaan ?: '-' }})</span></p>
-                    </div>
-                </div>
 
                 @php
                     $foto_pemetaan = $proposal->surveyDocumentations()->where('keterangan', 'Foto Hasil Pemetaan Data')->first();
@@ -220,6 +315,13 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     Edit CPCL
                 </a>
+                @elseif(auth()->user()->isKabid())
+                    @if(!in_array($proposal->status, ['menunggu_approval_ba', 'disetujui', 'ditolak']))
+                    <a href="{{ route('kabid.proposals.cpcl.edit', $proposal) }}" class="px-6 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors text-sm flex items-center gap-2 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Edit CPCL
+                    </a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -238,4 +340,5 @@
             .grid > div { page-break-inside: avoid; }
         }
     </style>
-</x-app-layout>
+</body>
+</html>

@@ -46,12 +46,7 @@
                            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 @error('nomor_surat') border-red-400 @enderror">
                     @error('nomor_surat')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
-                <div class="sm:col-span-2">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">No. Surat Pengajuan</label>
-                    <input type="text" name="no_surat_pengajuan" value="{{ old('no_surat_pengajuan') }}" placeholder="Contoh: 123/SP/2026"
-                           class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 @error('no_surat_pengajuan') border-red-400 @enderror">
-                    @error('no_surat_pengajuan')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
-                </div>
+
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Berlaku Dari *</label>
                     <input type="date" name="valid_from" value="{{ old('valid_from') }}" required

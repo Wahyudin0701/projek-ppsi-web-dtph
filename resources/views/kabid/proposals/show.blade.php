@@ -84,28 +84,56 @@
                         {{ $sc['label'] }} (Menunggu Admin)
                     </span>
                 @elseif($proposal->status === 'menunggu_review_kabid' && $proposal->beritaAcara)
-                    <form action="{{ route('kabid.berita-acara.approve', $proposal) }}" method="POST" class="inline w-full sm:w-auto">
-                        @csrf
-                        <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-green-500 text-white text-sm font-bold rounded-xl hover:bg-green-600 transition-colors shadow-sm" onclick="return confirm('Apakah Anda yakin meneruskan Berita Acara ini ke Pimpinan? TTE akan digenerate otomatis.')">
+                    <div x-data="{ openConfirm: false }" class="inline w-full sm:w-auto">
+                        <button type="button" @click="openConfirm = true" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-green-500 text-white text-sm font-bold rounded-xl hover:bg-green-600 transition-colors shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             Teruskan ke Pimpinan
                         </button>
-                    </form>
-                @elseif($proposal->beritaAcara)
-                    <a href="{{ route('documents.berita-acara', $proposal) }}" target="_blank"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                        Cetak Berita Acara
-                    </a>
+
+                        <div x-show="openConfirm" class="fixed inset-0 z-50 flex items-center justify-center px-4" x-cloak>
+                            <div class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm" @click="openConfirm = false" x-show="openConfirm" x-transition.opacity></div>
+                            <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 relative z-10"
+                                 x-show="openConfirm" 
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-90 translate-y-4"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-200"
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-90 translate-y-4">
+                                
+                                <div class="flex flex-col items-center text-center">
+                                    <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4 text-blue-500">
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Teruskan ke Pimpinan?</h3>
+                                    <p class="text-gray-500 text-sm mb-6 leading-relaxed">Apakah Anda yakin meneruskan Berita Acara ini ke Pimpinan? Data CPCL akan <span class="font-bold text-gray-700">dikunci</span> dan masuk ke tahap Keputusan Akhir.</p>
+                                    
+                                    <div class="flex items-center gap-3 w-full">
+                                        <button @click="openConfirm = false" type="button" class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors">Batal</button>
+                                        <form action="{{ route('kabid.berita-acara.approve', $proposal) }}" method="POST" class="flex-1">
+                                            @csrf
+                                            <button type="submit" class="w-full px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors">
+                                                Ya, Teruskan
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 @elseif($proposal->status === 'surat_tugas_terbit')
-                    <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-50 text-blue-700 border border-blue-100 shadow-sm">
-                        <svg class="w-4 h-4 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        Survei Sedang Berjalan
-                    </span>
-                @else
-                    <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $sc['bg'] }} border border-transparent shadow-sm">
-                        {{ $sc['label'] }}
-                    </span>
+
+                    <a href="{{ route('kabid.proposals.cetak-form-cpcl', $proposal) }}" target="_blank"
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Form CPCL
+                    </a>
+                    <a href="{{ route('kabid.proposals.cpcl.create', $proposal) }}"
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                        Input CPCL
+                    </a>
                 @endif
             </div>
         </div>
@@ -115,82 +143,97 @@
             {{-- Left Side: Main Info / Actions --}}
             <div class="md:col-span-2 space-y-6">
 
-                {{-- CPCL Verification Data --}}
-                @if($proposal->cpclVerifications->isNotEmpty())
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2">
-                            Hasil Verifikasi CPCL
-                        </h3>
-                        <a href="{{ route('documents.cpcl', $proposal) }}" target="_blank" class="text-sm px-4 py-2 bg-primary-50 text-primary-600 rounded-lg font-bold hover:bg-primary-100 transition-colors flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                            Lihat Rangkuman CPCL
-                        </a>
-                    </div>
-                </div>
-                @elseif($proposal->status === 'survei_selesai')
-                <div class="bg-orange-50/50 rounded-2xl border border-orange-200 p-8 text-center mb-6">
-                    <svg class="w-10 h-10 text-orange-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <p class="font-bold text-orange-700">Data CPCL Belum Diinput Admin</p>
-                    <p class="text-xs text-orange-500 mt-1 leading-relaxed">Hasil survei lapangan masih dalam proses verifikasi administratif oleh Admin Dinas.</p>
-                </div>
-                @endif
-
-                {{-- Berita Acara Preview --}}
-                @if($proposal->beritaAcara)
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-6">
-                    <div class="flex items-center justify-between mb-5 border-b border-gray-100 pb-3 gap-2">
-                        <h3 class="font-extrabold text-gray-800 text-lg flex items-center gap-2">
-                            Berita Acara Survei
-                        </h3>
-                        <div class="flex items-center gap-3">
-                            <a href="{{ route('documents.berita-acara', $proposal) }}" target="_blank" class="text-xs text-primary-600 font-bold hover:underline flex items-center gap-1.5">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                                Cetak PDF
-                            </a>
+                @if($proposal->cpclVerifications->isNotEmpty() || $proposal->beritaAcara || $proposal->status === 'survei_selesai')
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
+                        Verifikasi Lapangan & Berita Acara
+                    </h4>
+                    <div class="space-y-4">
+                        {{-- CPCL Verification Data --}}
+                        @if($proposal->cpclVerifications->isNotEmpty())
+                        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                                <div class="w-full">
+                                    @if($proposal->beritaAcara)
+                                        @php 
+                                            $ba = $proposal->beritaAcara; 
+                                            $cpcl = $proposal->cpclVerifications->last();
+                                        @endphp
+                                        <div class="space-y-6">
+                                            <div>
+                                                <div class="flex items-center gap-2 mb-2.5">
+                                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Rekomendasi Final</p>
+                                                    <div class="w-1 h-1 rounded-full bg-gray-300"></div>
+                                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $ba->survey_date->translatedFormat('d M Y') }}</p>
+                                                </div>
+                                                <span class="inline-block text-sm font-bold px-4 py-2 rounded-lg border {{ $ba->recommendation === 'direkomendasikan' ? 'bg-green-50 text-green-700 border-green-200' : ($ba->recommendation === 'tidak_direkomendasikan' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200') }}">
+                                                    {{ $ba->recommendationLabel }}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2.5">Hasil & Catatan Lapangan</p>
+                                                <div class="bg-gray-50 rounded-xl p-4 text-gray-700 text-sm border border-gray-100">
+                                                    {{ $cpcl?->catatan ?? 'Tidak ada catatan khusus dari tim lapangan.' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-2 shrink-0">
+                                    @if(!in_array($proposal->status, ['menunggu_approval_ba', 'disetujui', 'ditolak']))
+                                    <a href="{{ route('kabid.proposals.cpcl.edit', $proposal) }}" class="h-fit text-xs px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-bold hover:bg-blue-100 transition-colors flex items-center gap-1.5 shadow-sm border border-blue-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        Edit
+                                    </a>
+                                    @endif
+                                    <a href="{{ route('documents.cpcl', $proposal) }}" class="h-fit text-xs px-4 py-2 bg-primary-50 text-primary-600 rounded-lg font-bold hover:bg-primary-100 transition-colors flex items-center gap-1.5 shadow-sm border border-primary-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        Lihat Berita Acara
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    @php $ba = $proposal->beritaAcara; @endphp
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tanggal BA</p>
-                            <p class="font-semibold text-gray-800">{{ $ba->survey_date->translatedFormat('d F Y') }}</p>
+                        @elseif($proposal->status === 'survei_selesai')
+                        <div class="bg-orange-50/50 rounded-2xl border border-orange-200 p-8 text-center">
+                            <svg class="w-10 h-10 text-orange-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <p class="font-bold text-orange-700">Data CPCL Belum Diinput</p>
+                            <p class="text-xs text-orange-500 mt-1 leading-relaxed">Hasil survei lapangan masih perlu diinput oleh Anda.</p>
                         </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Rekomendasi Final</p>
-                            <span class="inline-block mt-1 text-[10px] font-bold px-3 py-1 rounded-full {{ $ba->recommendation === 'direkomendasikan' ? 'bg-green-100 text-green-700' : ($ba->recommendation === 'tidak_direkomendasikan' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
-                                {{ $ba->recommendationLabel }}
-                            </span>
-                        </div>
+                        @endif
                     </div>
                 </div>
                 @endif
 
                 {{-- Survey Team Info --}}
                 @if($proposal->surveyAssignments->isNotEmpty())
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-                    <h3 class="font-extrabold text-gray-800 mb-6 text-lg border-b border-gray-100 pb-3 flex items-center gap-2">
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
                         Data Surat Tugas & Tim Survei
-                    </h3>
+                    </h4>
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
                     @foreach($proposal->surveyAssignments as $assignment)
-                    <div class="p-5 bg-blue-50/40 rounded-xl mb-4 last:mb-0 border border-blue-100/50">
-                        <div class="flex justify-between items-start mb-3 gap-2">
+                    <div class="mb-6 last:mb-0">
+                        <div class="flex flex-col sm:flex-row justify-between items-start mb-3 gap-4">
                             <div>
                                 <p class="font-bold text-sm text-gray-800">Nomor: {{ $assignment->nomor_surat }}</p>
                                 <p class="text-xs text-gray-400 font-semibold mt-1">Masa Berlaku: {{ $assignment->valid_from->format('d M Y') }} s/d {{ $assignment->valid_until->format('d M Y') }}</p>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2.5 py-1 rounded">Aktif</span>
+                                <a href="{{ route('kabid.proposals.cetak-surat-tugas', $proposal) }}" target="_blank"
+                                   class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-lg border border-gray-200 transition-colors shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    Cetak Surat Tugas
+                                </a>
                                 @if($proposal->status === 'surat_tugas_terbit')
                                 <a href="{{ route('kabid.proposals.assignment.edit', [$proposal, $assignment]) }}"
-                                   class="inline-flex items-center gap-1 px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 text-[10px] font-extrabold rounded border border-amber-200 transition-colors">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                   class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-lg border border-amber-200 transition-colors shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                                     Edit
                                 </a>
                                 @endif
                             </div>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-blue-100/30">
+                        <div class="mt-4 pt-3 border-t border-gray-100">
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2.5">Anggota Tim:</p>
                             <ul class="space-y-2">
                                 @foreach($assignment->team_members as $member)
@@ -204,6 +247,7 @@
                     </div>
                     @endforeach
                 </div>
+                </div>
                 @endif
 
                 {{-- Informasi Pengaju (Farmer Info) --}}
@@ -215,12 +259,17 @@
                 </div>
 
                 {{-- Detail Pengajuan (Alsintan / Program) --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-                    <h4 class="font-bold text-gray-900 mb-6 text-lg border-b border-gray-100 pb-3 flex items-center gap-2">
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
                         {{ $isAlsintan ? 'Detail Alat yang Dipinjam' : 'Detail Program yang Diajukan' }}
                     </h4>
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
                     @if($isAlsintan)
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                            </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Alat</p>
                                 <p class="text-gray-900 font-bold text-base">{{ $proposal->alsintan->name }}</p>
@@ -240,6 +289,10 @@
                         </div>
                     @else
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                            </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
                                 <p class="text-gray-900 font-bold text-base">{{ $proposal->program->name }}</p>
@@ -274,6 +327,7 @@
                         <p class="text-gray-700 font-medium text-sm bg-amber-50/50 p-4 rounded-xl border border-amber-100/50 leading-relaxed">{{ $proposal->latestDispositionLog->notes ?? '-' }}</p>
                     </div>
                     @endif
+                </div>
                 </div>
             </div>
 
@@ -393,7 +447,7 @@
                             @if(($currentOrder >= 3 || $rejectedAtFinal) && $surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Sedang Survei (Surat Tugas Terbit)</p>
+                                    <p class="text-sm font-bold text-gray-900">Sedang Survei</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $surveyAssignment->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Nomor: {{ $surveyAssignment->nomor_surat }}</p>
                                 </div>

@@ -25,6 +25,11 @@ class BeritaAcaraController extends Controller
             return back()->with('error', 'Berita Acara belum dibuat.');
         }
 
+        $cpcl = $proposal->cpclVerifications()->latest()->first();
+        if (!$cpcl || empty($cpcl->dokumen_fisik_path)) {
+            return back()->with('error', 'Dokumen fisik scan Berita Acara (yang telah ditandatangani) wajib diunggah sebelum dapat diteruskan ke Pimpinan.');
+        }
+
         // Generate TTE QR Code (Signature) for Kabid
         \App\Models\DocumentSignature::create([
             'uuid' => \Illuminate\Support\Str::uuid(),
@@ -37,7 +42,7 @@ class BeritaAcaraController extends Controller
         $proposal->update(['status' => 'menunggu_approval_ba']);
 
         return redirect()->route('kabid.proposals.show', $proposal)
-            ->with('success', 'Berita Acara berhasil disetujui. TTE telah disematkan. Proposal diteruskan ke Pimpinan untuk keputusan akhir.');
+            ->with('success', 'Berita Acara berhasil disetujui. Proposal diteruskan ke Pimpinan untuk keputusan akhir.');
     }
 
     private function authorizeKabid(Proposal $proposal): void

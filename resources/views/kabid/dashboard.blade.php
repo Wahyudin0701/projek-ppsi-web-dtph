@@ -31,9 +31,9 @@
             @php
                 $statCards = [
                     ['label' => 'Total Disposisi', 'value' => $stats['total'],           'textColor' => 'text-slate-700'],
-                    ['label' => 'Perlu Assign Tim', 'value' => $stats['menunggu_survei'], 'textColor' => 'text-amber-600'],
+                    ['label' => 'Persiapan Survei', 'value' => $stats['menunggu_survei'], 'textColor' => 'text-amber-600'],
                     ['label' => 'Dalam Survei',     'value' => $stats['dalam_survei'],    'textColor' => 'text-blue-600'],
-                    ['label' => 'Perlu Berita Acara','value' => $stats['survei_selesai'], 'textColor' => 'text-orange-600'],
+                    ['label' => 'Verifikasi CPCL','value' => $stats['survei_selesai'], 'textColor' => 'text-orange-600'],
                     ['label' => 'Selesai',           'value' => $stats['selesai'],         'textColor' => 'text-green-600'],
                 ];
             @endphp
@@ -84,7 +84,7 @@
                                         $sc = match($proposal->status) {
                                             'pending_verifikasi' => ['bg' => 'bg-amber-100 text-amber-700', 'label' => 'Menunggu Verifikasi Admin'],
                                             'diteruskan_ke_pimpinan' => ['bg' => 'bg-purple-100 text-purple-700', 'label' => 'Review Pimpinan'],
-                                            'didisposisi_kabid' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Menunggu Bentuk Tim'],
+                                            'didisposisi_kabid' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Persiapan Survei'],
                                             'survei_berlangsung' => ['bg' => 'bg-sky-100 text-sky-700', 'label' => 'Survei Berlangsung'],
                                             'survei_selesai' => ['bg' => 'bg-orange-100 text-orange-700', 'label' => 'Menunggu Verifikasi CPCL'],
                                             'menunggu_review_kabid' => ['bg' => 'bg-teal-100 text-teal-700', 'label' => 'Menunggu Keputusan Akhir'],

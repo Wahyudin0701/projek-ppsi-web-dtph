@@ -134,13 +134,14 @@
         </div>
 
         <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-            <div class="max-w-2xl">
+            <div class="max-w-4xl">
 
 
                 {{-- Headline --}}
-                <h1 class="reveal text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-black text-white leading-[1.08] tracking-[-0.02em] mb-6">
-                    Portal DTPH<br />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400 gradient-anim">Muaro Jambi</span>
+                <h1 class="reveal text-[2.25rem] md:text-[2.75rem] lg:text-[3.5rem] font-black text-white leading-[1.08] tracking-[-0.02em] mb-6">
+                    Portal<br />
+                    Dinas Tanaman Pangan dan Hortikultura<br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400 gradient-anim">Kab. Muaro Jambi</span>
                 </h1>
 
                 {{-- Subtext --}}

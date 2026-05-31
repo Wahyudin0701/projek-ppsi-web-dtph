@@ -146,7 +146,7 @@
                                         @csrf @method('PATCH')
                                         <div class="mb-5">
                                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Catatan (opsional)</label>
-                                            <textarea name="pimpinan_notes" rows="3" placeholder="Tambahkan catatan untuk petani..."
+                                            <textarea name="pimpinan_notes" rows="3" placeholder="Tambahkan catatan untuk pengaju..."
                                                 class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"></textarea>
                                         </div>
                                         <div class="flex flex-row-reverse gap-3">
@@ -187,13 +187,7 @@
             @elseif($proposal->status === 'menunggu_approval_ba')
                 {{-- Final decision after berita acara --}}
                 <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
-                     x-data="{ showApprove: false, showReject: false, showBeritaAcara: false }">
-                    @if($proposal->beritaAcara)
-                    <button @click="showBeritaAcara = true" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-purple-50 border border-purple-200 text-purple-700 text-sm font-bold rounded-xl hover:bg-purple-100 transition-colors shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        Lihat Berita Acara
-                    </button>
-                    @endif
+                     x-data="{ showApprove: false, showReject: false }">
                     <button @click="showApprove = true"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -214,85 +208,16 @@
                     </template>
                     <template x-if="showReject">
                         <div class="fixed inset-0 z-[999] overflow-y-auto"><div class="flex items-center justify-center min-h-screen px-4"><div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showReject = false"></div>
-                            <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8"><h3 class="text-lg font-black mb-4">Keputusan Akhir: Tolak</h3>
+                            <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8"><h3 class="text-lg font-black mb-4">Tolak Proposal</h3>
                                 <form action="{{ route('pimpinan.proposals.reject', $proposal) }}" method="POST">@csrf @method('DELETE')
-                                    <textarea name="pimpinan_notes" rows="3" required placeholder="Alasan penolakan..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none mb-4 focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
-                                    <div class="flex gap-3"><button type="button" @click="showReject = false" class="flex-1 py-3 border rounded-xl font-bold text-sm">Batal</button><button type="submit" class="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl text-sm">Tolak</button></div>
+                                    <textarea name="pimpinan_notes" rows="3" required placeholder="Catatan / Alasan penolakan..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none mb-4 focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                                    <div class="flex gap-3"><button type="button" @click="showReject = false" class="flex-1 py-3 border rounded-xl font-bold text-sm">Batal</button><button type="submit" class="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl text-sm">Tolak Proposal</button></div>
                                 </form></div></div></div>
                     </template>
                     
-                    {{-- Modal Berita Acara --}}
-                    @if($proposal->beritaAcara)
-                    <template x-if="showBeritaAcara">
-                        <div class="fixed inset-0 z-[999] overflow-y-auto">
-                            <div class="flex items-center justify-center min-h-screen px-4">
-                                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showBeritaAcara = false"></div>
-                                <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 border border-gray-100">
-                                    <div class="flex items-center justify-between mb-6">
-                                        <h3 class="text-lg font-black text-gray-900">Detail Berita Acara</h3>
-                                        <button @click="showBeritaAcara = false" class="text-gray-400 hover:text-red-500 bg-gray-50 hover:bg-red-50 p-2 rounded-xl transition-colors">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
-                                        </button>
-                                    </div>
-                                    <div class="space-y-5">
-                                        <div class="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kepala Bidang</p>
-                                                <p class="text-sm font-semibold text-gray-900">{{ $proposal->beritaAcara->kabid->name ?? '-' }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tanggal Survei</p>
-                                                <p class="text-sm font-semibold text-gray-900">{{ $proposal->beritaAcara->survey_date?->translatedFormat('d F Y') ?? '-' }}</p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Lokasi Survei</p>
-                                            <p class="text-sm font-semibold text-gray-900">{{ $proposal->beritaAcara->location ?? '-' }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Rekomendasi Final</p>
-                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold border {{ $proposal->beritaAcara->recommendation === 'direkomendasikan' ? 'bg-green-50 text-green-700 border-green-200' : ($proposal->beritaAcara->recommendation === 'tidak_direkomendasikan' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200') }}">
-                                                {{ $proposal->beritaAcara->recommendationLabel }}
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Hasil & Catatan Lapangan</p>
-                                            <div class="text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-100 whitespace-pre-line leading-relaxed">{{ $proposal->beritaAcara->content }}</div>
-                                        </div>
-                                        @if($proposal->beritaAcara->attachment)
-                                        <div class="pt-2">
-                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Dokumen Lampiran</p>
-                                            <a href="{{ asset('storage/' . $proposal->beritaAcara->attachment) }}" target="_blank" 
-                                               class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-sm font-bold rounded-xl transition-colors border border-indigo-100">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                                                Lihat Lampiran File
-                                            </a>
-                                        </div>
-                                        @endif
-                                        
-                                        {{-- Dokumentasi Survei Lapangan --}}
-                                        @if($proposal->surveyDocumentations->isNotEmpty())
-                                        <div class="pt-2">
-                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Dokumentasi Survei Lapangan</p>
-                                            <div class="grid grid-cols-2 gap-4">
-                                                @foreach($proposal->surveyDocumentations as $doc)
-                                                <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="block rounded-xl overflow-hidden border border-gray-200 hover:opacity-90 transition-opacity">
-                                                    <img src="{{ Storage::url($doc->file_path) }}" alt="{{ $doc->keterangan }}" class="w-full h-32 object-cover">
-                                                </a>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                    @endif
+
                 </div>
-                <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $proposal->status === 'disetujui' ? 'bg-green-50 text-green-700 border border-green-100' : ($proposal->status === 'ditolak' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-gray-50 text-gray-600 border border-gray-100') }}">
-                    {{ $proposal->statusLabel }}
-                </span>
+
                 @endif
             </div>
         </div>
@@ -300,6 +225,71 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {{-- Main Info --}}
             <div class="md:col-span-2 space-y-6">
+
+                @if(in_array($proposal->status, ['menunggu_approval_ba', 'disetujui']) && $proposal->beritaAcara && $proposal->cpclVerifications->count())
+                @php
+                    $cpcl = $proposal->cpclVerifications->last();
+                @endphp
+                {{-- Berita Acara & Dokumen Fisik Panel --}}
+                <div class="mb-6 space-y-4">
+                    <h4 class="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
+                        Verifikasi Lapangan & Dokumen Fisik
+                    </h4>
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 divide-y xl:divide-y-0 xl:divide-x divide-gray-100">
+                            {{-- Rangkuman Data --}}
+                            <div class="p-6 lg:p-8 space-y-6">
+                                <h5 class="font-black text-sm uppercase tracking-wider text-gray-500 mb-2">Rangkuman Hasil Survei</h5>
+                                <div class="grid grid-cols-2 gap-5">
+                                    <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kepala Bidang</p><p class="text-sm font-semibold text-gray-900">{{ $proposal->beritaAcara->kabid->name ?? '-' }}</p></div>
+                                    <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tanggal Survei</p><p class="text-sm font-semibold text-gray-900">{{ $proposal->beritaAcara->survey_date?->translatedFormat('d F Y') ?? '-' }}</p></div>
+                                </div>
+                                <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Rekomendasi Final</p>
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold border {{ $proposal->beritaAcara->recommendation === 'direkomendasikan' ? 'bg-green-50 text-green-700 border-green-200' : ($proposal->beritaAcara->recommendation === 'tidak_direkomendasikan' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200') }}">
+                                        {{ $proposal->beritaAcara->recommendationLabel }}
+                                    </span>
+                                </div>
+                                <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Hasil & Catatan Lapangan</p>
+                                    <div class="text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-100 whitespace-pre-line leading-relaxed">{{ $proposal->beritaAcara->content }}</div>
+                                </div>
+                                
+                                <div class="pt-4 border-t border-gray-100">
+                                    <a href="{{ route('documents.cpcl', $proposal->id) }}" 
+                                       class="inline-flex items-center justify-center gap-1.5 w-full px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 text-sm font-bold rounded-xl border border-purple-100 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        Berita Acara
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            {{-- Dokumen Fisik --}}
+                            <div class="p-6 lg:p-8 bg-gray-50 flex flex-col justify-center items-center text-center xl:min-h-[300px]">
+                                <h5 class="font-black text-sm uppercase tracking-wider text-gray-500 mb-4">File Scan Berita Acara Fisik</h5>
+                                @if($cpcl && $cpcl->dokumen_fisik_path)
+                                    @php
+                                        $url = Storage::url($cpcl->dokumen_fisik_path);
+                                    @endphp
+                                    <div class="flex-1 w-full flex flex-col items-center justify-center space-y-4">
+                                        <div class="bg-indigo-50 p-4 rounded-full">
+                                            <svg class="w-12 h-12 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        </div>
+                                        <p class="text-sm text-gray-600 max-w-xs">Dokumen ini adalah salinan otentik Berita Acara yang telah ditandatangani basah di lapangan.</p>
+                                        <a href="{{ $url }}" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                            Lihat Dokumen Fisik
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="flex-1 w-full flex items-center justify-center flex-col text-center border-2 border-dashed border-gray-300 rounded-xl bg-white p-6">
+                                        <svg class="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <p class="text-sm font-semibold text-gray-500">Dokumen fisik belum diunggah.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 {{-- Petani Info --}}
                 <div class="mb-6">
@@ -311,29 +301,44 @@
 
 
                 {{-- Object Detail --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                    <h4 class="font-bold text-gray-900 mb-5 text-base border-b border-gray-100 pb-3">
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
                         {{ $isAlsintan ? 'Detail Alat yang Dipinjam' : 'Detail Program yang Diajukan' }}
                     </h4>
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     @if($isAlsintan)
-                        <div class="grid grid-cols-2 gap-5">
-                            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Alat</p><p class="text-gray-900 font-bold">{{ $proposal->alsintan->name }}</p></div>
+                        <div class="grid grid-cols-2 gap-y-5 gap-x-4">
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Alat</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->alsintan->name }}</p>
+                            </div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Merk / Tipe</p><p class="text-gray-900 font-medium">{{ $proposal->alsintan->merk ?? '-' }}</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kapasitas</p><p class="text-gray-900 font-medium">{{ $proposal->alsintan->capacity ?? '-' }}</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Stok Tersedia</p><p class="text-gray-900 font-medium">{{ $proposal->alsintan->available_stock }} unit</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rencana Durasi Pemakaian</p><p class="text-[#19A148] font-bold">{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</p></div>
                         </div>
                     @else
-                        <div class="grid grid-cols-2 gap-5">
-                            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p><p class="text-gray-900 font-bold">{{ $proposal->program->name }}</p></div>
+                        <div class="grid grid-cols-2 gap-y-5 gap-x-4">
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->program->name }}</p>
+                            </div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Tipe</p><p class="text-gray-900 font-medium capitalize">{{ str_replace('_', ' ', $proposal->program->type) }}</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Sasaran</p><p class="text-gray-900 font-medium">{{ $proposal->program->sasaran ?? '-' }}</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kuota</p><p class="text-gray-900 font-medium">{{ $proposal->program->kuota ?? '-' }}</p></div>
                         </div>
                     @endif
                 </div>
-
                 </div>
+            </div>
 
             {{-- Sidebar Timeline --}}
             <div class="space-y-6">
@@ -451,7 +456,7 @@
                             @if(($currentOrder >= 3 || $rejectedAtFinal) && $surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Sedang Survei (Surat Tugas Terbit)</p>
+                                    <p class="text-sm font-bold text-gray-900">Sedang Survei</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $surveyAssignment->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Nomor: {{ $surveyAssignment->nomor_surat }}</p>
                                 </div>

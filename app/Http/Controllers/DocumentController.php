@@ -32,7 +32,7 @@ class DocumentController extends Controller
     {
         $this->authorizeAccess($proposal);
 
-        if (!in_array($proposal->status, ['surat_tugas_terbit', 'survei_selesai', 'menunggu_review_kabid', 'menunggu_approval_ba', 'disetujui'])) {
+        if ($proposal->surveyAssignments()->doesntExist()) {
             abort(403, 'Surat tugas belum diterbitkan.');
         }
 
@@ -48,7 +48,7 @@ class DocumentController extends Controller
             ->where('document_id', $assignment->id)
             ->first();
 
-        $pdf = Pdf::loadView('admin.proposals.cetak-surat-tugas', compact('proposal', 'assignment', 'kepalaDinas', 'signature'));
+        $pdf = Pdf::loadView('kabid.proposals.cetak-surat-tugas', compact('proposal', 'assignment', 'kepalaDinas', 'signature'));
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Surat_Tugas_Survei_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
@@ -80,6 +80,11 @@ class DocumentController extends Controller
     {
         $this->authorizeAccess($proposal);
 
+        // Prevent farmers (users) from accessing internal CPCL details
+        if (Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        }
+
         if ($proposal->cpclVerifications->isEmpty()) {
             abort(404, 'Data Verifikasi CPCL belum diinput.');
         }
@@ -90,26 +95,7 @@ class DocumentController extends Controller
         return view('documents.cpcl', compact('proposal', 'kepalaDinas'));
     }
 
-    /**
-     * Cetak Berita Acara (BA)
-     */
-    public function printBeritaAcara(Proposal $proposal)
-    {
-        $this->authorizeAccess($proposal);
-
-        if (!$proposal->beritaAcara) {
-            abort(404, 'Berita Acara belum dibuat.');
-        }
-
-        $proposal->load(['user.farmerProfile', 'beritaAcara.kabid', 'cpclVerifications']);
-        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
-        
-        $signatureSurveyor = \App\Models\DocumentSignature::with('signer')->where('document_type', 'berita_acara_surveyor')->where('document_id', $proposal->beritaAcara->id)->first();
-        $signatureKabid = \App\Models\DocumentSignature::with('signer')->where('document_type', 'berita_acara_kabid')->where('document_id', $proposal->beritaAcara->id)->first();
-
-        $pdf = Pdf::loadView('documents.berita-acara', compact('proposal', 'kepalaDinas', 'signatureSurveyor', 'signatureKabid'));
-        return $pdf->stream('Berita_Acara_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
-    }
+    // Fitur Cetak PDF Berita Acara dihapus karena redundan dengan dokumen fisik yang sudah diunggah Kabid.
 
     /**
      * Cetak SK Bantuan (untuk Program Bantuan yang disetujui)

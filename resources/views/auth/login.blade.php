@@ -49,7 +49,7 @@
                     Membangun <br/> <span class="text-emerald-400">Ketahanan Pangan</span> <br/> Bersama
                 </h1>
                 <p class="text-gray-200 text-lg max-w-md mx-auto leading-relaxed font-medium opacity-0 animate-fade-in-up delay-200">
-                    Modernisasi pertanian Muaro Jambi melalui akses alsintan yang lebih mudah, transparan, dan terintegrasi untuk kesejahteraan petani.
+                    Modernisasi pertanian Muaro Jambi melalui akses alsintan dan layanan program bantuan yang lebih mudah, transparan, serta terintegrasi untuk kesejahteraan petani.
                 </p>
 
                 {{-- Trust Badges / Stats --}}

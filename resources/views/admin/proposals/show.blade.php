@@ -152,31 +152,12 @@
                             </div>
                         </div>
                     </template>
-            @elseif($proposal->status === 'surat_tugas_terbit')
-                    <a href="{{ route('documents.surat-tugas', $proposal) }}" target="_blank"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        Download Surat Tugas
-                    </a>
-                    <a href="{{ route('documents.form-cpcl-blank', $proposal) }}" target="_blank"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        Download Form CPCL
-                    </a>
-                    <a href="{{ route('admin.proposals.cpcl.create', $proposal) }}"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-                        Input Verifikasi CPCL
-                    </a>
             @else
                     @if($proposal->cpclVerifications->isNotEmpty())
-                        <a href="{{ route('admin.proposals.cpcl.edit', $proposal) }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-blue-600 text-sm font-bold rounded-xl hover:bg-blue-50 hover:border-blue-200 transition-colors shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            Edit CPCL
-                        </a>
+
                         <a href="{{ route('documents.cpcl', $proposal) }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Lihat Rangkuman Data CPCL
+                            Lihat Berita Acara CPCL
                         </a>
                         @php
                             $cpclData = $proposal->cpclVerifications->last();
@@ -207,16 +188,21 @@
 
 
                 {{-- Object Detail --}}
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-                    <h4 class="font-bold text-gray-900 mb-6 text-lg border-b border-gray-100 pb-3 flex items-center gap-2">
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
                         @if($isAlsintan)
                             Detail Alat yang Dipinjam
                         @else
                             Detail Program yang Diajukan
                         @endif
                     </h4>
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
                     @if($isAlsintan)
                         <div class="grid grid-cols-2 gap-y-5 gap-x-4">
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                            </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Alat</p>
                                 <p class="text-gray-900 font-bold text-base">{{ $proposal->alsintan->name }}</p>
@@ -241,6 +227,10 @@
                     @else
                         <div class="grid grid-cols-2 gap-y-5 gap-x-4">
                             <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                            </div>
+                            <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
                                 <p class="text-gray-900 font-bold text-base">{{ $proposal->program->name }}</p>
                             </div>
@@ -258,6 +248,7 @@
                             </div>
                         </div>
                     @endif
+                </div>
                 </div>
             </div>
 
@@ -377,14 +368,14 @@
                             @if($currentOrder >= 3 && $surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Sedang Survei (Surat Tugas Terbit)</p>
+                                    <p class="text-sm font-bold text-gray-900">Sedang Survei</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $surveyAssignment->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Nomor: {{ $surveyAssignment->nomor_surat }}</p>
                                 </div>
                             @elseif($rejectedAtFinal && $surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Sedang Survei (Surat Tugas Terbit)</p>
+                                    <p class="text-sm font-bold text-gray-900">Sedang Survei</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $surveyAssignment->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Nomor: {{ $surveyAssignment->nomor_surat }}</p>
                                 </div>

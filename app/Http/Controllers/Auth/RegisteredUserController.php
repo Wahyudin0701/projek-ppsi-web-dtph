@@ -56,8 +56,8 @@ class RegisteredUserController extends Controller
                 'alamat' => ['required', 'string'],
                 'anggota_nama' => ['required', 'array', 'min:1'],
                 'anggota_nama.*' => ['required', 'string', 'max:255'],
-                'anggota_jabatan' => ['required', 'array', 'min:1'],
-                'anggota_jabatan.*' => ['required', 'string', 'max:255'],
+                'anggota_nik' => ['required', 'array', 'min:1'],
+                'anggota_nik.*' => ['required', 'string', 'size:16'],
                 'no_sk' => ['required', 'string', 'max:255'],
                 'file_sk' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
                 'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
@@ -96,10 +96,10 @@ class RegisteredUserController extends Controller
 
                 if ($request->has('anggota_nama') && is_array($request->anggota_nama)) {
                     foreach ($request->anggota_nama as $index => $namaAnggota) {
-                        $jabatanAnggota = $request->anggota_jabatan[$index] ?? null;
+                        $nikAnggota = $request->anggota_nik[$index] ?? null;
                         $profile->members()->create([
                             'nama' => $namaAnggota,
-                            'jabatan' => $jabatanAnggota,
+                            'nik' => $nikAnggota,
                         ]);
                     }
                 }

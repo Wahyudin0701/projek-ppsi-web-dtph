@@ -111,13 +111,7 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/proposals/{proposal}/approve', [App\Http\Controllers\Admin\ProposalController::class, 'approve'])->name('proposals.approve');
         Route::delete('/proposals/{proposal}/reject', [App\Http\Controllers\Admin\ProposalController::class, 'reject'])->name('proposals.reject');
         
-        // Surat Tugas & Verifikasi CPCL Offline
-        Route::get('/proposals/{proposal}/surat-tugas/cetak', [App\Http\Controllers\Admin\ProposalController::class, 'cetakSuratTugas'])->name('proposals.cetak-surat-tugas');
-        Route::get('/proposals/{proposal}/form-cpcl/cetak', [App\Http\Controllers\Admin\ProposalController::class, 'cetakFormCpcl'])->name('proposals.cetak-form-cpcl');
-        Route::get('/proposals/{proposal}/cpcl/create', [App\Http\Controllers\Admin\ProposalController::class, 'createCpcl'])->name('proposals.cpcl.create');
-        Route::post('/proposals/{proposal}/cpcl', [App\Http\Controllers\Admin\ProposalController::class, 'storeCpcl'])->name('proposals.cpcl.store');
-        Route::get('/proposals/{proposal}/cpcl/edit', [App\Http\Controllers\Admin\ProposalController::class, 'editCpcl'])->name('proposals.cpcl.edit');
-        Route::patch('/proposals/{proposal}/cpcl', [App\Http\Controllers\Admin\ProposalController::class, 'updateCpcl'])->name('proposals.cpcl.update');
+
         // Manajemen Struktur Organisasi (Pegawai)
         Route::resource('employees', App\Http\Controllers\Admin\EmployeeController::class)->except(['show']);
     });
@@ -142,6 +136,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/proposals/{proposal}/assign-team', [App\Http\Controllers\Kabid\ProposalController::class, 'assignTeam'])->name('proposals.assign-team');
         Route::get('/proposals/{proposal}/survey-assignments/{assignment}/edit', [App\Http\Controllers\Kabid\ProposalController::class, 'editAssignment'])->name('proposals.assignment.edit');
         Route::patch('/proposals/{proposal}/survey-assignments/{assignment}', [App\Http\Controllers\Kabid\ProposalController::class, 'updateAssignment'])->name('proposals.assignment.update');
+
+        // Surat Tugas & Verifikasi CPCL Offline
+        Route::get('/proposals/{proposal}/surat-tugas/cetak', [App\Http\Controllers\Kabid\ProposalController::class, 'cetakSuratTugas'])->name('proposals.cetak-surat-tugas');
+        Route::get('/proposals/{proposal}/form-cpcl/cetak', [App\Http\Controllers\Kabid\ProposalController::class, 'cetakFormCpcl'])->name('proposals.cetak-form-cpcl');
+        Route::get('/proposals/{proposal}/cpcl/create', [App\Http\Controllers\Kabid\ProposalController::class, 'createCpcl'])->name('proposals.cpcl.create');
+        Route::post('/proposals/{proposal}/cpcl', [App\Http\Controllers\Kabid\ProposalController::class, 'storeCpcl'])->name('proposals.cpcl.store');
+        Route::get('/proposals/{proposal}/cpcl/edit', [App\Http\Controllers\Kabid\ProposalController::class, 'editCpcl'])->name('proposals.cpcl.edit');
+        Route::patch('/proposals/{proposal}/cpcl', [App\Http\Controllers\Kabid\ProposalController::class, 'updateCpcl'])->name('proposals.cpcl.update');
 
         Route::post('/proposals/{proposal}/berita-acara/approve', [App\Http\Controllers\Kabid\BeritaAcaraController::class, 'approve'])->name('berita-acara.approve');
 
@@ -180,8 +182,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/bantuan/{program}', [App\Http\Controllers\Farmer\ProposalController::class, 'store'])->name('store');
 
 
-        Route::get('/form', [App\Http\Controllers\Farmer\ProposalController::class, 'form'])->name('form');
-        Route::post('/store-unified', [App\Http\Controllers\Farmer\ProposalController::class, 'storeUnified'])->name('store-unified');
+
 
         // Sukses & Download (shared, bebas waktu)
         Route::get('/{proposal}/success', [App\Http\Controllers\Farmer\ProposalController::class, 'success'])->name('success');
@@ -193,7 +194,6 @@ Route::middleware('auth')->prefix('documents')->name('documents.')->group(functi
     Route::get('/surat-tugas/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSuratTugas'])->name('surat-tugas');
     Route::get('/form-cpcl-blank/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printFormCpcl'])->name('form-cpcl-blank');
     Route::get('/cpcl/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printCpcl'])->name('cpcl');
-    Route::get('/berita-acara/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printBeritaAcara'])->name('berita-acara');
     Route::get('/sk-bantuan/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSKBantuan'])->name('sk-bantuan');
     Route::get('/surat-perjanjian/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSuratPerjanjian'])->name('surat-perjanjian');
 });

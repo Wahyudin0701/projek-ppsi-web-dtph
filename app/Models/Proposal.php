@@ -18,6 +18,7 @@ class Proposal extends Model
         'program_id',
         'alsintan_id',
         'status',
+        'no_surat_pengajuan',
         'submission_date',
         'rencana_durasi_hari',
         'reviewed_at',

@@ -46,8 +46,8 @@ class FarmerProfileController extends Controller
             'alamat' => ['required', 'string'],
             'anggota_nama' => ['required', 'array', 'min:1'],
             'anggota_nama.*' => ['required', 'string', 'max:255'],
-            'anggota_jabatan' => ['required', 'array', 'min:1'],
-            'anggota_jabatan.*' => ['required', 'string', 'max:255'],
+            'anggota_nik' => ['required', 'array', 'min:1'],
+            'anggota_nik.*' => ['required', 'string', 'size:16'],
         ];
 
         $validated = $request->validate($rules);
@@ -82,10 +82,10 @@ class FarmerProfileController extends Controller
         $profile->members()->delete();
         if ($request->has('anggota_nama') && is_array($request->anggota_nama)) {
             foreach ($request->anggota_nama as $index => $namaAnggota) {
-                $jabatanAnggota = $request->anggota_jabatan[$index] ?? null;
+                $nikAnggota = $request->anggota_nik[$index] ?? null;
                 $profile->members()->create([
                     'nama' => $namaAnggota,
-                    'jabatan' => $jabatanAnggota,
+                    'nik' => $nikAnggota,
                 ]);
             }
         }

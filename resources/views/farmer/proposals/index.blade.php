@@ -78,12 +78,12 @@
                                         $color = $statusColors[$proposal->status] ?? 'bg-gray-100 text-gray-700';
                                         $statusLabel = match($proposal->status) {
                                             'pending_verifikasi' => 'Verifikasi',
-                                            'diteruskan_ke_pimpinan'  => 'Pimpinan',
+                                            'diteruskan_ke_pimpinan'  => 'Di Pimpinan',
                                             'didisposisi_kabid'  => 'Di Kabid',
                                             'surat_tugas_terbit' => 'Survei',
                                             'survei_selesai' => 'Survei Selesai',
                                             'menunggu_review_kabid' => 'Review Kabid',
-                                            'menunggu_approval_ba' => 'Keputusan',
+                                            'menunggu_approval_ba' => 'Finalisasi',
                                             'disetujui'          => 'Disetujui',
                                             'ditolak'            => 'Ditolak',
                                             default              => $proposal->status,

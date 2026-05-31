@@ -34,7 +34,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Nama Kelompok -->
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="nama_kelompok" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani</label>
                         <input type="text" name="nama_kelompok" id="nama_kelompok" value="{{ old('nama_kelompok', $profile->nama_kelompok) }}" required
                                class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
@@ -79,7 +79,7 @@
                     </div>
 
                     <!-- Foto KTP Ketua -->
-                    <div>
+                    <div class="md:col-span-2">
                         <label for="foto_ktp" class="block text-sm font-bold text-gray-800 mb-2">
                             Foto KTP Ketua Baru <span class="text-xs text-gray-400 font-normal">(Opsional, maks 5MB, format JPG/PNG)</span>
                         </label>
@@ -100,7 +100,7 @@
                     </div>
 
                     <!-- Anggota Kelompok -->
-                    <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: {{ old('anggota_nama') ? Js::from(collect(old('anggota_nama'))->map(function($nama, $i) { return ['nama' => $nama, 'jabatan' => old('anggota_jabatan.'.$i)]; })->values()->all()) : ($profile->members->count() > 0 ? Js::from($profile->members->map(function($m) { return ['nama' => $m->nama, 'jabatan' => $m->jabatan]; })) : "[{nama: '', jabatan: ''}]") }} }">
+                    <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: {{ old('anggota_nama') ? Js::from(collect(old('anggota_nama'))->map(function($nama, $i) { return ['nama' => $nama, 'nik' => old('anggota_nik.'.$i)]; })->values()->all()) : ($profile->members->count() > 0 ? Js::from($profile->members->map(function($m) { return ['nama' => $m->nama, 'nik' => $m->nik]; })) : "[{nama: '', nik: ''}]") }} }">
                         <label class="block text-sm font-bold text-gray-800 mb-3">Daftar Anggota Kelompok</label>
                         <template x-for="(item, index) in anggota" :key="index">
                             <div class="flex items-start sm:items-center flex-col sm:flex-row gap-3 mb-3">
@@ -110,21 +110,21 @@
                                            placeholder="Nama Anggota">
                                 </div>
                                 <div class="relative group w-full sm:w-1/2 flex items-center gap-3">
-                                    <input type="text" x-bind:name="'anggota_jabatan[' + index + ']'" x-model="item.jabatan" required
-                                           class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
-                                           placeholder="Jabatan (misal: Sekretaris)">
+                                    <input type="text" x-bind:name="'anggota_nik[' + index + ']'" x-model="item.nik" required
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                           placeholder="16 Digit NIK">
                                     <button type="button" @click="anggota.splice(index, 1)" x-show="anggota.length > 1" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                     </button>
                                 </div>
                             </div>
                         </template>
-                        <button type="button" @click="anggota.push({nama: '', jabatan: ''})" class="text-sm font-bold text-[#19A148] flex items-center gap-2 hover:text-[#15883c] transition-colors mt-2">
+                        <button type="button" @click="anggota.push({nama: '', nik: ''})" class="text-sm font-bold text-[#19A148] flex items-center gap-2 hover:text-[#15883c] transition-colors mt-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             Tambah Anggota Lainnya
                         </button>
                         <x-input-error :messages="$errors->get('anggota_nama')" class="mt-2" />
-                        <x-input-error :messages="$errors->get('anggota_jabatan')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('anggota_nik')" class="mt-2" />
                     </div>
 
                     <!-- Grade -->
@@ -183,7 +183,7 @@
                         <label for="kecamatan" class="block text-sm font-bold text-gray-800 mb-2">Kecamatan</label>
                         <select name="kecamatan" id="kecamatan" required
                                 class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                            @foreach(['BAHAR SELATAN', 'BAHAR UTARA', 'JAMBI LUAR KOTA', 'KUMPEH', 'KUMPEH ULU', 'MARO SEBO', 'MESTONG', 'SEKERNAN', 'SUNGAI BAHAR', 'SUNGAI GELAM', 'TAMAN RAJO'] as $kec)
+                            @foreach(['Bahar Selatan', 'Bahar Utara', 'Jambi Luar Kota', 'Kumpeh', 'Kumpeh Ulu', 'Maro Sebo', 'Mestong', 'Sekernan', 'Sungai Bahar', 'Sungai Gelam', 'Taman Rajo'] as $kec)
                                 <option value="{{ $kec }}" {{ old('kecamatan', $profile->kecamatan) == $kec ? 'selected' : '' }}>{{ $kec }}</option>
                             @endforeach
                         </select>

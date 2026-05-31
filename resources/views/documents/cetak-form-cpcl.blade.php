@@ -39,15 +39,15 @@
                     } else if ($angka < 20) {
                         $terbilang = terbilang($angka - 10) . " Belas";
                     } else if ($angka < 100) {
-                        $terbilang = terbilang($angka / 10) . " Puluh" . terbilang($angka % 10);
+                        $terbilang = terbilang($angka / 10) . " Puluh " . terbilang($angka % 10);
                     } else if ($angka < 200) {
-                        $terbilang = " Seratus" . terbilang($angka - 100);
+                        $terbilang = " Seratus " . terbilang($angka - 100);
                     } else if ($angka < 1000) {
-                        $terbilang = terbilang($angka / 100) . " Ratus" . terbilang($angka % 100);
+                        $terbilang = terbilang($angka / 100) . " Ratus " . terbilang($angka % 100);
                     } else if ($angka < 2000) {
-                        $terbilang = " Seribu" . terbilang($angka - 1000);
+                        $terbilang = " Seribu " . terbilang($angka - 1000);
                     } else if ($angka < 1000000) {
-                        $terbilang = terbilang($angka / 1000) . " Ribu" . terbilang($angka % 1000);
+                        $terbilang = terbilang($angka / 1000) . " Ribu " . terbilang($angka % 1000);
                     }
                     return trim($terbilang);
                 }
@@ -68,7 +68,7 @@
         @endphp
 
         <p style="text-indent: 40px; margin-bottom: 10px;">
-            Pada hari {{ $hari }}, Tanggal {{ $tanggal }}, Bulan {{ $bulan }}, Tahun {{ $tahun }}, bertempat di Desa {{ $desa }}, Kecamatan {{ strtoupper($kecamatan) }}, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
+            Pada hari {{ $hari }}, Tanggal {{ $tanggal }}, Bulan {{ $bulan }}, Tahun {{ $tahun }}, bertempat di Desa {{ $desa }}, Kecamatan {{ ucwords(strtolower($kecamatan)) }}, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
         </p>
         
         <table class="info-table">
@@ -82,11 +82,11 @@
             </tr>
             <tr>
                 <td>Kecamatan</td>
-                <td>: {{ !empty($proposal->user->farmerProfile->kecamatan) ? strtoupper($proposal->user->farmerProfile->kecamatan) : '-' }}</td>
+                <td>: {{ !empty($proposal->user->farmerProfile->kecamatan) ? ucwords(strtolower($proposal->user->farmerProfile->kecamatan)) : '-' }}</td>
             </tr>
             <tr>
                 <td>No. Surat Pengajuan</td>
-                <td>: {{ $assignment->no_surat_pengajuan ?? '-' }}</td>
+                <td>: {{ $proposal->no_surat_pengajuan ?? '-' }}</td>
             </tr>
             <tr>
                 <td>No. SK Kelompok Tani</td>

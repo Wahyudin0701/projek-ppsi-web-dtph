@@ -187,7 +187,7 @@ class ProposalController extends Controller
         ]);
 
         return redirect()->route('pimpinan.proposals.show', $proposal)
-            ->with('success', "Proposal berhasil didisposisi ke {$kabid->name}.");
+            ->with('success', "Proposal berhasil didisposisi ke {$kabid->roleLabel}.");
     }
 
     /**
@@ -226,6 +226,7 @@ class ProposalController extends Controller
             'pimpinan_notes' => 'required|string|max:1000',
         ]);
 
+        // Penolakan permanen (Keputusan Akhir)
         $proposal->update([
             'status'         => 'ditolak',
             'decided_at'     => now(),

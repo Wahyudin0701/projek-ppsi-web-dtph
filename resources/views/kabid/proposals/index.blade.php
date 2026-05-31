@@ -45,7 +45,7 @@
                     <select name="status" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all appearance-none bg-white pr-8"
                         style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
                         <option value="">Semua Status</option>
-                        <option value="didisposisi_kabid" {{ request('status') === 'didisposisi_kabid' ? 'selected' : '' }}>Perlu Assign Tim</option>
+                        <option value="didisposisi_kabid" {{ request('status') === 'didisposisi_kabid' ? 'selected' : '' }}>Persiapan Survei</option>
                         <option value="surat_tugas_terbit" {{ request('status') === 'surat_tugas_terbit' ? 'selected' : '' }}>Sedang Survei</option>
                         <option value="survei_selesai" {{ request('status') === 'survei_selesai' ? 'selected' : '' }}>Menunggu Admin</option>
                         <option value="menunggu_approval_ba" {{ request('status') === 'menunggu_approval_ba' ? 'selected' : '' }}>Menunggu Keputusan</option>
@@ -72,8 +72,8 @@
                             @php
                                 $statusConfig = [
                                     'pending_verifikasi'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Verifikasi'],
-                                    'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Pimpinan'],
-                                    'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
+                                    'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
+                                    'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Persiapan Survei'],
                                     'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
                                     'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
                                     'menunggu_review_kabid'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Review Kabid'],
@@ -102,7 +102,7 @@
                                     </p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border {{ $sc['bg'] }} {{ str_replace('bg-', 'border-', explode(' ', $sc['bg'])[0]) }}">
+                                    <span class="inline-flex items-center whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border {{ $sc['bg'] }} {{ str_replace('bg-', 'border-', explode(' ', $sc['bg'])[0]) }}">
                                         {{ $sc['label'] }}
                                     </span>
                                 </td>
@@ -133,29 +133,6 @@
                                                 Form CPCL
                                             </a>
 
-                                        @elseif($proposal->status === 'survei_selesai')
-                                            <span class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-orange-50 text-orange-600 text-xs font-bold rounded-xl border border-orange-100 whitespace-nowrap">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                Menunggu Admin
-                                            </span>
-
-                                        @elseif($proposal->status === 'menunggu_approval_ba')
-                                            <span class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-purple-50 text-purple-600 text-xs font-bold rounded-xl border border-purple-100 whitespace-nowrap">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                Menunggu Keputusan
-                                            </span>
-
-                                        @elseif($proposal->status === 'disetujui')
-                                            <span class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-green-50 text-green-600 text-xs font-bold rounded-xl border border-green-100 whitespace-nowrap">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                Disetujui
-                                            </span>
-
-                                        @elseif($proposal->status === 'ditolak')
-                                            <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-500 text-xs font-bold rounded-xl border border-red-100">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                Ditolak
-                                            </span>
                                         @endif
                                     </div>
                                 </td>

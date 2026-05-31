@@ -72,16 +72,21 @@
                     </div>
 
                     {{-- Detail Pengajuan (Alsintan / Program) --}}
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 p-6 sm:p-8">
-                        <h4 class="font-bold text-gray-900 mb-6 text-lg border-b border-gray-100 pb-3 flex items-center gap-2">
+                    <div class="mb-6">
+                        <h4 class="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
                             @if($proposal->alsintan_id)
                                 Detail Alat yang Dipinjam
                             @else
                                 Detail Program yang Diajukan
                             @endif
                         </h4>
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 p-6 sm:p-8">
                         @if($proposal->alsintan_id)
                             <div class="grid grid-cols-2 gap-y-5 gap-x-4">
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                    <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                                </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Alat</p>
                                     <p class="text-gray-900 font-bold text-base">{{ $proposal->alsintan->name }}</p>
@@ -101,6 +106,10 @@
                             </div>
                         @else
                             <div class="grid grid-cols-2 gap-y-5 gap-x-4">
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">No. Surat Pengajuan</p>
+                                    <p class="text-gray-900 font-bold text-base">{{ $proposal->no_surat_pengajuan ?? '-' }}</p>
+                                </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
                                     <p class="text-gray-900 font-bold text-base">{{ $proposal->program->name }}</p>
@@ -132,6 +141,7 @@
                             </a>
                         </div>
                         @endif
+                    </div>
                     </div>
 
                     {{-- Data Survei Lapangan (CPCL) disembunyikan untuk sisi user --}}
@@ -310,7 +320,7 @@
                                 @elseif($proposal->status === 'menunggu_approval_ba')
                                     <div class="absolute -left-[21px] bg-purple-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                     <div class="pl-4">
-                                        <p class="text-sm font-bold text-purple-700">Menunggu Keputusan Akhir</p>
+                                        <p class="text-sm font-bold text-purple-700">Menunggu Finalisasi</p>
                                         <p class="text-xs text-gray-400">Laporan sudah di meja Pimpinan untuk persetujuan final.</p>
                                     </div>
                                 @elseif($proposal->status === 'survei_selesai')
@@ -321,7 +331,7 @@
                                     </div>
                                 @else
                                     <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
-                                    <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400">Keputusan Akhir</p></div>
+                                    <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400">Finalisasi</p></div>
                                 @endif
                             </div>
                             @endif

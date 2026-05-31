@@ -122,6 +122,11 @@
             <th colspan="3" style="padding-top: 20px; font-weight: bold;">Rincian Pengajuan</th>
         </tr>
         <tr>
+            <th>No. Surat Pengajuan</th>
+            <td class="colon">:</td>
+            <td>{{ $proposal->no_surat_pengajuan ?? '-' }}</td>
+        </tr>
+        <tr>
             <th>Jenis Bantuan</th>
             <td class="colon">:</td>
             <td>

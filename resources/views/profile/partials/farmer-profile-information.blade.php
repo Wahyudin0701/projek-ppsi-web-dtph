@@ -77,8 +77,8 @@
                                     @foreach(auth()->user()->farmerProfile->members as $member)
                                         <li class="text-sm text-gray-900">
                                             {{ $member->nama }}
-                                            @if($member->jabatan)
-                                                <span class="text-xs text-gray-500 ml-1">({{ $member->jabatan }})</span>
+                                            @if($member->nik)
+                                                <span class="text-xs text-gray-500 ml-1">(NIK: {{ $member->nik }})</span>
                                             @endif
                                         </li>
                                     @endforeach

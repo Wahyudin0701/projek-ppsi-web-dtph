@@ -104,6 +104,7 @@ class ProposalController extends Controller
         }
 
         $request->validate([
+            'no_surat_pengajuan'  => 'nullable|string|max:255',
             'rencana_durasi_hari' => 'required|integer|min:1|max:365',
             'file_proposal'       => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
@@ -113,6 +114,7 @@ class ProposalController extends Controller
         $proposal = Proposal::create([
             'user_id'             => $user->id,
             'alsintan_id'         => $alsintan->id,
+            'no_surat_pengajuan'  => $request->no_surat_pengajuan,
             'rencana_durasi_hari' => $request->rencana_durasi_hari,
             'file_proposal'       => $filePath,
             'status'              => 'pending_verifikasi',
@@ -139,24 +141,6 @@ class ProposalController extends Controller
 
         return view('farmer.proposals.bantuan.list', compact('programs', 'closedPrograms'));
     }
-
-    /**
-     * Display the unified proposal submission form (legacy).
-     */
-    public function form()
-    {
-        $alsintans = \App\Models\Alsintan::latest()->get()
-            ->filter(fn($a) => $a->available_stock > 0)
-            ->values();
-        $programs = Program::orderBy('close_date', 'asc')
-            ->get()
-            ->filter(function($p) {
-                return $p->status === 'berjalan';
-            });
-
-        return view('farmer.proposals.unified-create', compact('alsintans', 'programs'));
-    }
-
 
 
     /**
@@ -220,6 +204,7 @@ class ProposalController extends Controller
         }
 
         $request->validate([
+            'no_surat_pengajuan' => 'nullable|string|max:255',
             'rencana_durasi_hari' => 'nullable|integer|min:1|max:365',
             'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
@@ -229,77 +214,12 @@ class ProposalController extends Controller
         $proposal = Proposal::create([
             'user_id' => $user->id,
             'program_id' => $program->id,
+            'no_surat_pengajuan' => $request->no_surat_pengajuan,
             'rencana_durasi_hari' => $request->rencana_durasi_hari,
             'file_proposal' => $filePath,
             'status' => 'pending_verifikasi',
             'submission_date' => now(),
         ]);
-
-        return redirect()->route('farmer.proposals.success', $proposal->id);
-    }
-    /**
-     * Store a newly created unified proposal in storage.
-     */
-    public function storeUnified(Request $request)
-    {
-        $user = Auth::user();
-
-        $request->validate([
-            'kategori_pengajuan' => 'required|in:alsintan,bantuan',
-            'rencana_durasi_hari' => 'nullable|integer|min:1|max:365',
-            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:5120',
-        ]);
-
-        $filePath = $request->file('file_proposal')->store('proposals', 'public');
-
-        if ($request->kategori_pengajuan === 'alsintan') {
-            $request->validate([
-                'alsintan_id' => 'required|exists:alsintans,id',
-                'rencana_durasi_hari' => 'required|integer|min:1|max:365',
-            ]);
-
-            $proposal = Proposal::create([
-                'user_id' => $user->id,
-                'alsintan_id' => $request->alsintan_id,
-                'rencana_durasi_hari' => $request->rencana_durasi_hari,
-                'file_proposal' => $filePath,
-                'status' => 'pending_verifikasi',
-                'submission_date' => now(),
-            ]);
-
-        } else {
-            $request->validate([
-                'program_id' => 'required|exists:programs,id',
-            ]);
-
-            $program = Program::findOrFail($request->program_id);
-
-            if (!$program->is_open) {
-                return back()->with('error', 'Maaf, pendaftaran untuk program ini sudah ditutup.')->withInput();
-            }
-
-            // Check if user already has an active proposal for this TYPE of program
-            $existingProposal = Proposal::where('user_id', $user->id)
-                ->whereHas('program', function ($query) use ($program) {
-                    $query->where('type', $program->type);
-                })
-                ->whereIn('status', ['pending_verifikasi', 'disetujui'])
-                ->first();
-
-            if ($existingProposal) {
-                $typeName = str_replace('_', ' ', $program->type);
-                return back()->with('error', "Anda sudah memiliki pengajuan aktif untuk jenis program {$typeName}. Silakan tunggu proses selesai sebelum mengajukan kembali untuk jenis yang sama.")->withInput();
-            }
-
-            $proposal = Proposal::create([
-                'user_id' => $user->id,
-                'program_id' => $program->id,
-                'rencana_durasi_hari' => $request->rencana_durasi_hari,
-                'file_proposal' => $filePath,
-                'status' => 'pending_verifikasi',
-                'submission_date' => now(),
-            ]);
-        }
 
         return redirect()->route('farmer.proposals.success', $proposal->id);
     }

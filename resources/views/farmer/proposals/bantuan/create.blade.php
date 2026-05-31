@@ -143,6 +143,19 @@
                             </div>
 
                             <div>
+                                <label for="no_surat_pengajuan" class="block text-sm font-bold text-gray-700 mb-2">
+                                    No. Surat Pengajuan Proposal <span class="text-gray-400 font-normal">(Opsional)</span>
+                                </label>
+                                <input type="text" name="no_surat_pengajuan" id="no_surat_pengajuan" value="{{ old('no_surat_pengajuan') }}"
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm @error('no_surat_pengajuan') border-red-400 bg-red-50 @enderror"
+                                    placeholder="Contoh: 123/SP/2026">
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Nomor surat yang tertera pada dokumen proposal Anda.</p>
+                                @error('no_surat_pengajuan')
+                                    <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="rencana_durasi_hari" class="block text-sm font-bold text-gray-700 mb-2">
                                     Rencana Durasi Pemakaian (Hari) <span class="text-gray-400 font-normal ml-1">(Opsional)</span>
                                 </label>
