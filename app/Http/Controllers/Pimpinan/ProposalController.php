@@ -17,32 +17,42 @@ class ProposalController extends Controller
     public function dashboard()
     {
         $statsRaw = Proposal::selectRaw("
-            COUNT(*) as total,
-            SUM(CASE WHEN status = 'diteruskan_ke_pimpinan' THEN 1 ELSE 0 END) as menunggu,
-            SUM(CASE WHEN status = 'didisposisi_kabid' THEN 1 ELSE 0 END) as disposisi,
-            SUM(CASE WHEN status IN ('surat_tugas_terbit', 'survei_selesai', 'menunggu_review_kabid') THEN 1 ELSE 0 END) as survei,
-            SUM(CASE WHEN status = 'menunggu_approval_ba' THEN 1 ELSE 0 END) as menunggu_akhir,
-            SUM(CASE WHEN status = 'disetujui' THEN 1 ELSE 0 END) as disetujui,
-            SUM(CASE WHEN status = 'ditolak' THEN 1 ELSE 0 END) as ditolak
+            SUM(CASE WHEN alsintan_id IS NOT NULL THEN 1 ELSE 0 END) as alsintan_count,
+            SUM(CASE WHEN program_id IS NOT NULL THEN 1 ELSE 0 END) as program_count
         ")->first();
 
+        $totalPoktan = \App\Models\FarmerProfile::where('afiliasi_lembaga', '!=', 'Individu')->count();
+        $totalUserUmum = \App\Models\FarmerProfile::where('afiliasi_lembaga', 'Individu')->count();
+        $totalAlsintan = \App\Models\Alsintan::count();
+        $totalProgram = \App\Models\Program::where('is_open', true)->count();
+
         $stats = [
-            'menunggu'       => (int) ($statsRaw->menunggu ?? 0),
-            'disposisi'      => (int) ($statsRaw->disposisi ?? 0),
-            'survei'         => (int) ($statsRaw->survei ?? 0),
-            'menunggu_akhir' => (int) ($statsRaw->menunggu_akhir ?? 0),
-            'disetujui'      => (int) ($statsRaw->disetujui ?? 0),
-            'ditolak'        => (int) ($statsRaw->ditolak ?? 0),
-            'total'          => (int) ($statsRaw->total ?? 0),
+            'total_poktan'       => $totalPoktan,
+            'total_user'         => $totalUserUmum,
+            'katalog_alsintan'   => $totalAlsintan,
+            'program_aktif'      => $totalProgram,
+            'pengajuan_alsintan' => (int) ($statsRaw->alsintan_count ?? 0),
+            'pengajuan_program'  => (int) ($statsRaw->program_count ?? 0),
         ];
 
+        // Fetch data for chart
+        $chartData = Proposal::select('id', 'submission_date', 'alsintan_id', 'program_id')
+            ->whereNotNull('submission_date')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'date' => $item->submission_date->format('Y-m-d'),
+                    'type' => $item->alsintan_id ? 'alsintan' : 'program'
+                ];
+            });
+
         $pendingProposals = Proposal::with(['user.farmerProfile', 'program', 'alsintan'])
-            ->whereIn('status', ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])
+            ->whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir'])
             ->latest('updated_at')
             ->take(5)
             ->get();
 
-        return view('pimpinan.dashboard', compact('stats', 'pendingProposals'));
+        return view('pimpinan.dashboard', compact('stats', 'chartData', 'pendingProposals'));
     }
 
     /**
@@ -54,12 +64,12 @@ class ProposalController extends Controller
             ->latest('submission_date');
 
         $query->whereIn('status', [
-            'diteruskan_ke_pimpinan', 
-            'didisposisi_kabid', 
-            'surat_tugas_terbit', 
+            'sedang_diverifikasi_pimpinan', 
+            'persiapan_survei', 
+            'sedang_survei', 
             'survei_selesai', 
-            'menunggu_review_kabid',
-            'menunggu_approval_ba'
+            'verifikasi_cpcl',
+            'menunggu_keputusan_akhir'
         ]);
 
         if ($request->filled('type')) {
@@ -83,8 +93,8 @@ class ProposalController extends Controller
 
         $statsRaw = Proposal::selectRaw("
             COUNT(*) as total,
-            SUM(CASE WHEN status = 'diteruskan_ke_pimpinan' THEN 1 ELSE 0 END) as menunggu,
-            SUM(CASE WHEN status = 'menunggu_approval_ba' THEN 1 ELSE 0 END) as menunggu_akhir,
+            SUM(CASE WHEN status = 'sedang_diverifikasi_pimpinan' THEN 1 ELSE 0 END) as menunggu,
+            SUM(CASE WHEN status = 'menunggu_keputusan_akhir' THEN 1 ELSE 0 END) as menunggu_akhir,
             SUM(CASE WHEN status = 'disetujui' THEN 1 ELSE 0 END) as disetujui,
             SUM(CASE WHEN status = 'ditolak' THEN 1 ELSE 0 END) as ditolak
         ")->first();
@@ -157,7 +167,7 @@ class ProposalController extends Controller
      */
     public function dispose(Request $request, Proposal $proposal)
     {
-        if ($proposal->status !== 'diteruskan_ke_pimpinan') {
+        if ($proposal->status !== 'sedang_diverifikasi_pimpinan') {
             return back()->with('error', 'Hanya proposal berstatus "Diteruskan ke Pimpinan" yang dapat didisposisi.');
         }
 
@@ -181,7 +191,7 @@ class ProposalController extends Controller
 
         // Update proposal
         $proposal->update([
-            'status'            => 'didisposisi_kabid',
+            'status'            => 'persiapan_survei',
             'kabid_id'          => $kabid->id,
             'disposition_notes' => $request->disposition_notes,
         ]);
@@ -190,12 +200,14 @@ class ProposalController extends Controller
             ->with('success', "Proposal berhasil didisposisi ke {$kabid->roleLabel}.");
     }
 
+
+
     /**
      * Setujui proposal (keputusan akhir).
      */
     public function approve(Request $request, Proposal $proposal)
     {
-        if (!in_array($proposal->status, ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])) {
+        if (!in_array($proposal->status, ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir'])) {
             return back()->with('error', 'Proposal tidak dapat disetujui pada status ini.');
         }
 
@@ -203,14 +215,21 @@ class ProposalController extends Controller
             'pimpinan_notes' => 'nullable|string|max:1000',
         ]);
 
+        // Auto-generate nomor surat resmi
+        $year = date('Y');
+        $month = date('m');
+        $id = str_pad($proposal->id, 3, '0', STR_PAD_LEFT);
+        $nomor = "SP/{$year}/{$month}/PRP-{$id}";
+
         $proposal->update([
-            'status'         => 'disetujui',
-            'decided_at'     => now(),
-            'pimpinan_notes' => $request->pimpinan_notes,
+            'status'              => 'disetujui',
+            'decided_at'          => now(),
+            'pimpinan_notes'      => $request->pimpinan_notes,
+            'nomor_dokumen_final' => $nomor,
         ]);
 
         return redirect()->route('pimpinan.proposals.show', $proposal)
-            ->with('success', 'Proposal #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah disetujui.');
+            ->with('success', 'Proposal #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah disetujui dan Nomor Surat Resmi (' . $nomor . ') berhasil diterbitkan otomatis.');
     }
 
     /**
@@ -218,7 +237,7 @@ class ProposalController extends Controller
      */
     public function reject(Request $request, Proposal $proposal)
     {
-        if (!in_array($proposal->status, ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])) {
+        if (!in_array($proposal->status, ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir'])) {
             return back()->with('error', 'Proposal tidak dapat ditolak pada status ini.');
         }
 

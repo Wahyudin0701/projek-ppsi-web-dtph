@@ -39,7 +39,7 @@ class BeritaAcaraController extends Controller
             'signed_at' => now(),
         ]);
 
-        $proposal->update(['status' => 'menunggu_approval_ba']);
+        $proposal->update(['status' => 'menunggu_keputusan_akhir']);
 
         return redirect()->route('kabid.proposals.show', $proposal)
             ->with('success', 'Berita Acara berhasil disetujui. Proposal diteruskan ke Pimpinan untuk keputusan akhir.');

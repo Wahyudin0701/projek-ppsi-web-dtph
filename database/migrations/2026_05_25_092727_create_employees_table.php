@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('nip')->nullable();
             $table->string('role');
+            $table->string('bidang')->nullable();
+            $table->string('pangkat_gol')->nullable();
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

@@ -20,10 +20,12 @@ return new class extends Migration
             $table->integer('durasi_sewa_hari')->nullable();
             $table->integer('rencana_durasi_hari')->nullable();
             $table->decimal('target_luas_ha', 8, 2)->nullable();
-            $table->string('status')->default('menunggu'); // Was pending_verifikasi, renamed to 'menunggu'
+            $table->string('status')->default('sedang_diverifikasi_admin'); // Was pending_verifikasi/menunggu
             $table->string('foto_lahan')->nullable();
             $table->string('foto_pemetaan')->nullable();
-            $table->string('lokasi_lahan');
+            $table->string('file_proposal')->nullable();
+            $table->string('no_surat_pengajuan')->nullable();
+            $table->string('nomor_dokumen_final')->nullable();
             $table->timestamp('submission_date')->useCurrent();
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamp('decided_at')->nullable();
@@ -62,6 +64,9 @@ return new class extends Migration
             $table->date('valid_from');
             $table->date('valid_until');
             $table->json('team_members')->nullable();
+            $table->string('surat_pengajuan')->nullable();
+            $table->string('surat_sk')->nullable();
+            $table->boolean('is_approved_by_pimpinan')->default(false);
             $table->timestamps();
         });
 
@@ -91,23 +96,33 @@ return new class extends Migration
             $table->id();
             $table->foreignId('proposal_id')->constrained('proposals')->cascadeOnDelete();
             $table->foreignId('kabid_id')->constrained('users')->cascadeOnDelete();
-            $table->string('nomor_ba')->unique();
-            $table->string('status_rekomendasi');
-            $table->text('catatan_kabid')->nullable();
-            $table->string('file_path')->nullable();
-            $table->boolean('is_approved_by_pimpinan')->default(false);
+            $table->text('content')->nullable();
+            $table->date('survey_date')->nullable();
+            $table->string('location')->nullable();
+            $table->string('recommendation')->nullable();
+            $table->string('attachment')->nullable();
             $table->timestamps();
         });
 
         Schema::create('cpcl_verifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('survey_assignment_id')->constrained('survey_assignments')->cascadeOnDelete();
+            $table->foreignId('surveyor_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('surveyor_name')->nullable();
+            $table->string('surveyor_nip')->nullable();
             $table->decimal('luas_lahan', 8, 2)->nullable();
             $table->string('kondisi_lahan')->nullable();
             $table->boolean('kesesuaian_komoditas')->default(false);
             $table->string('rekomendasi_surveyor')->nullable();
             $table->string('status_kepemilikan')->nullable();
+            $table->json('administrative_checklist')->nullable();
+            $table->json('technical_checklist')->nullable();
             $table->text('catatan')->nullable();
+            $table->string('signature_path')->nullable();
+            $table->string('farmer_signature_path')->nullable();
+            $table->string('farmer_photo_path')->nullable();
+            $table->timestamp('signed_at')->nullable();
+            $table->string('dokumen_fisik_path')->nullable();
             $table->timestamps();
         });
     }

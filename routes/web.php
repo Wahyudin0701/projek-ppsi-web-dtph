@@ -109,10 +109,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/proposals', [App\Http\Controllers\Admin\ProposalController::class, 'index'])->name('proposals.index');
         Route::get('/proposals/{proposal}', [App\Http\Controllers\Admin\ProposalController::class, 'show'])->name('proposals.show');
         Route::patch('/proposals/{proposal}/approve', [App\Http\Controllers\Admin\ProposalController::class, 'approve'])->name('proposals.approve');
+        Route::patch('/proposals/{proposal}/input-nomor', [App\Http\Controllers\Admin\ProposalController::class, 'inputNomor'])->name('proposals.input-nomor');
         Route::delete('/proposals/{proposal}/reject', [App\Http\Controllers\Admin\ProposalController::class, 'reject'])->name('proposals.reject');
         
 
         // Manajemen Struktur Organisasi (Pegawai)
+        Route::post('employees/update-struktur', [App\Http\Controllers\Admin\EmployeeController::class, 'updateStruktur'])->name('employees.update-struktur');
         Route::resource('employees', App\Http\Controllers\Admin\EmployeeController::class)->except(['show']);
     });
 

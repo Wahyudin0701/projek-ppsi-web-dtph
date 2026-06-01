@@ -37,8 +37,17 @@
                     <div>
                         <label for="nama_kelompok" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani</label>
                         <input type="text" name="nama_kelompok" id="nama_kelompok" value="{{ old('nama_kelompok', $profile->nama_kelompok) }}" required
-                               class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm">
                         <x-input-error :messages="$errors->get('nama_kelompok')" class="mt-2" />
+                    </div>
+
+                    <!-- ID Poktan -->
+                    <div>
+                        <label for="id_poktan" class="block text-sm font-bold text-gray-800 mb-2">ID Poktan <span class="text-red-500">*</span></label>
+                        <input type="text" name="id_poktan" id="id_poktan" value="{{ old('id_poktan', $profile->id_poktan) }}" required
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                            placeholder="Masukkan ID Poktan">
+                        <x-input-error :messages="$errors->get('id_poktan')" class="mt-2" />
                     </div>
 
                     <!-- No SK Kelompok -->
@@ -148,21 +157,68 @@
                     </div>
 
                     <!-- Komoditi -->
-                    <div class="md:col-span-2">
+                    @php
+                        $rawKomoditi = old('komoditi', $profile->komoditi ? explode(', ', $profile->komoditi) : []);
+                        $selectedBase = [];
+                        $details = [];
+                        foreach($rawKomoditi as $rk) {
+                            if(preg_match('/^(Sayuran|Buah-buahan|Biofarmaka)\s*\((.*?)\)$/', $rk, $m)) {
+                                $selectedBase[] = $m[1];
+                                $details[$m[1]] = $m[2];
+                            } else {
+                                $selectedBase[] = $rk;
+                            }
+                        }
+                    @endphp
+                    <div class="md:col-span-2" x-data="{
+                        selectedKomoditi: {{ json_encode($selectedBase) }},
+                        komoditiDetails: {{ json_encode((object)$details) }}
+                    }">
                         <label class="block text-sm font-bold text-gray-800 mb-3">Pilih Komoditi</label>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            @php
-                                $selectedKomoditi = old('komoditi', $profile->komoditi ? explode(', ', $profile->komoditi) : []);
-                            @endphp
-                            @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung', 'Cabai', 'Sayuran', 'Kelapa Sawit'] as $kom)
-                                <label class="flex items-center space-x-3 cursor-pointer group">
-                                    <input type="checkbox" name="komoditi[]" value="{{ $kom }}" 
-                                           {{ in_array($kom, $selectedKomoditi) ? 'checked' : '' }}
-                                           class="w-4 h-4 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] transition-colors cursor-pointer">
-                                    <span class="text-sm text-gray-700 group-hover:text-gray-900">{{ $kom }}</span>
-                                </label>
-                            @endforeach
+                        
+                        <!-- Tanaman Pangan -->
+                        <div class="mb-5">
+                            <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Tanaman Pangan</p>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung Hibrida', 'Kedelai', 'Kacang Tanah'] as $kom)
+                                    <div class="flex flex-col space-y-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer group">
+                                            <input type="checkbox" value="{{ $kom }}" 
+                                                   x-model="selectedKomoditi"
+                                                   class="w-4 h-4 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] transition-colors cursor-pointer">
+                                            <span class="text-sm text-gray-700 group-hover:text-gray-900">{{ $kom }}</span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
+
+                        <!-- Holtikultura -->
+                        <div>
+                            <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Holtikultura</p>
+                            <div class="flex flex-col space-y-3">
+                                @foreach([
+                                    'Sayuran' => 'Contoh: brokoli, kangkung', 
+                                    'Buah-buahan' => 'Contoh: mangga, jeruk', 
+                                    'Biofarmaka' => 'Contoh: jahe, kunyit'
+                                ] as $kom => $placeholder)
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                        <label class="flex items-center space-x-3 cursor-pointer group sm:w-1/3">
+                                            <input type="checkbox" value="{{ $kom }}" 
+                                                   x-model="selectedKomoditi"
+                                                   class="w-4 h-4 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] transition-colors cursor-pointer">
+                                            <span class="text-sm text-gray-700 group-hover:text-gray-900">{{ $kom }}</span>
+                                        </label>
+                                        <div x-show="selectedKomoditi.includes('{{ $kom }}')" x-transition class="flex-1">
+                                            <input type="text" x-model="komoditiDetails['{{ $kom }}']" placeholder="{{ $placeholder }}" class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148]">
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <template x-for="k in selectedKomoditi" :key="k">
+                            <input type="hidden" name="komoditi[]" :value="komoditiDetails[k] && komoditiDetails[k].trim() !== '' ? k + ' (' + komoditiDetails[k].trim() + ')' : k">
+                        </template>
                         <x-input-error :messages="$errors->get('komoditi')" class="mt-2" />
                     </div>
 
@@ -171,9 +227,16 @@
                         <label for="komoditi_utama" class="block text-sm font-bold text-gray-800 mb-2">Komoditi Utama</label>
                         <select name="komoditi_utama" id="komoditi_utama" required
                                 class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                            @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung', 'Cabai', 'Sayuran', 'Kelapa Sawit'] as $kom)
-                                <option value="{{ $kom }}" {{ old('komoditi_utama', $profile->komoditi_utama) == $kom ? 'selected' : '' }}>{{ $kom }}</option>
-                            @endforeach
+                            <optgroup label="Tanaman Pangan">
+                                @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung Hibrida', 'Kedelai', 'Kacang Tanah'] as $kom)
+                                    <option value="{{ $kom }}" {{ old('komoditi_utama', $profile->komoditi_utama) == $kom ? 'selected' : '' }}>{{ $kom }}</option>
+                                @endforeach
+                            </optgroup>
+                            <optgroup label="Holtikultura">
+                                @foreach(['Sayuran', 'Buah-buahan', 'Biofarmaka'] as $kom)
+                                    <option value="{{ $kom }}" {{ old('komoditi_utama', $profile->komoditi_utama) == $kom ? 'selected' : '' }}>{{ $kom }}</option>
+                                @endforeach
+                            </optgroup>
                         </select>
                         <x-input-error :messages="$errors->get('komoditi_utama')" class="mt-2" />
                     </div>

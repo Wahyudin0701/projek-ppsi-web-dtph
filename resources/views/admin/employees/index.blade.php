@@ -1,10 +1,10 @@
 <x-app-layout>
-    <x-slot name="header">Struktur Organisasi (Pegawai)</x-slot>
+    <x-slot name="header">Kelola Pegawai</x-slot>
 
     <div class="max-w-7xl mx-auto space-y-6">
 
         @if(session('success'))
-        <div class="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-sm font-medium">
+        <div class="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-sm font-medium mb-6">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
@@ -12,12 +12,87 @@
         </div>
         @endif
 
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            {{-- Header & Actions --}}
+        {{-- Section 1: Pejabat Struktural --}}
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
             <div class="p-6 md:p-8 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-900">Data Pegawai</h3>
-                    <p class="text-sm text-gray-500 mt-1">Kelola data pegawai yang tampil di Struktur Organisasi dan dapat dipilih sebagai Tim Survei.</p>
+                    <h3 class="text-xl font-bold text-gray-900">Form Pejabat Struktural</h3>
+                    <p class="text-sm text-gray-500 mt-1">Kelola data pejabat struktural yang bertugas di dinas.</p>
+                </div>
+            </div>
+            
+            <div class="p-0">
+                <form action="{{ route('admin.employees.update-struktur') }}" method="POST">
+                    @csrf
+                    
+                    <div class="border-t border-gray-100">
+                        <!-- Desktop Header -->
+                        <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50/80 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <div class="col-span-4 lg:col-span-3">Jabatan</div>
+                            <div class="col-span-8 lg:col-span-9 grid grid-cols-12 gap-4">
+                                <div class="col-span-5">Nama Lengkap</div>
+                                <div class="col-span-4">NIP</div>
+                                <div class="col-span-3">Pangkat/Gol</div>
+                            </div>
+                        </div>
+
+                        <!-- Rows -->
+                        <div class="divide-y divide-gray-50">
+                            @foreach($structuralRolesList as $index => $role)
+                            @php
+                                $emp = $pejabatStruktural->get($role);
+                            @endphp
+                            <div class="p-6 md:px-6 md:py-4 hover:bg-blue-50/30 transition-colors group">
+                                <input type="hidden" name="struktur[{{ $index }}][role]" value="{{ $role }}">
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:items-start">
+                                    <!-- Jabatan Label -->
+                                    <div class="md:col-span-4 lg:col-span-3 md:pt-2.5">
+                                        <p class="font-bold text-gray-900 text-sm flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500/40 group-hover:bg-blue-500 transition-colors hidden md:block"></span>
+                                            {{ $role }}
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Inputs -->
+                                    <div class="md:col-span-8 lg:col-span-9 grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                                        <div class="sm:col-span-5">
+                                            <label class="block text-xs font-bold text-gray-500 mb-1 md:hidden">Nama Lengkap</label>
+                                            <input type="text" name="struktur[{{ $index }}][name]" value="{{ $emp?->name !== 'Belum Diisi' ? $emp?->name : '' }}" placeholder="Nama Lengkap..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all">
+                                        </div>
+                                        
+                                        <div class="sm:col-span-4">
+                                            <label class="block text-xs font-bold text-gray-500 mb-1 md:hidden">NIP</label>
+                                            <input type="text" name="struktur[{{ $index }}][nip]" value="{{ $emp?->nip }}" placeholder="NIP..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all font-mono">
+                                        </div>
+                                        
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-xs font-bold text-gray-500 mb-1 md:hidden">Pangkat/Gol</label>
+                                            <input type="text" name="struktur[{{ $index }}][pangkat_gol]" value="{{ $emp?->pangkat_gol }}" placeholder="Pangkat/Gol..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 md:p-8 bg-gray-50/50 border-t border-gray-100 flex justify-end rounded-b-3xl">
+                        <button type="submit" class="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-sm hover:bg-blue-700 hover:shadow transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- Section 2: Pegawai Fungsional & Lainnya --}}
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div class="p-6 md:p-8 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900">Pegawai Fungsional & Umum</h3>
+                    <p class="text-sm text-gray-500 mt-1">Kelola data pegawai fungsional dan staf pelaksana.</p>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 shrink-0">
@@ -32,7 +107,7 @@
                     <a href="{{ route('admin.employees.create') }}"
                        class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm self-start sm:self-auto shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                        Tambah Pegawai
+                        Tambah Pegawai Lainnya
                     </a>
                 </div>
             </div>
@@ -43,8 +118,9 @@
                     <thead>
                         <tr class="bg-gray-50/50">
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Nama Lengkap</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">NIP</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">NIP & Golongan</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Jabatan</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Bidang</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -55,12 +131,24 @@
                                     <p class="font-bold text-gray-900 text-sm">{{ $employee->name }}</p>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <p class="text-sm text-gray-600 font-mono">{{ $employee->nip ?? '-' }}</p>
+                                    <p class="text-sm text-gray-600 font-mono mb-1">{{ $employee->nip ?? '-' }}</p>
+                                    @if($employee->pangkat_gol)
+                                    <p class="text-[10px] uppercase font-bold text-gray-400">{{ $employee->pangkat_gol }}</p>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
                                         {{ $employee->role }}
                                     </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if($employee->bidang)
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                            {{ $employee->bidang }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-gray-400 font-medium italic">-</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
@@ -104,16 +192,16 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-16 text-center">
+                                <td colspan="5" class="px-6 py-16 text-center">
                                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                     </div>
-                                    <h3 class="text-sm font-bold text-gray-900">Belum Ada Pegawai</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Mulai tambahkan data pegawai untuk struktur organisasi.</p>
+                                    <h3 class="text-sm font-bold text-gray-900">Belum Ada Pegawai Fungsional</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Mulai tambahkan data pegawai fungsional/umum.</p>
                                     <a href="{{ route('admin.employees.create') }}"
                                        class="mt-4 inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                                        Tambah Pegawai
+                                        Tambah Pegawai Lainnya
                                     </a>
                                 </td>
                             </tr>

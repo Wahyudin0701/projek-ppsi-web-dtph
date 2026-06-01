@@ -35,7 +35,7 @@ class ProposalController extends Controller
         // IDs alsintan yang sudah memiliki proposal aktif (belum selesai diverifikasi)
         $activeAlsintanIds = Proposal::where('user_id', Auth::id())
             ->whereNotNull('alsintan_id')
-            ->whereIn('status', ['pending_verifikasi', 'disetujui'])
+            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui'])
             ->pluck('alsintan_id')
             ->toArray();
 
@@ -70,7 +70,7 @@ class ProposalController extends Controller
         // Cek apakah user sudah punya proposal aktif untuk alat ini
         $existingProposal = Proposal::where('user_id', Auth::id())
             ->where('alsintan_id', $alsintan->id)
-            ->whereIn('status', ['pending_verifikasi', 'disetujui'])
+            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui'])
             ->first();
 
         if ($existingProposal) {
@@ -95,7 +95,7 @@ class ProposalController extends Controller
         // Blokir jika sudah ada proposal aktif untuk alat yang sama
         $existingProposal = Proposal::where('user_id', $user->id)
             ->where('alsintan_id', $alsintan->id)
-            ->whereIn('status', ['pending_verifikasi', 'disetujui'])
+            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui'])
             ->first();
 
         if ($existingProposal) {
@@ -105,7 +105,6 @@ class ProposalController extends Controller
 
         $request->validate([
             'no_surat_pengajuan'  => 'nullable|string|max:255',
-            'rencana_durasi_hari' => 'required|integer|min:1|max:365',
             'file_proposal'       => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
@@ -115,9 +114,8 @@ class ProposalController extends Controller
             'user_id'             => $user->id,
             'alsintan_id'         => $alsintan->id,
             'no_surat_pengajuan'  => $request->no_surat_pengajuan,
-            'rencana_durasi_hari' => $request->rencana_durasi_hari,
             'file_proposal'       => $filePath,
-            'status'              => 'pending_verifikasi',
+            'status'              => 'sedang_diverifikasi_admin',
             'submission_date'     => now(),
         ]);
 
@@ -195,7 +193,7 @@ class ProposalController extends Controller
             ->whereHas('program', function ($query) use ($program) {
                 $query->where('type', $program->type);
             })
-            ->whereIn('status', ['pending_verifikasi', 'disetujui']) // Assuming 'disetujui' means it's still "active"
+            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui']) // Assuming 'disetujui' means it's still "active"
             ->first();
 
         if ($existingProposal) {
@@ -205,7 +203,6 @@ class ProposalController extends Controller
 
         $request->validate([
             'no_surat_pengajuan' => 'nullable|string|max:255',
-            'rencana_durasi_hari' => 'nullable|integer|min:1|max:365',
             'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
@@ -215,9 +212,8 @@ class ProposalController extends Controller
             'user_id' => $user->id,
             'program_id' => $program->id,
             'no_surat_pengajuan' => $request->no_surat_pengajuan,
-            'rencana_durasi_hari' => $request->rencana_durasi_hari,
             'file_proposal' => $filePath,
-            'status' => 'pending_verifikasi',
+            'status' => 'sedang_diverifikasi_admin',
             'submission_date' => now(),
         ]);
 

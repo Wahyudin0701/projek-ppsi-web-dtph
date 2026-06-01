@@ -33,12 +33,12 @@
                     <select name="status" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none bg-white pr-8"
                         style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
                         <option value="">Semua Status</option>
-                        <option value="pending_verifikasi" {{ request('status') === 'pending_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
-                        <option value="diteruskan_ke_pimpinan" {{ request('status') === 'diteruskan_ke_pimpinan' ? 'selected' : '' }}>Menunggu Pimpinan</option>
-                        <option value="didisposisi_kabid" {{ request('status') === 'didisposisi_kabid' ? 'selected' : '' }}>Disposisi ke Kabid</option>
-                        <option value="surat_tugas_terbit" {{ request('status') === 'surat_tugas_terbit' ? 'selected' : '' }}>Sedang Survei</option>
+                        <option value="sedang_diverifikasi_admin" {{ request('status') === 'sedang_diverifikasi_admin' ? 'selected' : '' }}>Sedang Diverifikasi Admin</option>
+                        <option value="sedang_diverifikasi_pimpinan" {{ request('status') === 'sedang_diverifikasi_pimpinan' ? 'selected' : '' }}>Sedang Diverifikasi Pimpinan</option>
+                        <option value="persiapan_survei" {{ request('status') === 'persiapan_survei' ? 'selected' : '' }}>Persiapan Survei</option>
+                        <option value="sedang_survei" {{ request('status') === 'sedang_survei' ? 'selected' : '' }}>Sedang Survei</option>
                         <option value="survei_selesai" {{ request('status') === 'survei_selesai' ? 'selected' : '' }}>Survei Selesai</option>
-                        <option value="menunggu_approval_ba" {{ request('status') === 'menunggu_approval_ba' ? 'selected' : '' }}>Menunggu Keputusan Akhir</option>
+                        <option value="menunggu_keputusan_akhir" {{ request('status') === 'menunggu_keputusan_akhir' ? 'selected' : '' }}>Menunggu Keputusan Akhir</option>
                         <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                         <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
@@ -68,13 +68,13 @@
                         @forelse($proposals as $proposal)
                                 @php
                                     $statusConfig = [
-                                        'pending_verifikasi'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Verifikasi'],
-                                        'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
-                                        'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
-                                        'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
+                                        'sedang_diverifikasi_admin'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Di Admin'],
+                                        'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
+                                        'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
+                                        'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
                                         'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
-                                        'menunggu_review_kabid'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Review Kabid'],
-                                        'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
+                                        'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
+                                        'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
                                         'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],
                                         'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
                                     ];
@@ -107,7 +107,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    @if($proposal->status === 'pending_verifikasi')
+                                    @if($proposal->status === 'sedang_diverifikasi_admin')
                                         <a href="{{ route('admin.proposals.show', $proposal) }}"
                                            class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>

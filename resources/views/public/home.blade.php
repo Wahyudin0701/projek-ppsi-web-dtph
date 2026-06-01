@@ -269,7 +269,7 @@
                         @if($item->image)
                         <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         @else
-                        <img src="https://picsum.photos/seed/{{ $item->id }}/800/500" alt="{{ $item->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/Lambang_Kabupaten_Muaro_Jambi.png') }}" alt="{{ $item->name }}" class="w-24 h-auto object-contain opacity-30 grayscale group-hover:scale-110 transition-transform duration-700">
                         @endif
                         <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-0"></div>
 

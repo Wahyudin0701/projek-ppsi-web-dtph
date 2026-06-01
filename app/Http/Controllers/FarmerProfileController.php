@@ -31,6 +31,7 @@ class FarmerProfileController extends Controller
 
         $rules = [
             'nama_kelompok' => ['required', 'string', 'max:255'],
+            'id_poktan' => ['required', 'string', 'max:255'],
             'no_sk' => ['nullable', 'string', 'max:255'],
             'file_sk' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
             'ketua' => ['required', 'string', 'max:255'],
@@ -40,8 +41,8 @@ class FarmerProfileController extends Controller
             'grade' => ['required', 'string', 'in:Pemula,Madya,Utama'],
             'luas_lahan' => ['required', 'numeric', 'min:0'],
             'komoditi' => ['required', 'array', 'min:1'],
-            'komoditi.*' => ['string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
-            'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
+            'komoditi.*' => ['string', 'max:255'],
+            'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung Hibrida,Kedelai,Kacang Tanah,Sayuran,Buah-buahan,Biofarmaka'],
             'kecamatan' => ['required', 'string', 'max:255'],
             'alamat' => ['required', 'string'],
             'anggota_nama' => ['required', 'array', 'min:1'],

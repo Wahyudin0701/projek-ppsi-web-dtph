@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Tambah Data Pegawai</x-slot>
 
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
         <div class="flex items-center justify-between mb-2">
             <div>
                 <h2 class="text-2xl font-extrabold text-gray-900">Tambah Pegawai Baru</h2>
@@ -13,23 +13,7 @@
             </a>
         </div>
 
-        @php
-            $standardRoles = [
-                'Kepala Dinas', 
-                'Sekretaris', 
-                'Kasubbag Umum Kepegawaian', 
-                'Fungsional Perencanaan', 
-                'Fungsional Analis Keuangan Pusat dan Daerah', 
-                'Kepala Bidang', 
-                'Kepala UPTD Balai Benih Utama Arang Arang',
-                'Fungsional Pengawas Mutu Hasil Pertanian', 
-                'Fungsional Umum', 
-                'Penyuluh Pertanian'
-            ];
-            $oldRole = old('role');
-            $isCustomRole = !empty($oldRole) && !in_array($oldRole, $standardRoles);
-            $initialSelectedRole = $isCustomRole ? 'Lainnya' : $oldRole;
-        @endphp
+
 
         <form action="{{ route('admin.employees.store') }}" method="POST" enctype="multipart/form-data"
               class="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 space-y-6">
@@ -111,33 +95,37 @@
                     @error('nip')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- Jabatan --}}
-                <div x-data="{ customRole: {{ $isCustomRole ? 'true' : 'false' }}, selectedRole: '{{ $initialSelectedRole }}', typedRole: '{{ $isCustomRole ? $oldRole : '' }}' }">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Jabatan *</label>
-                    
-                    <select x-show="!customRole" name="role_select" x-model="selectedRole" @change="if(selectedRole === 'Lainnya') { customRole = true; }"
-                            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 mb-2">
-                        <option value="">-- Pilih Jabatan --</option>
-                        @foreach($standardRoles as $roleOption)
-                            <option value="{{ $roleOption }}">{{ $roleOption }}</option>
-                        @endforeach
-                        <option value="Lainnya">Lainnya (Ketik Manual)...</option>
-                    </select>
-
-                    <div x-show="customRole" style="display: none;" class="flex gap-2">
-                        <input type="text" x-model="typedRole" x-bind:required="customRole" x-bind:disabled="!customRole" placeholder="Ketik jabatan mandiri..."
-                               class="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('role') border-red-400 @enderror">
-                        <button type="button" @click="customRole = false; selectedRole = ''; typedRole = '';" class="p-3 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl border border-gray-200 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-
-                    <!-- Hidden input to submit the actual role value -->
-                    <input type="hidden" name="role" :value="customRole ? typedRole : selectedRole">
-                    
-                    @error('role')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                {{-- Pangkat/Golongan --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Pangkat/Golongan <span class="normal-case font-normal text-gray-400">(Opsional)</span></label>
+                    <input type="text" name="pangkat_gol" value="{{ old('pangkat_gol') }}" placeholder="Misal: Penata TK.I / III d"
+                           class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('pangkat_gol') border-red-400 @enderror">
+                    @error('pangkat_gol')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
-            </div>
+
+                {{-- Jabatan --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Jabatan *</label>
+                        <input type="text" name="role" value="{{ old('role') }}" required placeholder="Misal: Penyuluh Pertanian"
+                               class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('role') border-red-400 @enderror">
+                        @error('role')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    
+                    {{-- Bidang --}}
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Bidang <span class="normal-case font-normal text-gray-400">(Penempatan)</span></label>
+                        <select name="bidang" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('bidang') border-red-400 @enderror">
+                            <option value="">-- Pilih Bidang (Opsional) --</option>
+                            <option value="Tanaman Pangan" {{ old('bidang') == 'Tanaman Pangan' ? 'selected' : '' }}>Tanaman Pangan</option>
+                            <option value="Hortikultura" {{ old('bidang') == 'Hortikultura' ? 'selected' : '' }}>Hortikultura</option>
+                            <option value="Penyuluhan" {{ old('bidang') == 'Penyuluhan' ? 'selected' : '' }}>Penyuluhan</option>
+                            <option value="PSP" {{ old('bidang') == 'PSP' ? 'selected' : '' }}>PSP</option>
+                            <option value="Umum" {{ old('bidang') == 'Umum' ? 'selected' : '' }}>Umum / Lainnya</option>
+                        </select>
+                        @error('bidang')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
 
             <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
                 <a href="{{ route('admin.employees.index') }}" class="flex-1 text-center py-3.5 rounded-2xl border border-gray-200 font-bold text-sm text-gray-600 hover:bg-gray-50 transition-all order-2 sm:order-1">

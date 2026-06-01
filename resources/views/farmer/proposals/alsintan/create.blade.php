@@ -83,7 +83,7 @@
 
             {{-- Right Column: Form --}}
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 sm:p-10" x-data="{ showConfirm: false, agreed: false, durasi: '{{ old('rencana_durasi_hari', '') }}' }">
+                <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 sm:p-10" x-data="{ showConfirm: false, agreed: false }">
                     <h3 class="text-2xl font-black text-gray-900 mb-8">Formulir Pengajuan</h3>
 
                     <form id="proposalForm" x-ref="proposalForm" action="{{ route('farmer.proposals.alsintan.store', $alsintan->id) }}" method="POST" enctype="multipart/form-data" @submit.prevent="showConfirm = true">
@@ -115,22 +115,7 @@
                                 @enderror
                             </div>
 
-                            <div>
-                                <label for="rencana_durasi_hari" class="block text-sm font-bold text-gray-700 mb-2">
-                                    Rencana Durasi Pemakaian (Hari) <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative max-w-sm">
-                                    <input type="number" name="rencana_durasi_hari" id="rencana_durasi_hari" min="1" max="365" required x-model="durasi"
-                                        class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-5 pr-16 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm @error('rencana_durasi_hari') border-red-400 bg-red-50 @enderror"
-                                        placeholder="Misal: 7">
-                                    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                                        <span class="text-sm font-bold text-gray-400">Hari</span>
-                                    </div>
-                                </div>
-                                @error('rencana_durasi_hari')
-                                    <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
-                                @enderror
-                            </div>
+
                         </div>
 
                         <div class="mt-10 p-5 bg-[#19A148]/5 rounded-2xl border border-[#19A148]/10 flex items-start gap-4">
@@ -191,10 +176,7 @@
                                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Alat Dipinjam</span>
                                                 <span class="font-bold text-gray-900">{{ $alsintan->name }}</span>
                                             </div>
-                                            <div class="p-5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-                                                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Durasi</span>
-                                                <span class="font-bold text-[#19A148] text-lg"><span x-text="durasi || '-'"></span> Hari</span>
-                                            </div>
+
                                             <p class="text-sm text-gray-500 leading-relaxed text-center mt-6">
                                                 Setelah dikirim, proposal Anda akan masuk ke tahap verifikasi oleh Admin DTPH.
                                             </p>

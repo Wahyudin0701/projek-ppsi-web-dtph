@@ -24,14 +24,14 @@ class ProposalController extends Controller
 
         $stats = [
             'total'           => $allProposals->count(),
-            'menunggu_survei' => $allProposals->whereIn('status', ['didisposisi_kabid'])->count(),
-            'dalam_survei'    => $allProposals->where('status', 'surat_tugas_terbit')->count(),
-            'survei_selesai'  => $allProposals->whereIn('status', ['survei_selesai', 'menunggu_review_kabid'])->count(),
-            'selesai'         => $allProposals->whereIn('status', ['menunggu_approval_ba', 'disetujui', 'ditolak'])->count(),
+            'menunggu_survei' => $allProposals->whereIn('status', ['persiapan_survei'])->count(),
+            'dalam_survei'    => $allProposals->where('status', 'sedang_survei')->count(),
+            'survei_selesai'  => $allProposals->whereIn('status', ['survei_selesai', 'verifikasi_cpcl'])->count(),
+            'selesai'         => $allProposals->whereIn('status', ['menunggu_keputusan_akhir', 'disetujui', 'ditolak'])->count(),
         ];
 
         $pendingAction = Proposal::where('kabid_id', $kabid->id)
-            ->whereIn('status', ['didisposisi_kabid', 'survei_selesai', 'menunggu_review_kabid'])
+            ->whereIn('status', ['persiapan_survei', 'survei_selesai', 'verifikasi_cpcl'])
             ->with(['user.farmerProfile', 'program', 'alsintan'])
             ->latest('updated_at')
             ->take(5)
@@ -100,13 +100,28 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if ($proposal->status !== 'didisposisi_kabid') {
+        if ($proposal->status !== 'persiapan_survei') {
             return redirect()->route('kabid.proposals.show', $proposal)
                 ->with('error', 'Proposal tidak dalam status disposisi untuk pembentukan tim survei.');
         }
 
         $proposal->load(['user.farmerProfile', 'program', 'alsintan']);
-        $employees = \App\Models\Employee::all();
+        
+        // Filter employees based on logged in Kabid's role
+        $userRole = auth()->user()->role;
+        $targetBidang = null;
+        
+        if ($userRole === 'kabid_tp') {
+            $targetBidang = 'Tanaman Pangan';
+        } elseif ($userRole === 'kabid_hortikultura') {
+            $targetBidang = 'Hortikultura';
+        } elseif ($userRole === 'kabid_psp') {
+            $targetBidang = 'PSP';
+        }
+        
+        $employees = \App\Models\Employee::when($targetBidang, function($query) use ($targetBidang) {
+            $query->where('bidang', $targetBidang);
+        })->get();
 
         return view('kabid.proposals.assign-team', compact('proposal', 'employees'));
     }
@@ -118,7 +133,7 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if ($proposal->status !== 'didisposisi_kabid') {
+        if ($proposal->status !== 'persiapan_survei') {
             return back()->with('error', 'Proposal tidak dalam status disposisi.');
         }
 
@@ -139,21 +154,14 @@ class ProposalController extends Controller
             'valid_from'   => $request->valid_from,
             'valid_until'  => $request->valid_until,
             'team_members' => $request->team_members,
+            'is_approved_by_pimpinan' => true, // Tidak perlu TTE lagi, langsung anggap disetujui untuk lanjut
         ]);
 
-        // Generate TTE QR Code (Signature) for Kabid
-        \App\Models\DocumentSignature::create([
-            'uuid' => \Illuminate\Support\Str::uuid(),
-            'document_type' => 'surat_tugas',
-            'document_id' => $assignment->id,
-            'signed_by' => auth()->id(),
-            'signed_at' => now(),
-        ]);
-
-        $proposal->update(['status' => 'surat_tugas_terbit']);
+        // Karena TTE ditiadakan dan tanda tangan manual, status langsung diubah ke sedang_survei
+        $proposal->update(['status' => 'sedang_survei']);
 
         return redirect()->route('kabid.proposals.show', $proposal)
-            ->with('success', 'Tim survei berhasil dibentuk dan Surat Tugas telah diterbitkan.');
+            ->with('success', 'Tim survei berhasil dibentuk. Silakan cetak Surat Tugas dan mintakan tanda tangan basah kepada Kepala Dinas.');
     }
 
     /**
@@ -168,7 +176,20 @@ class ProposalController extends Controller
         }
 
         $proposal->load(['user.farmerProfile', 'program', 'alsintan']);
-        $employees = \App\Models\Employee::all();
+        $userRole = auth()->user()->role;
+        $targetBidang = null;
+        
+        if ($userRole === 'kabid_tp') {
+            $targetBidang = 'Tanaman Pangan';
+        } elseif ($userRole === 'kabid_hortikultura') {
+            $targetBidang = 'Hortikultura';
+        } elseif ($userRole === 'kabid_psp') {
+            $targetBidang = 'PSP';
+        }
+        
+        $employees = \App\Models\Employee::when($targetBidang, function($query) use ($targetBidang) {
+            $query->where('bidang', $targetBidang);
+        })->get();
 
         return view('kabid.proposals.edit-assignment', compact('proposal', 'assignment', 'employees'));
     }
@@ -241,14 +262,10 @@ class ProposalController extends Controller
         $assignment = $proposal->surveyAssignments->last();
         if (!$assignment) abort(404, 'Data surat tugas tidak ditemukan.');
 
-        $signature = \App\Models\DocumentSignature::with('signer')
-            ->where('document_type', 'surat_tugas')
-            ->where('document_id', $assignment->id)
-            ->first();
         $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
 
         // Update the view path to kabid
-        $pdf = Pdf::loadView('kabid.proposals.cetak-surat-tugas', compact('proposal', 'assignment', 'kepalaDinas', 'signature'));
+        $pdf = Pdf::loadView('kabid.proposals.cetak-surat-tugas', compact('proposal', 'assignment', 'kepalaDinas'));
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Surat_Tugas_Survei_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
@@ -260,7 +277,7 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if (!in_array($proposal->status, ['surat_tugas_terbit', 'survei_selesai', 'menunggu_review_kabid', 'menunggu_approval_ba', 'disetujui'])) {
+        if (!in_array($proposal->status, ['sedang_survei', 'survei_selesai', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'])) {
             abort(403, 'Form CPCL belum tersedia.');
         }
 
@@ -280,7 +297,7 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if ($proposal->status !== 'surat_tugas_terbit') {
+        if ($proposal->status !== 'sedang_survei') {
             return back()->with('error', 'Hanya proposal berstatus "Sedang Survei" yang dapat diinput CPCL-nya.');
         }
 
@@ -294,7 +311,7 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if ($proposal->status !== 'surat_tugas_terbit') {
+        if ($proposal->status !== 'sedang_survei') {
             return back()->with('error', 'Hanya proposal berstatus "Sedang Survei" yang dapat diinput CPCL-nya.');
         }
 
@@ -407,10 +424,10 @@ class ProposalController extends Controller
         ]);
 
         // Update status ke menunggu_review_kabid
-        $proposal->update(['status' => 'menunggu_review_kabid']);
+        $proposal->update(['status' => 'verifikasi_cpcl']);
 
         return redirect()->route('kabid.proposals.show', $proposal)
-            ->with('success', 'Data Hasil Verifikasi CPCL dan Berita Acara berhasil disimpan. Menunggu approval Kabid.');
+            ->with('success', 'Data Hasil Verifikasi CPCL dan Berita Acara berhasil disimpan. Anda sekarang dapat meneruskannya ke Pimpinan.');
     }
 
     /**
@@ -420,7 +437,7 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if (in_array($proposal->status, ['menunggu_approval_ba', 'disetujui', 'ditolak'])) {
+        if (in_array($proposal->status, ['menunggu_keputusan_akhir', 'disetujui', 'ditolak'])) {
             abort(403, 'Data CPCL tidak dapat diubah lagi karena proposal sudah diteruskan ke Pimpinan atau sudah memiliki keputusan akhir.');
         }
 
@@ -441,7 +458,7 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if (in_array($proposal->status, ['menunggu_approval_ba', 'disetujui', 'ditolak'])) {
+        if (in_array($proposal->status, ['menunggu_keputusan_akhir', 'disetujui', 'ditolak'])) {
             abort(403, 'Data CPCL tidak dapat diubah lagi karena proposal sudah diteruskan ke Pimpinan atau sudah memiliki keputusan akhir.');
         }
 

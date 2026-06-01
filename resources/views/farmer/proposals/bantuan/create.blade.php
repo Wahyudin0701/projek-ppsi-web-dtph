@@ -155,22 +155,7 @@
                                 @enderror
                             </div>
 
-                            <div>
-                                <label for="rencana_durasi_hari" class="block text-sm font-bold text-gray-700 mb-2">
-                                    Rencana Durasi Pemakaian (Hari) <span class="text-gray-400 font-normal ml-1">(Opsional)</span>
-                                </label>
-                                <div class="relative max-w-sm">
-                                    <input type="number" name="rencana_durasi_hari" id="rencana_durasi_hari" min="1" max="365"
-                                        class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-5 pr-16 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm @error('rencana_durasi_hari') border-red-400 bg-red-50 @enderror"
-                                        placeholder="Misal: 7">
-                                    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                                        <span class="text-sm font-bold text-gray-400">Hari</span>
-                                    </div>
-                                </div>
-                                @error('rencana_durasi_hari')
-                                    <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
-                                @enderror
-                            </div>
+
                         </div>
 
                         <div class="mt-10 p-5 bg-[#19A148]/5 rounded-2xl border border-[#19A148]/10 flex items-start gap-4">

@@ -50,8 +50,8 @@ class RegisteredUserController extends Controller
                 'grade' => ['required', 'string', 'in:Pemula,Madya,Utama'],
                 'luas_lahan' => ['required', 'numeric', 'min:0'],
                 'komoditi' => ['required', 'array', 'min:1'],
-                'komoditi.*' => ['string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
-                'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung,Cabai,Sayuran,Kelapa Sawit'],
+                'komoditi.*' => ['string', 'max:255'],
+                'komoditi_utama' => ['required', 'string', 'in:Padi Sawah,Padi Gogo,Jagung Hibrida,Kedelai,Kacang Tanah,Sayuran,Buah-buahan,Biofarmaka'],
                 'kecamatan' => ['required', 'string', 'max:255'],
                 'alamat' => ['required', 'string'],
                 'anggota_nama' => ['required', 'array', 'min:1'],
@@ -61,6 +61,7 @@ class RegisteredUserController extends Controller
                 'no_sk' => ['required', 'string', 'max:255'],
                 'file_sk' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
                 'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'id_poktan' => ['required', 'string', 'max:255'],
             ]);
         }
 
@@ -79,6 +80,7 @@ class RegisteredUserController extends Controller
             if ($role === 'petani') {
                 $profile = $user->farmerProfile()->create([
                     'nama_kelompok' => $request->name,
+                    'id_poktan' => $request->id_poktan,
                     'ketua' => $request->nama_ketua,
                     'nik_ketua' => $request->nik_ketua,
                     'kontak' => $request->no_wa,

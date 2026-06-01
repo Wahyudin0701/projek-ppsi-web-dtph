@@ -3,79 +3,92 @@
 
     <div class="max-w-7xl mx-auto space-y-8">
 
-        {{-- ===== WELCOME BANNER ===== --}}
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 p-7 text-white shadow-lg shadow-indigo-900/30">
-            <div class="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full bg-white/5"></div>
-            <div class="pointer-events-none absolute -bottom-8 right-32 h-36 w-36 rounded-full bg-white/5"></div>
-            <div class="pointer-events-none absolute right-20 top-4 h-24 w-24 rounded-full bg-white/8"></div>
 
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                    <div class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1 text-xs font-bold text-indigo-200 mb-3 border border-white/10">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        Panel Pimpinan
+
+        {{-- ===== STAT CARDS (Master & Operational) ===== --}}
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-5">
+            {{-- Kelompok Tani --}}
+            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4">
+                    <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </div>
-                    <h2 class="mb-2 text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat Datang, {{ auth()->user()->name }}</h2>
-                    <p class="max-w-lg text-sm text-indigo-200 leading-relaxed hidden sm:block">
-                        Tinjau dan berikan keputusan akhir terhadap proposal yang telah diverifikasi oleh admin.
-                    </p>
                 </div>
-                <div class="flex-shrink-0">
-                    <a href="{{ route('pimpinan.proposals.index') }}"
-                       class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-indigo-700 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        Tinjau Semua Proposal
-                    </a>
-                    <p class="text-[11px] text-indigo-300 font-medium text-right mt-2">{{ now()->isoFormat('dddd, D MMMM Y') }}</p>
+                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Total Kelompok Tani</p>
+                <p class="text-3xl font-black text-blue-600 leading-none tracking-tight">{{ number_format($stats['total_poktan'], 0, ',', '.') }}</p>
+            </div>
+
+            {{-- User Umum --}}
+            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4">
+                    <div class="w-10 h-10 bg-indigo-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
                 </div>
+                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Total User Umum</p>
+                <p class="text-3xl font-black text-indigo-600 leading-none tracking-tight">{{ number_format($stats['total_user'], 0, ',', '.') }}</p>
+            </div>
+
+            {{-- Katalog Alsintan --}}
+            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4">
+                    <div class="w-10 h-10 bg-sky-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Katalog Alsintan</p>
+                <p class="text-3xl font-black text-sky-600 leading-none tracking-tight">{{ number_format($stats['katalog_alsintan'], 0, ',', '.') }}</p>
+            </div>
+
+            {{-- Program Aktif --}}
+            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4">
+                    <div class="w-10 h-10 bg-emerald-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Program Aktif</p>
+                <p class="text-3xl font-black text-emerald-600 leading-none tracking-tight">{{ number_format($stats['program_aktif'], 0, ',', '.') }}</p>
+            </div>
+
+            {{-- Pengajuan Alsintan --}}
+            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4">
+                    <div class="w-10 h-10 bg-sky-500 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Pengajuan Alsintan</p>
+                <p class="text-3xl font-black text-sky-500 leading-none tracking-tight">{{ number_format($stats['pengajuan_alsintan'], 0, ',', '.') }}</p>
+            </div>
+
+            {{-- Pengajuan Program --}}
+            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4">
+                    <div class="w-10 h-10 bg-emerald-500 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Pengajuan Program</p>
+                <p class="text-3xl font-black text-emerald-500 leading-none tracking-tight">{{ number_format($stats['pengajuan_program'], 0, ',', '.') }}</p>
             </div>
         </div>
 
-        {{-- ===== STAT CARDS ===== --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-            {{-- Total Pengajuan --}}
-            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
-                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-transform duration-300">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                </div>
+        {{-- ===== CHART PENGJUAN ===== --}}
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6" x-data="proposalChartComponent()">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Total Pengajuan</p>
-                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['total'] }}</p>
+                    <h3 class="font-extrabold text-gray-800 text-lg">Tren Pengajuan Proposal</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Perbandingan pengajuan Alsintan dan Program Bantuan</p>
+                </div>
+                <div class="inline-flex bg-gray-100 rounded-lg p-1">
+                    <button @click="setFilter('week')" :class="filter === 'week' ? 'bg-white shadow-sm text-gray-900 font-bold' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 text-xs rounded-md transition-all">Minggu Ini</button>
+                    <button @click="setFilter('month')" :class="filter === 'month' ? 'bg-white shadow-sm text-gray-900 font-bold' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 text-xs rounded-md transition-all">Bulan Ini</button>
+                    <button @click="setFilter('year')" :class="filter === 'year' ? 'bg-white shadow-sm text-gray-900 font-bold' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 text-xs rounded-md transition-all">Tahun Ini</button>
                 </div>
             </div>
-
-            {{-- Sedang Diproses --}}
-            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
-                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-blue-100 transition-transform duration-300">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Sedang Diproses</p>
-                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['menunggu'] }}</p>
-                </div>
-            </div>
-
-            {{-- Disetujui --}}
-            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
-                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-transform duration-300">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Disetujui</p>
-                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['disetujui'] }}</p>
-                </div>
-            </div>
-
-            {{-- Ditolak --}}
-            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
-                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-red-100 transition-transform duration-300">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Ditolak</p>
-                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['ditolak'] }}</p>
-                </div>
-            </div>
+            
+            <div id="chartContainer" class="w-full h-80"></div>
         </div>
 
         {{-- ===== PROPOSAL MENUNGGU PERSETUJUAN ===== --}}
@@ -152,3 +165,167 @@
 
     </div>
 </x-app-layout>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('proposalChartComponent', () => ({
+            filter: 'year',
+            chart: null,
+            rawData: @json($chartData),
+            
+            init() {
+                this.renderChart();
+            },
+            
+            setFilter(val) {
+                this.filter = val;
+                this.updateChart();
+            },
+            
+            processData() {
+                let seriesAlsintan = [];
+                let seriesProgram = [];
+                let categories = [];
+                
+                let now = new Date();
+                
+                if (this.filter === 'year') {
+                    categories = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+                    let countsA = new Array(12).fill(0);
+                    let countsP = new Array(12).fill(0);
+                    
+                    this.rawData.forEach(item => {
+                        let d = new Date(item.date);
+                        if (d.getFullYear() === now.getFullYear()) {
+                            if (item.type === 'alsintan') countsA[d.getMonth()]++;
+                            else countsP[d.getMonth()]++;
+                        }
+                    });
+                    seriesAlsintan = countsA;
+                    seriesProgram = countsP;
+                } else if (this.filter === 'month') {
+                    let daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        categories.push(i);
+                    }
+                    let countsA = new Array(daysInMonth).fill(0);
+                    let countsP = new Array(daysInMonth).fill(0);
+                    
+                    this.rawData.forEach(item => {
+                        let d = new Date(item.date);
+                        if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) {
+                            if (item.type === 'alsintan') countsA[d.getDate() - 1]++;
+                            else countsP[d.getDate() - 1]++;
+                        }
+                    });
+                    seriesAlsintan = countsA;
+                    seriesProgram = countsP;
+                } else if (this.filter === 'week') {
+                    categories = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+                    let countsA = new Array(7).fill(0);
+                    let countsP = new Array(7).fill(0);
+                    
+                    let currentDay = now.getDay();
+                    let distanceToMonday = currentDay === 0 ? 6 : currentDay - 1;
+                    let monday = new Date(now);
+                    monday.setDate(now.getDate() - distanceToMonday);
+                    monday.setHours(0,0,0,0);
+                    
+                    let sunday = new Date(monday);
+                    sunday.setDate(monday.getDate() + 6);
+                    sunday.setHours(23,59,59,999);
+                    
+                    this.rawData.forEach(item => {
+                        let d = new Date(item.date);
+                        if (d >= monday && d <= sunday) {
+                            let dayIndex = d.getDay() === 0 ? 6 : d.getDay() - 1;
+                            if (item.type === 'alsintan') countsA[dayIndex]++;
+                            else countsP[dayIndex]++;
+                        }
+                    });
+                    seriesAlsintan = countsA;
+                    seriesProgram = countsP;
+                }
+                
+                return { categories, seriesAlsintan, seriesProgram };
+            },
+            
+            renderChart() {
+                const data = this.processData();
+                
+                const options = {
+                    series: [{
+                        name: 'Alsintan',
+                        data: data.seriesAlsintan
+                    }, {
+                        name: 'Program Bantuan',
+                        data: data.seriesProgram
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 320,
+                        fontFamily: 'Inter, sans-serif',
+                        toolbar: { show: false },
+                        zoom: { enabled: false }
+                    },
+                    colors: ['#0ea5e9', '#10b981'],
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.05,
+                            stops: [0, 90, 100]
+                        }
+                    },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 2 },
+                    xaxis: {
+                        categories: data.categories,
+                        axisBorder: { show: false },
+                        axisTicks: { show: false },
+                        labels: {
+                            style: { colors: '#64748b', fontSize: '12px' }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: { colors: '#64748b', fontSize: '12px' },
+                            formatter: (val) => { return Math.floor(val) }
+                        }
+                    },
+                    grid: {
+                        borderColor: '#f1f5f9',
+                        strokeDashArray: 4,
+                        yaxis: { lines: { show: true } },
+                        xaxis: { lines: { show: false } }
+                    },
+                    legend: { 
+                        position: 'top', 
+                        horizontalAlign: 'right',
+                        markers: { radius: 12 }
+                    }
+                };
+                
+                this.chart = new ApexCharts(document.querySelector("#chartContainer"), options);
+                this.chart.render();
+            },
+            
+            updateChart() {
+                if (this.chart) {
+                    const data = this.processData();
+                    this.chart.updateSeries([
+                        { name: 'Alsintan', data: data.seriesAlsintan },
+                        { name: 'Program Bantuan', data: data.seriesProgram }
+                    ]);
+                    this.chart.updateOptions({
+                        xaxis: { categories: data.categories }
+                    });
+                }
+            }
+        }));
+    });
+</script>
+@endpush

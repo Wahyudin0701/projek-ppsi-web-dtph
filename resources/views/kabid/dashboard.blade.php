@@ -82,14 +82,14 @@
                                     @php 
                                         $isAlsintan = $proposal->alsintan_id !== null; 
                                         $sc = match($proposal->status) {
-                                            'pending_verifikasi' => ['bg' => 'bg-amber-100 text-amber-700', 'label' => 'Menunggu Verifikasi Admin'],
-                                            'diteruskan_ke_pimpinan' => ['bg' => 'bg-purple-100 text-purple-700', 'label' => 'Review Pimpinan'],
-                                            'didisposisi_kabid' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Persiapan Survei'],
+                                            'sedang_diverifikasi_admin' => ['bg' => 'bg-amber-100 text-amber-700', 'label' => 'Sedang Diverifikasi Admin'],
+                                            'sedang_diverifikasi_pimpinan' => ['bg' => 'bg-purple-100 text-purple-700', 'label' => 'Review Pimpinan'],
+                                            'persiapan_survei' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Persiapan Survei'],
                                             'survei_berlangsung' => ['bg' => 'bg-sky-100 text-sky-700', 'label' => 'Survei Berlangsung'],
-                                            'survei_selesai' => ['bg' => 'bg-orange-100 text-orange-700', 'label' => 'Menunggu Verifikasi CPCL'],
-                                            'menunggu_review_kabid' => ['bg' => 'bg-teal-100 text-teal-700', 'label' => 'Menunggu Keputusan Akhir'],
-                                            'menunggu_approval_ba' => ['bg' => 'bg-indigo-100 text-indigo-700', 'label' => 'Menunggu Keputusan Pimpinan'],
-                                            'surat_tugas_terbit' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Sedang Survei'],
+                                            'survei_selesai' => ['bg' => 'bg-orange-100 text-orange-700', 'label' => 'Survei Selesai'],
+                                            'verifikasi_cpcl' => ['bg' => 'bg-teal-100 text-teal-700', 'label' => 'Menunggu Keputusan Akhir'],
+                                            'menunggu_keputusan_akhir' => ['bg' => 'bg-indigo-100 text-indigo-700', 'label' => 'Menunggu Keputusan Pimpinan'],
+                                            'sedang_survei' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Sedang Survei'],
                                             'disetujui' => ['bg' => 'bg-green-100 text-green-700', 'label' => 'Disetujui'],
                                             'ditolak' => ['bg' => 'bg-red-100 text-red-700', 'label' => 'Ditolak'],
                                             default => ['bg' => 'bg-gray-100 text-gray-700', 'label' => ucfirst(str_replace('_', ' ', $proposal->status))]
@@ -120,7 +120,7 @@
                                         </td>
                                         <td class="px-6 py-4 text-right align-middle">
                                             <div class="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-2">
-                                                @if($proposal->status === 'didisposisi_kabid')
+                                                @if($proposal->status === 'persiapan_survei')
                                                     <a href="{{ route('kabid.proposals.assign-team.form', $proposal) }}"
                                                        class="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-xl transition-colors border border-amber-100 whitespace-nowrap">
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>

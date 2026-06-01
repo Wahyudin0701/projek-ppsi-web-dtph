@@ -53,8 +53,13 @@
                     <div @click="openDrawer(item.id)" class="cursor-pointer bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-[0_6px_30px_-10px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_40px_-10px_rgba(0,0,0,0.10)] transition-all duration-500 group flex flex-col hover:-translate-y-1.5">
 
                         {{-- Image --}}
-                        <div class="relative h-48 overflow-hidden bg-gray-100">
-                            <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="relative h-48 overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <template x-if="item.has_image">
+                                <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            </template>
+                            <template x-if="!item.has_image">
+                                <img :src="item.image" :alt="item.name" class="w-24 h-auto object-contain opacity-30 grayscale transition-transform duration-700 group-hover:scale-110">
+                            </template>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
 
                             {{-- Status Badge --}}
@@ -222,8 +227,13 @@
                 <template x-if="selected">
                     <div class="flex-1">
                         {{-- Large Image --}}
-                        <div class="h-64 bg-gray-100 relative">
-                            <img :src="selected.image" :alt="selected.name" class="w-full h-full object-cover">
+                        <div class="h-64 bg-gray-100 relative flex items-center justify-center">
+                            <template x-if="selected.has_image">
+                                <img :src="selected.image" :alt="selected.name" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!selected.has_image">
+                                <img :src="selected.image" :alt="selected.name" class="w-32 h-auto object-contain opacity-30 grayscale">
+                            </template>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                         </div>
 
@@ -365,7 +375,8 @@
                     broken_count: item.broken_count,
                     description: item.description || '',
                     status: item.available_stock > 0 ? 'tersedia' : (item.borrowed_count > 0 ? 'tidak_tersedia' : (item.broken_count > 0 ? 'rusak' : 'tidak_tersedia')),
-                    image: item.image ? '{{ asset("storage") }}/' + item.image : 'https://picsum.photos/seed/' + item.id + '/800/500'
+                    has_image: !!item.image,
+                    image: item.image ? '{{ asset("storage") }}/' + item.image : '{{ asset("images/Lambang_Kabupaten_Muaro_Jambi.png") }}'
                 })),
                 init() {
                     this.filteredItems = [...this.items];

@@ -53,6 +53,10 @@
                         <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200 font-semibold">{{ auth()->user()->farmerProfile->nama_kelompok }}</p>
                     </div>
                     <div>
+                        <x-input-label value="ID Poktan" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->id_poktan ?: '-' }}</p>
+                    </div>
+                    <div>
                         <x-input-label value="No. SK Kelompok" />
                         <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->farmerProfile->no_sk ?: '-' }}</p>
                     </div>

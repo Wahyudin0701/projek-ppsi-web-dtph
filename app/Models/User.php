@@ -196,6 +196,11 @@ class User extends Authenticatable
      */
     public function getDisplayNameAttribute()
     {
+        if ($this->isPimpinan()) return 'Pimpinan';
+        if ($this->isKabidPsp()) return 'Kabid PSP';
+        if ($this->isKabidTp()) return 'Kabid Tanaman Pangan';
+        if ($this->isKabidHortikultura()) return 'Kabid Hortikultura';
+
         if ($emp = $this->employee) {
             return $emp->name;
         }

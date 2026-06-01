@@ -67,6 +67,16 @@
                                 <td class="font-bold">{{ $farmer->nama_kelompok ?? '-' }}</td>
                             </tr>
                             <tr>
+                                <td class="py-1">ID Poktan</td>
+                                <td>:</td>
+                                <td>{{ $farmer->id_poktan ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1">Ketua Kelompok</td>
+                                <td>:</td>
+                                <td>{{ $farmer->ketua ?? '-' }}</td>
+                            </tr>
+                            <tr>
                                 <td class="py-1">Desa</td>
                                 <td>:</td>
                                 <td>{{ ucwords(strtolower($farmer->alamat ?? '-')) }}</td>
@@ -310,13 +320,8 @@
                 <button onclick="history.back()" class="px-6 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-colors text-sm shadow-sm">
                     Kembali
                 </button>
-                @if(auth()->user()->isAdmin())
-                <a href="{{ route('admin.proposals.cpcl.edit', $proposal) }}" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors text-sm flex items-center gap-2 shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                    Edit CPCL
-                </a>
-                @elseif(auth()->user()->isKabid())
-                    @if(!in_array($proposal->status, ['menunggu_approval_ba', 'disetujui', 'ditolak']))
+                @if(auth()->user()->isKabid())
+                    @if(!in_array($proposal->status, ['menunggu_keputusan_akhir', 'disetujui', 'ditolak']))
                     <a href="{{ route('kabid.proposals.cpcl.edit', $proposal) }}" class="px-6 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors text-sm flex items-center gap-2 shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Edit CPCL

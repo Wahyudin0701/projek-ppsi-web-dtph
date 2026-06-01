@@ -18,6 +18,7 @@ class Proposal extends Model
         'program_id',
         'alsintan_id',
         'status',
+        'nomor_dokumen_final',
         'no_surat_pengajuan',
         'submission_date',
         'rencana_durasi_hari',
@@ -41,23 +42,23 @@ class Proposal extends Model
 
     /**
      * Status flow (Hybrid Digital-Physical):
-     * pending_verifikasi → diteruskan_ke_pimpinan → didisposisi_kabid
-     * → surat_tugas_terbit (Kabid terbitkan, survei fisik)
-     * → menunggu_review_kabid (Admin input CPCL & generate BA, Kabid review)
-     * → menunggu_approval_ba (Kabid teruskan ke Pimpinan) → disetujui | ditolak
+     * sedang_diverifikasi_admin → sedang_diverifikasi_pimpinan → persiapan_survei
+     * → sedang_survei (Kabid terbitkan, survei fisik)
+     * → verifikasi_cpcl (Admin input CPCL & generate BA, Kabid review)
+     * → menunggu_keputusan_akhir (Kabid teruskan ke Pimpinan) → disetujui | ditolak
      */
     public function getStatusLabelAttribute(): string
     {
         return match($this->status) {
-            'pending_verifikasi'     => 'Menunggu Verifikasi Admin',
-            'diteruskan_ke_pimpinan' => 'Diteruskan ke Pimpinan',
-            'didisposisi_kabid'      => 'Didisposisi ke Kabid',
-            'surat_tugas_terbit'     => 'Sedang Survei',
-            'survei_selesai'         => 'Survei Selesai',
-            'menunggu_review_kabid'  => 'Menunggu Review Kabid',
-            'menunggu_approval_ba'   => 'Menunggu Keputusan Akhir',
-            'disetujui'              => 'Disetujui',
-            'ditolak'                => 'Ditolak',
+            'sedang_diverifikasi_admin'    => 'Sedang Diverifikasi Admin',
+            'sedang_diverifikasi_pimpinan' => 'Sedang Diverifikasi Pimpinan',
+            'persiapan_survei'             => 'Persiapan Survei',
+            'sedang_survei'                => 'Sedang Survei',
+            'survei_selesai'               => 'Survei Selesai',
+            'verifikasi_cpcl'              => 'Verifikasi CPCL',
+            'menunggu_keputusan_akhir'     => 'Menunggu Keputusan Akhir',
+            'disetujui'                    => 'Disetujui',
+            'ditolak'                      => 'Ditolak',
             default                  => ucfirst($this->status),
         };
     }

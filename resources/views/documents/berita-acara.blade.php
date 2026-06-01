@@ -40,8 +40,12 @@
         
         <table class="table-data">
             <tr>
-                <td>Nama Kelompok Tani</td>
+                <td width="30%">Nama Kelompok Tani</td>
                 <td>: {{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</td>
+            </tr>
+            <tr>
+                <td>ID Poktan</td>
+                <td>: {{ $proposal->user->farmerProfile->id_poktan ?? '-' }}</td>
             </tr>
             <tr>
                 <td>Ketua Kelompok</td>

@@ -56,13 +56,13 @@
                         @forelse($proposals as $proposal)
                                 @php
                                     $statusConfig = [
-                                        'pending_verifikasi'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Verifikasi'],
-                                        'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
-                                        'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
-                                        'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
+                                        'sedang_diverifikasi_admin'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Di Admin'],
+                                        'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
+                                        'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
+                                        'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
                                         'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
-                                        'menunggu_review_kabid'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Review Kabid'],
-                                        'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
+                                        'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
+                                        'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
                                         'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],
                                         'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
                                     ];
@@ -96,9 +96,9 @@
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <a href="{{ route('pimpinan.proposals.show', $proposal) }}"
-                                       class="inline-flex items-center gap-2 px-4 py-2 {{ $proposal->status === 'diteruskan_ke_pimpinan' || $proposal->status === 'menunggu_approval_ba' ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-500/20' : 'bg-gray-100 hover:bg-gray-200 text-gray-700' }} text-sm font-bold rounded-xl transition-all">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $proposal->status === 'diteruskan_ke_pimpinan' || $proposal->status === 'menunggu_approval_ba' ? 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z' : 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z' }}"/></svg>
-                                        {{ $proposal->status === 'diteruskan_ke_pimpinan' || $proposal->status === 'menunggu_approval_ba' ? 'Tinjau' : 'Detail' }}
+                                       class="inline-flex items-center gap-2 px-4 py-2 {{ $proposal->status === 'sedang_diverifikasi_pimpinan' || $proposal->status === 'menunggu_keputusan_akhir' ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-500/20' : 'bg-gray-100 hover:bg-gray-200 text-gray-700' }} text-sm font-bold rounded-xl transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $proposal->status === 'sedang_diverifikasi_pimpinan' || $proposal->status === 'menunggu_keputusan_akhir' ? 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z' : 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z' }}"/></svg>
+                                        {{ $proposal->status === 'sedang_diverifikasi_pimpinan' || $proposal->status === 'menunggu_keputusan_akhir' ? 'Tinjau' : 'Detail' }}
                                     </a>
                                 </td>
                             </tr>

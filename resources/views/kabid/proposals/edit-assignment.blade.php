@@ -36,7 +36,8 @@
               class="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 space-y-6"
               x-data="{ 
                 employees: {{ json_encode($employees) }},
-                members: {{ json_encode($initialMembers) }} 
+                members: {{ json_encode($initialMembers) }},
+                validFrom: '{{ old('valid_from', $assignment->valid_from->format('Y-m-d')) }}'
               }">
             @csrf
             @method('PATCH')
@@ -58,13 +59,13 @@
 
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Berlaku Dari *</label>
-                    <input type="date" name="valid_from" value="{{ old('valid_from', $assignment->valid_from->format('Y-m-d')) }}" required
+                    <input type="date" name="valid_from" x-model="validFrom" required
                            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 @error('valid_from') border-red-400 @enderror">
                     @error('valid_from')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Berlaku Sampai *</label>
-                    <input type="date" name="valid_until" value="{{ old('valid_until', $assignment->valid_until->format('Y-m-d')) }}" required
+                    <input type="date" name="valid_until" value="{{ old('valid_until', $assignment->valid_until->format('Y-m-d')) }}" :min="validFrom" required
                            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 @error('valid_until') border-red-400 @enderror">
                     @error('valid_until')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>

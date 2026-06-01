@@ -32,7 +32,7 @@
 
     <div class="title">
         <h3>KEPUTUSAN KEPALA DINAS TPH</h3>
-        <p>Nomor: SK.{{ date('Y') }}/PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</p>
+        <p>Nomor: {{ $proposal->nomor_dokumen_final }}</p>
         <br>
         <h3>TENTANG</h3>
         <h3>PENETAPAN PENERIMA BANTUAN {{ strtoupper($proposal->program->name) }}</h3>
@@ -53,7 +53,7 @@
             <tr>
                 <td>Memutuskan</td>
                 <td>:</td>
-                <td>Menetapkan Kelompok Tani <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> (Desa/Kecamatan: {{ $proposal->user->farmerProfile->kecamatan ?? '-' }}) sebagai penerima sah program bantuan <strong>{{ $proposal->program->name }}</strong>.</td>
+                <td>Menetapkan Kelompok Tani <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> (ID Poktan: {{ $proposal->user->farmerProfile->id_poktan ?? '-' }}) (Desa/Kecamatan: {{ $proposal->user->farmerProfile->kecamatan ?? '-' }}) sebagai penerima sah program bantuan <strong>{{ $proposal->program->name }}</strong>.</td>
             </tr>
         </table>
         

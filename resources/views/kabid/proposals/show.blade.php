@@ -32,11 +32,11 @@
         @php
             $isAlsintan = $proposal->alsintan_id !== null;
             $sc = match($proposal->status) {
-                'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Disposisi ke Kabid'],
-                'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
+                'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Persiapan Survei'],
+                'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
                 'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
-                'menunggu_review_kabid'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Menunggu Review Kabid'],
-                'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Menunggu Keputusan Akhir'],
+                'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
+                'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Menunggu Keputusan Akhir'],
                 'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
                 'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
                 default                    => ['bg' => 'bg-gray-100 text-gray-600',       'label' => $proposal->statusLabel],
@@ -73,17 +73,17 @@
                 @endif
 
                 <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                    @if($proposal->status === 'didisposisi_kabid')
+                    @if($proposal->status === 'persiapan_survei')
                     <a href="{{ route('kabid.proposals.assign-team.form', $proposal) }}"
                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-500 text-white text-sm font-bold rounded-xl hover:bg-amber-600 transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        Buat Surat Tugas & Tim Survei
+                        Atur Jadwal & Tim Survei
                     </a>
                 @elseif($proposal->status === 'survei_selesai' && !$proposal->beritaAcara)
                     <span class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-bold {{ $sc['bg'] }} border border-transparent shadow-sm">
                         {{ $sc['label'] }} (Menunggu Admin)
                     </span>
-                @elseif($proposal->status === 'menunggu_review_kabid' && $proposal->beritaAcara)
+                @elseif($proposal->status === 'verifikasi_cpcl' && $proposal->beritaAcara)
                     <div x-data="{ openConfirm: false }" class="inline w-full sm:w-auto">
                         <button type="button" @click="openConfirm = true" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-green-500 text-white text-sm font-bold rounded-xl hover:bg-green-600 transition-colors shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -122,7 +122,7 @@
                         </div>
                     </div>
 
-                @elseif($proposal->status === 'surat_tugas_terbit')
+                @elseif($proposal->status === 'sedang_survei')
 
                     <a href="{{ route('kabid.proposals.cetak-form-cpcl', $proposal) }}" target="_blank"
                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
@@ -180,7 +180,7 @@
                                     @endif
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-2 shrink-0">
-                                    @if(!in_array($proposal->status, ['menunggu_approval_ba', 'disetujui', 'ditolak']))
+                                    @if(!in_array($proposal->status, ['menunggu_keputusan_akhir', 'disetujui', 'ditolak']))
                                     <a href="{{ route('kabid.proposals.cpcl.edit', $proposal) }}" class="h-fit text-xs px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-bold hover:bg-blue-100 transition-colors flex items-center gap-1.5 shadow-sm border border-blue-100">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         Edit
@@ -224,7 +224,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                     Cetak Surat Tugas
                                 </a>
-                                @if($proposal->status === 'surat_tugas_terbit')
+                                @if($proposal->status === 'sedang_survei')
                                 <a href="{{ route('kabid.proposals.assignment.edit', [$proposal, $assignment]) }}"
                                    class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-lg border border-amber-200 transition-colors shadow-sm">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
@@ -282,11 +282,14 @@
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kapasitas</p>
                                 <p class="text-gray-900 font-semibold text-sm">{{ $proposal->alsintan->capacity ?? '-' }}</p>
                             </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rencana Durasi Pemakaian</p>
-                                <p class="text-amber-600 font-bold text-base">{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</p>
-                            </div>
+
                         </div>
+                        @if($proposal->alsintan->image)
+                        <div class="mt-6 pt-6 border-t border-gray-100">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Foto Alsintan</p>
+                            <img src="{{ Storage::url($proposal->alsintan->image) }}" alt="{{ $proposal->alsintan->name }}" class="w-full max-w-sm h-auto rounded-xl border border-gray-100 shadow-sm object-cover aspect-video">
+                        </div>
+                        @endif
                     @else
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
                             <div>
@@ -356,13 +359,13 @@
 
                         // Strict ordered statuses
                         $statusOrder = [
-                            'pending_verifikasi'     => 0,
-                            'diteruskan_ke_pimpinan' => 1,
-                            'didisposisi_kabid'      => 2,
-                            'surat_tugas_terbit'     => 3,
+                            'sedang_diverifikasi_admin'     => 0,
+                            'sedang_diverifikasi_pimpinan' => 1,
+                            'persiapan_survei'      => 2,
+                            'sedang_survei'     => 3,
                             'survei_selesai'         => 4,
-                            'menunggu_review_kabid'  => 5,
-                            'menunggu_approval_ba'   => 6,
+                            'verifikasi_cpcl'  => 5,
+                            'menunggu_keputusan_akhir'   => 6,
                             'disetujui'              => 7,
                             'ditolak'                => -1,
                         ];
@@ -398,14 +401,14 @@
                             @elseif($proposal->reviewed_at)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Diverifikasi Admin</p>
+                                    <p class="text-sm font-bold text-gray-900">Verifikasi Admin Selesai</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->reviewed_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Berkas dinyatakan lengkap & layak.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-yellow-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-yellow-600">Menunggu Verifikasi Admin</p>
+                                    <p class="text-sm font-bold text-yellow-600">Sedang Diverifikasi Admin</p>
                                     <p class="text-xs text-gray-500">Proposal sedang menunggu antrian verifikasi berkas.</p>
                                 </div>
                             @endif
@@ -421,22 +424,29 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-red-500 mt-0.5">Alasan: {{ $proposal->pimpinan_notes ?? '-' }}</p>
                                 </div>
-                            @elseif($currentOrder >= 2 && $disposition)
+                            @elseif(($currentOrder >= 2 || $rejectedAtFinal) && $disposition)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Disposisi Pimpinan</p>
+                                    <p class="text-sm font-bold text-gray-900">Verifikasi Pimpinan Selesai</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $disposition->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $kabidLabel }}</p>
                                 </div>
-                            @elseif($proposal->status === 'diteruskan_ke_pimpinan')
+                            @elseif($proposal->status === 'disetujui' && !$disposition)
+                                <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-gray-900">Verifikasi Pimpinan Selesai</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at ? $proposal->decided_at->translatedFormat('d M Y - H:i') : $proposal->updated_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Proposal disetujui langsung oleh Pimpinan.</p>
+                                </div>
+                            @elseif($proposal->status === 'sedang_diverifikasi_pimpinan')
                                 <div class="absolute -left-[21px] bg-indigo-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-indigo-600">Menunggu Disposisi</p>
+                                    <p class="text-sm font-bold text-indigo-600">Sedang Diverifikasi Pimpinan</p>
                                     <p class="text-xs text-gray-400">Proposal sedang dalam tinjauan Pimpinan.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
-                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Disposisi Pimpinan</p></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Verifikasi Pimpinan</p></div>
                             @endif
                         </div>
                         @endif
@@ -447,19 +457,19 @@
                             @if(($currentOrder >= 3 || $rejectedAtFinal) && $surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Sedang Survei</p>
+                                    <p class="text-sm font-bold text-gray-900">Persiapan Survei Selesai</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $surveyAssignment->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">Nomor: {{ $surveyAssignment->nomor_surat }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Tim teknis dan jadwal survei telah ditentukan.</p>
                                 </div>
-                            @elseif($proposal->status === 'didisposisi_kabid')
+                            @elseif($proposal->status === 'persiapan_survei')
                                 <div class="absolute -left-[21px] bg-amber-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-amber-600">Penugasan Tim Survei</p>
-                                    <p class="text-xs text-gray-400">Menunggu {{ $kabidLabel }} membentuk tim.</p>
+                                    <p class="text-sm font-bold text-amber-600">Sedang Persiapan Survei</p>
+                                    <p class="text-xs text-gray-400">{{ $kabidLabel }} sedang menyusun jadwal dan tim verifikasi lapangan.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
-                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Penugasan Survei</p></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Persiapan Survei</p></div>
                             @endif
                         </div>
                         @endif
@@ -467,16 +477,19 @@
                         {{-- 5. Pelaksanaan Survei (hidden if rejected at/before disposisi, or approved without survey) --}}
                         @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !($proposal->status === 'disetujui' && !$surveyAssignment))
                         <div class="relative">
-                            @if($proposal->status === 'surat_tugas_terbit')
+                            @if($proposal->status === 'sedang_survei')
                                 <div class="absolute -left-[21px] bg-blue-500 w-3 h-3 rounded-full border-4 border-white animate-bounce"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-blue-600">Survei Sedang Jalan</p>
-                                    <p class="text-xs text-gray-500">Menunggu input hasil CPCL offline.</p>
+                                    <p class="text-sm font-bold text-blue-600">Sedang Pelaksanaan Survei</p>
+                                    <p class="text-xs text-gray-400">Tim teknis sedang melakukan peninjauan lokasi dan menyusun hasil verifikasi.</p>
                                 </div>
                             @elseif($currentOrder >= 4 || $rejectedAtFinal)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Verifikasi CPCL Selesai</p>
+                                    <p class="text-sm font-bold text-gray-900">Pelaksanaan Survei Selesai</p>
+                                    @if($proposal->cpclVerifications->last())
+                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->cpclVerifications->last()->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    @endif
                                     <p class="text-xs text-gray-500 mt-0.5">Hasil survei telah diinput ke sistem.</p>
                                 </div>
                             @else
@@ -486,25 +499,25 @@
                         </div>
                         @endif
 
-                        {{-- 6. Berita Acara (hidden if rejected at/before disposisi, or approved without survey) --}}
+                        {{-- 6. Verifikasi CPCL (hidden if rejected at/before disposisi, or approved without survey) --}}
                         @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !($proposal->status === 'disetujui' && !$surveyAssignment))
                         <div class="relative">
-                            @if(($currentOrder >= 5 || $rejectedAtFinal) && $beritaAcara)
+                            @if(($currentOrder >= 6 || $rejectedAtFinal) && $beritaAcara)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-gray-900">Berita Acara Terbit</p>
+                                    <p class="text-sm font-bold text-gray-900">Verifikasi CPCL Selesai</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $beritaAcara->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">BA & Rekomendasi sudah diupload.</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Berita Acara dan dokumen rekomendasi telah berhasil diteruskan ke Pimpinan.</p>
                                 </div>
-                            @elseif($proposal->status === 'survei_selesai')
-                                <div class="absolute -left-[21px] bg-orange-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
+                            @elseif($proposal->status === 'verifikasi_cpcl' || $proposal->status === 'survei_selesai')
+                                <div class="absolute -left-[21px] bg-blue-500 w-3 h-3 rounded-full border-4 border-white animate-bounce"></div>
                                 <div class="pl-4">
-                                    <p class="text-sm font-bold text-orange-600">Penyusunan BA</p>
-                                    <p class="text-xs text-gray-400">Tim sedang menyusun laporan.</p>
+                                    <p class="text-sm font-bold text-blue-600">Sedang Verifikasi CPCL</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Berita Acara dan rekomendasi sedang disusun/disiapkan untuk diteruskan.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
-                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Berita Acara</p></div>
+                                <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Verifikasi CPCL</p></div>
                             @endif
                         </div>
                         @endif
@@ -517,7 +530,7 @@
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-green-700">Proposal Disetujui ✓</p>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">{{ $proposal->pimpinan_notes ?? 'Keputusan telah diambil.' }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $proposal->pimpinan_notes ?? 'Keputusan akhir telah diambil oleh Pimpinan.' }}</p>
                                 </div>
                             @elseif($rejectedAtFinal)
                                 <div class="absolute -left-[21px] bg-red-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -526,7 +539,7 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-red-500 mt-0.5">Alasan: {{ $proposal->pimpinan_notes ?? '-' }}</p>
                                 </div>
-                            @elseif($proposal->status === 'menunggu_approval_ba')
+                            @elseif($proposal->status === 'menunggu_keputusan_akhir')
                                 <div class="absolute -left-[21px] bg-purple-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-purple-700">Menunggu Keputusan Akhir</p>

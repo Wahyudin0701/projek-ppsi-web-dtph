@@ -26,7 +26,7 @@ class DashboardController extends Controller
                 $q->whereIn('status', ['menunggu', 'reviewed']);
             })->count();
 
-            $pendingProposalsCount = Proposal::where('status', 'pending_verifikasi')->count();
+            $pendingProposalsCount = Proposal::where('status', 'sedang_diverifikasi_admin')->count();
             $activeProgramsCount = Program::all()->filter(fn($p) => $p->status === 'berjalan')->count();
             $totalProposalsCount = Proposal::count();
 
@@ -47,13 +47,13 @@ class DashboardController extends Controller
                 ->get();
 
             $latestPendingProposals = Proposal::with(['user.farmerProfile', 'program', 'alsintan'])
-                ->where('status', 'pending_verifikasi')
+                ->where('status', 'sedang_diverifikasi_admin')
                 ->latest('updated_at')
                 ->take(5)
                 ->get();
 
             $dispositionedProposals = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'surveyAssignments'])
-                ->where('status', 'surat_tugas_terbit')
+                ->where('status', 'sedang_survei')
                 ->latest('updated_at')
                 ->take(5)
                 ->get();
@@ -81,9 +81,9 @@ class DashboardController extends Controller
         $stats = [
             'total'     => $allUserProposals->count(),
             'proses'    => $allUserProposals->whereIn('status', [
-                                'pending_verifikasi', 'diteruskan_ke_pimpinan',
-                                'didisposisi_kabid', 'surat_tugas_terbit',
-                                'survei_selesai', 'menunggu_approval_ba',
+                                'sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan',
+                                'persiapan_survei', 'sedang_survei',
+                                'survei_selesai', 'menunggu_keputusan_akhir',
                             ])->count(),
             'disetujui' => $allUserProposals->where('status', 'disetujui')->count(),
             'ditolak'   => $allUserProposals->where('status', 'ditolak')->count(),
@@ -92,7 +92,7 @@ class DashboardController extends Controller
         $recentProposals = $allUserProposals->sortByDesc('submission_date')->take(3);
 
         // IDs and Types already applied for
-        $activeProposals = $allUserProposals->whereIn('status', ['pending_verifikasi', 'diteruskan_ke_pimpinan', 'disetujui']);
+        $activeProposals = $allUserProposals->whereIn('status', ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'disetujui']);
         
         $activeProposalProgramTypes = $activeProposals->whereNotNull('program_id')
             ->pluck('program.type')

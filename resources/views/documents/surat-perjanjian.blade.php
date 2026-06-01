@@ -34,7 +34,7 @@
 
     <div class="title">
         <h3>SURAT PERJANJIAN PINJAM PAKAI ALSINTAN</h3>
-        <p>Nomor: SP.{{ date('Y') }}/PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</p>
+        <p>Nomor: {{ $proposal->nomor_dokumen_final }}</p>
     </div>
 
     <div class="content">
@@ -64,6 +64,11 @@
                 <td>Kelompok Tani</td>
                 <td>:</td>
                 <td>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</td>
+            </tr>
+            <tr>
+                <td>ID Poktan</td>
+                <td>:</td>
+                <td>{{ $proposal->user->farmerProfile->id_poktan ?? '-' }}</td>
             </tr>
             <tr>
                 <td>Alamat Kelompok</td>

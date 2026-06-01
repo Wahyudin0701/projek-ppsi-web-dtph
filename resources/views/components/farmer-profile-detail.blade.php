@@ -58,6 +58,12 @@
                 </div>
             </div>
             <div class="space-y-1 min-w-0">
+                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">ID Poktan</label>
+                <div class="bg-gray-50 rounded-2xl p-3 border border-gray-50 overflow-hidden">
+                    <p class="font-bold text-gray-900 break-words text-sm">{{ $user->farmerProfile->id_poktan ?? '-' }}</p>
+                </div>
+            </div>
+            <div class="space-y-1 min-w-0">
                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">No. SK Kelompok</label>
                 <div class="bg-gray-50 rounded-2xl p-3 border border-gray-50 overflow-hidden">
                     <p class="font-bold text-gray-900 break-words text-sm">{{ $user->farmerProfile->no_sk ?? '-' }}</p>

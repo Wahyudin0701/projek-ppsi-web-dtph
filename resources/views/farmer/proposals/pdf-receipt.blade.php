@@ -6,13 +6,13 @@
     <style>
         @page {
             size: A4;
-            margin: 3cm;
+            margin: 1.5cm 2cm; /* Mengurangi margin agar muat 1 halaman */
         }
         body {
             font-family: Arial, sans-serif;
-            font-size: 13px;
+            font-size: 12.5px; /* Sedikit mengurangi ukuran font dasar */
             color: #333;
-            line-height: 1.4;
+            line-height: 1.35;
         }
         .header {
             text-align: center;
@@ -104,19 +104,34 @@
             <td>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</td>
         </tr>
         <tr>
+            <th>ID Poktan</th>
+            <td class="colon">:</td>
+            <td>{{ $proposal->user->farmerProfile->id_poktan ?? '-' }}</td>
+        </tr>
+        <tr>
             <th>Nama Ketua</th>
             <td class="colon">:</td>
             <td>{{ $proposal->user->farmerProfile->ketua ?? '-' }}</td>
         </tr>
         <tr>
+            <th>NIK Ketua</th>
+            <td class="colon">:</td>
+            <td>{{ $proposal->user->farmerProfile->nik_ketua ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>No. Kontak</th>
+            <td class="colon">:</td>
+            <td>{{ $proposal->user->farmerProfile->kontak ?? '-' }}</td>
+        </tr>
+        <tr>
             <th>Komoditi Utama</th>
             <td class="colon">:</td>
-            <td>{{ $proposal->user->farmerProfile->komoditi_utama ?? '-' }}</td>
+            <td>{{ $proposal->user->farmerProfile->komoditi_utama ?? '-' }} (Luas: {{ $proposal->user->farmerProfile->luas_lahan ?? '-' }} Ha)</td>
         </tr>
         <tr>
             <th>Alamat Sekretariat</th>
             <td class="colon">:</td>
-            <td>Kec. {{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</td>
+            <td>{{ $proposal->user->farmerProfile->alamat ?? '-' }}, Kec. {{ $proposal->user->farmerProfile->kecamatan ?? '-' }}</td>
         </tr>
         <tr>
             <th colspan="3" style="padding-top: 20px; font-weight: bold;">Rincian Pengajuan</th>
@@ -148,18 +163,7 @@
                 @endif
             </td>
         </tr>
-        <tr>
-            <th>Alamat Kelompok</th>
-            <td class="colon">:</td>
-            <td>{{ $proposal->user->farmerProfile->alamat ?? '-' }}</td>
-        </tr>
-        @if($proposal->alsintan_id)
-        <tr>
-            <th>Rencana Durasi Pemakaian</th>
-            <td class="colon">:</td>
-            <td><strong>{{ $proposal->rencana_durasi_hari ?? '-' }} Hari</strong></td>
-        </tr>
-        @endif
+
     </table>
 
     <div class="footer">
@@ -171,12 +175,12 @@
                     <p style="margin-top: 0;"><strong>Status Saat Ini:</strong><br>
                     @php
                         $statusColors = [
-                            'pending_verifikasi'       => '#EAB308',
-                            'diteruskan_ke_pimpinan'   => '#6366F1',
-                            'didisposisi_kabid'        => '#F59E0B',
-                            'surat_tugas_terbit'       => '#3B82F6',
+                            'sedang_diverifikasi_admin'       => '#EAB308',
+                            'sedang_diverifikasi_pimpinan'   => '#6366F1',
+                            'persiapan_survei'        => '#F59E0B',
+                            'sedang_survei'       => '#3B82F6',
                             'survei_selesai'           => '#F97316',
-                            'menunggu_approval_ba'     => '#A855F7',
+                            'menunggu_keputusan_akhir'     => '#A855F7',
                             'disetujui'                => '#19A148',
                             'ditolak'                  => '#EF4444',
                         ];

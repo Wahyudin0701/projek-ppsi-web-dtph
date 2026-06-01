@@ -4,29 +4,41 @@
     <meta charset="UTF-8">
     <title>Surat Tugas - {{ $proposal->id }}</title>
     <style>
-        body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.25; color: #000; background: #fff; }
-        .header-table { width: 100%; margin-bottom: 5px; border: none; }
-        .header-table td { border: none; padding: 0; vertical-align: middle; }
-        .header-table .logo-cell { width: 90px; text-align: left; }
-        .header-table .logo-cell img { width: 80px; height: auto; }
-        .header-table .text-cell { text-align: center; padding-left: 20px; padding-right: 20px; }
-        .header-table h1 { font-size: 14pt; margin: 0; font-weight: bold; text-transform: uppercase; white-space: nowrap; }
-        .header-table h2 { font-size: 15pt; margin: 0; font-weight: bold; text-transform: uppercase; white-space: nowrap; }
-        .header-table p { font-size: 11pt; margin: 0; }
-        .header-line { border: none; border-top: 3px solid #000; border-bottom: 1px solid #000; height: 2px; background: transparent; margin: 0 0 20px 0; }
-        .title { text-align: center; margin-bottom: 20px; }
-        .title h3 { font-size: 13pt; margin: 0; text-decoration: underline; font-weight: bold; }
-        .title p { margin: 2px 0 0; }
-        .content { text-align: justify; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
-        .signature { margin-top: 30px; width: 250px; float: right; text-align: left; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.15; color: #000; background: #fff; margin: 0; padding: 10px 20px; }
+        .header-table { width: 100%; margin-bottom: 2px; border: none; }
+        .header-table td { border: none; padding: 0; vertical-align: top; }
+        .header-table .logo-cell { width: 80px; text-align: center; }
+        .header-table .logo-cell img { width: 75px; height: auto; }
+        .header-table .text-cell { text-align: center; }
+        .header-table h1 { font-size: 13pt; margin: 0; font-weight: bold; }
+        .header-table h2 { font-size: 14pt; margin: 0; font-weight: bold; }
+        .header-table p { font-size: 8.5pt; margin: 0; }
+        .header-line { border: none; border-top: 3px solid #000; border-bottom: 1px solid #000; height: 2px; background: transparent; margin: 5px 0 10px 0; }
+        .title { text-align: center; margin-bottom: 15px; }
+        .title h3 { font-size: 12pt; margin: 0; text-decoration: underline; font-weight: bold; }
+        .title p { margin: 2px 0 0; font-size: 11pt; }
+        
+        .layout-table { width: 100%; border: none; margin-bottom: 0; border-collapse: collapse; }
+        .layout-table td { border: none; padding: 0 0 5px 0; vertical-align: top; }
+        .layout-table .col-label { width: 70px; }
+        .layout-table .col-colon { width: 25px; text-align: center; }
+        
+        .person-table { width: 100%; border: none; border-collapse: collapse; }
+        .person-table td { border: none; padding: 0; vertical-align: top; }
+        .person-table .col-no { width: 25px; }
+        .person-table .col-field { width: 100px; }
+        .person-table .col-colon2 { width: 15px; text-align: center; }
+
+        .signature { margin-top: 15px; width: 300px; float: right; text-align: center; }
         .signature p { margin: 0; }
-        .signature .name { margin-top: 60px; font-weight: bold; text-decoration: underline; }
+        .signature .name { margin-top: 10px; font-weight: bold; text-decoration: underline; }
+        .clearfix { clear: both; }
+        
+        .closing { margin-top: 5px; margin-left: 95px; text-align: justify; }
+
         @media print {
             body { padding: 0; background: none; }
-            @page { size: A4; margin: 1.5cm 2cm; }
-            .no-print { display: none; }
+            @page { size: A4; margin: 1cm 1.5cm; }
         }
     </style>
 </head>
@@ -38,9 +50,9 @@
                 <img src="{{ public_path('images/Lambang_Kabupaten_Muaro_Jambi.png') }}" alt="Logo Muaro Jambi">
             </td>
             <td class="text-cell">
-                <h1>Pemerintah Kabupaten Muaro Jambi</h1>
-                <h2>Dinas Tanaman Pangan dan Hortikultura</h2>
-                <p>Jln Lintas Timur Komplek Perkantoran Bukit Cinto Kenang<br>Sengeti 36381</p>
+                <h1>PEMERINTAH KABUPATEN MUARO JAMBI</h1>
+                <h2>DINAS TANAMAN PANGAN<br>DAN HORTIKULTURA</h2>
+                <p>Komplek Perkantoran Bukit Cinto Kenang, Jalan Lintas Timur Km.26, Sengeti, Kecamatan Sekernan 36381<br>Telp. (0741) 590069, Faksimile. (0741) 590070</p>
             </td>
         </tr>
     </table>
@@ -48,53 +60,99 @@
 
     <div class="title">
         <h3>SURAT TUGAS</h3>
-        <p>Nomor: {{ $assignment->nomor_surat }}</p>
+        <p>Nomor : {{ $assignment->nomor_surat }}</p>
     </div>
 
-    <div class="content">
-        <p>Berdasarkan hasil verifikasi administrasi dan disposisi Kepala Dinas Tanaman Pangan dan Hortikultura Kabupaten Muaro Jambi, menugaskan nama-nama di bawah ini:</p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 50px; text-align: center;">No.</th>
-                    <th>Nama Lengkap</th>
-                    <th>NIP</th>
-                    <th>Jabatan</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($assignment->team_members as $index => $member)
-                <tr>
-                    <td style="text-align: center;">{{ $index + 1 }}</td>
-                    <td>{{ $member['name'] }}</td>
-                    <td>{{ $member['nip'] ?? '-' }}</td>
-                    <td>{{ $member['role'] }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <table class="layout-table">
+        <tr>
+            <td class="col-label">Dasar</td>
+            <td class="col-colon">:</td>
+            <td>
+                <table style="width:100%; border:none; margin:0; padding:0; border-collapse:collapse;">
+                    <tr><td style="width:25px; vertical-align:top; padding:0;">1.</td><td style="vertical-align:top; padding:0; text-align:justify;">Peraturan Bupati Muaro Jambi tentang Kedudukan, Susunan Organisasi, Tugas dan Fungsi, Serta Tata Kerja Dinas Tanaman Pangan dan Hortikultura;</td></tr>
+                    <tr><td style="vertical-align:top; padding:0;">2.</td><td style="vertical-align:top; padding:0; text-align:justify;">Dokumen Pelaksanaan Anggaran (DPA) Dinas Tanaman Pangan dan Hortikultura Kabupaten Muaro Jambi Tahun Anggaran {{ date('Y') }}.</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    <div style="text-align: center; margin: 15px 0 25px 0; font-weight: bold; font-size: 12pt; text-decoration: underline;">MEMERINTAHKAN :</div>
+    
+    <table class="layout-table">
+        @foreach($assignment->team_members as $index => $member)
+        <tr>
+            <td class="col-label">
+                @if($index === 0)
+                    Kepada
+                @endif
+            </td>
+            <td class="col-colon">:</td>
+            <td style="padding-bottom: 20px;">
+                @php
+                    // Coba dapatkan pangkat/gol dari database jika tidak ada di JSON
+                    $pangkatGol = $member['pangkat_gol'] ?? null;
+                    if (!$pangkatGol) {
+                        $emp = \App\Models\Employee::where('nip', $member['nip'])->first();
+                        $pangkatGol = $emp?->pangkat_gol ?? '-';
+                    }
+                @endphp
+                <table class="person-table">
+                    <tr>
+                        <td class="col-no">1.</td><td class="col-field">Nama</td><td class="col-colon2">:</td><td><b>{{ $member['name'] }}</b></td>
+                    </tr>
+                    <tr>
+                        <td>2.</td><td>Pangkat/gol</td><td>:</td><td>{{ $pangkatGol }}</td>
+                    </tr>
+                    <tr>
+                        <td>3.</td><td>NIP</td><td>:</td><td>{{ $member['nip'] ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>4.</td><td>Jabatan</td><td>:</td><td>{{ $member['role'] }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        @endforeach
+    </table>
 
-        <p>Untuk melaksanakan kunjungan dan verifikasi teknis Calon Petani Calon Lokasi (CPCL) atas proposal pengajuan {{ $proposal->alsintan_id ? 'peminjaman alsintan ' . $proposal->alsintan->name : 'program bantuan ' . $proposal->program->name }} dari pemohon/kelompok tani <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> yang beralamat di Desa <strong>{{ ucwords(strtolower($proposal->user->farmerProfile->alamat ?? '-')) }}</strong>, Kec. {{ ucwords(strtolower($proposal->user->farmerProfile->kecamatan ?? '-')) }}, Kab. Muaro Jambi.</p>
+    <table class="layout-table">
+        <tr>
+            <td class="col-label">Untuk</td>
+            <td class="col-colon">:</td>
+            <td>
+                <table style="width:100%; border:none; margin:0; padding:0; border-collapse:collapse;">
+                    @php
+                        $lamaHari = \Carbon\Carbon::parse($assignment->valid_from)->diffInDays(\Carbon\Carbon::parse($assignment->valid_until)) + 1;
+                        $tanggalTeks = $lamaHari == 1 
+                            ? 'tanggal ' . $assignment->valid_from->translatedFormat('d F Y') 
+                            : 'tanggal ' . $assignment->valid_from->translatedFormat('d F Y') . ' s/d ' . $assignment->valid_until->translatedFormat('d F Y');
+                    @endphp
+                    <tr><td style="width:25px; vertical-align:top; padding:0;">1.</td><td style="vertical-align:top; padding:0; text-align:justify;">Melaksanakan perjalanan dinas dalam rangka verifikasi lokasi {{ $proposal->alsintan_id ? 'peminjaman alsintan ' . $proposal->alsintan->name : 'bantuan ' . $proposal->program->name }} di KT. <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> Desa {{ ucwords(strtolower($proposal->user->farmerProfile->alamat ?? '-')) }} Kecamatan {{ ucwords(strtolower($proposal->user->farmerProfile->kecamatan ?? '-')) }} selama {{ $lamaHari }} hari pada {{ $tanggalTeks }}</td></tr>
+                    <tr><td style="vertical-align:top; padding:0;">2.</td><td style="vertical-align:top; padding:0; text-align:justify;">Biaya di bebankan pada DPA Dinas Tanaman Pangan dan Hortikultura Kabupaten Muaro Jambi Tahun {{ date('Y') }} No Rek 3.27.01.2.06.0009.5.1.02.04.001.00003.</td></tr>
+                    <tr><td style="vertical-align:top; padding:0;">3.</td><td style="vertical-align:top; padding:0; text-align:justify;">Setelah selesai melaksanakan perjalanan dinas agar melaporkan hasil pelaksanaannya.</td></tr>
+                    <tr><td style="vertical-align:top; padding:0;">4.</td><td style="vertical-align:top; padding:0; text-align:justify;">Surat tugas ini berlaku sejak tanggal dikeluarkan.</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-        <p>Surat tugas ini berlaku sejak tanggal <strong>{{ $assignment->valid_from->translatedFormat('d F Y') }}</strong> sampai dengan <strong>{{ $assignment->valid_until->translatedFormat('d F Y') }}</strong>. Demikian Surat Tugas ini dibuat untuk dilaksanakan dengan penuh tanggung jawab.</p>
+    <div class="closing">
+        <p style="text-indent: 40px; margin: 0;">Demikian surat tugas ini ditetapkan agar dilaksanakan dengan penuh tanggung jawab.</p>
     </div>
 
     <div class="signature">
+        @php
+            $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
+        @endphp
         <p>Sengeti, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>{{ $signature ? $signature->signer->role_label : 'Kepala Dinas' }},</p>
+        <p>Kepala Dinas,</p>
         
-        @if($signature)
-            <div style="margin: 5px 0;">
-                <img src="data:image/svg+xml;base64,{{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate(url('/verify/' . $signature->uuid))) }}" alt="QR Code" style="width: 80px; height: 80px;">
-            </div>
-            <div class="name" style="margin-top: 5px;">{{ $signature->signer->name }}</div>
-            <p>NIP. {{ $signature->signer->employee->nip ?? '-' }}</p>
-        @else
-            <div class="name">{{ $kepalaDinas?->name ?? '.......................' }}</div>
-            <p>NIP. {{ $kepalaDinas?->nip ?? '.......................' }}</p>
-        @endif
+        <div style="margin: 70px 0;"></div>
+        
+        <div class="name">{{ $kepalaDinas?->name ?? '.......................' }}</div>
+        <p>{{ $kepalaDinas?->pangkat_gol ?? '.......................' }}</p>
+        <p>NIP. {{ $kepalaDinas?->nip ?? '.......................' }}</p>
     </div>
+    <div class="clearfix"></div>
 </body>
 </html>
-

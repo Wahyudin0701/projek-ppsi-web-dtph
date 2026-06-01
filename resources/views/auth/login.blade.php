@@ -89,7 +89,7 @@
                     </div>
                     <div class="text-left sm:text-center ">
                         <h2 class="text-white font-black text-2xl sm:text-4xl leading-tight drop-shadow-lg opacity-0 animate-fade-in-up delay-200">Selamat Datang</h2>
-                        <p class="text-emerald-300 text-xs sm:text-lg font-bold mt-0.5 opacity-0 animate-fade-in-up delay-300">Digitalisasi Peminjaman Alsintan DTPH</p>
+                        <p class="text-emerald-300 text-xs sm:text-lg font-bold mt-0.5 opacity-0 animate-fade-in-up delay-300">Layanan Bantuan dan Peminjaman Alsintan DTPH</p>
                     </div>
                 </div>
 
@@ -109,7 +109,7 @@
                             <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-2">
                                 Selamat Datang <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-primary-800">Kembali</span>
                             </h2>
-                            <p class="text-gray-500 text-sm leading-relaxed">Masuk untuk mengakses layanan e-proposal alsintan dengan aman dan mudah.</p>
+                            <p class="text-gray-500 text-sm leading-relaxed">Masuk untuk mengakses layanan e-proposal bantuan dan alsintan dengan aman dan mudah.</p>
                         </div>
 
                         {{-- Form --}}

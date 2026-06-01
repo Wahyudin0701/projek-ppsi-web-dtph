@@ -135,6 +135,19 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="{{ route('admin.proposals.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.proposals.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                                        </svg>
+                                        Kelola Proposal
+                                        @php $pendingCount = \App\Models\Proposal::where('status', 'sedang_diverifikasi_admin')->count(); @endphp
+                                        @if($pendingCount > 0)
+                                            <span class="ml-auto bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingCount }}</span>
+                                        @endif
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="{{ route('admin.programs.index') }}" 
                                        class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.programs.*') ? $roleColor['active'] : $roleColor['hover'] }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,15 +156,7 @@
                                         Manajemen Program
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="{{ route('admin.employees.index') }}" 
-                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.employees.*') ? $roleColor['active'] : $roleColor['hover'] }}">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                        </svg>
-                                        Struktur Organisasi
-                                    </a>
-                                </li>
+
                                 <li>
                                     <a href="{{ route('admin.alsintan.index') }}" 
                                        class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.alsintan.*') ? $roleColor['active'] : $roleColor['hover'] }}">
@@ -164,18 +169,15 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.proposals.index') }}" 
-                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.proposals.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                    <a href="{{ route('admin.employees.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.employees.*') ? $roleColor['active'] : $roleColor['hover'] }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                         </svg>
-                                        Kelola Proposal
-                                        @php $pendingCount = \App\Models\Proposal::where('status', 'pending_verifikasi')->count(); @endphp
-                                        @if($pendingCount > 0)
-                                            <span class="ml-auto bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingCount }}</span>
-                                        @endif
+                                        Kelola Pegawai
                                     </a>
                                 </li>
+
                             @elseif(auth()->user()->isPimpinan())
                                 <li>
                                     <a href="{{ route('pimpinan.dashboard') }}"
@@ -191,7 +193,7 @@
                                        class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.index') || request()->routeIs('pimpinan.proposals.show') ? $roleColor['active'] : $roleColor['hover'] }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                                         Tinjau Proposal
-                                        @php $pimpinanPending = \App\Models\Proposal::whereIn('status', ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])->count(); @endphp
+                                        @php $pimpinanPending = \App\Models\Proposal::whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir'])->count(); @endphp
                                         @if($pimpinanPending > 0)
                                             <span class="ml-auto bg-indigo-200 text-indigo-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pimpinanPending }}</span>
                                         @endif
@@ -219,7 +221,7 @@
                                        class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('kabid.proposals.*') ? $roleColor['active'] : $roleColor['hover'] }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                                         Kelola Disposisi
-                                        @php $kabidPending = \App\Models\Proposal::where('kabid_id', auth()->id())->whereIn('status', ['didisposisi_kabid', 'survei_selesai'])->count(); @endphp
+                                        @php $kabidPending = \App\Models\Proposal::where('kabid_id', auth()->id())->whereIn('status', ['persiapan_survei', 'survei_selesai'])->count(); @endphp
                                         @if($kabidPending > 0)
                                             <span class="ml-auto bg-amber-200 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $kabidPending }}</span>
                                         @endif
@@ -432,7 +434,7 @@
                                 ->whereHas('farmerProfile', function ($query) {
                                     $query->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi']);
                                 })->count();
-                            $pendingCount = \App\Models\Proposal::where('status', 'pending_verifikasi')->count();
+                            $pendingCount = \App\Models\Proposal::where('status', 'sedang_diverifikasi_admin')->count();
                         @endphp
                         <a href="{{ route('admin.users.list') }}" @click="mobileMenuOpen = false"
                            class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ (request()->routeIs('admin.users.list') || ($isUserShow && $isMasterList)) ? $roleColor['active'] : $roleColor['hover'] }}">
@@ -447,24 +449,6 @@
                                 <span class="ml-auto bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingUserVerificationsCount }}</span>
                             @endif
                         </a>
-                        <a href="{{ route('admin.programs.index') }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.programs.*') ? $roleColor['active'] : $roleColor['hover'] }}">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                            Manajemen Program
-                        </a>
-                        <a href="{{ route('admin.employees.index') }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.employees.*') ? $roleColor['active'] : $roleColor['hover'] }}">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            Struktur Organisasi
-                        </a>
-                        <a href="{{ route('admin.alsintan.index') }}" @click="mobileMenuOpen = false"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.alsintan.*') ? $roleColor['active'] : $roleColor['hover'] }}">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
-                            </svg>
-                            Manajemen Alsintan
-                        </a>
                         <a href="{{ route('admin.proposals.index') }}" @click="mobileMenuOpen = false"
                            class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.proposals.*') ? $roleColor['active'] : $roleColor['hover'] }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -475,6 +459,26 @@
                                 <span class="ml-auto bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingCount }}</span>
                             @endif
                         </a>
+                        <a href="{{ route('admin.programs.index') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.programs.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            Manajemen Program
+                        </a>
+
+                        <a href="{{ route('admin.alsintan.index') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.alsintan.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+                            </svg>
+                            Manajemen Alsintan
+                        </a>
+                        <a href="{{ route('admin.employees.index') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.employees.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            Kelola Pegawai
+                        </a>
+
                     @elseif(auth()->user()->isPimpinan())
                         <a href="{{ route('pimpinan.dashboard') }}" @click="mobileMenuOpen = false"
                            class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.dashboard') ? $roleColor['active'] : $roleColor['hover'] }}">
@@ -485,7 +489,7 @@
                            class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('pimpinan.proposals.index') || request()->routeIs('pimpinan.proposals.show') ? $roleColor['active'] : $roleColor['hover'] }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                             Tinjau Proposal
-                            @php $pimpinanPending = \App\Models\Proposal::whereIn('status', ['diteruskan_ke_pimpinan', 'menunggu_approval_ba'])->count(); @endphp
+                            @php $pimpinanPending = \App\Models\Proposal::whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir'])->count(); @endphp
                             @if($pimpinanPending > 0)
                                 <span class="ml-auto bg-indigo-200 text-indigo-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pimpinanPending }}</span>
                             @endif
@@ -505,7 +509,7 @@
                            class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('kabid.proposals.*') ? $roleColor['active'] : $roleColor['hover'] }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                             Kelola Disposisi
-                            @php $kabidPending = \App\Models\Proposal::where('kabid_id', auth()->id())->whereIn('status', ['didisposisi_kabid', 'survei_selesai'])->count(); @endphp
+                            @php $kabidPending = \App\Models\Proposal::where('kabid_id', auth()->id())->whereIn('status', ['persiapan_survei', 'survei_selesai'])->count(); @endphp
                             @if($kabidPending > 0)
                                 <span class="ml-auto bg-amber-200 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $kabidPending }}</span>
                             @endif

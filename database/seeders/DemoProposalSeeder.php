@@ -35,7 +35,7 @@ class DemoProposalSeeder extends Seeder
         Proposal::create([
             'user_id' => $farmer->id,
             'program_id' => $program->id,
-            'status' => 'pending_verifikasi',
+            'status' => 'sedang_diverifikasi_admin',
             'submission_date' => now()->subDays(5),
             'lokasi_lahan' => 'Desa Baru, Sawah 1 (Pending)',
         ]);
@@ -44,7 +44,7 @@ class DemoProposalSeeder extends Seeder
         Proposal::create([
             'user_id' => $farmer->id,
             'alsintan_id' => $alsintan->id,
-            'status' => 'diteruskan_ke_pimpinan',
+            'status' => 'sedang_diverifikasi_pimpinan',
             'submission_date' => now()->subDays(4),
             'lokasi_lahan' => 'Desa Lama, Lahan B (Diteruskan)',
             'reviewed_at' => now()->subDays(3),
@@ -55,7 +55,7 @@ class DemoProposalSeeder extends Seeder
         $propDisposisi = Proposal::create([
             'user_id' => $farmer->id,
             'program_id' => $program->id,
-            'status' => 'didisposisi_kabid',
+            'status' => 'persiapan_survei',
             'submission_date' => now()->subDays(6),
             'lokasi_lahan' => 'Desa Sukamaju, Blok C (Disposisi)',
             'reviewed_at' => now()->subDays(5),
@@ -74,7 +74,7 @@ class DemoProposalSeeder extends Seeder
         $propSurat = Proposal::create([
             'user_id' => $farmer->id,
             'alsintan_id' => $alsintan->id,
-            'status' => 'surat_tugas_terbit',
+            'status' => 'sedang_survei',
             'submission_date' => now()->subDays(7),
             'lokasi_lahan' => 'Desa X, Blok Y (Surat Tugas)',
             'reviewed_at' => now()->subDays(6),
@@ -122,7 +122,7 @@ class DemoProposalSeeder extends Seeder
         $propBA = Proposal::create([
             'user_id' => $farmer->id,
             'alsintan_id' => $alsintan->id,
-            'status' => 'menunggu_approval_ba',
+            'status' => 'menunggu_keputusan_akhir',
             'submission_date' => now()->subDays(15),
             'lokasi_lahan' => 'Desa Z, Lahan Utama (Tunggu BA)',
             'reviewed_at' => now()->subDays(14),

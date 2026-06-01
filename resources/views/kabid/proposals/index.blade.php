@@ -45,10 +45,10 @@
                     <select name="status" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all appearance-none bg-white pr-8"
                         style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
                         <option value="">Semua Status</option>
-                        <option value="didisposisi_kabid" {{ request('status') === 'didisposisi_kabid' ? 'selected' : '' }}>Persiapan Survei</option>
-                        <option value="surat_tugas_terbit" {{ request('status') === 'surat_tugas_terbit' ? 'selected' : '' }}>Sedang Survei</option>
+                        <option value="persiapan_survei" {{ request('status') === 'persiapan_survei' ? 'selected' : '' }}>Persiapan Survei</option>
+                        <option value="sedang_survei" {{ request('status') === 'sedang_survei' ? 'selected' : '' }}>Sedang Survei</option>
                         <option value="survei_selesai" {{ request('status') === 'survei_selesai' ? 'selected' : '' }}>Menunggu Admin</option>
-                        <option value="menunggu_approval_ba" {{ request('status') === 'menunggu_approval_ba' ? 'selected' : '' }}>Menunggu Keputusan</option>
+                        <option value="menunggu_keputusan_akhir" {{ request('status') === 'menunggu_keputusan_akhir' ? 'selected' : '' }}>Menunggu Keputusan</option>
                         <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                         <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
@@ -71,13 +71,13 @@
                         @forelse($proposals as $proposal)
                             @php
                                 $statusConfig = [
-                                    'pending_verifikasi'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Verifikasi'],
-                                    'diteruskan_ke_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
-                                    'didisposisi_kabid'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Persiapan Survei'],
-                                    'surat_tugas_terbit'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
+                                    'sedang_diverifikasi_admin'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Di Admin'],
+                                    'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
+                                    'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Persiapan Survei'],
+                                    'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
                                     'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
-                                    'menunggu_review_kabid'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Review Kabid'],
-                                    'menunggu_approval_ba'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
+                                    'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
+                                    'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
                                     'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],
                                     'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
                                 ];
@@ -114,14 +114,14 @@
                                             Detail
                                         </a>
 
-                                        @if($proposal->status === 'didisposisi_kabid')
+                                        @if($proposal->status === 'persiapan_survei')
                                             <a href="{{ route('kabid.proposals.assign-team.form', $proposal) }}"
                                                class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm shadow-amber-500/20 whitespace-nowrap">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                                 Bentuk Tim
                                             </a>
 
-                                        @elseif($proposal->status === 'surat_tugas_terbit')
+                                        @elseif($proposal->status === 'sedang_survei')
                                             <a href="{{ route('documents.surat-tugas', $proposal) }}" target="_blank"
                                                class="inline-flex items-center justify-center xl:justify-start gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold rounded-xl transition-all border border-blue-100 whitespace-nowrap">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>

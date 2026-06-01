@@ -121,19 +121,49 @@
                             $initialStep = 1;
                         } elseif ($errors->has('nama_ketua') || $errors->has('nik_ketua') || $errors->has('no_wa') || $errors->has('foto_ktp')) {
                             $initialStep = 2;
-                        } elseif ($errors->has('no_sk') || $errors->has('file_sk') || $errors->has('anggota_nama') || $errors->has('anggota_nik')) {
+                        } elseif ($errors->has('no_sk') || $errors->has('file_sk') || $errors->has('anggota_nama') || $errors->has('anggota_nik') || $errors->has('name_petani') || $errors->has('id_poktan')) {
                             $initialStep = 3;
                         } elseif ($errors->has('grade') || $errors->has('luas_lahan') || $errors->has('komoditi') || $errors->has('komoditi_utama') || $errors->has('kecamatan') || $errors->has('alamat')) {
                             $initialStep = 4;
                         }
+                    }
+
+                    // Parse old komoditi
+                    $oldKomoditi = old('komoditi', []);
+                    $initSelectedKomoditi = [];
+                    $initKomoditiDetails = [];
+                    foreach($oldKomoditi as $k) {
+                        if(preg_match('/^(.*?)\s*\((.*?)\)$/', $k, $matches)) {
+                            $initSelectedKomoditi[] = $matches[1];
+                            $initKomoditiDetails[$matches[1]] = trim($matches[2]);
+                        } else {
+                            $initSelectedKomoditi[] = $k;
+                        }
+                    }
+                    
+                    // Parse old anggota
+                    $oldAnggotaNama = old('anggota_nama', []);
+                    $oldAnggotaNik = old('anggota_nik', []);
+                    $initAnggota = [];
+                    if(count($oldAnggotaNama) > 0) {
+                        foreach($oldAnggotaNama as $idx => $nama) {
+                            $initAnggota[] = [
+                                'nama' => $nama,
+                                'nik' => $oldAnggotaNik[$idx] ?? ''
+                            ];
+                        }
+                    } else {
+                        $initAnggota[] = ['nama' => '', 'nik' => ''];
                     }
                 @endphp
                 <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data"
                       x-data="{ 
                           step: {{ $initialStep }}, 
                           maxStep: {{ $role === 'petani' ? 5 : 1 }},
-                          selectedKomoditi: [],
-                          komoditiUtama: '',
+                          highestStep: {{ $initialStep }},
+                          selectedKomoditi: {{ json_encode($initSelectedKomoditi) }},
+                          komoditiDetails: {{ json_encode((object)$initKomoditiDetails) }},
+                          komoditiUtama: '{{ old('komoditi_utama', '') }}',
                           villages: [],
                           loadingVillages: false,
                           review: {},
@@ -157,6 +187,7 @@
                               this.review = {
                                   name: document.getElementById('name') ? document.getElementById('name').value : (document.getElementById('name_petani') ? document.getElementById('name_petani').value : ''),
                                   email: document.getElementById('email') ? document.getElementById('email').value : '',
+                                  id_poktan: document.getElementById('id_poktan') ? document.getElementById('id_poktan').value : '',
                                   no_sk: document.getElementById('no_sk') ? document.getElementById('no_sk').value : '',
                                   file_sk: document.getElementById('file_sk') ? document.getElementById('file_sk').files[0]?.name : '',
                                   nama_ketua: document.getElementById('nama_ketua') ? document.getElementById('nama_ketua').value : '',
@@ -165,7 +196,7 @@
                                   foto_ktp: document.getElementById('foto_ktp') ? document.getElementById('foto_ktp').files[0]?.name : '',
                                   grade: document.getElementById('grade') ? document.getElementById('grade').value : '',
                                   luas_lahan: document.getElementById('luas_lahan') ? document.getElementById('luas_lahan').value : '',
-                                  komoditi: this.selectedKomoditi.length > 0 ? this.selectedKomoditi.join(', ') : '',
+                                  komoditi: this.selectedKomoditi.length > 0 ? this.selectedKomoditi.map(k => (this.komoditiDetails[k] && this.komoditiDetails[k].trim() !== '') ? k + ' (' + this.komoditiDetails[k].trim() + ')' : k).join(', ') : '',
                                   komoditi_utama: document.getElementById('komoditi_utama') ? document.getElementById('komoditi_utama').value : '',
                                   kecamatan: document.getElementById('kecamatan') ? document.getElementById('kecamatan').value : '',
                                   alamat: desaEl ? (desaEl.options[desaEl.selectedIndex]?.text || desaEl.value) : '',
@@ -175,7 +206,12 @@
                                   }).filter(val => val.trim() !== '' && val.trim() !== '()').join(', ')
                               }
                           }
-                      }" 
+                      }"
+                      x-init="
+                          if ('{{ old('kecamatan') }}' !== '') {
+                              fetchVillages('{{ old('kecamatan') }}');
+                          }
+                      "
                       class="space-y-5 flex-1 pb-10">
                     @csrf
                     <input type="hidden" name="role" value="{{ $role }}">
@@ -187,24 +223,24 @@
                             <div class="absolute left-0 top-4 transform -translate-y-1/2 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
                             <div class="absolute left-0 top-4 transform -translate-y-1/2 h-1 bg-[#19A148] z-0 rounded-full transition-all duration-500 ease-in-out" :style="'width: ' + ((step - 1) / (maxStep - 1) * 100) + '%'"></div>
                             
-                            <div class="relative z-10 flex flex-col items-center">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 1 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">1</div>
+                            <div class="relative z-10 flex flex-col items-center" :class="1 <= highestStep ? 'cursor-pointer group' : ''" @click="if(1 <= highestStep) { if (1 < step || $el.closest('form').reportValidity()) { step = 1; if(step === 5) updateReview(); } }">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 1 ? 'bg-[#19A148] text-white shadow-md' + (1 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">1</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 1 ? 'text-[#19A148]' : 'text-gray-400'">Akun</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 2 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">2</div>
+                            <div class="relative z-10 flex flex-col items-center" :class="2 <= highestStep ? 'cursor-pointer group' : ''" @click="if(2 <= highestStep) { if (2 < step || $el.closest('form').reportValidity()) { step = 2; if(step === 5) updateReview(); } }">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 2 ? 'bg-[#19A148] text-white shadow-md' + (2 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">2</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 2 ? 'text-[#19A148]' : 'text-gray-400'">Ketua</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 3 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">3</div>
+                            <div class="relative z-10 flex flex-col items-center" :class="3 <= highestStep ? 'cursor-pointer group' : ''" @click="if(3 <= highestStep) { if (3 < step || $el.closest('form').reportValidity()) { step = 3; if(step === 5) updateReview(); } }">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 3 ? 'bg-[#19A148] text-white shadow-md' + (3 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">3</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 3 ? 'text-[#19A148]' : 'text-gray-400'">Kelompok</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 4 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">4</div>
+                            <div class="relative z-10 flex flex-col items-center" :class="4 <= highestStep ? 'cursor-pointer group' : ''" @click="if(4 <= highestStep) { if (4 < step || $el.closest('form').reportValidity()) { step = 4; if(step === 5) updateReview(); } }">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 4 ? 'bg-[#19A148] text-white shadow-md' + (4 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">4</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 4 ? 'text-[#19A148]' : 'text-gray-400'">Lahan</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ring-4 ring-white" :class="step >= 5 ? 'bg-[#19A148] text-white shadow-md' : 'bg-gray-200 text-gray-500'">5</div>
+                            <div class="relative z-10 flex flex-col items-center" :class="5 <= highestStep ? 'cursor-pointer group' : ''" @click="if(5 <= highestStep) { if (5 < step || $el.closest('form').reportValidity()) { step = 5; if(step === 5) updateReview(); } }">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 5 ? 'bg-[#19A148] text-white shadow-md' + (5 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">5</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 5 ? 'text-[#19A148]' : 'text-gray-400'">Review</span>
                             </div>
                         </div>
@@ -218,7 +254,7 @@
                             <!-- Nama Lengkap / Instansi -->
                             <div class="md:col-span-2">
                                 <label for="name" class="block text-sm font-bold text-gray-800 mb-2">
-                                    Nama Lengkap / Instansi
+                                    Nama Lengkap / Instansi <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -234,7 +270,7 @@
 
                             <!-- Email -->
                             <div class="md:col-span-2">
-                                <label for="email" class="block text-sm font-bold text-gray-800 mb-2">Alamat Email</label>
+                                <label for="email" class="block text-sm font-bold text-gray-800 mb-2">Alamat Email <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -248,7 +284,7 @@
 
                             <!-- Kata Sandi -->
                             <div x-data="{ showPassword: false }">
-                                <label for="password" class="block text-sm font-bold text-gray-800 mb-2">Kata Sandi</label>
+                                <label for="password" class="block text-sm font-bold text-gray-800 mb-2">Kata Sandi <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -272,7 +308,7 @@
 
                             <!-- Konfirmasi Kata Sandi -->
                             <div x-data="{ showPasswordConf: false }">
-                                <label for="password_confirmation" class="block text-sm font-bold text-gray-800 mb-2">Konfirmasi Sandi</label>
+                                <label for="password_confirmation" class="block text-sm font-bold text-gray-800 mb-2">Konfirmasi Sandi <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -302,7 +338,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Nama Ketua -->
                             <div class="md:col-span-2">
-                                <label for="nama_ketua" class="block text-sm font-bold text-gray-800 mb-2">Nama Ketua Kelompok</label>
+                                <label for="nama_ketua" class="block text-sm font-bold text-gray-800 mb-2">Nama Ketua Kelompok <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -316,7 +352,7 @@
 
                             <!-- NIK Ketua -->
                             <div>
-                                <label for="nik_ketua" class="block text-sm font-bold text-gray-800 mb-2">NIK Ketua</label>
+                                <label for="nik_ketua" class="block text-sm font-bold text-gray-800 mb-2">NIK Ketua <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"/></svg>
@@ -330,7 +366,7 @@
 
                             <!-- No WhatsApp -->
                             <div>
-                                <label for="no_wa" class="block text-sm font-bold text-gray-800 mb-2">Nomor WhatsApp</label>
+                                <label for="no_wa" class="block text-sm font-bold text-gray-800 mb-2">Nomor WhatsApp <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
@@ -344,7 +380,7 @@
 
                             <!-- Foto KTP -->
                             <div class="md:col-span-2">
-                                <label for="foto_ktp" class="block text-sm font-bold text-gray-800 mb-2">Foto KTP Ketua (JPG/PNG max 5MB)</label>
+                                <label for="foto_ktp" class="block text-sm font-bold text-gray-800 mb-2">Foto KTP Ketua <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
@@ -352,6 +388,7 @@
                                     <input type="file" name="foto_ktp" id="foto_ktp" accept=".jpg,.jpeg,.png" :required="step === 2"
                                         class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
                                 </div>
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: JPG/PNG. Maksimal 5MB.</p>
                                 <x-input-error :messages="$errors->get('foto_ktp')" class="mt-2" />
                             </div>
 
@@ -364,7 +401,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Nama Kelompok Tani -->
                             <div>
-                                <label for="name_petani" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani</label>
+                                <label for="name_petani" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -376,9 +413,37 @@
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
 
+                            <!-- ID Poktan -->
+                            <div>
+                                <label for="id_poktan" class="block text-sm font-bold text-gray-800 mb-2">ID Poktan <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+                                    </div>
+                                    <input type="text" name="id_poktan" id="id_poktan" value="{{ old('id_poktan') }}" :required="step === 3"
+                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                        placeholder="Masukkan ID Poktan">
+                                </div>
+                                <x-input-error :messages="$errors->get('id_poktan')" class="mt-2" />
+                            </div>
+
+                            <!-- File SK -->
+                            <div>
+                                <label for="file_sk" class="block text-sm font-bold text-gray-800 mb-2">File SK Kelompok Tani <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    </div>
+                                    <input type="file" name="file_sk" id="file_sk" accept=".pdf,.jpg,.jpeg,.png" :required="step === 3"
+                                        class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
+                                </div>
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: PDF/JPG/PNG. Maksimal 5MB.</p>
+                                <x-input-error :messages="$errors->get('file_sk')" class="mt-2" />
+                            </div>
+
                             <!-- No SK -->
                             <div>
-                                <label for="no_sk" class="block text-sm font-bold text-gray-800 mb-2">No. SK Kelompok Tani</label>
+                                <label for="no_sk" class="block text-sm font-bold text-gray-800 mb-2">No. SK Kelompok Tani <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -390,22 +455,9 @@
                                 <x-input-error :messages="$errors->get('no_sk')" class="mt-2" />
                             </div>
 
-                            <!-- File SK -->
-                            <div class="md:col-span-2">
-                                <label for="file_sk" class="block text-sm font-bold text-gray-800 mb-2">File SK Kelompok Tani (PDF/JPG/PNG max 5MB)</label>
-                                <div class="relative group">
-                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                                    </div>
-                                    <input type="file" name="file_sk" id="file_sk" accept=".pdf,.jpg,.jpeg,.png" :required="step === 3"
-                                        class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
-                                </div>
-                                <x-input-error :messages="$errors->get('file_sk')" class="mt-2" />
-                            </div>
-
                             <!-- Anggota Kelompok -->
-                            <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: [{nama: '', nik: ''}] }">
-                                <label class="block text-sm font-bold text-gray-800 mb-3">Daftar Anggota Kelompok</label>
+                            <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data='{ anggota: {!! json_encode($initAnggota) !!} }'>
+                                <label class="block text-sm font-bold text-gray-800 mb-3">Daftar Anggota Kelompok <span class="text-red-500">*</span></label>
                                 <template x-for="(item, index) in anggota" :key="index">
                                     <div class="flex items-start sm:items-center flex-col sm:flex-row gap-3 mb-3">
                                         <div class="relative group w-full sm:w-1/2">
@@ -446,17 +498,17 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Grade Tani -->
                             <div>
-                                <label for="grade" class="block text-sm font-bold text-gray-800 mb-2">Grade Tani</label>
+                                <label for="grade" class="block text-sm font-bold text-gray-800 mb-2">Grade Tani <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                                     </div>
                                     <select name="grade" id="grade" :required="step === 4"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white">
-                                        <option value="" disabled selected>Pilih Grade</option>
-                                        <option value="Pemula">Pemula</option>
-                                        <option value="Madya">Madya</option>
-                                        <option value="Utama">Utama</option>
+                                        <option value="" disabled {{ old('grade') ? '' : 'selected' }}>Pilih Grade</option>
+                                        <option value="Pemula" {{ old('grade') == 'Pemula' ? 'selected' : '' }}>Pemula</option>
+                                        <option value="Madya" {{ old('grade') == 'Madya' ? 'selected' : '' }}>Madya</option>
+                                        <option value="Utama" {{ old('grade') == 'Utama' ? 'selected' : '' }}>Utama</option>
                                     </select>
                                 </div>
                                 <x-input-error :messages="$errors->get('grade')" class="mt-2" />
@@ -464,7 +516,7 @@
 
                             <!-- Luas Lahan Total -->
                             <div>
-                                <label for="luas_lahan" class="block text-sm font-bold text-gray-800 mb-2">Luas Lahan Total (Hektar)</label>
+                                <label for="luas_lahan" class="block text-sm font-bold text-gray-800 mb-2">Luas Lahan Total (Hektar) <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
@@ -478,22 +530,55 @@
 
                             <!-- Komoditi -->
                             <div class="md:col-span-2">
-                                <label for="komoditi" class="block text-sm font-bold text-gray-800 mb-2">Pilih Komoditi</label>
-                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-1">
-                                    @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung', 'Cabai', 'Sayuran', 'Kelapa Sawit'] as $kom)
-                                    <label class="flex items-center space-x-3 cursor-pointer group">
-                                        <input type="checkbox" name="komoditi[]" value="{{ $kom }}" x-model="selectedKomoditi" :required="selectedKomoditi.length === 0 && step === 4"
-                                            class="w-4 h-4 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] transition-colors cursor-pointer" @change="if(!selectedKomoditi.includes(komoditiUtama)) komoditiUtama = selectedKomoditi.length > 0 ? selectedKomoditi[0] : ''">
-                                        <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{{ $kom }}</span>
-                                    </label>
-                                    @endforeach
+                                <label class="block text-sm font-bold text-gray-800 mb-3">Pilih Komoditi <span class="text-red-500">*</span></label>
+                                
+                                <!-- Tanaman Pangan -->
+                                <div class="mb-5">
+                                    <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Tanaman Pangan</p>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung Hibrida', 'Kedelai', 'Kacang Tanah'] as $kom)
+                                        <div class="flex flex-col space-y-2">
+                                            <label class="flex items-center space-x-3 cursor-pointer group">
+                                                <input type="checkbox" value="{{ $kom }}" x-model="selectedKomoditi" :required="selectedKomoditi.length === 0 && step === 4"
+                                                    class="w-4 h-4 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] transition-colors cursor-pointer" @change="if(!selectedKomoditi.includes(komoditiUtama)) komoditiUtama = selectedKomoditi.length > 0 ? selectedKomoditi[0] : ''">
+                                                <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{{ $kom }}</span>
+                                            </label>
+                                        </div>
+                                        @endforeach
+                                    </div>
                                 </div>
+
+                                <!-- Holtikultura -->
+                                <div>
+                                    <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Holtikultura</p>
+                                    <div class="flex flex-col space-y-3">
+                                        @foreach([
+                                            'Sayuran' => 'Contoh: brokoli, kangkung', 
+                                            'Buah-buahan' => 'Contoh: mangga, jeruk', 
+                                            'Biofarmaka' => 'Contoh: jahe, kunyit'
+                                        ] as $kom => $placeholder)
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                                            <label class="flex items-center space-x-3 cursor-pointer group sm:w-1/3">
+                                                <input type="checkbox" value="{{ $kom }}" x-model="selectedKomoditi" :required="selectedKomoditi.length === 0 && step === 4"
+                                                    class="w-4 h-4 text-[#19A148] border-gray-300 rounded focus:ring-[#19A148] transition-colors cursor-pointer" @change="if(!selectedKomoditi.includes(komoditiUtama)) komoditiUtama = selectedKomoditi.length > 0 ? selectedKomoditi[0] : ''">
+                                                <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{{ $kom }}</span>
+                                            </label>
+                                            <div x-show="selectedKomoditi.includes('{{ $kom }}')" x-transition class="flex-1">
+                                                <input type="text" x-model="komoditiDetails['{{ $kom }}']" placeholder="{{ $placeholder }}" class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148]">
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <template x-for="k in selectedKomoditi" :key="k">
+                                    <input type="hidden" name="komoditi[]" :value="komoditiDetails[k] && komoditiDetails[k].trim() !== '' ? k + ' (' + komoditiDetails[k].trim() + ')' : k">
+                                </template>
                                 <x-input-error :messages="$errors->get('komoditi')" class="mt-2" />
                             </div>
 
                             <!-- Komoditi Utama (Dynamic) -->
-                            <div x-show="selectedKomoditi.length > 0" x-cloak x-transition>
-                                <label for="komoditi_utama" class="block text-sm font-bold text-gray-800 mb-2">Komoditi Utama</label>
+                            <div class="md:col-span-2" x-show="selectedKomoditi.length > 0" x-cloak x-transition>
+                                <label for="komoditi_utama" class="block text-sm font-bold text-gray-800 mb-2">Komoditi Utama <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-[#19A148]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
@@ -510,7 +595,7 @@
 
                             <!-- Kecamatan -->
                             <div>
-                                <label for="kecamatan" class="block text-sm font-bold text-gray-800 mb-2">Kecamatan</label>
+                                <label for="kecamatan" class="block text-sm font-bold text-gray-800 mb-2">Kecamatan <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -519,17 +604,17 @@
                                         @change="fetchVillages($event.target.value)"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white">
                                         <option value="" disabled selected>Pilih Kecamatan</option>
-                                        <option value="Bahar Selatan">Bahar Selatan</option>
-                                        <option value="Bahar Utara">Bahar Utara</option>
-                                        <option value="Jambi Luar Kota">Jambi Luar Kota</option>
-                                        <option value="Kumpeh">Kumpeh</option>
-                                        <option value="Kumpeh Ulu">Kumpeh Ulu</option>
-                                        <option value="Maro Sebo">Maro Sebo</option>
-                                        <option value="Mestong">Mestong</option>
-                                        <option value="Sekernan">Sekernan</option>
-                                        <option value="Sungai Bahar">Sungai Bahar</option>
-                                        <option value="Sungai Gelam">Sungai Gelam</option>
-                                        <option value="Taman Rajo">Taman Rajo</option>
+                                        <option value="Bahar Selatan" {{ old('kecamatan') == 'Bahar Selatan' ? 'selected' : '' }}>Bahar Selatan</option>
+                                        <option value="Bahar Utara" {{ old('kecamatan') == 'Bahar Utara' ? 'selected' : '' }}>Bahar Utara</option>
+                                        <option value="Jambi Luar Kota" {{ old('kecamatan') == 'Jambi Luar Kota' ? 'selected' : '' }}>Jambi Luar Kota</option>
+                                        <option value="Kumpeh" {{ old('kecamatan') == 'Kumpeh' ? 'selected' : '' }}>Kumpeh</option>
+                                        <option value="Kumpeh Ulu" {{ old('kecamatan') == 'Kumpeh Ulu' ? 'selected' : '' }}>Kumpeh Ulu</option>
+                                        <option value="Maro Sebo" {{ old('kecamatan') == 'Maro Sebo' ? 'selected' : '' }}>Maro Sebo</option>
+                                        <option value="Mestong" {{ old('kecamatan') == 'Mestong' ? 'selected' : '' }}>Mestong</option>
+                                        <option value="Sekernan" {{ old('kecamatan') == 'Sekernan' ? 'selected' : '' }}>Sekernan</option>
+                                        <option value="Sungai Bahar" {{ old('kecamatan') == 'Sungai Bahar' ? 'selected' : '' }}>Sungai Bahar</option>
+                                        <option value="Sungai Gelam" {{ old('kecamatan') == 'Sungai Gelam' ? 'selected' : '' }}>Sungai Gelam</option>
+                                        <option value="Taman Rajo" {{ old('kecamatan') == 'Taman Rajo' ? 'selected' : '' }}>Taman Rajo</option>
                                     </select>
                                 </div>
                                 <x-input-error :messages="$errors->get('kecamatan')" class="mt-2" />
@@ -537,7 +622,7 @@
 
                             <!-- Nama Desa -->
                             <div>
-                                <label for="alamat" class="block text-sm font-bold text-gray-800 mb-2">Nama Desa</label>
+                                <label for="alamat" class="block text-sm font-bold text-gray-800 mb-2">Nama Desa <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
                                         <svg x-show="!loadingVillages" class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -546,10 +631,9 @@
                                     <select name="alamat" id="alamat" :required="step === 4"
                                         :disabled="villages.length === 0"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] sm:text-sm appearance-none transition-all bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
-                                        <option value="" disabled selected>
-                                            <template x-if="villages.length === 0">Pilih Kecamatan dulu...</template>
-                                            <template x-if="villages.length > 0">Pilih Desa/Kelurahan</template>
-                                        </option>
+                                        <template x-if="villages.length > 0">
+                                            <option value="" disabled selected>Pilih Desa/Kelurahan</option>
+                                        </template>
                                         <template x-for="village in villages" :key="village.id">
                                             <option :value="village.name" x-text="village.name + ' (' + village.status + ')'"></option>
                                         </template>
@@ -566,14 +650,43 @@
                         <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 mb-6 space-y-4">
                             <h3 class="font-bold text-gray-800 border-b border-gray-200 pb-2 mb-3">Review Data Kelompok Tani</h3>
                             
+                            <h4 class="font-bold text-sm text-[#19A148] mb-2 pb-1 border-b border-gray-100">1. Data Akun</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                                 <div>
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Kelompok</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.name"></p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.name || '-'"></p>
                                 </div>
                                 <div>
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Email</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.email"></p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.email || '-'"></p>
+                                </div>
+                            </div>
+
+                            <h4 class="font-bold text-sm text-[#19A148] mt-6 mb-2 pb-1 border-b border-gray-100">2. Data Ketua</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Ketua</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.nama_ketua || '-'"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">NIK Ketua</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.nik_ketua || '-'"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">No. WhatsApp</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.no_wa || '-'"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Foto KTP Ketua</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.foto_ktp || 'Belum dipilih'"></p>
+                                </div>
+                            </div>
+
+                            <h4 class="font-bold text-sm text-[#19A148] mt-6 mb-2 pb-1 border-b border-gray-100">3. Data Kelompok</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">ID Poktan</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.id_poktan || '-'"></p>
                                 </div>
                                 <div>
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">No. SK Kelompok</p>
@@ -583,49 +696,37 @@
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">File SK</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.file_sk || 'Belum dipilih'"></p>
                                 </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Ketua</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.nama_ketua"></p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">NIK Ketua</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.nik_ketua"></p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">No. WhatsApp</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.no_wa"></p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Foto KTP Ketua</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.foto_ktp || 'Belum dipilih'"></p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Grade</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.grade"></p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Luas Lahan (Ha)</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.luas_lahan"></p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Semua Komoditi</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.komoditi"></p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Komoditi Utama</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.komoditi_utama"></p>
-                                </div>
-                                <div class="sm:col-span-2">
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Kecamatan</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.kecamatan"></p>
-                                </div>
-                                <div class="sm:col-span-2">
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Desa</p>
-                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.alamat"></p>
-                                </div>
                                 <div class="sm:col-span-2">
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Anggota Kelompok</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.anggota ? review.anggota : '-'"></p>
+                                </div>
+                            </div>
+
+                            <h4 class="font-bold text-sm text-[#19A148] mt-6 mb-2 pb-1 border-b border-gray-100">4. Data Lahan & Komoditi</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Grade</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.grade || '-'"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Luas Lahan (Ha)</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.luas_lahan || '-'"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Semua Komoditi</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.komoditi || '-'"></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Komoditi Utama</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.komoditi_utama || '-'"></p>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Kecamatan</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.kecamatan || '-'"></p>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Desa</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.alamat || '-'"></p>
                                 </div>
                             </div>
                         </div>
@@ -637,7 +738,7 @@
                                     class="w-5 h-5 text-[#19A148] bg-white border-gray-300 rounded focus:ring-[#19A148] focus:ring-2 cursor-pointer" @click.stop>
                             </div>
                             <div class="ml-3 text-sm">
-                                <label for="persetujuan_data" class="font-bold text-gray-800 cursor-pointer block">Pernyataan Kebenaran Data</label>
+                                <label for="persetujuan_data" class="font-bold text-gray-800 cursor-pointer block">Pernyataan Kebenaran Data <span class="text-red-500">*</span></label>
                                 <p class="text-gray-500 text-xs mt-1 leading-relaxed">Saya menyatakan bahwa seluruh data kelompok tani yang saya inputkan di atas adalah benar dan dapat dipertanggungjawabkan sesuai dengan kondisi yang sebenarnya.</p>
                             </div>
                         </div>
@@ -653,7 +754,7 @@
                             Pendaftaran akun Kelompok Tani memerlukan verifikasi manual oleh Admin Dinas sebelum dapat mengakses sistem dan mengajukan usulan.
                         </p>
                     </div>
-                    @endif
+                    @endif  
 
                     {{-- Form Actions (Buttons) --}}
                     <div class="pt-6 flex gap-4">
@@ -664,7 +765,7 @@
                         </button>
 
                         <!-- Next Button -->
-                        <button type="button" x-show="step < maxStep" @click="if($el.closest('form').reportValidity()) { if(step === maxStep - 1) updateReview(); step++; }"
+                        <button type="button" x-show="step < maxStep" @click="if($el.closest('form').reportValidity()) { if(step === maxStep - 1) updateReview(); step++; highestStep = Math.max(highestStep, step); }"
                                 class="flex-1 flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#19A148] hover:bg-[#158C3D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
                             Selanjutnya
                             <svg class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
