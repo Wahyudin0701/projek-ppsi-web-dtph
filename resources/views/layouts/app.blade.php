@@ -86,21 +86,53 @@
                     </ul>
                     @endif
 
+                    @unless(auth()->user()->isPimpinan() || auth()->user()->isKabid())
+                    <ul class="space-y-2 mb-6">
+                        <li>
+                            <a href="{{ route('dashboard') }}" 
+                            class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('dashboard') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                </svg>
+                                Dashboard
+                            </a>
+                        </li>
+                    </ul>
+                    @endunless
+
+                    @if(auth()->user()->hasRole('super_admin'))
+                    <div class="mb-6">
+                        <h3 class="text-[11px] font-extrabold text-[#94A3B8] uppercase tracking-[0.15em] mb-4 px-3">Super Admin</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="{{ route('super-admin.users.index') }}" 
+                                   class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('super-admin.users.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    Manajemen Role
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('super-admin.audit-logs.index') }}" 
+                                   class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('super-admin.audit-logs.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    Audit Trail
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('super-admin.settings.edit') }}" 
+                                   class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('super-admin.settings.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    Pengaturan Web
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    @endif
+
                     <!-- Menu Utama -->
                     <div>
                         <h3 class="text-[11px] font-extrabold text-[#94A3B8] uppercase tracking-[0.15em] mb-4 px-3">Menu Utama</h3>
                         <ul class="space-y-2">
-                            @unless(auth()->user()->isPimpinan() || auth()->user()->isKabid())
-                            <li>
-                                <a href="{{ route('dashboard') }}" 
-                                class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('dashboard') ? $roleColor['active'] : $roleColor['hover'] }}">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                                    </svg>
-                                    Dashboard
-                                </a>
-                            </li>
-                            @endunless
 
                             @if(auth()->user()->isAdmin())
                                 @php
@@ -175,6 +207,51 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                         </svg>
                                         Kelola Pegawai
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.articles.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.articles.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                                        </svg>
+                                        Kelola Berita & Artikel
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.documents.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.documents.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        Kelola Unduh Dokumen
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.surat.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.surat.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        Kelola Surat
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.satuan-kerja.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.satuan-kerja.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                        </svg>
+                                        Kelola Satuan Kerja
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.contacts.index') }}" 
+                                       class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.contacts.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                        Kelola Kontak
                                     </a>
                                 </li>
 
@@ -264,6 +341,20 @@
                                     Profil Saya
                                 </a>
                             </li>
+                            <li>
+                                @php
+                                    $msgRoute = auth()->user()->isUser() ? route('farmer.messages.index') : route('user.messages.index');
+                                    $msgActive = auth()->user()->isUser() ? request()->routeIs('farmer.messages.*') : request()->routeIs('user.messages.*');
+                                    $unreadCount = \App\Models\Contact::where('user_id', auth()->id())->where('status', 'replied')->count(); // Optional: You might want to track if it's read by user, but let's just display total for now or replied.
+                                @endphp
+                                <a href="{{ $msgRoute }}" 
+                                   class="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 {{ $msgActive ? $roleColor['active'] : $roleColor['hover'] }}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    Pusat Pesan
+                                </a>
+                            </li>
                         </ul>
                     </div>
                     @endif
@@ -274,9 +365,13 @@
             <div class="p-6 border-t border-gray-50 bg-gray-50/30">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-full {{ $roleColor['avatar'] }} border-2 border-white shadow-sm flex items-center justify-center font-extrabold text-white">
-                            {{ substr(auth()->user()->display_name, 0, 1) }}
-                        </div>
+                        @if(auth()->user()->display_foto)
+                            <img src="{{ auth()->user()->display_foto }}" alt="Foto Profile" class="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm shrink-0">
+                        @else
+                            <div class="w-11 h-11 rounded-full {{ $roleColor['avatar'] }} border-2 border-white shadow-sm flex items-center justify-center font-extrabold text-white shrink-0">
+                                {{ substr(auth()->user()->display_name, 0, 1) }}
+                            </div>
+                        @endif
                         <div class="flex flex-col">
                             <span class="font-extrabold text-[13px] text-[#1E293B] leading-tight">{{ auth()->user()->display_name }}</span>
                             <span class="text-[11px] text-[#94A3B8] font-bold capitalize">{{ auth()->user()->roleLabel }}</span>
@@ -322,9 +417,15 @@
                     
                     {{-- Avatar Dropdown --}}
                     <div class="relative" x-data="{ userMobileOpen: false }" @click.away="userMobileOpen = false">
-                        <button @click="userMobileOpen = !userMobileOpen" class="w-9 h-9 rounded-full {{ $roleColor['avatar'] }} text-white flex items-center justify-center font-bold text-sm shadow-sm active:scale-95 transition-all">
-                            {{ substr(auth()->user()->display_name, 0, 1) }}
-                        </button>
+                        @if(auth()->user()->display_foto)
+                            <button @click="userMobileOpen = !userMobileOpen" class="w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm active:scale-95 transition-all focus:outline-none shrink-0">
+                                <img src="{{ auth()->user()->display_foto }}" alt="Foto Profile" class="w-full h-full object-cover">
+                            </button>
+                        @else
+                            <button @click="userMobileOpen = !userMobileOpen" class="w-9 h-9 rounded-full {{ $roleColor['avatar'] }} text-white flex items-center justify-center font-bold text-sm shadow-sm active:scale-95 transition-all shrink-0">
+                                {{ substr(auth()->user()->display_name, 0, 1) }}
+                            </button>
+                        @endif
 
                         <div x-show="userMobileOpen" 
                              x-transition:enter="transition ease-out duration-200"
@@ -393,9 +494,13 @@
                         </button>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center font-extrabold text-white text-lg">
-                            {{ substr(auth()->user()->display_name, 0, 1) }}
-                        </div>
+                        @if(auth()->user()->display_foto)
+                            <img src="{{ auth()->user()->display_foto }}" alt="Foto Profile" class="w-12 h-12 rounded-full object-cover border-2 border-white/40 shadow-sm shrink-0">
+                        @else
+                            <div class="w-12 h-12 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center font-extrabold text-white text-lg shrink-0">
+                                {{ substr(auth()->user()->display_name, 0, 1) }}
+                            </div>
+                        @endif
                         <div>
                             <div class="font-extrabold text-white text-sm leading-tight">{{ auth()->user()->display_name }}</div>
                                 <div class="text-white/70 text-xs mt-0.5">
@@ -415,14 +520,35 @@
                     </a>
                     @endif
 
-                    <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest px-3 mb-2">MENU UTAMA</p>
                     @unless(auth()->user()->isPimpinan() || auth()->user()->isKabid())
                     <a href="{{ route('dashboard') }}" @click="mobileMenuOpen = false"
-                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('dashboard') ? $roleColor['active'] : $roleColor['hover'] }}">
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('dashboard') ? $roleColor['active'] : $roleColor['hover'] }} mb-4">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         Dashboard
                     </a>
                     @endunless
+
+                    @if(auth()->user()->hasRole('super_admin'))
+                        <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest px-3 mb-2 mt-2">SUPER ADMIN</p>
+                        <a href="{{ route('super-admin.users.index') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('super-admin.users.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Manajemen Role
+                        </a>
+                        <a href="{{ route('super-admin.audit-logs.index') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('super-admin.audit-logs.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Audit Trail
+                        </a>
+                        <a href="{{ route('super-admin.settings.edit') }}" @click="mobileMenuOpen = false"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('super-admin.settings.*') ? $roleColor['active'] : $roleColor['hover'] }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Pengaturan Web
+                        </a>
+                        <div class="my-3 border-t border-gray-100"></div>
+                    @endif
+
+                    <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest px-3 mb-2">MENU UTAMA</p>
 
                     @if(auth()->user()->isAdmin())
                         @php
@@ -569,9 +695,13 @@
 
                     <div class="relative" x-data="{ userOpen: false }" @click.away="userOpen = false">
                         <button @click="userOpen = !userOpen" class="flex items-center gap-3 p-1 rounded-xl transition-all border border-transparent  group">
-                            <div class="w-9 h-9 rounded-full {{ $roleColor['avatar'] }} text-white flex items-center justify-center font-bold shadow-sm transition-all">
-                                {{ substr(auth()->user()->display_name, 0, 1) }}
-                            </div>
+                            @if(auth()->user()->display_foto)
+                                <img src="{{ auth()->user()->display_foto }}" alt="Foto Profile" class="w-9 h-9 rounded-full object-cover shadow-sm transition-all shrink-0">
+                            @else
+                                <div class="w-9 h-9 rounded-full {{ $roleColor['avatar'] }} text-white flex items-center justify-center font-bold shadow-sm transition-all shrink-0">
+                                    {{ substr(auth()->user()->display_name, 0, 1) }}
+                                </div>
+                            @endif
                             <div class="hidden md:block text-left">
                                 <div class="font-bold text-sm text-gray-800 leading-tight group-hover:text-primary-700 transition-colors">{{ auth()->user()->display_name }}</div>
                                 <div class="text-[11px] text-gray-500 font-medium capitalize">{{ auth()->user()->roleLabel }}</div>

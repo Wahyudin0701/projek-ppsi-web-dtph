@@ -1,6 +1,22 @@
 <x-app-layout>
     <x-slot name="header">Edit Data Pegawai</x-slot>
 
+@php
+    $structuralRolesList = [
+        'Kepala Dinas', 
+        'Sekretaris', 
+        'Kasubbag Umum Kepegawaian', 
+        'Fungsional Perencanaan', 
+        'Fungsional Analis Keuangan Pusat dan Daerah', 
+        'Kabid. Tanaman Pangan', 
+        'Kabid. Hortikultura', 
+        'Kabid. PSP', 
+        'Kabid. Penyuluhan',
+        'UPTD Balai Benih Utama Arang Arang'
+    ];
+    $isStructural = in_array($employee->role, $structuralRolesList);
+@endphp
+
     <div class="max-w-7xl mx-auto space-y-6">
         <div class="flex items-center justify-between mb-2">
             <div>
@@ -116,15 +132,23 @@
                     @error('pangkat_gol')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- Jabatan --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {{-- Jabatan & Bidang --}}
+                <div class="grid grid-cols-1 {{ $isStructural ? '' : 'sm:grid-cols-2' }} gap-5">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Jabatan *</label>
-                        <input type="text" name="role" value="{{ old('role', $employee->role) }}" required placeholder="Misal: Penyuluh Pertanian"
-                               class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('role') border-red-400 @enderror">
-                        @error('role')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                        @if($isStructural)
+                            <div class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-gray-50 text-gray-600 font-semibold">
+                                {{ $employee->role }}
+                            </div>
+                            <input type="hidden" name="role" value="{{ $employee->role }}">
+                        @else
+                            <input type="text" name="role" value="{{ old('role', $employee->role) }}" required placeholder="Misal: Penyuluh Pertanian"
+                                   class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('role') border-red-400 @enderror">
+                            @error('role')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                        @endif
                     </div>
                     
+                    @if(!$isStructural)
                     {{-- Bidang --}}
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Bidang <span class="normal-case font-normal text-gray-400">(Penempatan)</span></label>
@@ -138,6 +162,7 @@
                         </select>
                         @error('bidang')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                     </div>
+                    @endif
                 </div>
 
             <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">

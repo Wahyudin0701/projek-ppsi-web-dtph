@@ -105,6 +105,7 @@ class ProposalController extends Controller
 
         $request->validate([
             'no_surat_pengajuan'  => 'nullable|string|max:255',
+            'rencana_durasi_hari' => 'required|integer|min:1|max:365',
             'file_proposal'       => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
@@ -114,6 +115,7 @@ class ProposalController extends Controller
             'user_id'             => $user->id,
             'alsintan_id'         => $alsintan->id,
             'no_surat_pengajuan'  => $request->no_surat_pengajuan,
+            'rencana_durasi_hari' => $request->rencana_durasi_hari,
             'file_proposal'       => $filePath,
             'status'              => 'sedang_diverifikasi_admin',
             'submission_date'     => now(),

@@ -10,10 +10,23 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Proposal;
 
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'role', 'is_verified'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}");
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -56,7 +69,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->hasRole(['admin', 'super_admin']);
     }
 
     /**
@@ -64,12 +77,12 @@ class User extends Authenticatable
      */
     public function isUser(): bool
     {
-        return $this->role === 'user';
+        return $this->hasRole('user');
     }
 
     public function isUmum(): bool
     {
-        return $this->role === 'umum';
+        return $this->hasRole('umum');
     }
 
     /**
@@ -77,7 +90,7 @@ class User extends Authenticatable
      */
     public function isPimpinan(): bool
     {
-        return $this->role === 'pimpinan';
+        return $this->hasRole('pimpinan');
     }
 
     /**
@@ -85,22 +98,22 @@ class User extends Authenticatable
      */
     public function isKabid(): bool
     {
-        return in_array($this->role, ['kabid_psp', 'kabid_tp', 'kabid_hortikultura']);
+        return $this->hasRole(['kabid_psp', 'kabid_tp', 'kabid_hortikultura']);
     }
 
     public function isKabidPsp(): bool
     {
-        return $this->role === 'kabid_psp';
+        return $this->hasRole('kabid_psp');
     }
 
     public function isKabidTp(): bool
     {
-        return $this->role === 'kabid_tp';
+        return $this->hasRole('kabid_tp');
     }
 
     public function isKabidHortikultura()
     {
-        return $this->role === 'kabid_hortikultura';
+        return $this->hasRole('kabid_hortikultura');
     }
 
     /**
@@ -108,7 +121,11 @@ class User extends Authenticatable
      */
     public function getRoleLabelAttribute(): string
     {
-        return match($this->role) {
+        // Fallback to the first Spatie role if available, otherwise use legacy string
+        $roleName = $this->roles->first()?->name ?? $this->role;
+
+        return match($roleName) {
+            'super_admin'=> 'Super Admin',
             'admin'      => 'Admin Dinas',
             'pimpinan'   => 'Pimpinan / Kepala Dinas',
             'kabid_psp'  => 'Kepala Bidang PSP',
@@ -116,7 +133,7 @@ class User extends Authenticatable
             'kabid_hortikultura' => 'Kepala Bidang Hortikultura',
             'user'       => 'Kelompok Tani',
             'umum'       => 'Umum',
-            default      => ucfirst($this->role),
+            default      => ucfirst($roleName),
         };
     }
 
@@ -196,15 +213,31 @@ class User extends Authenticatable
      */
     public function getDisplayNameAttribute()
     {
+        if ($emp = $this->employee) {
+            if ($emp->name && $emp->name !== 'Belum Diisi') {
+                return $emp->name;
+            }
+        }
+        
         if ($this->isPimpinan()) return 'Pimpinan';
         if ($this->isKabidPsp()) return 'Kabid PSP';
         if ($this->isKabidTp()) return 'Kabid Tanaman Pangan';
         if ($this->isKabidHortikultura()) return 'Kabid Hortikultura';
 
-        if ($emp = $this->employee) {
-            return $emp->name;
-        }
         return $this->name;
+    }
+    
+    /**
+     * Get display foto
+     */
+    public function getDisplayFotoAttribute()
+    {
+        if ($emp = $this->employee) {
+            if ($emp->foto) {
+                return asset('storage/' . $emp->foto);
+            }
+        }
+        return null;
     }
     
     /**

@@ -128,7 +128,7 @@
                             : 'tanggal ' . $assignment->valid_from->translatedFormat('d F Y') . ' s/d ' . $assignment->valid_until->translatedFormat('d F Y');
                     @endphp
                     <tr><td style="width:25px; vertical-align:top; padding:0;">1.</td><td style="vertical-align:top; padding:0; text-align:justify;">Melaksanakan perjalanan dinas dalam rangka verifikasi lokasi {{ $proposal->alsintan_id ? 'peminjaman alsintan ' . $proposal->alsintan->name : 'bantuan ' . $proposal->program->name }} di KT. <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> Desa {{ ucwords(strtolower($proposal->user->farmerProfile->alamat ?? '-')) }} Kecamatan {{ ucwords(strtolower($proposal->user->farmerProfile->kecamatan ?? '-')) }} selama {{ $lamaHari }} hari pada {{ $tanggalTeks }}</td></tr>
-                    <tr><td style="vertical-align:top; padding:0;">2.</td><td style="vertical-align:top; padding:0; text-align:justify;">Biaya di bebankan pada DPA Dinas Tanaman Pangan dan Hortikultura Kabupaten Muaro Jambi Tahun {{ date('Y') }} No Rek 3.27.01.2.06.0009.5.1.02.04.001.00003.</td></tr>
+                    <tr><td style="vertical-align:top; padding:0;">2.</td><td style="vertical-align:top; padding:0; text-align:justify;">Biaya di bebankan pada DPA Dinas Tanaman Pangan dan Hortikultura Kabupaten Muaro Jambi No Rek 3.27.01.2.06.0009.5.1.02.04.001.00003.</td></tr>
                     <tr><td style="vertical-align:top; padding:0;">3.</td><td style="vertical-align:top; padding:0; text-align:justify;">Setelah selesai melaksanakan perjalanan dinas agar melaporkan hasil pelaksanaannya.</td></tr>
                     <tr><td style="vertical-align:top; padding:0;">4.</td><td style="vertical-align:top; padding:0; text-align:justify;">Surat tugas ini berlaku sejak tanggal dikeluarkan.</td></tr>
                 </table>
@@ -150,7 +150,7 @@
         <div style="margin: 70px 0;"></div>
         
         <div class="name">{{ $kepalaDinas?->name ?? '.......................' }}</div>
-        <p>{{ $kepalaDinas?->pangkat_gol ?? '.......................' }}</p>
+        <p>{{ $kepalaDinas?->pangkat_gol ?? ' ' }}</p>
         <p>NIP. {{ $kepalaDinas?->nip ?? '.......................' }}</p>
     </div>
     <div class="clearfix"></div>

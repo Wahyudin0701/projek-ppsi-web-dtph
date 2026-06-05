@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin'      => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'pimpinan'   => \App\Http\Middleware\EnsureUserIsPimpinan::class,
             'kabid'      => \App\Http\Middleware\EnsureUserIsKabid::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

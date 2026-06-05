@@ -50,6 +50,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+        if ($user->role === 'umum' && !$user->is_verified) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda sedang menunggu verifikasi oleh admin.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

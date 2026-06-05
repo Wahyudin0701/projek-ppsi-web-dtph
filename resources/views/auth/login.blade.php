@@ -26,7 +26,7 @@
         <div class="hidden lg:flex lg:w-1/2 relative flex-col justify-between overflow-hidden opacity-0 animate-fade-in">
             {{-- Background Image & Overlay --}}
             <div class="absolute inset-0 z-0">
-                <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Branding Background">
+                <img src="{{ \App\Models\Setting::get('homepage_background') ? asset('storage/' . \App\Models\Setting::get('homepage_background')) : asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Branding Background">
                 <div class="absolute inset-0 bg-black/70"></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-950/90 via-primary-900/40 to-emerald-950/80"></div>
             </div>
@@ -79,7 +79,7 @@
         <div class="w-full lg:w-1/2 relative">
             {{-- Mobile: Fixed Background (doesn't scroll) --}}
             <div class="lg:hidden fixed top-0 left-0 right-0 h-64 sm:h-72 z-0 bg-primary-900 opacity-0 animate-fade-in">
-                <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover opacity-60" alt="Hero">
+                <img src="{{ \App\Models\Setting::get('homepage_background') ? asset('storage/' . \App\Models\Setting::get('homepage_background')) : asset('images/img_dtph.png') }}" class="w-full h-full object-cover opacity-60" alt="Hero">
                 <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-primary-900/50 to-primary-900"></div>
 
                 {{-- Content: Logo kiri + Teks rata kiri (rata atas) --}}
@@ -111,6 +111,13 @@
                             </h2>
                             <p class="text-gray-500 text-sm leading-relaxed">Masuk untuk mengakses layanan e-proposal bantuan dan alsintan dengan aman dan mudah.</p>
                         </div>
+
+                        @if (session('status'))
+                            <div class="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-2xl flex items-center gap-3 animate-fade-in-down">
+                                <svg class="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                <span class="font-bold text-sm">{{ session('status') }}</span>
+                            </div>
+                        @endif
 
                         {{-- Form --}}
                         <form method="POST" action="{{ route('login') }}" class="space-y-5">

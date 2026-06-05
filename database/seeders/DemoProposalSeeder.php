@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Proposal;
 use App\Models\Program;
 use App\Models\Alsintan;
-use App\Models\DispositionLog;
+use App\Models\ProposalDisposition;
 use App\Models\SurveyAssignment;
 use App\Models\CpclVerification;
 use App\Models\BeritaAcara;
@@ -37,7 +37,6 @@ class DemoProposalSeeder extends Seeder
             'program_id' => $program->id,
             'status' => 'sedang_diverifikasi_admin',
             'submission_date' => now()->subDays(5),
-            'lokasi_lahan' => 'Desa Baru, Sawah 1 (Pending)',
         ]);
 
         // [Status 2] diteruskan_ke_pimpinan
@@ -46,7 +45,6 @@ class DemoProposalSeeder extends Seeder
             'alsintan_id' => $alsintan->id,
             'status' => 'sedang_diverifikasi_pimpinan',
             'submission_date' => now()->subDays(4),
-            'lokasi_lahan' => 'Desa Lama, Lahan B (Diteruskan)',
             'reviewed_at' => now()->subDays(3),
             'admin_notes' => 'Dokumen lengkap sesuai SIMLUHTAN.',
         ]);
@@ -57,16 +55,15 @@ class DemoProposalSeeder extends Seeder
             'program_id' => $program->id,
             'status' => 'persiapan_survei',
             'submission_date' => now()->subDays(6),
-            'lokasi_lahan' => 'Desa Sukamaju, Blok C (Disposisi)',
             'reviewed_at' => now()->subDays(5),
             'admin_notes' => 'Berkas awal lengkap.',
             'kabid_id' => $kabid->id,
         ]);
-        DispositionLog::create([
+        ProposalDisposition::create([
             'proposal_id' => $propDisposisi->id,
-            'from_user_id' => $pimpinan->id,
-            'to_user_id' => $kabid->id,
-            'instruction' => 'Tolong segera survei lahan ini.',
+            'disposed_by' => $pimpinan->id,
+            'disposed_to' => $kabid->id,
+            'notes' => 'Tolong segera survei lahan ini.',
             'created_at' => now()->subDays(4),
         ]);
 
@@ -76,7 +73,6 @@ class DemoProposalSeeder extends Seeder
             'alsintan_id' => $alsintan->id,
             'status' => 'sedang_survei',
             'submission_date' => now()->subDays(7),
-            'lokasi_lahan' => 'Desa X, Blok Y (Surat Tugas)',
             'reviewed_at' => now()->subDays(6),
             'kabid_id' => $kabid->id,
         ]);
@@ -97,7 +93,6 @@ class DemoProposalSeeder extends Seeder
             'program_id' => $program->id,
             'status' => 'survei_selesai',
             'submission_date' => now()->subDays(10),
-            'lokasi_lahan' => 'Desa Y, Blok Z (Selesai Survei)',
             'reviewed_at' => now()->subDays(9),
             'kabid_id' => $kabid->id,
         ]);
@@ -124,7 +119,6 @@ class DemoProposalSeeder extends Seeder
             'alsintan_id' => $alsintan->id,
             'status' => 'menunggu_keputusan_akhir',
             'submission_date' => now()->subDays(15),
-            'lokasi_lahan' => 'Desa Z, Lahan Utama (Tunggu BA)',
             'reviewed_at' => now()->subDays(14),
             'kabid_id' => $kabid->id,
         ]);
@@ -143,7 +137,6 @@ class DemoProposalSeeder extends Seeder
             'program_id' => $program->id,
             'status' => 'disetujui',
             'submission_date' => now()->subDays(20),
-            'lokasi_lahan' => 'Desa ABC, Sawah X (Selesai)',
             'reviewed_at' => now()->subDays(19),
             'kabid_id' => $kabid->id,
             'decided_at' => now()->subDays(1),

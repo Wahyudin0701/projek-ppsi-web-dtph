@@ -16,6 +16,18 @@ class UserSeeder extends Seeder
     {
         $password = Hash::make('password');
 
+        // Super Admin
+        User::firstOrCreate(
+            ['email' => 'superadmin@dtph.com'],
+            [
+                'name' => 'IT System Administrator',
+                'password' => $password,
+                'role' => 'super_admin',
+                'is_verified' => 1,
+                'email_verified_at' => now(),
+            ]
+        );
+
         // Admin
         User::firstOrCreate(
             ['email' => 'admin@dtph.com'],
@@ -99,14 +111,16 @@ class UserSeeder extends Seeder
         }
 
         // Kelompok Tani 1
-        $tani1 = User::create([
-            'name' => 'Kelompok Tani Harapan Jaya',
-            'email' => 'user1@farmer.com',
-            'password' => $password,
-            'role' => 'user',
-            'is_verified' => 1,
-            'email_verified_at' => now(),
-        ]);
+        $tani1 = User::updateOrCreate(
+            ['email' => 'user1@farmer.com'],
+            [
+                'name' => 'Kelompok Tani Harapan Jaya',
+                'password' => $password,
+                'role' => 'user',
+                'is_verified' => 1,
+                'email_verified_at' => now(),
+            ]
+        );
         $profile1 = FarmerProfile::create([
             'user_id' => $tani1->id,
             'nama_kelompok' => 'Kelompok Tani Harapan Jaya',
@@ -129,14 +143,16 @@ class UserSeeder extends Seeder
         ]);
 
         // Kelompok Tani 2
-        $tani2 = User::create([
-            'name' => 'Kelompok Tani Makmur Bersama',
-            'email' => 'user2@farmer.com',
-            'password' => $password,
-            'role' => 'user',
-            'is_verified' => 1,
-            'email_verified_at' => now(),
-        ]);
+        $tani2 = User::updateOrCreate(
+            ['email' => 'user2@farmer.com'],
+            [
+                'name' => 'Kelompok Tani Makmur Bersama',
+                'password' => $password,
+                'role' => 'user',
+                'is_verified' => 1,
+                'email_verified_at' => now(),
+            ]
+        );
         $profile2 = FarmerProfile::create([
             'user_id' => $tani2->id,
             'nama_kelompok' => 'Kelompok Tani Makmur Bersama',

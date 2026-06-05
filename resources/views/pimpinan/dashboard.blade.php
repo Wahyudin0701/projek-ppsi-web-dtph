@@ -88,7 +88,7 @@
                 </div>
             </div>
             
-            <div id="chartContainer" class="w-full h-80"></div>
+            <div x-ref="chart" id="chartContainer" class="w-full h-80"></div>
         </div>
 
         {{-- ===== PROPOSAL MENUNGGU PERSETUJUAN ===== --}}
@@ -169,14 +169,21 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-    document.addEventListener('alpine:init', () => {
+    const initChartComponent = () => {
         Alpine.data('proposalChartComponent', () => ({
             filter: 'year',
             chart: null,
-            rawData: @json($chartData),
+            rawData: {!! json_encode($chartData) !!},
             
             init() {
-                this.renderChart();
+                const checkAndRender = () => {
+                    if (typeof ApexCharts !== 'undefined' && this.$refs.chart) {
+                        this.renderChart();
+                    } else {
+                        setTimeout(checkAndRender, 100);
+                    }
+                };
+                checkAndRender();
             },
             
             setFilter(val) {
@@ -309,7 +316,7 @@
                     }
                 };
                 
-                this.chart = new ApexCharts(document.querySelector("#chartContainer"), options);
+                this.chart = new ApexCharts(this.$refs.chart, options);
                 this.chart.render();
             },
             
@@ -326,6 +333,12 @@
                 }
             }
         }));
-    });
+    };
+
+    if (window.Alpine) {
+        initChartComponent();
+    } else {
+        document.addEventListener('alpine:init', initChartComponent);
+    }
 </script>
 @endpush

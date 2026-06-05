@@ -55,24 +55,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @php
-                $bppList = [
-                    ['nama' => 'BPP Kec. Sekernan', 'alamat' => 'Jl. Lintas Timur, Sekernan', 'koordinator' => 'Eko Prasetyo, S.P.', 'hp' => '0812-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Sekernan+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Sungai Gelam', 'alamat' => 'Jl. Poros Sungai Gelam', 'koordinator' => 'Dewi Lestari, S.P.', 'hp' => '0813-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Sungai+Gelam+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Kumpeh', 'alamat' => 'Jl. Raya Kumpeh', 'koordinator' => 'M. Ridwan, S.P.', 'hp' => '0821-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Kumpeh+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Kumpeh Ulu', 'alamat' => 'Jl. Kumpeh Ulu No. 12', 'koordinator' => 'Fitriani, S.P.', 'hp' => '0852-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Kumpeh+Ulu+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Mestong', 'alamat' => 'Jl. Lintas Sumatera, KM 23', 'koordinator' => 'Heri Susanto, S.P.', 'hp' => '0812-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Mestong+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Jambi Luar Kota', 'alamat' => 'Pematang Gajah, Jaluko', 'koordinator' => 'Ani Maryani, S.P.', 'hp' => '0811-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Jambi+Luar+Kota+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Bahar Selatan', 'alamat' => 'Unit 4 Bahar Selatan', 'koordinator' => 'Supriadi, S.P.', 'hp' => '0822-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Bahar+Selatan+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Bahar Utara', 'alamat' => 'Unit 1 Bahar Utara', 'koordinator' => 'Yuni Astuti, S.P.', 'hp' => '0813-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Bahar+Utara+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Taman Rajo', 'alamat' => 'Kec. Taman Rajo', 'koordinator' => 'Darmawan, S.P.', 'hp' => '0812-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Taman+Rajo+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Sungai Bahar', 'alamat' => 'Unit 2 Sungai Bahar', 'koordinator' => 'Ratna Wulan, S.P.', 'hp' => '0813-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Sungai+Bahar+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Maro Sebo', 'alamat' => 'Kec. Maro Sebo', 'koordinator' => 'Junaidi, S.P.', 'hp' => '0812-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Maro+Sebo+Muaro+Jambi'],
-                    ['nama' => 'BPP Kec. Dendang', 'alamat' => 'Kec. Dendang', 'koordinator' => 'Sari Indah, S.P.', 'hp' => '0812-xxxx-xxxx', 'maps' => 'https://www.google.com/maps/search/BPP+Dendang+Muaro+Jambi'],
-                ];
-                @endphp
-
-                @foreach($bppList as $bpp)
+                @foreach($satuanKerjas as $bpp)
                 <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(34,197,94,0.1)] transition-all duration-500 group flex flex-col h-full">
                     <div class="flex items-center justify-between mb-8">
 
@@ -82,28 +65,28 @@
                     </div>
                     
                     <div class="mb-8 flex-1">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary-700 transition-colors leading-tight">{{ $bpp['nama'] }}</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary-700 transition-colors leading-tight">{{ $bpp->nama }}</h3>
                         
                         <div class="space-y-4">
                             <div class="flex items-start gap-4">
 
-                                <p class="text-sm text-gray-500 font-medium pt-1.5 leading-relaxed">{{ $bpp['alamat'] }}</p>
+                                <p class="text-sm text-gray-500 font-medium pt-1.5 leading-relaxed">{{ $bpp->alamat }}</p>
                             </div>
                             <div class="flex items-start gap-4">
 
                                 <div>
                                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Koordinator</p>
-                                    <p class="text-sm text-gray-900 font-bold">{{ $bpp['koordinator'] }}</p>
+                                    <p class="text-sm text-gray-900 font-bold">{{ $bpp->koordinator }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4">
-                        <a href="{{ $bpp['maps'] }}" target="_blank" class="flex items-center justify-center gap-2 px-4 py-3.5 bg-gray-50 hover:bg-primary-50 text-gray-600 hover:text-primary-700 text-xs font-bold rounded-2xl transition-all duration-300 border border-transparent hover:border-primary-100">
+                        <a href="{{ $bpp->maps ?: '#' }}" target="{{ $bpp->maps ? '_blank' : '_self' }}" class="flex items-center justify-center gap-2 px-4 py-3.5 bg-gray-50 hover:bg-primary-50 text-gray-600 hover:text-primary-700 text-xs font-bold rounded-2xl transition-all duration-300 border border-transparent hover:border-primary-100 {{ !$bpp->maps ? 'opacity-50 cursor-not-allowed' : '' }}">
                             Lokasi
                         </a>
-                        <a href="https://wa.me/{{ str_replace('-', '', $bpp['hp']) }}" class="flex items-center justify-center gap-2 px-4 py-3.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-primary-600/10 hover:shadow-primary-600/30 hover:-translate-y-1">
+                        <a href="https://wa.me/{{ str_replace('-', '', $bpp->hp) }}" class="flex items-center justify-center gap-2 px-4 py-3.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-primary-600/10 hover:shadow-primary-600/30 hover:-translate-y-1">
                             WhatsApp
                         </a>
                     </div>

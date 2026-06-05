@@ -59,6 +59,13 @@ class EmployeeController extends Controller
             'struktur.*.pangkat_gol' => 'nullable|string|max:100',
         ]);
 
+        $roleMapping = [
+            'Kepala Dinas' => 'pimpinan',
+            'Kabid. Tanaman Pangan' => 'kabid_tp',
+            'Kabid. Hortikultura' => 'kabid_hortikultura',
+            'Kabid. PSP' => 'kabid_psp',
+        ];
+
         foreach ($request->struktur as $item) {
             if (!empty($item['name']) || !empty($item['nip'])) {
                 Employee::updateOrCreate(
@@ -69,6 +76,18 @@ class EmployeeController extends Controller
                         'pangkat_gol' => $item['pangkat_gol'] ?? null,
                     ]
                 );
+
+                if (isset($roleMapping[$item['role']]) && !empty($item['name'])) {
+                    $userRole = $roleMapping[$item['role']];
+                    $user = \App\Models\User::where('role', $userRole)->first();
+                    if (!$user) {
+                        $user = \App\Models\User::role($userRole)->first();
+                    }
+                    if ($user) {
+                        $user->name = $item['name'];
+                        $user->save();
+                    }
+                }
             }
         }
 

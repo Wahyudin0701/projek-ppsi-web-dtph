@@ -38,6 +38,7 @@ Route::get('/program', function () {
 Route::get('/kontak', function () {
     return view('public.kontak');
 })->name('kontak');
+Route::post('/kontak', [\App\Http\Controllers\PublicInformationController::class, 'storeContact'])->name('kontak.store');
 
 Route::prefix('profil')->name('profil.')->group(function () {
     Route::get('/overview', function () {
@@ -54,20 +55,15 @@ Route::prefix('profil')->name('profil.')->group(function () {
         return view('public.profil.tugas-fungsi');
     })->name('tugas-fungsi');
     Route::get('/satuan-kerja', function () {
-        return view('public.profil.satuan-kerja');
+        $satuanKerjas = \App\Models\SatuanKerja::all();
+        return view('public.profil.satuan-kerja', compact('satuanKerjas'));
     })->name('satuan-kerja');
 });
 
 Route::prefix('informasi')->name('informasi.')->group(function () {
-    Route::get('/berita-artikel', function () {
-        return view('public.informasi.berita-artikel');
-    })->name('berita-artikel');
-    Route::get('/berita-artikel/{slug}', function ($slug) {
-        return view('public.informasi.berita-artikel-detail', compact('slug'));
-    })->name('berita-artikel.detail');
-    Route::get('/unduh-dokumen', function () {
-        return view('public.informasi.unduh-dokumen');
-    })->name('unduh-dokumen');
+    Route::get('/berita-artikel', [\App\Http\Controllers\PublicInformationController::class, 'articles'])->name('berita-artikel');
+    Route::get('/berita-artikel/{slug}', [\App\Http\Controllers\PublicInformationController::class, 'articleDetail'])->name('berita-artikel.detail');
+    Route::get('/unduh-dokumen', [\App\Http\Controllers\PublicInformationController::class, 'documents'])->name('unduh-dokumen');
     Route::get('/faq', function () {
         return view('public.informasi.faq');
     })->name('faq');
@@ -89,6 +85,34 @@ Route::middleware(['auth'])->group(function () {
 
     // Farmer Profile Request Change
     Route::post('/farmer/profile/request-change', [App\Http\Controllers\FarmerProfileController::class, 'requestChange'])->name('farmer.profile.request-change');
+
+    // Farmer/User Routes
+    Route::middleware(['role:user'])->prefix('farmer')->name('farmer.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Farmer\DashboardController::class, 'index'])->name('dashboard');
+
+        // Pusat Pesan Farmer
+        Route::get('/messages', [App\Http\Controllers\User\MessageController::class, 'index'])->name('messages.index');
+    });
+
+    // Untuk role user (umum) yang memiliki pesan
+    Route::middleware(['role:umum'])->prefix('user')->name('user.')->group(function () {
+        Route::get('/messages', [App\Http\Controllers\User\MessageController::class, 'index'])->name('messages.index');
+    });
+
+    // Super Admin Routes
+    Route::middleware(['role:super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+        
+        // Mutasi Pegawai / User Roles
+        Route::resource('users', \App\Http\Controllers\SuperAdmin\UserController::class)->except(['show']);
+
+        // Audit Trail Logs
+        Route::get('audit-logs', [\App\Http\Controllers\SuperAdmin\AuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('audit-logs/{id}', [\App\Http\Controllers\SuperAdmin\AuditLogController::class, 'show'])->name('audit-logs.show');
+
+        // Web Settings
+        Route::get('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'update'])->name('settings.update');
+    });
 
     // Admin Routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -116,6 +140,23 @@ Route::middleware(['auth'])->group(function () {
         // Manajemen Struktur Organisasi (Pegawai)
         Route::post('employees/update-struktur', [App\Http\Controllers\Admin\EmployeeController::class, 'updateStruktur'])->name('employees.update-struktur');
         Route::resource('employees', App\Http\Controllers\Admin\EmployeeController::class)->except(['show']);
+
+        // Kelola Berita & Artikel
+        Route::resource('articles', App\Http\Controllers\Admin\ArticleController::class)->except(['show']);
+
+        // Kelola Unduh Dokumen
+        Route::resource('documents', App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
+
+        // Kelola Surat (System Generated)
+        Route::get('surat', [App\Http\Controllers\Admin\SuratController::class, 'index'])->name('surat.index');
+
+        // Kelola Satuan Kerja
+        Route::resource('satuan-kerja', App\Http\Controllers\Admin\SatuanKerjaController::class)->except(['show']);
+
+        // Kelola Kontak
+        Route::get('contacts', [App\Http\Controllers\Admin\ContactController::class, 'index'])->name('contacts.index');
+        Route::get('contacts/{contact}', [App\Http\Controllers\Admin\ContactController::class, 'show'])->name('contacts.show');
+        Route::post('contacts/{contact}/reply', [App\Http\Controllers\Admin\ContactController::class, 'reply'])->name('contacts.reply');
     });
 
     // Pimpinan Routes

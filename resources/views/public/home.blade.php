@@ -119,7 +119,7 @@
     <section class="relative min-h-screen flex items-center overflow-hidden -mt-16 md:-mt-20 pt-16 md:pt-20">
         {{-- Background --}}
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Gedung DTPH Muaro Jambi" loading="eager">
+            <img src="{{ \App\Models\Setting::get('homepage_background') ? asset('storage/' . \App\Models\Setting::get('homepage_background')) : asset('images/img_dtph.png') }}" class="w-full h-full object-cover" alt="Gedung DTPH Muaro Jambi" loading="eager">
             <div class="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-950/70 to-gray-950/30"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent"></div>
         </div>

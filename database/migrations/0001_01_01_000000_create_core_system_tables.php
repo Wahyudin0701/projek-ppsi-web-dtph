@@ -24,7 +24,7 @@ return new class extends Migration
         });
 
         // Add CHECK constraint manually since Blueprint doesn't support it directly in all versions uniformly
-        DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('admin', 'user', 'umum', 'pimpinan', 'kabid_psp', 'kabid_tp', 'kabid_hortikultura'))");
+        DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('super_admin', 'admin', 'user', 'umum', 'pimpinan', 'kabid_psp', 'kabid_tp', 'kabid_hortikultura'))");
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();

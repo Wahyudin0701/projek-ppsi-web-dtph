@@ -107,74 +107,83 @@
                         <div class="relative z-10">
                             <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight mb-8">Kirim Pesan</h2>
                             
-                            <form @submit.prevent="submitForm" class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="space-y-2">
-                                        <label for="name" class="text-sm font-bold text-gray-700 ml-1">Nama Lengkap</label>
-                                        <input type="text" id="name" name="name" required
-                                            @auth value="{{ auth()->user()->name }}" @endauth
-                                            placeholder="Masukkan nama Anda"
-                                            class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm">
+                            @if(session('contact_success'))
+                                <div class="flex flex-col items-center justify-center text-center py-12 h-[500px]">
+                                    <div class="w-20 h-20 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     </div>
-                                    <div class="space-y-2">
-                                        <label for="email" class="text-sm font-bold text-gray-700 ml-1">Alamat Email</label>
-                                        <input type="email" id="email" name="email" required
-                                            @auth value="{{ auth()->user()->email }}" @endauth
-                                            placeholder="email@anda.com"
-                                            class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm">
+                                    <h3 class="text-3xl font-extrabold text-gray-900 mb-4">Pesan Terkirim!</h3>
+                                    <p class="text-gray-500 font-medium mb-8 max-w-md mx-auto leading-relaxed">Terima kasih telah menghubungi kami. Tim kami akan segera menanggapi pesan Anda melalui Pusat Pesan di Dashboard Anda.</p>
+                                    <div class="flex gap-4 items-center justify-center">
+                                        <a href="{{ route('kontak') }}" class="px-6 py-3 bg-primary-50 text-primary-700 font-bold rounded-xl hover:bg-primary-100 transition-colors shadow-sm">Kirim Pesan Baru</a>
+                                        @auth
+                                            @php
+                                                $msgRoute = auth()->user()->isUser() ? route('farmer.messages.index') : route('user.messages.index');
+                                            @endphp
+                                            <a href="{{ $msgRoute }}" class="px-6 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-md">Buka Pusat Pesan</a>
+                                        @endauth
                                     </div>
                                 </div>
+                            @else
+                                <form action="{{ route('kontak.store') }}" method="POST" class="space-y-6" @submit="loading = true; if(isGuest) { window.location.href = '{{ route('login') }}'; return false; }">
+                                    @csrf
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="space-y-2">
+                                            <label for="name" class="text-sm font-bold text-gray-700 ml-1">Nama Lengkap</label>
+                                            <input type="text" id="name" name="name" required
+                                                @auth value="{{ auth()->user()->name }}" @endauth
+                                                placeholder="Masukkan nama Anda"
+                                                class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label for="email" class="text-sm font-bold text-gray-700 ml-1">Alamat Email</label>
+                                            <input type="email" id="email" name="email" required
+                                                @auth value="{{ auth()->user()->email }}" @endauth
+                                                placeholder="email@anda.com"
+                                                class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm">
+                                        </div>
+                                    </div>
 
-                                <div class="space-y-2">
-                                    <label for="subject" class="text-sm font-bold text-gray-700 ml-1">Subjek</label>
-                                    <select id="subject" name="subject" required
-                                        class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm appearance-none cursor-pointer">
-                                        <option value="" disabled selected>Pilih subjek pesan</option>
-                                        <option value="pertanyaan">Pertanyaan Umum</option>
-                                        <option value="program">Informasi Program Bantuan</option>
-                                        <option value="teknis">Bantuan Teknis Aplikasi</option>
-                                        <option value="pengaduan">Pengaduan Layanan</option>
-                                        <option value="lainnya">Lainnya</option>
-                                    </select>
-                                </div>
+                                    <div class="space-y-2">
+                                        <label for="subject" class="text-sm font-bold text-gray-700 ml-1">Subjek</label>
+                                        <select id="subject" name="subject" required
+                                            class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm appearance-none cursor-pointer">
+                                            <option value="" disabled selected>Pilih subjek pesan</option>
+                                            <option value="pertanyaan">Pertanyaan Umum</option>
+                                            <option value="program">Informasi Program Bantuan</option>
+                                            <option value="teknis">Bantuan Teknis Aplikasi</option>
+                                            <option value="pengaduan">Pengaduan Layanan</option>
+                                            <option value="lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
 
-                                <div class="space-y-2">
-                                    <label for="message" class="text-sm font-bold text-gray-700 ml-1">Pesan Anda</label>
-                                    <textarea id="message" name="message" required rows="5"
-                                        placeholder="Tuliskan pesan atau pertanyaan Anda di sini..."
-                                        class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm resize-none"></textarea>
-                                </div>
+                                    <div class="space-y-2">
+                                        <label for="message" class="text-sm font-bold text-gray-700 ml-1">Pesan Anda</label>
+                                        <textarea id="message" name="message" required rows="5"
+                                            placeholder="Tuliskan pesan atau pertanyaan Anda di sini..."
+                                            class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all font-medium text-sm resize-none"></textarea>
+                                    </div>
 
-                                <div class="pt-4">
-                                    <button type="submit" 
-                                        :disabled="loading"
-                                        class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-5 rounded-[1.5rem] transition-all duration-300 shadow-lg shadow-primary-500/25 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
-                                        <template x-if="!loading">
-                                            <span class="flex items-center gap-3">
-                                                Kirim Pesan Sekarang
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                                            </span>
-                                        </template>
-                                        <template x-if="loading">
-                                            <span class="flex items-center gap-3">
-                                                <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                                Mengirim...
-                                            </span>
-                                        </template>
-                                    </button>
-                                </div>
-                            </form>
-
-                            {{-- Success Message --}}
-                            <div x-show="submitted" x-transition x-cloak
-                                class="absolute inset-0 bg-white/95 flex flex-col items-center justify-center text-center p-8 z-20 rounded-[3rem]">
-                                <div class="w-20 h-20 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
-                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                </div>
-                                <h3 class="text-2xl font-extrabold text-gray-900 mb-2">Pesan Terkirim!</h3>
-                                <p class="text-gray-500 font-medium mb-8">Terima kasih telah menghubungi kami. Tim kami akan segera menanggapi pesan Anda melalui Pusat Pesan di Dashboard Anda.</p>
-                                <button @click="submitted = false" class="text-primary-600 font-bold hover:underline">Kirim Pesan Baru</button>
-                            </div>
+                                    <div class="pt-4">
+                                        <button type="submit" 
+                                            :disabled="loading"
+                                            class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-5 rounded-[1.5rem] transition-all duration-300 shadow-lg shadow-primary-500/25 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
+                                            <template x-if="!loading">
+                                                <span class="flex items-center gap-3">
+                                                    Kirim Pesan Sekarang
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                                </span>
+                                            </template>
+                                            <template x-if="loading">
+                                                <span class="flex items-center gap-3">
+                                                    <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                    Mengirim...
+                                                </span>
+                                            </template>
+                                        </button>
+                                    </div>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -218,22 +227,7 @@
         function contactPage(isAuthenticated) {
             return {
                 loading: false,
-                submitted: false,
-                isGuest: !isAuthenticated,
-                submitForm() {
-                    if (this.isGuest) {
-                        // Redirect guest to login page
-                        window.location.href = "{{ route('login') }}";
-                        return;
-                    }
-
-                    this.loading = true;
-                    // Simulate API Call for Authenticated User
-                    setTimeout(() => {
-                        this.loading = false;
-                        this.submitted = true;
-                    }, 2000);
-                }
+                isGuest: !isAuthenticated
             }
         }
     </script>

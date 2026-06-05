@@ -18,7 +18,7 @@
             <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
                 <div>
                     <p class="mb-1 text-[11px] sm:text-sm font-semibold text-green-200 opacity-80 hidden sm:block">Selamat datang kembali</p>
-                    <h2 class="mb-2 sm:mb-3 text-2xl sm:text-3xl font-extrabold tracking-tight">{{ auth()->user()->name }}</h2>
+                    <h2 class="mb-2 sm:mb-3 text-2xl sm:text-3xl font-extrabold tracking-tight">{{ auth()->user()->display_name }}</h2>
                     
                     @if(auth()->user()->farmerProfile && auth()->user()->farmerProfile->alamat)
                     <div class="flex items-center gap-2">

@@ -13,77 +13,54 @@
         @endif
 
         {{-- Section 1: Pejabat Struktural --}}
-        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-            <div class="p-6 md:p-8 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900">Form Pejabat Struktural</h3>
-                    <p class="text-sm text-gray-500 mt-1">Kelola data pejabat struktural yang bertugas di dinas.</p>
-                </div>
+        <div>
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Pejabat Struktural (Dilindungi)</h3>
+                <p class="text-sm text-gray-500 mt-1">Kelola data pejabat struktural yang bertugas di dinas. Role ini dilindungi dan tidak dapat dihapus.</p>
             </div>
             
-            <div class="p-0">
-                <form action="{{ route('admin.employees.update-struktur') }}" method="POST">
-                    @csrf
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                @foreach($structuralRolesList as $index => $role)
+                @php
+                    $emp = $pejabatStruktural->get($role);
+                    $initial = $emp && $emp->name !== 'Belum Diisi' && $emp->name !== '' ? substr($emp->name, 0, 1) : substr($role, 0, 1);
+                @endphp
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow relative overflow-hidden flex flex-col h-full">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
                     
-                    <div class="border-t border-gray-100">
-                        <!-- Desktop Header -->
-                        <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50/80 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            <div class="col-span-4 lg:col-span-3">Jabatan</div>
-                            <div class="col-span-8 lg:col-span-9 grid grid-cols-12 gap-4">
-                                <div class="col-span-5">Nama Lengkap</div>
-                                <div class="col-span-4">NIP</div>
-                                <div class="col-span-3">Pangkat/Gol</div>
+                    <div class="flex-grow">
+                        <div class="flex items-start gap-4 mb-4">
+                            @if($emp && $emp->foto)
+                                <img src="{{ asset('storage/' . $emp->foto) }}" alt="{{ $emp->name }}" class="w-12 h-12 rounded-full object-cover shrink-0 ring-2 ring-blue-50">
+                            @else
+                                <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xl shrink-0">
+                                    {{ strtoupper($initial) }}
+                                </div>
+                            @endif
+                            <div>
+                                <h4 class="font-bold text-gray-900 text-lg leading-tight">{{ $emp?->name !== 'Belum Diisi' && $emp?->name ? $emp->name : 'Belum Diisi' }}</h4>
+                                <p class="text-xs text-gray-500 mt-0.5">{{ $emp?->nip ? 'NIP. ' . $emp->nip : 'NIP: -' }}</p>
                             </div>
                         </div>
 
-                        <!-- Rows -->
-                        <div class="divide-y divide-gray-50">
-                            @foreach($structuralRolesList as $index => $role)
-                            @php
-                                $emp = $pejabatStruktural->get($role);
-                            @endphp
-                            <div class="p-6 md:px-6 md:py-4 hover:bg-blue-50/30 transition-colors group">
-                                <input type="hidden" name="struktur[{{ $index }}][role]" value="{{ $role }}">
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:items-start">
-                                    <!-- Jabatan Label -->
-                                    <div class="md:col-span-4 lg:col-span-3 md:pt-2.5">
-                                        <p class="font-bold text-gray-900 text-sm flex items-center gap-2">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500/40 group-hover:bg-blue-500 transition-colors hidden md:block"></span>
-                                            {{ $role }}
-                                        </p>
-                                    </div>
-                                    
-                                    <!-- Inputs -->
-                                    <div class="md:col-span-8 lg:col-span-9 grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
-                                        <div class="sm:col-span-5">
-                                            <label class="block text-xs font-bold text-gray-500 mb-1 md:hidden">Nama Lengkap</label>
-                                            <input type="text" name="struktur[{{ $index }}][name]" value="{{ $emp?->name !== 'Belum Diisi' ? $emp?->name : '' }}" placeholder="Nama Lengkap..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all">
-                                        </div>
-                                        
-                                        <div class="sm:col-span-4">
-                                            <label class="block text-xs font-bold text-gray-500 mb-1 md:hidden">NIP</label>
-                                            <input type="text" name="struktur[{{ $index }}][nip]" value="{{ $emp?->nip }}" placeholder="NIP..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all font-mono">
-                                        </div>
-                                        
-                                        <div class="sm:col-span-3">
-                                            <label class="block text-xs font-bold text-gray-500 mb-1 md:hidden">Pangkat/Gol</label>
-                                            <input type="text" name="struktur[{{ $index }}][pangkat_gol]" value="{{ $emp?->pangkat_gol }}" placeholder="Pangkat/Gol..." class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
+                        <div class="mb-4 flex flex-wrap gap-2 items-center">
+                            <span class="inline-block px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg border border-gray-200">
+                                {{ $role }}
+                            </span>
+                            <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-100">Tetap</span>
                         </div>
                     </div>
-                    
-                    <div class="p-6 md:p-8 bg-gray-50/50 border-t border-gray-100 flex justify-end rounded-b-3xl">
-                        <button type="submit" class="bg-blue-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-sm hover:bg-blue-700 hover:shadow transition-all flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Simpan Perubahan
-                        </button>
+
+                    <div class="pt-4 border-t border-gray-50 flex justify-end mt-auto">
+                        <a href="{{ route('admin.employees.edit', $emp->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-blue-600 rounded-xl font-bold text-sm transition-all shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit Profil
+                        </a>
                     </div>
-                </form>
+                </div>
+                @endforeach
             </div>
         </div>
 
@@ -128,7 +105,16 @@
                         @forelse($employees as $employee)
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4">
-                                    <p class="font-bold text-gray-900 text-sm">{{ $employee->name }}</p>
+                                    <div class="flex items-center gap-3">
+                                        @if($employee->foto)
+                                            <img src="{{ asset('storage/' . $employee->foto) }}" alt="{{ $employee->name }}" class="w-9 h-9 rounded-full object-cover shrink-0 ring-1 ring-gray-200">
+                                        @else
+                                            <div class="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0 ring-1 ring-blue-100">
+                                                {{ substr($employee->name, 0, 1) }}
+                                            </div>
+                                        @endif
+                                        <p class="font-bold text-gray-900 text-sm">{{ $employee->name }}</p>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <p class="text-sm text-gray-600 font-mono mb-1">{{ $employee->nip ?? '-' }}</p>

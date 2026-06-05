@@ -83,7 +83,7 @@
 
             {{-- Right Column: Form --}}
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 sm:p-10" x-data="{ showConfirm: false, agreed: false }">
+                <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 sm:p-10" x-data="{ showConfirm: false, agreed: false, durasiHari: '{{ old('rencana_durasi_hari', 1) }}' }">
                     <h3 class="text-2xl font-black text-gray-900 mb-8">Formulir Pengajuan</h3>
 
                     <form id="proposalForm" x-ref="proposalForm" action="{{ route('farmer.proposals.alsintan.store', $alsintan->id) }}" method="POST" enctype="multipart/form-data" @submit.prevent="showConfirm = true">
@@ -115,6 +115,23 @@
                                 @enderror
                             </div>
 
+                            <div>
+                                <label for="rencana_durasi_hari" class="block text-sm font-bold text-gray-700 mb-2">
+                                    Rencana Durasi Pemakaian (Hari) <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="number" name="rencana_durasi_hari" id="rencana_durasi_hari" x-model="durasiHari" min="1" max="365" required
+                                        class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all text-sm pr-16 @error('rencana_durasi_hari') border-red-400 bg-red-50 @enderror"
+                                        placeholder="Contoh: 3">
+                                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 text-sm font-bold">Hari</span>
+                                    </div>
+                                </div>
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Perkiraan lama waktu peminjaman alat.</p>
+                                @error('rencana_durasi_hari')
+                                    <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
 
                         </div>
 
@@ -175,6 +192,11 @@
                                             <div class="p-5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
                                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Alat Dipinjam</span>
                                                 <span class="font-bold text-gray-900">{{ $alsintan->name }}</span>
+                                            </div>
+
+                                            <div class="p-5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
+                                                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Durasi Pemakaian</span>
+                                                <span class="font-bold text-gray-900"><span x-text="durasiHari"></span> Hari</span>
                                             </div>
 
                                             <p class="text-sm text-gray-500 leading-relaxed text-center mt-6">

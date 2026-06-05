@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
             CatalogSeeder::class,
             VillageSeeder::class,
             EmployeeSeeder::class,
+            AlsintanSeeder::class,
+            ProgramDemoSeeder::class,
+            DemoProposalSeeder::class,
         ]);
     }
 }

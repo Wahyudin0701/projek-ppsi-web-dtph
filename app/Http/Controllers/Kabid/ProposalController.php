@@ -20,14 +20,17 @@ class ProposalController extends Controller
     {
         $kabid = Auth::user();
 
-        $allProposals = Proposal::where('kabid_id', $kabid->id)->get();
+        $statusCounts = Proposal::where('kabid_id', $kabid->id)
+            ->select('status', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
         $stats = [
-            'total'           => $allProposals->count(),
-            'menunggu_survei' => $allProposals->whereIn('status', ['persiapan_survei'])->count(),
-            'dalam_survei'    => $allProposals->where('status', 'sedang_survei')->count(),
-            'survei_selesai'  => $allProposals->whereIn('status', ['survei_selesai', 'verifikasi_cpcl'])->count(),
-            'selesai'         => $allProposals->whereIn('status', ['menunggu_keputusan_akhir', 'disetujui', 'ditolak'])->count(),
+            'total'           => $statusCounts->sum(),
+            'menunggu_survei' => $statusCounts->get('persiapan_survei', 0),
+            'dalam_survei'    => $statusCounts->get('sedang_survei', 0),
+            'survei_selesai'  => $statusCounts->get('survei_selesai', 0) + $statusCounts->get('verifikasi_cpcl', 0),
+            'selesai'         => $statusCounts->get('menunggu_keputusan_akhir', 0) + $statusCounts->get('disetujui', 0) + $statusCounts->get('ditolak', 0),
         ];
 
         $pendingAction = Proposal::where('kabid_id', $kabid->id)

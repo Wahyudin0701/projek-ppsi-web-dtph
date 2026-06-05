@@ -112,6 +112,10 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        if ($user->role === 'umum') {
+            return redirect()->route('login')->with('status', 'Pendaftaran berhasil. Akun Anda sedang menunggu verifikasi oleh admin.');
+        }
+
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

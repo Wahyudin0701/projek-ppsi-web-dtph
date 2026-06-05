@@ -13,7 +13,7 @@
             
             {{-- Image Building --}}
             <div class="mb-12 rounded-2xl overflow-hidden shadow-xl border border-gray-100">
-                <img src="{{ asset('images/img_dtph.png') }}" alt="Gedung DTPH Muaro Jambi" class="w-full h-auto object-cover aspect-video md:aspect-[21/9]">
+                <img src="{{ \App\Models\Setting::get('homepage_background') ? asset('storage/' . \App\Models\Setting::get('homepage_background')) : asset('images/img_dtph.png') }}" alt="Gedung DTPH Muaro Jambi" class="w-full h-auto object-cover aspect-video md:aspect-[21/9]">
             </div>
 
             {{-- Title Sections --}}

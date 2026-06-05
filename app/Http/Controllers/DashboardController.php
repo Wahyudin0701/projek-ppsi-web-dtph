@@ -21,13 +21,32 @@ class DashboardController extends Controller
             return redirect()->route('dashboard');
         }
 
+        if ($user->hasRole('super_admin')) {
+            $stats = [
+                'total_users' => User::count(),
+                'total_roles' => \Spatie\Permission\Models\Role::count(),
+                'total_permissions' => \Spatie\Permission\Models\Permission::count(),
+                'recent_logs' => \Spatie\Activitylog\Models\Activity::count(),
+            ];
+            $latestLogs = \Spatie\Activitylog\Models\Activity::with('causer')->latest()->take(5)->get();
+            
+            return view('super-admin.dashboard', compact('stats', 'latestLogs'));
+        }
+
         if ($user->isAdmin()) {
             $pendingUsersCount = User::where('role', 'user')->whereHas('farmerProfile', function($q) {
                 $q->whereIn('status', ['menunggu', 'reviewed']);
             })->count();
 
             $pendingProposalsCount = Proposal::where('status', 'sedang_diverifikasi_admin')->count();
-            $activeProgramsCount = Program::all()->filter(fn($p) => $p->status === 'berjalan')->count();
+            
+            $now = now()->startOfDay();
+            $activeProgramsCount = Program::whereNotNull('open_date')
+                ->where('open_date', '<=', $now)
+                ->where(function ($query) use ($now) {
+                    $query->whereNull('close_date')
+                          ->orWhere('close_date', '>=', $now);
+                })->count();
             $totalProposalsCount = Proposal::count();
 
             $stats = [
