@@ -15,7 +15,7 @@ class DocumentController extends Controller
     private function authorizeAccess(Proposal $proposal)
     {
         $user = Auth::user();
-        if ($user->role === 'user' && $proposal->user_id !== $user->id) {
+        if ($user->role === 'petani' && $proposal->user_id !== $user->id) {
             abort(403, 'Akses ditolak.');
         }
         if (in_array($user->role, ['kabid_psp', 'kabid_tp', 'kabid_hortikultura'])) {
@@ -81,7 +81,7 @@ class DocumentController extends Controller
         $this->authorizeAccess($proposal);
 
         // Prevent farmers (users) from accessing internal CPCL details
-        if (Auth::user()->role === 'user') {
+        if (Auth::user()->role === 'petani') {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 

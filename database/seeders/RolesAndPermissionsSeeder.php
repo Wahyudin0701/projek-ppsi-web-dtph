@@ -84,7 +84,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'verify-cpcl',
         ]);
 
-        $user = Role::firstOrCreate(['name' => 'user']);
+        $user = Role::firstOrCreate(['name' => 'petani']);
         $user->givePermissionTo(['submit-proposals']);
 
         $umum = Role::firstOrCreate(['name' => 'umum']);

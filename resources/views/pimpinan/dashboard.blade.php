@@ -8,69 +8,69 @@
         {{-- ===== STAT CARDS (Master & Operational) ===== --}}
         <div class="grid grid-cols-2 lg:grid-cols-3 gap-5">
             {{-- Kelompok Tani --}}
-            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4">
-                    <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-blue-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
-                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Total Kelompok Tani</p>
-                <p class="text-3xl font-black text-blue-600 leading-none tracking-tight">{{ number_format($stats['total_poktan'], 0, ',', '.') }}</p>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Total Kelompok Tani</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ number_format($stats['total_poktan'], 0, ',', '.') }}</p>
+                </div>
             </div>
 
             {{-- User Umum --}}
-            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4">
-                    <div class="w-10 h-10 bg-indigo-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-indigo-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Total User Umum</p>
-                <p class="text-3xl font-black text-indigo-600 leading-none tracking-tight">{{ number_format($stats['total_user'], 0, ',', '.') }}</p>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Total User Umum</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ number_format($stats['total_user'], 0, ',', '.') }}</p>
+                </div>
             </div>
 
             {{-- Katalog Alsintan --}}
-            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4">
-                    <div class="w-10 h-10 bg-sky-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                    </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-sky-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                 </div>
-                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Katalog Alsintan</p>
-                <p class="text-3xl font-black text-sky-600 leading-none tracking-tight">{{ number_format($stats['katalog_alsintan'], 0, ',', '.') }}</p>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Katalog Alsintan</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ number_format($stats['katalog_alsintan'], 0, ',', '.') }}</p>
+                </div>
             </div>
 
             {{-- Program Aktif --}}
-            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4">
-                    <div class="w-10 h-10 bg-emerald-600 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                    </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                 </div>
-                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Program Aktif</p>
-                <p class="text-3xl font-black text-emerald-600 leading-none tracking-tight">{{ number_format($stats['program_aktif'], 0, ',', '.') }}</p>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Program Aktif</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ number_format($stats['program_aktif'], 0, ',', '.') }}</p>
+                </div>
             </div>
 
             {{-- Pengajuan Alsintan --}}
-            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4">
-                    <div class="w-10 h-10 bg-sky-500 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-cyan-50 text-cyan-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-cyan-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
-                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Pengajuan Alsintan</p>
-                <p class="text-3xl font-black text-sky-500 leading-none tracking-tight">{{ number_format($stats['pengajuan_alsintan'], 0, ',', '.') }}</p>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Pengajuan Alsintan</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ number_format($stats['pengajuan_alsintan'], 0, ',', '.') }}</p>
+                </div>
             </div>
 
             {{-- Pengajuan Program --}}
-            <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4">
-                    <div class="w-10 h-10 bg-emerald-500 rounded flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-teal-50 text-teal-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-teal-100 transition-transform duration-300">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
-                <p class="text-xs font-bold text-gray-800 mb-6 tracking-wide">Pengajuan Program</p>
-                <p class="text-3xl font-black text-emerald-500 leading-none tracking-tight">{{ number_format($stats['pengajuan_program'], 0, ',', '.') }}</p>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Pengajuan Program</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ number_format($stats['pengajuan_program'], 0, ',', '.') }}</p>
+                </div>
             </div>
         </div>
 

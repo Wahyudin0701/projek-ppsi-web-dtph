@@ -34,7 +34,7 @@
                             {{ __('Audit Trail') }}
                         </x-nav-link>
                         <x-nav-link :href="route('super-admin.settings.edit')" :active="request()->routeIs('super-admin.settings.*')">
-                            {{ __('Pengaturan Web') }}
+                            {{ __('Latar Belakang Web') }}
                         </x-nav-link>
                     @endif
 
@@ -127,7 +127,7 @@
                     {{ __('Audit Trail') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('super-admin.settings.edit')" :active="request()->routeIs('super-admin.settings.*')">
-                    {{ __('Pengaturan Web') }}
+                    {{ __('Latar Belakang Web') }}
                 </x-responsive-nav-link>
             @endif
 

@@ -1,7 +1,18 @@
 <x-app-layout>
-    <x-slot name="header">Daftar Kelompok Tani</x-slot>
+    <x-slot name="header">Daftar User</x-slot>
 
     <div class="max-w-7xl mx-auto space-y-6">
+        <div class="mb-2 border-b border-gray-200">
+            <nav class="-mb-px flex gap-8">
+                <a href="{{ route('admin.users.list') }}" class="{{ request()->routeIs('admin.users.list') ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm transition-colors">
+                    Daftar Kelompok Tani
+                </a>
+                <a href="{{ route('admin.users.individuals') }}" class="{{ request()->routeIs('admin.users.individuals') ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm transition-colors">
+                    Daftar Petani Individu
+                </a>
+            </nav>
+        </div>
+
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             {{-- Header List & Filters --}}
             <div class="p-6 md:p-8 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -94,7 +105,7 @@
                                         'pengajuan_revisi' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-800', 'border' => 'border-purple-200', 'label' => 'Ubah Data'],
                                         'rejected' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'border' => 'border-red-200', 'label' => 'Ditolak'],
                                     ];
-                                    $conf = $statusConfig[$user->farmerProfile->status] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'border' => 'border-gray-200', 'label' => 'Unknown'];
+                                    $conf = $statusConfig[$user->status] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'border' => 'border-gray-200', 'label' => 'Unknown'];
                                 @endphp
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border {{ $conf['bg'] }} {{ $conf['text'] }} {{ $conf['border'] }}">
                                     {{ $conf['label'] }}

@@ -26,7 +26,9 @@ return new class extends Migration
             $table->string('komoditi_utama')->nullable();
             $table->text('alamat')->nullable();
             $table->string('kecamatan')->nullable();
-            $table->string('status')->default('menunggu');
+            $table->string('id_poktan')->nullable();
+            $table->string('no_sk')->nullable();
+            $table->string('foto_ktp')->nullable();
             $table->string('sk_pengukuhan_path')->nullable();
             $table->text('rejection_reason')->nullable();
             $table->boolean('is_verified_acknowledged')->default(false);

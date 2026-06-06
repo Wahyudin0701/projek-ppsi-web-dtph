@@ -22,7 +22,7 @@ class User extends Authenticatable
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'email', 'role', 'is_verified'])
+            ->logOnly(['name', 'email', 'role', 'is_verified', 'status'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}");
@@ -38,6 +38,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'status',
     ];
 
     /**
@@ -75,9 +76,9 @@ class User extends Authenticatable
     /**
      * Check if user is a normal user/petani.
      */
-    public function isUser(): bool
+    public function isPetani(): bool
     {
-        return $this->hasRole('user');
+        return $this->hasRole('petani');
     }
 
     public function isUmum(): bool
@@ -131,7 +132,7 @@ class User extends Authenticatable
             'kabid_psp'  => 'Kepala Bidang PSP',
             'kabid_tp'   => 'Kepala Bidang Tanaman Pangan',
             'kabid_hortikultura' => 'Kepala Bidang Hortikultura',
-            'user'       => 'Kelompok Tani',
+            'petani' => 'Kelompok Tani',
             'umum'       => 'Umum',
             default      => ucfirst($roleName),
         };
@@ -140,13 +141,16 @@ class User extends Authenticatable
     /**
      * Check if user account is approved.
      */
+    /**
+     * Check if user account is approved.
+     */
     public function isApproved(): bool
     {
-        if ($this->isAdmin() || $this->isPimpinan() || $this->isUmum()) {
+        if ($this->isAdmin() || $this->isPimpinan()) {
             return true;
         }
 
-        return $this->farmerProfile && $this->farmerProfile->status === 'approved';
+        return $this->status === 'approved';
     }
 
     /**

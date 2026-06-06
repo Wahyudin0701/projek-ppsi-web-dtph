@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // Handle verification acknowledgment
-        if ($request->has('verified') && $user->farmerProfile && $user->farmerProfile->status === 'approved' && !$user->farmerProfile->is_verified_acknowledged) {
+        if ($request->has('verified') && $user->farmerProfile && $user->status === 'approved' && !$user->farmerProfile->is_verified_acknowledged) {
             $user->farmerProfile->update(['is_verified_acknowledged' => true]);
             return redirect()->route('dashboard');
         }
@@ -34,7 +34,7 @@ class DashboardController extends Controller
         }
 
         if ($user->isAdmin()) {
-            $pendingUsersCount = User::where('role', 'user')->whereHas('farmerProfile', function($q) {
+            $pendingUsersCount = User::where('role', 'petani')->whereHas('farmerProfile', function($q) {
                 $q->whereIn('status', ['menunggu', 'reviewed']);
             })->count();
 
@@ -57,7 +57,7 @@ class DashboardController extends Controller
             ];
 
             $latestPendingUsers = User::with('farmerProfile')
-                ->where('role', 'user')
+                ->where('role', 'petani')
                 ->whereHas('farmerProfile', function($q) {
                     $q->whereIn('status', ['menunggu', 'reviewed']);
                 })

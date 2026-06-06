@@ -10,7 +10,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $pendingUsers = User::where('role', 'user')
+        $pendingUsers = User::where('role', 'petani')
             ->whereHas('farmerProfile', function ($query) {
                 $query->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi']);
             })
@@ -23,7 +23,7 @@ class AdminController extends Controller
 
     public function show(User $user)
     {
-        if ($user->farmerProfile && $user->farmerProfile->status === 'menunggu') {
+        if ($user->status === 'menunggu') {
             $user->farmerProfile->update(['status' => 'reviewed']);
         }
 
@@ -32,20 +32,20 @@ class AdminController extends Controller
 
     public function markAsReviewed(User $user)
     {
-        if ($user->farmerProfile && $user->farmerProfile->status === 'menunggu') {
+        if ($user->status === 'menunggu') {
             $user->farmerProfile->update(['status' => 'reviewed']);
         }
         return response()->json([
             'success' => true,
-            'status' => $user->farmerProfile->status ?? null
+            'status' => $user->status
         ]);
     }
 
     public function approve(User $user)
     {
+        $user->update(['status' => 'approved']);
+        
         if ($user->farmerProfile) {
-            $user->farmerProfile->update(['status' => 'approved']);
-            
             \App\Models\FarmerVerificationLog::create([
                 'farmer_profile_id' => $user->farmerProfile->id,
                 'admin_id' => auth()->id(),
@@ -54,7 +54,8 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', "Akun Kelompok Tani {$user->farmerProfile->nama_kelompok} berhasil disetujui.");
+        $nama = $user->farmerProfile->nama_kelompok ?? $user->name;
+        return redirect()->route('admin.users.index')->with('success', "Akun {$nama} berhasil disetujui.");
     }
 
     public function reject(Request $request, User $user)
@@ -63,9 +64,10 @@ class AdminController extends Controller
             'rejection_reason' => 'required|string|max:255',
         ]);
 
+        $user->update(['status' => 'rejected']);
+
         if ($user->farmerProfile) {
             $user->farmerProfile->update([
-                'status' => 'rejected',
                 'rejection_reason' => $request->rejection_reason,
             ]);
 
@@ -77,7 +79,8 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', "Pendaftaran Kelompok Tani {$user->farmerProfile->nama_kelompok} telah ditolak.");
+        $nama = $user->farmerProfile->nama_kelompok ?? $user->name;
+        return redirect()->route('admin.users.index')->with('success', "Pendaftaran {$nama} telah ditolak.");
     }
 
     public function revise(Request $request, User $user)
@@ -86,9 +89,10 @@ class AdminController extends Controller
             'revision_note' => 'required|string',
         ]);
 
+        $user->update(['status' => 'revisi']);
+
         if ($user->farmerProfile) {
             $user->farmerProfile->update([
-                'status' => 'revisi',
                 'rejection_reason' => $request->revision_note, // We can reuse this column for the latest note for backward compatibility if needed, but we also have logs
             ]);
 
@@ -100,17 +104,16 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', "Pendaftaran Kelompok Tani {$user->farmerProfile->nama_kelompok} dikembalikan untuk direvisi.");
+        $nama = $user->farmerProfile->nama_kelompok ?? $user->name;
+        return redirect()->route('admin.users.index')->with('success', "Pendaftaran {$nama} dikembalikan untuk direvisi.");
     }
 
     public function list(Request $request)
     {
-        $query = User::where('role', 'user')->with('farmerProfile');
+        $query = User::where('role', 'petani')->with('farmerProfile');
 
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->whereHas('farmerProfile', function ($q) use ($request) {
-                $q->where('status', $request->status);
-            });
+            $query->where('status', $request->status);
         }
 
         if ($request->filled('search')) {
@@ -119,48 +122,68 @@ class AdminController extends Controller
             });
         }
 
-        // We can't orderBy a relationship column easily with Eloquent, so we join or sort collection
-        // Joining is better for performance if pagination is used later.
-        // For now we'll fetch and sort.
         $users = $query->get()->sortBy(function($user) {
             return $user->farmerProfile->nama_kelompok ?? '';
         });
 
         return view('admin.users.list', compact('users'));
     }
+
+    public function listIndividuals(Request $request)
+    {
+        $query = User::where('role', 'umum')->with('farmerProfile');
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhereHas('farmerProfile', function ($q) use ($request) {
+                      $q->where('nama_kelompok', 'like', '%' . $request->search . '%')
+                        ->orWhere('nik_ketua', 'like', '%' . $request->search . '%');
+                  });
+        }
+
+        $users = $query->get()->sortBy(function($user) {
+            return $user->name;
+        });
+
+        return view('admin.users.individuals', compact('users'));
+    }
+
     public function respondChangeRequest(Request $request, User $user)
     {
-        $validated = $request->validate([
+        $request->validate([
             'action' => 'required|in:approve,reject',
+            'rejection_reason' => 'required_if:action,reject|string|nullable'
         ]);
 
-        if ($user->farmerProfile->status !== 'pengajuan_revisi') {
-            return redirect()->back()->with('error', 'Status Kelompok Tani bukan sedang dalam pengajuan revisi.');
+        if ($user->status !== 'pengajuan_revisi') {
+            return redirect()->route('admin.verifikasi.index')->with('error', 'Profil ini tidak dalam status pengajuan revisi.');
         }
 
-        $actionText = '';
-        if ($validated['action'] === 'approve') {
-            $user->farmerProfile->update([
-                'status' => 'revisi',
-                'change_request_reason' => null, // clear it
-                'rejection_reason' => null, // clear old rejection reason
-            ]);
-            $actionText = 'diizinkan';
+        if ($request->action === 'approve') {
+            $user->update(['status' => 'approved']);
+            
+            Activity::causedBy(Auth::user())
+                ->performedOn($user)
+                ->event('approved_revision')
+                ->log("Admin menyetujui revisi profil {$user->name}");
+                
+            return redirect()->route('admin.verifikasi.index')->with('success', 'Revisi disetujui, akun aktif.');
         } else {
+            $user->update(['status' => 'rejected']);
             $user->farmerProfile->update([
-                'status' => 'approved',
-                'change_request_reason' => null, // clear it
+                'rejection_reason' => $request->rejection_reason
             ]);
-            $actionText = 'ditolak';
+            
+            Activity::causedBy(Auth::user())
+                ->performedOn($user)
+                ->event('rejected_revision')
+                ->log("Admin menolak revisi profil {$user->name}");
+                
+            return redirect()->route('admin.verifikasi.index')->with('success', 'Revisi ditolak.');
         }
-
-        // Log the decision
-        $user->farmerProfile->verificationLogs()->create([
-            'admin_id' => auth()->id(),
-            'status' => $validated['action'] === 'approve' ? 'revisi' : 'approved',
-            'notes' => "Permohonan ubah data $actionText.",
-        ]);
-
-        return redirect()->route('admin.users.show', $user)->with('success', "Permohonan perubahan data berhasil $actionText.");
     }
 }

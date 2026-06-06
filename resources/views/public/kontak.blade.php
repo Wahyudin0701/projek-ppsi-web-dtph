@@ -118,7 +118,7 @@
                                         <a href="{{ route('kontak') }}" class="px-6 py-3 bg-primary-50 text-primary-700 font-bold rounded-xl hover:bg-primary-100 transition-colors shadow-sm">Kirim Pesan Baru</a>
                                         @auth
                                             @php
-                                                $msgRoute = auth()->user()->isUser() ? route('farmer.messages.index') : route('user.messages.index');
+                                                $msgRoute = auth()->user()->isPetani() ? route('farmer.messages.index') : route('user.messages.index');
                                             @endphp
                                             <a href="{{ $msgRoute }}" class="px-6 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-md">Buka Pusat Pesan</a>
                                         @endauth

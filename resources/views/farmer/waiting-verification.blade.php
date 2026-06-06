@@ -3,15 +3,15 @@
         {{-- Header Status --}}
         <div class="bg-gradient-to-br from-emerald-50 to-primary-100/50 p-8 text-center border-b border-emerald-100">
             <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4 shadow-inner">
-                @if(auth()->user()->farmerProfile->status === 'rejected')
+                @if(auth()->user()->status === 'rejected')
                     <svg class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                @elseif(auth()->user()->farmerProfile->status === 'approved')
+                @elseif(auth()->user()->status === 'approved')
                     <svg class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                @elseif(auth()->user()->farmerProfile->status === 'revisi')
+                @elseif(auth()->user()->status === 'revisi')
                     <svg class="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
@@ -23,34 +23,34 @@
             </div>
             
             <h2 class="text-2xl font-extrabold text-gray-900 mb-2">
-                @if(auth()->user()->farmerProfile->status === 'rejected')
+                @if(auth()->user()->status === 'rejected')
                     Pendaftaran Ditolak
-                @elseif(auth()->user()->farmerProfile->status === 'approved')
+                @elseif(auth()->user()->status === 'approved')
                     Akun Berhasil Diverifikasi!
-                @elseif(auth()->user()->farmerProfile->status === 'revisi')
-                    {{ auth()->user()->farmerProfile->rejection_reason ? 'Revisi Data Diperlukan' : 'Izin Ubah Data Diberikan' }}
+                @elseif(auth()->user()->status === 'revisi')
+                    {{ auth()->user()->farmerProfile?->rejection_reason ? 'Revisi Data Diperlukan' : 'Izin Ubah Data Diberikan' }}
                 @else
                     Menunggu Verifikasi Admin
                 @endif
             </h2>
             <p class="text-gray-600 max-w-lg mx-auto leading-relaxed">
-                @if(auth()->user()->farmerProfile->status === 'rejected')
-                    Mohon maaf, pendaftaran akun kelompok tani Anda tidak dapat kami setujui saat ini. Silakan periksa alasan penolakan di bawah.
-                @elseif(auth()->user()->farmerProfile->status === 'approved')
-                    Selamat! Akun Kelompok Tani <strong>{{ auth()->user()->farmerProfile->nama_kelompok }}</strong> telah berhasil diverifikasi oleh tim DTPH Muaro Jambi.
-                @elseif(auth()->user()->farmerProfile->status === 'revisi')
-                    @if(auth()->user()->farmerProfile->rejection_reason)
+                @if(auth()->user()->status === 'rejected')
+                    Mohon maaf, pendaftaran akun Anda tidak dapat kami setujui saat ini. Silakan periksa alasan penolakan di bawah.
+                @elseif(auth()->user()->status === 'approved')
+                    Selamat! Akun Kelompok Tani <strong>{{ auth()->user()->farmerProfile ? auth()->user()->farmerProfile->nama_kelompok : auth()->user()->name }}</strong> telah berhasil diverifikasi oleh tim DTPH Muaro Jambi.
+                @elseif(auth()->user()->status === 'revisi')
+                    @if(auth()->user()->farmerProfile?->rejection_reason)
                         Admin telah memeriksa data pendaftaran Anda dan meminta beberapa perbaikan. Silakan periksa catatan revisi di bawah dan perbarui profil Anda.
                     @else
                         Permohonan ubah data Anda telah disetujui. Silakan perbarui data profil Anda sesuai dengan perubahan yang diinginkan.
                     @endif
                 @else
-                    Terima kasih telah mendaftar. Tim kami sedang meninjau data pendaftaran kelompok tani Anda. Proses ini mungkin memakan waktu 1-2 hari kerja.
+                    Terima kasih telah mendaftar. Tim kami sedang meninjau data pendaftaran Anda. Proses ini mungkin memakan waktu 1-2 hari kerja.
                 @endif
             </p>
         </div>
 
-        @if(auth()->user()->farmerProfile->status === 'approved')
+        @if(auth()->user()->status === 'approved')
             {{-- Success Section --}}
             <div class="p-10 text-center">
                 <div class="mb-8">
@@ -71,14 +71,14 @@
                     *Gunakan menu di samping untuk mengelola profil dan riwayat Anda.
                 </p>
             </div>
-        @elseif(auth()->user()->farmerProfile->status === 'rejected' || auth()->user()->farmerProfile->status === 'revisi')
+        @elseif(auth()->user()->status === 'rejected' || auth()->user()->status === 'revisi')
             {{-- Rejection / Revisi Alert --}}
             <div class="p-8">
-                @if(!(auth()->user()->farmerProfile->status === 'revisi' && empty(auth()->user()->farmerProfile->rejection_reason)))
-                <div class="rounded-xl border {{ auth()->user()->farmerProfile->status === 'revisi' ? 'border-amber-100 bg-amber-50' : 'border-red-100 bg-red-50' }} p-5">
+                @if(!(auth()->user()->status === 'revisi' && empty(auth()->user()->farmerProfile?->rejection_reason)))
+                <div class="rounded-xl border {{ auth()->user()->status === 'revisi' ? 'border-amber-100 bg-amber-50' : 'border-red-100 bg-red-50' }} p-5">
                     <div class="flex">
                         <div class="flex-shrink-0">
-                            @if(auth()->user()->farmerProfile->status === 'revisi')
+                            @if(auth()->user()->status === 'revisi')
                                 <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
@@ -89,11 +89,11 @@
                             @endif
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-bold {{ auth()->user()->farmerProfile->status === 'revisi' ? 'text-amber-800' : 'text-red-800' }}">
-                                {{ auth()->user()->farmerProfile->status === 'revisi' ? 'Catatan Revisi dari Admin:' : 'Alasan Penolakan:' }}
+                            <h3 class="text-sm font-bold {{ auth()->user()->status === 'revisi' ? 'text-amber-800' : 'text-red-800' }}">
+                                {{ auth()->user()->status === 'revisi' ? 'Catatan Revisi dari Admin:' : 'Alasan Penolakan:' }}
                             </h3>
-                            <div class="mt-2 text-sm {{ auth()->user()->farmerProfile->status === 'revisi' ? 'text-amber-700' : 'text-red-700' }}">
-                                <p>{{ auth()->user()->farmerProfile->rejection_reason ?? 'Silakan periksa kembali data Anda.' }}</p>
+                            <div class="mt-2 text-sm {{ auth()->user()->status === 'revisi' ? 'text-amber-700' : 'text-red-700' }}">
+                                <p>{{ auth()->user()->farmerProfile?->rejection_reason ?? 'Silakan periksa kembali data Anda.' }}</p>
                             </div>
                         </div>
                     </div>
@@ -101,9 +101,9 @@
                 @endif
                 
                 <div class="mt-8 text-center">
-                    @if(auth()->user()->farmerProfile->status === 'revisi')
+                    @if(auth()->user()->status === 'revisi')
                         <p class="text-sm text-gray-500 mb-4">
-                            @if(auth()->user()->farmerProfile->rejection_reason)
+                            @if(auth()->user()->farmerProfile?->rejection_reason)
                                 Silakan perbaiki data profil pendaftaran Anda sesuai catatan admin agar dapat diproses kembali.
                             @else
                                 Silakan akses formulir di bawah ini untuk memperbarui profil Anda.
@@ -127,7 +127,7 @@
                 <h3 class="font-bold text-gray-800 mb-6 text-center">Status Pendaftaran Saat Ini</h3>
                 
                 @php
-                    $status = auth()->user()->farmerProfile->status;
+                    $status = auth()->user()->status;
                     $steps = [
                         'menunggu' => 1,
                         'reviewed' => 2,
@@ -207,7 +207,7 @@
     </div>
 
     {{-- Info Card (Only show when NOT approved) --}}
-    @if(auth()->user()->farmerProfile->status !== 'approved')
+    @if(auth()->user()->status !== 'approved')
         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex gap-4">
             <div class="flex-shrink-0 mt-1">
                 <svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

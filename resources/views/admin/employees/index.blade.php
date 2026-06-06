@@ -15,7 +15,7 @@
         {{-- Section 1: Pejabat Struktural --}}
         <div>
             <div class="mb-4">
-                <h3 class="text-xl font-bold text-gray-900">Pejabat Struktural (Dilindungi)</h3>
+                <h3 class="text-xl font-bold text-gray-900">Pejabat Struktural</h3>
                 <p class="text-sm text-gray-500 mt-1">Kelola data pejabat struktural yang bertugas di dinas. Role ini dilindungi dan tidak dapat dihapus.</p>
             </div>
             

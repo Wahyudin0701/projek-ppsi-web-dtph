@@ -21,7 +21,7 @@
                     <p class="text-sm text-gray-500 mt-1">Tinjau dan kelola semua proposal pengajuan bantuan atau peminjaman alsintan dari kelompok tani.</p>
                 </div>
                 
-                <form method="GET" action="{{ route('admin.proposals.index') }}" class="flex flex-wrap gap-3 items-center" x-data x-ref="filterForm">
+                <form method="GET" action="{{ route('admin.proposals.index') }}" class="flex flex-wrap gap-3 items-end" x-data x-ref="filterForm">
                     <div class="relative flex-1 min-w-[200px]">
                         <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -42,12 +42,19 @@
                         <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                         <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
-                    <select name="type" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none bg-white pr-8"
-                        style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
-                        <option value="">Semua Jenis</option>
-                        <option value="alsintan" {{ request('type') === 'alsintan' ? 'selected' : '' }}>Peminjaman Alsintan</option>
-                        <option value="bantuan" {{ request('type') === 'bantuan' ? 'selected' : '' }}>Program Bantuan</option>
-                    </select>
+                    <div class="flex flex-col">
+                        <div class="flex justify-end mb-1.5 min-h-[16px]">
+                            @if(request()->anyFilled(['search', 'status', 'type']))
+                                <a href="{{ route('admin.proposals.index') }}" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-wider">Reset</a>
+                            @endif
+                        </div>
+                        <select name="type" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none bg-white pr-8"
+                            style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
+                            <option value="">Semua Jenis</option>
+                            <option value="alsintan" {{ request('type') === 'alsintan' ? 'selected' : '' }}>Peminjaman Alsintan</option>
+                            <option value="bantuan" {{ request('type') === 'bantuan' ? 'selected' : '' }}>Program Bantuan</option>
+                        </select>
+                    </div>
                 </form>
             </div>
 

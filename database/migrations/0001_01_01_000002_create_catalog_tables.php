@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['bantuan_permanen', 'pinjam_alat', 'usulan_pendanaan']);
+            $table->enum('type', ['bantuan_permanen', 'usulan_pendanaan']);
             $table->string('jenis')->nullable();
             $table->text('description')->nullable();
             $table->text('sop_description')->nullable();

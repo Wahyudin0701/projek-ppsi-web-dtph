@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,14 +18,15 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('user');
+            $table->string('role')->default('petani');
+            $table->enum('status', ['menunggu', 'reviewed', 'approved', 'rejected', 'pengajuan_revisi'])->default('menunggu');
             $table->boolean('is_verified')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
 
         // Add CHECK constraint manually since Blueprint doesn't support it directly in all versions uniformly
-        DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('super_admin', 'admin', 'user', 'umum', 'pimpinan', 'kabid_psp', 'kabid_tp', 'kabid_hortikultura'))");
+        DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('super_admin', 'admin', 'petani', 'umum', 'pimpinan', 'kabid_psp', 'kabid_tp', 'kabid_hortikultura'))");
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();

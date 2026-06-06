@@ -87,7 +87,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/farmer/profile/request-change', [App\Http\Controllers\FarmerProfileController::class, 'requestChange'])->name('farmer.profile.request-change');
 
     // Farmer/User Routes
-    Route::middleware(['role:user'])->prefix('farmer')->name('farmer.')->group(function () {
+    Route::middleware(['role:petani'])->prefix('farmer')->name('farmer.')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Farmer\DashboardController::class, 'index'])->name('dashboard');
 
         // Pusat Pesan Farmer
@@ -112,12 +112,19 @@ Route::middleware(['auth'])->group(function () {
         // Web Settings
         Route::get('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'update'])->name('settings.update');
+
+        // Backups
+        Route::get('backups', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'index'])->name('backups.index');
+        Route::post('backups', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'store'])->name('backups.store');
+        Route::get('backups/{fileName}/download', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'download'])->name('backups.download');
+        Route::delete('backups/{fileName}', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'destroy'])->name('backups.destroy');
     });
 
     // Admin Routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('users.index');
         Route::get('/users-list', [App\Http\Controllers\Admin\AdminController::class, 'list'])->name('users.list');
+        Route::get('/users-individuals', [App\Http\Controllers\Admin\AdminController::class, 'listIndividuals'])->name('users.individuals');
         Route::get('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('users.show');
         Route::post('/users/{user}/reviewed', [App\Http\Controllers\Admin\AdminController::class, 'markAsReviewed'])->name('users.reviewed');
         Route::patch('/users/{user}/approve', [App\Http\Controllers\Admin\AdminController::class, 'approve'])->name('users.approve');
@@ -162,6 +169,10 @@ Route::middleware(['auth'])->group(function () {
     // Pimpinan Routes
     Route::middleware(['pimpinan'])->prefix('pimpinan')->name('pimpinan.')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Pimpinan\ProposalController::class, 'dashboard'])->name('dashboard');
+        Route::get('/reports', [App\Http\Controllers\Pimpinan\ProposalController::class, 'reports'])->name('reports');
+        Route::get('/reports/print', [App\Http\Controllers\Pimpinan\ProposalController::class, 'printReport'])->name('reports.print');
+        Route::get('/reports/users', [App\Http\Controllers\Pimpinan\ProposalController::class, 'reportUsers'])->name('reports.users');
+        Route::get('/reports/users/print', [App\Http\Controllers\Pimpinan\ProposalController::class, 'printReportUsers'])->name('reports.users.print');
         Route::get('/proposals', [App\Http\Controllers\Pimpinan\ProposalController::class, 'index'])->name('proposals.index');
         Route::get('/proposals/archives', [App\Http\Controllers\Pimpinan\ProposalController::class, 'archives'])->name('proposals.archives');
         Route::get('/proposals/{proposal}', [App\Http\Controllers\Pimpinan\ProposalController::class, 'show'])->name('proposals.show');

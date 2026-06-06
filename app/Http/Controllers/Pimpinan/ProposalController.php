@@ -255,4 +255,139 @@ class ProposalController extends Controller
         return redirect()->route('pimpinan.proposals.show', $proposal)
             ->with('success', 'Proposal #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah ditolak.');
     }
+
+    /**
+     * Halaman laporan dan rekapitulasi.
+     */
+    public function reports(Request $request)
+    {
+        $query = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'kabid'])
+            ->latest('submission_date');
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('submission_date', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
+        if ($request->filled('type')) {
+            if ($request->type === 'alsintan') {
+                $query->whereNotNull('alsintan_id');
+            } elseif ($request->type === 'program') {
+                $query->whereNotNull('program_id');
+            }
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'menunggu') {
+                $query->whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir']);
+            } elseif ($request->status === 'disetujui') {
+                $query->where('status', 'disetujui');
+            } elseif ($request->status === 'ditolak') {
+                $query->where('status', 'ditolak');
+            }
+        }
+
+        $proposals = $query->paginate(20)->withQueryString();
+        
+        return view('pimpinan.reports.index', compact('proposals'));
+    }
+
+    /**
+     * Halaman cetak laporan.
+     */
+    public function printReport(Request $request)
+    {
+        $query = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'kabid'])
+            ->latest('submission_date');
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('submission_date', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
+        if ($request->filled('type')) {
+            if ($request->type === 'alsintan') {
+                $query->whereNotNull('alsintan_id');
+            } elseif ($request->type === 'program') {
+                $query->whereNotNull('program_id');
+            }
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'menunggu') {
+                $query->whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir']);
+            } elseif ($request->status === 'disetujui') {
+                $query->where('status', 'disetujui');
+            } elseif ($request->status === 'ditolak') {
+                $query->where('status', 'ditolak');
+            }
+        }
+
+        $proposals = $query->get();
+        
+        return view('pimpinan.reports.print', compact('proposals'));
+    }
+
+    /**
+     * Halaman laporan pengguna terdaftar.
+     */
+    public function reportUsers(Request $request)
+    {
+        $query = User::with('farmerProfile')->whereIn('role', ['petani', 'umum'])->latest('created_at');
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
+        if ($request->filled('afiliasi')) {
+            $query->whereHas('farmerProfile', function ($q) use ($request) {
+                if ($request->afiliasi === 'individu') {
+                    $q->where('afiliasi_lembaga', 'Individu');
+                } else {
+                    $q->where('afiliasi_lembaga', '!=', 'Individu');
+                }
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->whereHas('farmerProfile', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            });
+        }
+
+        $users = $query->paginate(20)->withQueryString();
+        
+        return view('pimpinan.reports.users', compact('users'));
+    }
+
+    /**
+     * Halaman cetak laporan pengguna terdaftar.
+     */
+    public function printReportUsers(Request $request)
+    {
+        $query = User::with('farmerProfile')->whereIn('role', ['petani', 'umum'])->latest('created_at');
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
+        if ($request->filled('afiliasi')) {
+            $query->whereHas('farmerProfile', function ($q) use ($request) {
+                if ($request->afiliasi === 'individu') {
+                    $q->where('afiliasi_lembaga', 'Individu');
+                } else {
+                    $q->where('afiliasi_lembaga', '!=', 'Individu');
+                }
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->whereHas('farmerProfile', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            });
+        }
+
+        $users = $query->get();
+        
+        return view('pimpinan.reports.print_users', compact('users'));
+    }
 }
+

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Dashboard</x-slot>
 
-    @if(auth()->user()->isUser() && (!auth()->user()->farmerProfile || auth()->user()->farmerProfile->status !== 'approved' || (auth()->user()->farmerProfile->status === 'approved' && !auth()->user()->farmerProfile->is_verified_acknowledged)))
+    @if(!auth()->user()->isApproved() || (auth()->user()->isPetani() && auth()->user()->status === 'approved' && auth()->user()->farmerProfile && !auth()->user()->farmerProfile->is_verified_acknowledged))
         {{-- ===== WAITING FOR VERIFICATION / SUCCESS NOTICE ===== --}}
         @include('farmer.waiting-verification')
     @else

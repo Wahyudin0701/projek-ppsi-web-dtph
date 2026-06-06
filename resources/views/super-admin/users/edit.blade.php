@@ -45,7 +45,7 @@
                         <div>
                             <label for="name" class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap</label>
                             <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required
-                                   class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm">
+                                   class="w-full rounded-xl border-gray-300 focus:border-gray-900 focus:ring-gray-1000 shadow-sm">
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
@@ -53,7 +53,7 @@
                         <div>
                             <label for="email" class="block text-sm font-bold text-gray-700 mb-2">Alamat Email</label>
                             <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
-                                   class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm">
+                                   class="w-full rounded-xl border-gray-300 focus:border-gray-900 focus:ring-gray-1000 shadow-sm">
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
                     </div>
@@ -69,21 +69,43 @@
                         <input type="hidden" name="role" value="{{ $user->roles->first()?->name ?? $user->role }}">
                     </div>
 
+                    {{-- Status Verifikasi (Global untuk semua user) --}}
+                    @if(!$isFixed)
+                    <div>
+                        <label for="status" class="block text-sm font-bold text-gray-700 mb-2">Status Verifikasi</label>
+                        <select name="status" id="status" required
+                                class="w-full rounded-xl border-gray-300 focus:border-gray-900 focus:ring-gray-1000 shadow-sm">
+                            <option value="menunggu" {{ old('status', $user->status) == 'menunggu' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                            <option value="reviewed" {{ old('status', $user->status) == 'reviewed' ? 'selected' : '' }}>Sedang Ditinjau</option>
+                            <option value="approved" {{ old('status', $user->status) == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                            <option value="rejected" {{ old('status', $user->status) == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                            <option value="pengajuan_revisi" {{ old('status', $user->status) == 'pengajuan_revisi' ? 'selected' : '' }}>Revisi</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                    </div>
+                    @else
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Status Verifikasi</label>
+                        <input type="text" disabled value="Disetujui (Role Tetap)"
+                               class="w-full rounded-xl border-gray-300 bg-gray-50 text-gray-500 shadow-sm">
+                    </div>
+                    @endif
+
                     {{-- Password --}}
                     <div>
-                        <h4 class="text-sm font-bold text-gray-900 mb-4">Ubah Password <span class="text-gray-400 font-normal">(Opsional)</span></h4>
+                        <h4 class="text-sm font-bold text-gray-900 mb-4">Ubah Password</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:p-6 bg-gray-50 rounded-2xl border border-gray-100">
                             <div>
                                 <label for="password" class="block text-sm font-bold text-gray-700 mb-2">Password Baru</label>
                                 <input type="password" name="password" id="password"
                                        placeholder="Biarkan kosong jika tidak ingin diubah"
-                                       class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm">
+                                       class="w-full rounded-xl border-gray-300 focus:border-gray-900 focus:ring-gray-1000 shadow-sm text-sm">
                                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
                             </div>
                             <div>
                                 <label for="password_confirmation" class="block text-sm font-bold text-gray-700 mb-2">Konfirmasi Password</label>
                                 <input type="password" name="password_confirmation" id="password_confirmation"
-                                       class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm text-sm">
+                                       class="w-full rounded-xl border-gray-300 focus:border-gray-900 focus:ring-gray-1000 shadow-sm text-sm">
                             </div>
                         </div>
                     </div>
@@ -320,18 +342,6 @@
                                             placeholder="Nama Desa">
                                     </div>
 
-                                    <!-- Status Verifikasi -->
-                                    <div class="md:col-span-2 pt-4 border-t border-gray-100">
-                                        <label for="profile_status" class="block text-sm font-bold text-gray-800 mb-2">Status Verifikasi</label>
-                                        <select name="profile[status]" id="profile_status"
-                                                class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                                            <option value="menunggu" {{ old('profile.status', $user->farmerProfile->status) == 'menunggu' ? 'selected' : '' }}>Menunggu Verifikasi</option>
-                                            <option value="reviewed" {{ old('profile.status', $user->farmerProfile->status) == 'reviewed' ? 'selected' : '' }}>Sedang Ditinjau</option>
-                                            <option value="approved" {{ old('profile.status', $user->farmerProfile->status) == 'approved' ? 'selected' : '' }}>Disetujui</option>
-                                            <option value="rejected" {{ old('profile.status', $user->farmerProfile->status) == 'rejected' ? 'selected' : '' }}>Ditolak</option>
-                                            <option value="pengajuan_revisi" {{ old('profile.status', $user->farmerProfile->status) == 'pengajuan_revisi' ? 'selected' : '' }}>Revisi</option>
-                                        </select>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -344,7 +354,7 @@
                             Batal
                         </a>
                         <button type="submit"
-                                class="px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-sm">
+                                class="px-5 py-2.5 text-sm font-bold text-white bg-gray-900 hover:bg-black rounded-xl transition-colors shadow-sm">
                             Simpan Perubahan
                         </button>
                     </div>

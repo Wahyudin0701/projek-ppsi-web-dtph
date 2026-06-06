@@ -9,7 +9,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             
             {{-- Card 1: Informasi Kelompok Tani --}}
-            @if(auth()->user()->role === 'user')
+            @if(auth()->user()->role === 'petani')
                 <div class="bg-white rounded-[2rem] p-8 sm:p-10 border border-gray-100 shadow-sm relative overflow-hidden h-fit">
                     @include('profile.partials.farmer-profile-information')
                 </div>

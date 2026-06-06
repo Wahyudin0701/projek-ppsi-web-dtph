@@ -282,6 +282,10 @@
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kapasitas</p>
                                 <p class="text-gray-900 font-semibold text-sm">{{ $proposal->alsintan->capacity ?? '-' }}</p>
                             </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Durasi Peminjaman</p>
+                                <p class="text-gray-900 font-semibold text-sm">{{ $proposal->rencana_durasi_hari ? $proposal->rencana_durasi_hari . ' Hari' : '-' }}</p>
+                            </div>
 
                         </div>
                         @if($proposal->alsintan->image)

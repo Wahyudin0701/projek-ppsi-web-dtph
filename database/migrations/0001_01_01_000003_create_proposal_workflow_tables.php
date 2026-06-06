@@ -115,6 +115,40 @@ return new class extends Migration
             $table->boolean('kesesuaian_komoditas')->default(false);
             $table->string('rekomendasi_surveyor')->nullable();
             $table->string('status_kepemilikan')->nullable();
+            // Verifikasi Administrasi
+            $table->boolean('is_surat_permohonan_sesuai')->default(false);
+            $table->string('ket_surat_permohonan')->nullable();
+            $table->boolean('is_ktp_sesuai')->default(false);
+            $table->string('ket_ktp')->nullable();
+            $table->boolean('is_sk_desa_sesuai')->default(false);
+            $table->string('ket_sk_desa')->nullable();
+            $table->boolean('is_simluhtan_sesuai')->default(false);
+            $table->string('ket_simluhtan')->nullable();
+            $table->boolean('is_notula_rapat_sesuai')->default(false);
+            $table->string('ket_notula_rapat')->nullable();
+            $table->boolean('is_titik_koordinat_sesuai')->default(false);
+            $table->string('ket_titik_koordinat')->nullable();
+            $table->boolean('is_tidak_menerima_bantuan_sama')->default(false);
+            $table->string('ket_tidak_menerima_bantuan_sama')->nullable();
+
+            // Teknis Lahan Baru
+            $table->string('jenis_tanah')->nullable();
+            $table->string('sumber_air')->nullable();
+            $table->string('rawan_bencana')->nullable();
+            $table->string('pemanfaatan_lahan_sebelumnya')->nullable();
+            $table->string('pengalaman_budidaya')->nullable();
+
+            // Petugas Lapangan
+            $table->string('petugas_dokumentasi')->nullable();
+            $table->string('petugas_pemetaan')->nullable();
+            $table->string('no_hp_pemetaan')->nullable();
+
+            // Tanda Tangan
+            $table->string('penandatangan_poktan_nama')->nullable();
+            $table->string('penandatangan_poktan_jabatan')->nullable();
+            $table->string('nama_ppl')->nullable();
+            $table->string('nip_ppl')->nullable();
+
             $table->json('administrative_checklist')->nullable();
             $table->json('technical_checklist')->nullable();
             $table->text('catatan')->nullable();

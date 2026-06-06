@@ -29,7 +29,7 @@
                 <div class="group bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-blue-200 hover:shadow-md transition-all relative overflow-hidden">
                     
                     {{-- Color Accent Bar --}}
-                    <div class="absolute left-0 top-0 bottom-0 w-1.5 {{ $user->farmerProfile->status === 'menunggu' ? 'bg-amber-400' : 'bg-purple-500' }}"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 {{ $user->status === 'menunggu' ? 'bg-amber-400' : 'bg-purple-500' }}"></div>
 
                     <div class="flex items-start gap-5 pl-2">
                         {{-- Avatar --}}
@@ -42,12 +42,12 @@
                             <div class="flex items-center gap-3 mb-1.5">
                                 <h3 class="font-extrabold text-gray-900 text-lg">{{ $user->farmerProfile->nama_kelompok }}</h3>
                                 
-                                @if($user->farmerProfile->status === 'menunggu')
+                                @if($user->status === 'menunggu')
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-black tracking-widest uppercase">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                         Baru
                                     </span>
-                                @elseif($user->farmerProfile->status === 'pengajuan_revisi')
+                                @elseif($user->status === 'pengajuan_revisi')
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black tracking-widest uppercase">
                                         <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span>
                                         Ubah Data

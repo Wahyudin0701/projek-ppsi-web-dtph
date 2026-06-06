@@ -7,14 +7,14 @@
             {{-- Header & Filter --}}
             <div class="p-6 md:p-8 border-b border-gray-50 flex flex-col gap-5">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-900">Jejak Aktivitas Sistem (Audit Trail)</h3>
+                    <h3 class="text-xl font-bold text-gray-900">Jejak Aktivitas Sistem</h3>
                     <p class="text-sm text-gray-500 mt-1">Lacak semua aktivitas pengguna, penambahan, perubahan, dan penghapusan data di dalam sistem.</p>
                 </div>
                 
-                <form id="filterForm" action="{{ route('super-admin.audit-logs.index') }}" method="GET" x-data x-ref="filterForm" class="flex flex-wrap gap-3 items-end bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                <form id="filterForm" action="{{ route('super-admin.audit-logs.index') }}" method="GET" x-data x-ref="filterForm" class="flex flex-wrap gap-4 items-end pt-2">
                     <div class="flex-1 min-w-[150px]">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Tipe Log</label>
-                        <select name="log_name" x-on:change="$refs.filterForm.submit()" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white appearance-none" style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
+                        <select name="log_name" x-on:change="$refs.filterForm.submit()" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all bg-white appearance-none" style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
                             <option value="" {{ !request()->filled('log_name') ? 'selected' : '' }}>Semua</option>
                             @foreach($logNames as $name)
                                 <option value="{{ $name }}" {{ request('log_name') === $name ? 'selected' : '' }}>{{ $name }}</option>
@@ -23,7 +23,7 @@
                     </div>
                     <div class="flex-1 min-w-[150px]">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Event</label>
-                        <select name="event" x-on:change="$refs.filterForm.submit()" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white appearance-none" style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
+                        <select name="event" x-on:change="$refs.filterForm.submit()" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all bg-white appearance-none" style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
                             <option value="" {{ !request()->filled('event') ? 'selected' : '' }}>Semua</option>
                             @foreach($events as $ev)
                                 <option value="{{ $ev }}" {{ request('event') === $ev ? 'selected' : '' }}>{{ strtoupper($ev) }}</option>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="flex-1 min-w-[180px]">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">User (Pelaku)</label>
-                        <select name="causer_id" x-on:change="$refs.filterForm.submit()" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white appearance-none" style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
+                        <select name="causer_id" x-on:change="$refs.filterForm.submit()" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all bg-white appearance-none" style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
                             <option value="" {{ !request()->filled('causer_id') ? 'selected' : '' }}>Semua</option>
                             @foreach($users as $u)
                                 <option value="{{ $u->id }}" {{ request('causer_id') == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
@@ -41,17 +41,16 @@
                     </div>
                     <div class="flex-1 min-w-[140px]">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Dari Tgl</label>
-                        <input type="date" name="date_from" x-on:change="$refs.filterForm.submit()" value="{{ request('date_from') }}" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white">
+                        <input type="date" name="date_from" x-on:change="$refs.filterForm.submit()" value="{{ request('date_from') }}" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all bg-white">
                     </div>
                     <div class="flex-1 min-w-[140px]">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Sampai Tgl</label>
-                        <input type="date" name="date_to" x-on:change="$refs.filterForm.submit()" value="{{ request('date_to') }}" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white">
-                    </div>
-
-                    <div class="flex gap-2 min-w-[100px]">
-                        <a href="{{ route('super-admin.audit-logs.index') }}" class="flex-1 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 font-bold py-2 px-4 rounded-xl text-sm transition-colors text-center shadow-sm">
-                            Reset
-                        </a>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Sampai Tgl</label>
+                            @if(request()->anyFilled(['log_name', 'event', 'causer_id', 'date_from', 'date_to']))
+                                <a href="{{ route('super-admin.audit-logs.index') }}" class="text-[10px] font-bold text-gray-900 hover:text-black uppercase tracking-wider">Reset</a>
+                            @endif
+                        </div>
+                        <input type="date" name="date_to" x-on:change="$refs.filterForm.submit()" value="{{ request('date_to') }}" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all bg-white">
                     </div>
                 </form>
             </div>
@@ -109,7 +108,7 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <a href="{{ route('super-admin.audit-logs.show', $log->id) }}" class="inline-flex items-center justify-center bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm" title="Detail">
+                                    <a href="{{ route('super-admin.audit-logs.show', $log->id) }}" class="inline-flex items-center justify-center bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm" title="Detail">
                                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         Detail
                                     </a>
@@ -134,7 +133,7 @@
             <div class="px-6 py-4 border-t border-gray-50 bg-gray-50/30 flex flex-col gap-4">
                 <div class="flex items-center gap-3">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tampilkan:</span>
-                    <select name="per_page" form="filterForm" onchange="document.getElementById('filterForm').submit()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-700 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white cursor-pointer hover:border-gray-300 shadow-sm">
+                    <select name="per_page" form="filterForm" onchange="document.getElementById('filterForm').submit()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-700 font-bold focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all bg-white cursor-pointer hover:border-gray-300 shadow-sm">
                         <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10 baris</option>
                         <option value="20" {{ request('per_page', 20) == 20 ? 'selected' : '' }}>20 baris</option>
                         <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 baris</option>

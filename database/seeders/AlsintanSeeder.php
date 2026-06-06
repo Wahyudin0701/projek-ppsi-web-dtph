@@ -11,36 +11,6 @@ class AlsintanSeeder extends Seeder
     {
         $alsintans = [
             [
-                'name'        => 'Traktor Roda Empat',
-                'merk'        => 'Yanmar YT347',
-                'category'    => 'traktor',
-                'capacity'    => '35 HP / 1.2 Ha per jam',
-                'stock'       => 2,
-                'borrowed_count' => 0,
-                'broken_count'   => 0,
-                'description' => 'Traktor roda empat bertenaga 35 HP cocok untuk pengolahan lahan basah maupun kering. Dilengkapi transmisi otomatis dan kabin ergonomis untuk meningkatkan efisiensi kerja petani.',
-            ],
-            [
-                'name'        => 'Combine Harvester',
-                'merk'        => 'Kubota DC-70',
-                'category'    => 'panen',
-                'capacity'    => '0.3 Ha per jam',
-                'stock'       => 1,
-                'borrowed_count' => 0,
-                'broken_count'   => 0,
-                'description' => 'Mesin pemanen padi serbaguna yang dapat memanen, mengirik, dan membersihkan gabah sekaligus dalam satu operasi. Mengurangi losses panen secara signifikan.',
-            ],
-            [
-                'name'        => 'Pompa Air Sentrifugal',
-                'merk'        => 'Grundfos CM5',
-                'category'    => 'irigasi',
-                'capacity'    => '5 m3 per jam',
-                'stock'       => 4,
-                'borrowed_count' => 0,
-                'broken_count'   => 0,
-                'description' => 'Pompa air irigasi bertenaga diesel dengan daya hisap tinggi dan konsumsi bahan bakar yang efisien. Cocok untuk pengairan sawah di musim kemarau.',
-            ],
-            [
                 'name'        => 'Rice Transplanter',
                 'merk'        => 'Kubota SPW-48C',
                 'category'    => 'tanam',
@@ -49,26 +19,6 @@ class AlsintanSeeder extends Seeder
                 'borrowed_count' => 0,
                 'broken_count'   => 0,
                 'description' => 'Alat tanam padi otomatis 4 baris yang meningkatkan kecepatan tanam, menjaga keseragaman jarak tanam, dan mengurangi tenaga kerja manual secara drastis.',
-            ],
-            [
-                'name'        => 'Power Thresher',
-                'merk'        => 'Agrindo GD-800',
-                'category'    => 'pasca panen',
-                'capacity'    => '800 kg per jam',
-                'stock'       => 3,
-                'borrowed_count' => 0,
-                'broken_count'   => 0,
-                'description' => 'Mesin perontok padi multi-komoditas dengan kapasitas 800 kg/jam. Dapat digunakan untuk padi, jagung, dan kedelai. Dirancang untuk mengurangi kehilangan hasil panen.',
-            ],
-            [
-                'name'        => 'Cultivator Rotary',
-                'merk'        => 'Quick Razor 800',
-                'category'    => 'traktor',
-                'capacity'    => '0.8 Ha per jam',
-                'stock'       => 3,
-                'borrowed_count' => 0,
-                'broken_count'   => 0,
-                'description' => 'Kultivator rotary untuk pengolahan tanah ringan dan penyiangan. Ideal untuk lahan sempit, lahan kering, dan area perkebunan hortikultura.',
             ],
         ];
 

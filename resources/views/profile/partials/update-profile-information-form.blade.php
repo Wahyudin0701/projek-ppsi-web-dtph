@@ -1,11 +1,11 @@
 <section>
     <header>
         <h2 class="text-lg font-bold text-gray-900">
-            {{ auth()->user()->role === 'user' ? 'Informasi Akun' : 'Informasi Profil' }}
+            {{ auth()->user()->role === 'petani' ? 'Informasi Akun' : 'Informasi Profil' }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ auth()->user()->role === 'user' ? 'Perbarui alamat email akun Anda.' : 'Perbarui informasi profil dan alamat email akun Anda.' }}
+            {{ auth()->user()->role === 'petani' ? 'Perbarui alamat email akun Anda.' : 'Perbarui informasi profil dan alamat email akun Anda.' }}
         </p>
     </header>
 
@@ -18,7 +18,7 @@
         @method('patch')
 
         <div>
-            @if(auth()->user()->role === 'user')
+            @if(auth()->user()->role === 'petani')
                 <input type="hidden" name="name" value="{{ $user->name }}">
             @else
                 @if(auth()->user()->role === 'umum')

@@ -35,7 +35,6 @@ class FarmerProfile extends Model
         'komoditi_utama',
         'alamat',
         'kecamatan',
-        'status',
         'sk_pengukuhan_path',
         'rejection_reason',
         'is_verified_acknowledged',

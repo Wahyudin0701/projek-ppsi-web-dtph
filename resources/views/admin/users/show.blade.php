@@ -31,7 +31,7 @@
                     <x-farmer-profile-detail :user="$user" />
 
                     {{-- Verification History Section --}}
-                    @if($user->farmerProfile->verificationLogs && $user->farmerProfile->verificationLogs->count() > 0)
+                    @if($user->farmerProfile && $user->farmerProfile->verificationLogs && $user->farmerProfile->verificationLogs->count() > 0)
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                             <div class="px-6 py-4 border-b border-gray-50 bg-gray-50/30">
                                 <h3 class="text-lg font-black text-gray-900 tracking-tight">Riwayat Verifikasi</h3>
@@ -74,7 +74,18 @@
 
                 {{-- Right Side: Actions --}}
                 <div class="space-y-8">
-                    @if($user->farmerProfile->status === 'menunggu' || $user->farmerProfile->status === 'reviewed')
+                    @if(!$user->farmerProfile)
+                        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8 text-center">
+                            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-gray-50 text-gray-400">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-900 mb-2">Menunggu Kelengkapan Data</h3>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-widest">
+                                Status: Belum Melengkapi Profil
+                            </p>
+                            <p class="text-xs font-medium text-gray-500 mt-4 leading-relaxed">Pengguna ini belum mengisi formulir pendaftarannya secara lengkap. Tindakan verifikasi belum bisa dilakukan.</p>
+                        </div>
+                    @elseif($user->status === 'menunggu' || $user->status === 'reviewed')
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8">
                             <h3 class="text-lg font-black text-gray-900 tracking-tight mb-6">Tindakan Verifikasi</h3>
                             
@@ -116,7 +127,7 @@
                                 </div>
                             </div>
                         </div>
-                    @elseif($user->farmerProfile->status === 'pengajuan_revisi')
+                    @elseif($user->status === 'pengajuan_revisi')
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8 text-center">
                             <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-purple-50 text-purple-600">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -148,7 +159,7 @@
                             </div>
 
                         </div>
-                    @elseif($user->farmerProfile->status === 'revisi')
+                    @elseif($user->status === 'revisi')
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8 text-center">
                             <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-amber-50 text-amber-600">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
@@ -179,18 +190,18 @@
                         </div>
                     @else
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8 text-center">
-                            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center {{ $user->farmerProfile->status === 'approved' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600' }}">
-                                @if($user->farmerProfile->status === 'approved')
+                            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center {{ $user->status === 'approved' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600' }}">
+                                @if($user->status === 'approved')
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 @else
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 @endif
                             </div>
                             <h3 class="text-lg font-black text-gray-900 mb-2">Verifikasi Selesai</h3>
-                            <p class="text-sm font-bold {{ $user->farmerProfile->status === 'approved' ? 'text-green-600' : 'text-red-600' }} uppercase tracking-widest">
-                                Status: {{ $user->farmerProfile->status === 'approved' ? 'Disetujui' : 'Ditolak' }}
+                            <p class="text-sm font-bold {{ $user->status === 'approved' ? 'text-green-600' : 'text-red-600' }} uppercase tracking-widest">
+                                Status: {{ $user->status === 'approved' ? 'Disetujui' : 'Ditolak' }}
                             </p>
-                            @if($user->farmerProfile->status === 'rejected')
+                            @if($user->status === 'rejected')
                                 <div class="mt-4 p-4 bg-red-50 rounded-2xl border border-red-100">
                                     <p class="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Alasan Penolakan</p>
                                     <p class="text-xs font-bold text-red-700 leading-relaxed">{{ $user->farmerProfile->rejection_reason }}</p>
@@ -215,6 +226,7 @@
             </div>
 
 
+        @if($user->farmerProfile)
         {{-- Respond Modal --}}
         <template x-teleport="body">
             <div x-show="respondModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm px-4 text-left">
@@ -418,6 +430,7 @@
                 </div>
             </div>
         </template>
+        @endif
     </div>
 </div>
 </x-app-layout>

@@ -3,9 +3,9 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ __('Pengaturan Web') }}
+                    {{ __('Latar Belakang Web') }}
                 </h2>
-                <p class="text-sm text-gray-500 mt-1">Kelola konfigurasi dan tampilan utama aplikasi.</p>
+                <p class="text-sm text-gray-500 mt-1">Kelola gambar latar belakang untuk halaman beranda dan login aplikasi.</p>
             </div>
         </div>
     </x-slot>
@@ -59,13 +59,13 @@
 
                                     <!-- Upload UI -->
                                     <div class="relative z-10 text-center flex flex-col items-center p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-100">
-                                        <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4 text-blue-500">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-900">
                                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                         </div>
                                         <h4 class="text-base font-bold text-gray-900 mb-1">Unggah Gambar Baru</h4>
                                         <p class="text-sm text-gray-500 mb-4">PNG, JPG, JPEG atau WEBP (Maksimal 20MB)</p>
                                         
-                                        <label for="homepage_background" class="cursor-pointer inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        <label for="homepage_background" class="cursor-pointer inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-1000 focus:ring-offset-2 transition ease-in-out duration-150">
                                             Pilih Berkas
                                             <input id="homepage_background" type="file" name="homepage_background" class="sr-only" accept="image/jpeg,image/png,image/jpg,image/webp" @change="fileChosen">
                                         </label>
@@ -77,10 +77,10 @@
                     </div>
 
                     <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3">
-                        <button type="reset" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-xl font-bold text-sm text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <button type="reset" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-xl font-bold text-sm text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-1000 focus:ring-offset-2 transition ease-in-out duration-150">
                             Reset
                         </button>
-                        <button type="submit" class="inline-flex items-center px-6 py-2 bg-blue-600 border border-transparent rounded-xl font-bold text-sm text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
+                        <button type="submit" class="inline-flex items-center px-6 py-2 bg-gray-900 border border-transparent rounded-xl font-bold text-sm text-white uppercase tracking-widest hover:bg-black focus:bg-black active:bg-black focus:outline-none focus:ring-2 focus:ring-gray-1000 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
                             Simpan Pengaturan
                         </button>
                     </div>

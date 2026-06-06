@@ -208,6 +208,10 @@
                                 <p class="text-gray-900 font-medium">{{ $proposal->alsintan->capacity ?? '-' }}</p>
                             </div>
                             <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Durasi Peminjaman</p>
+                                <p class="text-gray-900 font-medium">{{ $proposal->rencana_durasi_hari ? $proposal->rencana_durasi_hari . ' Hari' : '-' }}</p>
+                            </div>
+                            <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Stok Tersedia (saat ini)</p>
                                 <p class="text-gray-900 font-medium">{{ $proposal->alsintan->available_stock }} unit</p>
                             </div>

@@ -68,7 +68,7 @@ class RegisteredUserController extends Controller
         $request->validate($rules);
 
         $user = DB::transaction(function () use ($request, $role) {
-            $dbRole = $role === 'petani' ? 'user' : $role;
+            $dbRole = $role;
 
             $user = User::create([
                 'name' => $request->name,

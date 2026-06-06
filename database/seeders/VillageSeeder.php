@@ -10,39 +10,167 @@ class VillageSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+        public function run(): void
     {
-        $csvFile = public_path('daftar_desa_kelurahan_muaro_jambi.csv');
-        
-        if (!file_exists($csvFile)) {
-            $this->command->error("File not found: " . $csvFile);
-            return;
-        }
+        $villages = [
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Adipura Kencana', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Bukit Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Bukit Subur', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Mekar Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Tanjung Baru', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Tanjung Lebar', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Tanjung Mulia', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Tanjung Sari', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Tri Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR SELATAN', 'status' => 'Desa', 'name' => 'Ujung Tanjung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Bahar Mulya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Bukit Mulya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Markanding', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Matra Manunggal', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Mulya Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Pinang Tinggi', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Sumber Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Sumber Mulya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Sungai Dayo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Talang Bukit', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'BAHAR UTARA', 'status' => 'Desa', 'name' => 'Talang Datar', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Kelurahan', 'name' => 'Pijoan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Danau Sarang Elang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Kedemangan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Maro Sebo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Mendalo Darat', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Mendalo Indah', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Mendalo Laut', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Muara Pijoan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Muhajirin', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Pematang Gajah', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Pematang Jering', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Penyengat Olak', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Rengas Bandung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Sarang Burung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Sembubuk', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Senaung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Simpang Limo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Simpang Sungai Duren', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Sungai Bertam', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'JAMBI LUAR KOTA', 'status' => 'Desa', 'name' => 'Sungai Duren', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Kelurahan', 'name' => 'Tanjung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Betung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Gedong Karya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Jebus', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Londerang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Maju Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Mekar Sari', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Pematang Raman', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Petanang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Puding', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Pulau Mentaro', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Rantau Panjang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Rondang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Seponjen', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Sogo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Sungai Aur', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH', 'status' => 'Desa', 'name' => 'Sungai Bungur', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Arang Arang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Kasang Kota Karang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Kasang Kumpeh', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Kasang Lopak Alai', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Kasang Pudak', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Kota Karang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Lopak Alai', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Muara Kumpeh', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Pemunduran', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Pudak', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Ramin', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Sakean', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Sipin Teluk Duren', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Solok', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Sumber Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Sungai Terap', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Tarikan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'KUMPEH ULU', 'status' => 'Desa', 'name' => 'Teluk Raya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Kelurahan', 'name' => 'Jambi Kecil', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Bakung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Baru', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Danau Kedap', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Danau Lamo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Jambi Tulo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Lubuk Raman', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Muaro Jambi', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Mudung Darat', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Niaso', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Setiris', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MARO SEBO', 'status' => 'Desa', 'name' => 'Tanjung Katung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Kelurahan', 'name' => 'Tempino', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Baru', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Ibru', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Muaro Sebapo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Naga Sari', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Nyogan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Pelempang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Pondok Meja', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Sebapo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Suka Damai', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Suka Maju', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Sungai Landai', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Tanjung Pauh KM.32', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Tanjung Pauh KM.39', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'MESTONG', 'status' => 'Desa', 'name' => 'Tanjung Pauh Talang Pelita', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Kelurahan', 'name' => 'Sengeti', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Berembang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Bukit Baling', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Gerunggung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Kedotan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Keranggan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Pematang Pulai', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Pulau Kayu Aro', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Rantau Majo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Sekernan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Suak Putat', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Suko Awin Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Tanjung Lanjut', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Tantan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Tunas Baru', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SEKERNAN', 'status' => 'Desa', 'name' => 'Tunas Mudo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Bakti Mulya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Berkah', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Bukit Makmur', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Bukit Mas', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Marga Manunggal Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Marga Mulya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Mekar Sari Makmur', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Panca Bakti', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Panca Mulya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Suka Makmur', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI BAHAR', 'status' => 'Desa', 'name' => 'Tanjung Harapan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Gambut Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Kebon IX', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Ladang Panjang', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Mekar Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Mingkung Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Parit', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Petaling Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Sido Mukti', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Sumber Agung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Sungai Gelam', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Talang Belido', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Talang Kerinci', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Tangkit', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Tangkit Baru', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'SUNGAI GELAM', 'status' => 'Desa', 'name' => 'Trimulya Jaya', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Dusun Mudo', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Kemingking Dalam', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Kemingking Luar', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Kunangan', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Manis Mato', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Rukam', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Sekumbung', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Talang Duku', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Tebat Patah', 'created_at' => now(), 'updated_at' => now()],
+            ['kecamatan' => 'TAMAN RAJO', 'status' => 'Desa', 'name' => 'Teluk Jambu', 'created_at' => now(), 'updated_at' => now()]
+        ];
 
-        $file = fopen($csvFile, 'r');
-        
-        // Skip header
-        $header = fgetcsv($file);
-
-        $villages = [];
-        while (($data = fgetcsv($file)) !== false) {
-            // Kabupaten, Kecamatan, Status, Nama_Wilayah
-            if (count($data) >= 4) {
-                $villages[] = [
-                    'kecamatan' => strtoupper(trim($data[1])), // Ensure uppercase to match frontend
-                    'status' => trim($data[2]),
-                    'name' => trim($data[3]),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-        }
-        
-        fclose($file);
-
-        if (count($villages) > 0) {
-            \App\Models\Village::insert($villages);
-            $this->command->info("Inserted " . count($villages) . " villages.");
-        }
+        \Illuminate\Support\Facades\DB::table('villages')->insert($villages);
+        $this->command->info('Inserted ' . count($villages) . ' villages directly.');
     }
 }

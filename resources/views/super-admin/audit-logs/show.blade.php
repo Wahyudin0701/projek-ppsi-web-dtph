@@ -46,7 +46,7 @@
                     <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
                         @if($log->causer)
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                                <div class="w-12 h-12 rounded-full bg-gray-200 text-gray-900 flex items-center justify-center font-bold text-lg">
                                     {{ substr($log->causer->name, 0, 1) }}
                                 </div>
                                 <div>

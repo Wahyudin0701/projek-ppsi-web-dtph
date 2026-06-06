@@ -4,7 +4,7 @@
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Kelola Unduh Dokumen</h1>
-            <p class="text-sm text-gray-500 mt-1">Manajemen berkas dan dokumen yang dapat diunduh oleh publik.</p>
+            <p class="text-sm text-gray-500 mt-1">Manajemen berkas dan dokumen yang dapat diunduh oleh publik yang akan ditampilkan di halaman utama (homepage).</p>
         </div>
         <a href="{{ route('admin.documents.create') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

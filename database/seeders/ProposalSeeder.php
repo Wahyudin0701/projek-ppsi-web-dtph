@@ -12,14 +12,14 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = \App\Models\User::where('role', 'user')->pluck('id');
+        $users = \App\Models\User::where('role', 'petani')->pluck('id');
         if ($users->isEmpty()) {
             // Create a dummy user if none exists
             $user = \App\Models\User::create([
                 'name' => 'Dummy Farmer',
                 'email' => 'farmer_dummy_' . time() . '@example.com',
                 'password' => bcrypt('password'),
-                'role' => 'user',
+                'role' => 'petani',
                 'is_verified' => true,
             ]);
             $users = collect([$user->id]);

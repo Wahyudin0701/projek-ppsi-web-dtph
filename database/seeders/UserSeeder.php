@@ -24,6 +24,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => 'super_admin',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -36,6 +37,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => 'admin',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -48,6 +50,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => 'pimpinan',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -60,6 +63,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => 'kabid_psp',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -72,6 +76,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => 'kabid_tp',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -84,6 +89,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => 'kabid_hortikultura',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -96,12 +102,13 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => 'umum',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
 
         // Delete existing farmers
-        $existingFarmers = User::where('role', 'user')->get();
+        $existingFarmers = User::where('role', 'petani')->get();
         foreach ($existingFarmers as $farmer) {
             if ($farmer->farmerProfile) {
                 \App\Models\FarmerGroupMember::where('farmer_profile_id', $farmer->farmerProfile->id)->delete();
@@ -116,8 +123,9 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Kelompok Tani Harapan Jaya',
                 'password' => $password,
-                'role' => 'user',
+                'role' => 'petani',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -133,7 +141,10 @@ class UserSeeder extends Seeder
             'komoditi_utama' => 'Padi Sawah',
             'luas_lahan' => 15.5,
             'grade' => 'Pemula',
-            'status' => 'approved',
+            'id_poktan' => 'POKTAN-12345',
+            'no_sk' => 'SK.123/POKTAN/2026',
+            'sk_pengukuhan_path' => 'dummy_sk.pdf',
+            'foto_ktp' => 'dummy_ktp.jpg',
         ]);
 
         \App\Models\FarmerGroupMember::insert([
@@ -148,8 +159,9 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Kelompok Tani Makmur Bersama',
                 'password' => $password,
-                'role' => 'user',
+                'role' => 'petani',
                 'is_verified' => 1,
+                'status' => 'approved',
                 'email_verified_at' => now(),
             ]
         );
@@ -165,7 +177,10 @@ class UserSeeder extends Seeder
             'komoditi_utama' => 'Cabai',
             'luas_lahan' => 12.0,
             'grade' => 'Madya',
-            'status' => 'approved',
+            'id_poktan' => 'POKTAN-67890',
+            'no_sk' => 'SK.456/POKTAN/2026',
+            'sk_pengukuhan_path' => 'dummy_sk_2.pdf',
+            'foto_ktp' => 'dummy_ktp_2.jpg',
         ]);
 
         \App\Models\FarmerGroupMember::insert([

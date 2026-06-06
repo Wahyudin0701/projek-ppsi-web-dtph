@@ -17,7 +17,7 @@ class DemoProposalSeeder extends Seeder
     public function run(): void
     {
         // 1. Ambil data master
-        $farmer = User::where('role', 'user')->first();
+        $farmer = User::where('role', 'petani')->first();
         $admin = User::where('role', 'admin')->first();
         $pimpinan = User::where('role', 'pimpinan')->first();
         $kabid = User::where('role', 'kabid_psp')->first() ?? User::where('role', 'kabid_tp')->first();
@@ -36,6 +36,7 @@ class DemoProposalSeeder extends Seeder
             'user_id' => $farmer->id,
             'program_id' => $program->id,
             'status' => 'sedang_diverifikasi_admin',
+            'no_surat_pengajuan' => '001/PROG/KT/' . date('Y'),
             'submission_date' => now()->subDays(5),
         ]);
 
@@ -44,6 +45,8 @@ class DemoProposalSeeder extends Seeder
             'user_id' => $farmer->id,
             'alsintan_id' => $alsintan->id,
             'status' => 'sedang_diverifikasi_pimpinan',
+            'no_surat_pengajuan' => '002/ALS/KT/' . date('Y'),
+            'rencana_durasi_hari' => 5,
             'submission_date' => now()->subDays(4),
             'reviewed_at' => now()->subDays(3),
             'admin_notes' => 'Dokumen lengkap sesuai SIMLUHTAN.',
@@ -54,6 +57,7 @@ class DemoProposalSeeder extends Seeder
             'user_id' => $farmer->id,
             'program_id' => $program->id,
             'status' => 'persiapan_survei',
+            'no_surat_pengajuan' => '003/PROG/KT/' . date('Y'),
             'submission_date' => now()->subDays(6),
             'reviewed_at' => now()->subDays(5),
             'admin_notes' => 'Berkas awal lengkap.',
@@ -72,6 +76,8 @@ class DemoProposalSeeder extends Seeder
             'user_id' => $farmer->id,
             'alsintan_id' => $alsintan->id,
             'status' => 'sedang_survei',
+            'no_surat_pengajuan' => '004/ALS/KT/' . date('Y'),
+            'rencana_durasi_hari' => 7,
             'submission_date' => now()->subDays(7),
             'reviewed_at' => now()->subDays(6),
             'kabid_id' => $kabid->id,
@@ -92,6 +98,7 @@ class DemoProposalSeeder extends Seeder
             'user_id' => $farmer->id,
             'program_id' => $program->id,
             'status' => 'survei_selesai',
+            'no_surat_pengajuan' => '005/PROG/KT/' . date('Y'),
             'submission_date' => now()->subDays(10),
             'reviewed_at' => now()->subDays(9),
             'kabid_id' => $kabid->id,
@@ -118,6 +125,8 @@ class DemoProposalSeeder extends Seeder
             'user_id' => $farmer->id,
             'alsintan_id' => $alsintan->id,
             'status' => 'menunggu_keputusan_akhir',
+            'no_surat_pengajuan' => '006/ALS/KT/' . date('Y'),
+            'rencana_durasi_hari' => 14,
             'submission_date' => now()->subDays(15),
             'reviewed_at' => now()->subDays(14),
             'kabid_id' => $kabid->id,
@@ -136,6 +145,7 @@ class DemoProposalSeeder extends Seeder
             'user_id' => $farmer->id,
             'program_id' => $program->id,
             'status' => 'disetujui',
+            'no_surat_pengajuan' => '007/PROG/KT/' . date('Y'),
             'submission_date' => now()->subDays(20),
             'reviewed_at' => now()->subDays(19),
             'kabid_id' => $kabid->id,

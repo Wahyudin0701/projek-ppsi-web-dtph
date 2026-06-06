@@ -49,6 +49,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'string'],
+            'status' => ['required', 'string', 'in:menunggu,reviewed,approved,rejected,pengajuan_revisi'],
         ]);
 
         if (in_array($request->role, $this->fixedRoles)) {
@@ -60,11 +61,61 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'status' => $request->status,
             'is_verified' => 1,
             'email_verified_at' => now(),
         ]);
 
         $user->assignRole($request->role);
+
+        if ($request->role === 'petani' && $request->has('profile')) {
+            $profileData = $request->input('profile');
+            
+            $skPath = null;
+            if ($request->hasFile('profile.file_sk')) {
+                $skPath = $request->file('profile.file_sk')->store('dokumen_sk', 'public');
+            }
+
+            $ktpPath = null;
+            if ($request->hasFile('profile.foto_ktp')) {
+                $ktpPath = $request->file('profile.foto_ktp')->store('ktp', 'public');
+            }
+
+            $komoditiStr = isset($profileData['komoditi']) && is_array($profileData['komoditi']) 
+                ? implode(', ', $profileData['komoditi']) 
+                : ($profileData['komoditi'] ?? null);
+
+            $farmerProfile = $user->farmerProfile()->create([
+                'nama_kelompok' => $profileData['nama_kelompok'] ?? '',
+                'id_poktan' => $profileData['id_poktan'] ?? '',
+                'no_sk' => $profileData['no_sk'] ?? null,
+                'ketua' => $profileData['ketua'] ?? '',
+                'nik_ketua' => $profileData['nik_ketua'] ?? '',
+                'kontak' => $profileData['kontak'] ?? '',
+                'pekerjaan' => $profileData['pekerjaan'] ?? 'Petani',
+                'afiliasi_lembaga' => $profileData['afiliasi_lembaga'] ?? 'Kelompok Tani',
+                'grade' => $profileData['grade'] ?? 'Pemula',
+                'luas_lahan' => $profileData['luas_lahan'] ?? 0,
+                'komoditi' => $komoditiStr,
+                'komoditi_utama' => $profileData['komoditi_utama'] ?? null,
+                'alamat' => $profileData['alamat'] ?? '',
+                'kecamatan' => $profileData['kecamatan'] ?? '',
+                'sk_pengukuhan_path' => $skPath,
+                'foto_ktp' => $ktpPath,
+            ]);
+
+            if (isset($profileData['anggota_nama']) && is_array($profileData['anggota_nama'])) {
+                foreach ($profileData['anggota_nama'] as $index => $nama) {
+                    $nik = $profileData['anggota_nik'][$index] ?? null;
+                    if (!empty(trim($nama)) && !empty(trim($nik))) {
+                        $farmerProfile->members()->create([
+                            'nama' => $nama,
+                            'nik' => $nik,
+                        ]);
+                    }
+                }
+            }
+        }
 
         // Log otomatis sudah ditangani oleh trait LogsActivity di model User
 
@@ -91,6 +142,7 @@ class UserController extends Controller
 
         if (!$isFixed) {
             $rules['role'] = ['required', 'string'];
+            $rules['status'] = ['required', 'string', 'in:menunggu,reviewed,approved,rejected,pengajuan_revisi'];
         }
 
         $request->validate($rules);
@@ -102,6 +154,10 @@ class UserController extends Controller
         
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
+        }
+
+        if (!$isFixed && $request->has('status')) {
+            $user->status = $request->status;
         }
 
         $user->save();
@@ -174,7 +230,6 @@ class UserController extends Controller
                     'komoditi_utama' => $profileData['komoditi_utama'] ?? $user->farmerProfile->komoditi_utama,
                     'alamat' => $profileData['alamat'] ?? $user->farmerProfile->alamat,
                     'kecamatan' => $profileData['kecamatan'] ?? $user->farmerProfile->kecamatan,
-                    'status' => $profileData['status'] ?? $user->farmerProfile->status,
                     'sk_pengukuhan_path' => $skPath,
                     'foto_ktp' => $ktpPath,
                 ]);
