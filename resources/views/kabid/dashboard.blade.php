@@ -33,7 +33,7 @@
                     ['label' => 'Total Disposisi', 'value' => $stats['total'],           'textColor' => 'text-slate-700'],
                     ['label' => 'Persiapan Survei', 'value' => $stats['menunggu_survei'], 'textColor' => 'text-amber-600'],
                     ['label' => 'Dalam Survei',     'value' => $stats['dalam_survei'],    'textColor' => 'text-blue-600'],
-                    ['label' => 'Verifikasi CPCL','value' => $stats['survei_selesai'], 'textColor' => 'text-orange-600'],
+                    ['label' => 'Verifikasi CPCL','value' => $stats['verifikasi_cpcl'] ?? 0, 'textColor' => 'text-orange-600'],
                     ['label' => 'Selesai',           'value' => $stats['selesai'],         'textColor' => 'text-green-600'],
                 ];
             @endphp
@@ -86,7 +86,7 @@
                                             'sedang_diverifikasi_pimpinan' => ['bg' => 'bg-purple-100 text-purple-700', 'label' => 'Review Pimpinan'],
                                             'persiapan_survei' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Persiapan Survei'],
                                             'survei_berlangsung' => ['bg' => 'bg-sky-100 text-sky-700', 'label' => 'Survei Berlangsung'],
-                                            'survei_selesai' => ['bg' => 'bg-orange-100 text-orange-700', 'label' => 'Survei Selesai'],
+
                                             'verifikasi_cpcl' => ['bg' => 'bg-teal-100 text-teal-700', 'label' => 'Menunggu Keputusan Akhir'],
                                             'menunggu_keputusan_akhir' => ['bg' => 'bg-indigo-100 text-indigo-700', 'label' => 'Menunggu Keputusan Pimpinan'],
                                             'sedang_survei' => ['bg' => 'bg-blue-100 text-blue-700', 'label' => 'Sedang Survei'],

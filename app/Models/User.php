@@ -161,6 +161,11 @@ class User extends Authenticatable
         return $this->hasOne(FarmerProfile::class);
     }
 
+    public function umumProfile()
+    {
+        return $this->hasOne(UmumProfile::class);
+    }
+
     /**
      * Get all proposals submitted by the user.
      */

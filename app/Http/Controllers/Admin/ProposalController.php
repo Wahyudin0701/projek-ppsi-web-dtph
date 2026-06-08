@@ -129,4 +129,29 @@ class ProposalController extends Controller
         return redirect()->route('admin.proposals.show', $proposal)
             ->with('success', "Nomor dokumen resmi ($nomor) berhasil diterbitkan secara otomatis.");
     }
+
+    /**
+     * Mark a borrowed Alsintan as returned.
+     */
+    public function markAsReturned(Request $request, Proposal $proposal)
+    {
+        if ($proposal->status !== 'disetujui' || !$proposal->alsintan_id) {
+            abort(400, 'Hanya proposal alsintan yang sudah disetujui yang dapat dikembalikan.');
+        }
+
+        // 1. Update proposal status
+        $proposal->update([
+            'status' => 'dikembalikan',
+            'returned_at' => now(),
+        ]);
+
+        // 2. Free up the inventory item if any
+        if ($proposal->alsintan_inventory_id) {
+            \App\Models\AlsintanInventory::where('id', $proposal->alsintan_inventory_id)
+                ->update(['status_ketersediaan' => 'Tersedia']);
+        }
+
+        return redirect()->route('admin.proposals.show', $proposal)
+            ->with('success', 'Alat berat untuk proposal #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah berhasil ditandai sebagai dikembalikan. Stok alat telah kembali tersedia.');
+    }
 }

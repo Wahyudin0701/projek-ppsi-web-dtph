@@ -40,12 +40,12 @@
                                 <span class="font-bold text-gray-800">{{ $alsintan->merk ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
-                                <span class="text-gray-500 font-medium">Kapasitas</span>
-                                <span class="font-bold text-gray-800">{{ $alsintan->capacity ?? '-' }}</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
                                 <span class="text-gray-500 font-medium">Stok Tersedia</span>
                                 <span class="font-black text-[#19A148]">{{ $alsintan->available_stock }} Unit</span>
+                            </div>
+                            <div class="flex flex-col text-sm pt-1">
+                                <span class="text-gray-500 font-medium mb-1">Spesifikasi Alat</span>
+                                <span class="font-bold text-gray-800 whitespace-pre-line leading-relaxed">{{ $alsintan->description ?? '-' }}</span>
                             </div>
                         </div>
                     </div>

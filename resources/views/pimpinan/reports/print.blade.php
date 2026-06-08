@@ -2,122 +2,157 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Laporan Proposal - DTPH Muaro Jambi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-            }
-            .no-print {
-                display: none;
-            }
-        }
         @page {
-            size: landscape;
-            margin: 1cm;
+            size: A4 landscape;
+            margin: 1.5cm;
         }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+            line-height: 1.3;
+        }
+        .header-table { width: 100%; margin-bottom: 2px; border: none; font-family: 'Times New Roman', Times, serif; }
+        .header-table td { border: none; padding: 0; vertical-align: top; }
+        .header-table .logo-cell { width: 80px; text-align: center; vertical-align: middle; }
+        .header-table .logo-cell img { width: 75px; height: auto; }
+        .header-table .text-cell { text-align: center; }
+        .header-table h1 { font-size: 14pt; margin: 0; font-weight: bold; }
+        .header-table h2 { font-size: 15pt; margin: 0; font-weight: bold; }
+        .header-table p { font-size: 9pt; margin: 0; }
+        .header-line { border: none; border-top: 3px solid #000; border-bottom: 1px solid #000; height: 2px; margin: 5px 0 15px 0; }
+        
+        .title { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 5px; text-decoration: underline; }
+        .subtitle { text-align: center; font-size: 12px; margin-bottom: 15px; }
+        
+        .info-table { width: 100%; margin-bottom: 15px; }
+        .info-table td { padding: 2px 0; vertical-align: top; }
+        .info-table .label { width: 120px; font-weight: bold; }
+        .info-table .colon { width: 10px; }
+        
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .data-table th, .data-table td { border: 1px solid #999; padding: 6px; vertical-align: top; }
+        .data-table th { background-color: #f0f0f0; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 10px; }
+        .data-table .text-center { text-align: center; }
+        
+        .footer { width: 300px; float: right; text-align: center; margin-top: 20px; }
+        .footer p { margin: 0; }
+        .footer .name { margin-top: 60px; font-weight: bold; text-decoration: underline; }
+        
+        .status-badge { font-weight: bold; text-transform: uppercase; font-size: 9px; }
+        .status-approved { color: #166534; }
+        .status-rejected { color: #991b1b; }
+        .status-pending { color: #b45309; }
     </style>
 </head>
-<body class="bg-white text-gray-900 font-sans p-8">
+<body>
+    <table class="header-table">
+        <tr>
+            <td class="logo-cell">
+                @php
+                    $logoPath = public_path('images/Lambang_Kabupaten_Muaro_Jambi.png');
+                    $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
+                @endphp
+                @if($logoData)
+                    <img src="data:image/png;base64,{{ $logoData }}" alt="Logo Muaro Jambi">
+                @endif
+            </td>
+            <td class="text-cell">
+                <h1>PEMERINTAH KABUPATEN MUARO JAMBI</h1>
+                <h2>DINAS TANAMAN PANGAN<br>DAN HORTIKULTURA</h2>
+                <p>Komplek Perkantoran Bukit Cinto Kenang, Jalan Lintas Timur Km.26, Sengeti, Kecamatan Sekernan 36381<br>Telp. (0741) 590069, Faksimile. (0741) 590070</p>
+            </td>
+        </tr>
+    </table>
+    <hr class="header-line">
 
-    <div class="mb-8 border-b-2 border-slate-800 pb-4 flex items-center gap-4">
-        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-16 w-auto" onerror="this.style.display='none'">
-        <div>
-            <h1 class="text-2xl font-black uppercase tracking-wider text-slate-800">Dinas Tanaman Pangan dan Hortikultura</h1>
-            <h2 class="text-lg font-bold text-slate-600">Kabupaten Muaro Jambi</h2>
-            <p class="text-sm text-gray-500 mt-1">Laporan Rekapitulasi Pengajuan Proposal Bantuan & Alsintan</p>
-        </div>
-    </div>
+    <div class="title">LAPORAN REKAPITULASI PENGAJUAN PROPOSAL</div>
+    <div class="subtitle">BANTUAN DAN PEMINJAMAN ALSINTAN</div>
 
-    <div class="mb-6 grid grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <div>
-            <p><span class="font-bold text-gray-700 w-32 inline-block">Periode:</span> 
+    <table class="info-table">
+        <tr>
+            <td class="label">Periode</td>
+            <td class="colon">:</td>
+            <td style="width: 40%">
                 {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->translatedFormat('d M Y') : 'Awal' }} 
                 s/d 
                 {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d M Y') : 'Akhir' }}
-            </p>
-            <p><span class="font-bold text-gray-700 w-32 inline-block">Jenis Pengajuan:</span> 
-                {{ request('type') == 'alsintan' ? 'Alsintan' : (request('type') == 'program' ? 'Program Bantuan' : 'Semua Jenis') }}
-            </p>
-        </div>
-        <div>
-            <p><span class="font-bold text-gray-700 w-32 inline-block">Status:</span> 
-                {{ request('status') ? ucfirst(request('status')) : 'Semua Status' }}
-            </p>
-            <p><span class="font-bold text-gray-700 w-32 inline-block">Total Data:</span> 
-                {{ $proposals->count() }} Proposal
-            </p>
-        </div>
-    </div>
+            </td>
+            <td class="label">Status</td>
+            <td class="colon">:</td>
+            <td>{{ request('status') ? ucfirst(request('status')) : 'Semua Status' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Jenis Pengajuan</td>
+            <td class="colon">:</td>
+            <td>{{ request('type') == 'alsintan' ? 'Alsintan' : (request('type') == 'program' ? 'Program Bantuan' : 'Semua Jenis') }}</td>
+            <td class="label">Total Data</td>
+            <td class="colon">:</td>
+            <td>{{ $proposals->count() }} Proposal</td>
+        </tr>
+    </table>
 
-    <table class="w-full text-left border-collapse border border-slate-300">
+    <table class="data-table">
         <thead>
-            <tr class="bg-slate-100 border-b border-slate-300">
-                <th class="px-4 py-3 text-xs font-bold text-slate-700 uppercase tracking-wider border-r border-slate-300 w-12 text-center">No</th>
-                <th class="px-4 py-3 text-xs font-bold text-slate-700 uppercase tracking-wider border-r border-slate-300">No. Registrasi</th>
-                <th class="px-4 py-3 text-xs font-bold text-slate-700 uppercase tracking-wider border-r border-slate-300">Nama Pengaju (Kelompok Tani)</th>
-                <th class="px-4 py-3 text-xs font-bold text-slate-700 uppercase tracking-wider border-r border-slate-300">Jenis & Objek Pengajuan</th>
-                <th class="px-4 py-3 text-xs font-bold text-slate-700 uppercase tracking-wider border-r border-slate-300 text-center">Tgl. Pengajuan</th>
-                <th class="px-4 py-3 text-xs font-bold text-slate-700 uppercase tracking-wider text-center">Status Akhir</th>
+            <tr>
+                <th style="width: 30px;">No</th>
+                <th style="width: 100px;">No. Registrasi</th>
+                <th>Nama Pengaju (Kelompok Tani)</th>
+                <th>Jenis & Objek Pengajuan</th>
+                <th style="width: 100px;">Tgl. Pengajuan</th>
+                <th style="width: 100px;">Status Akhir</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-slate-200">
+        <tbody>
             @forelse($proposals as $index => $proposal)
                 @php $isAlsintan = $proposal->alsintan_id !== null; @endphp
                 <tr>
-                    <td class="px-4 py-3 text-sm text-center border-r border-slate-300">{{ $index + 1 }}</td>
-                    <td class="px-4 py-3 font-bold text-sm border-r border-slate-300">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</td>
-                    <td class="px-4 py-3 text-sm border-r border-slate-300">
-                        <span class="font-bold">{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</span><br>
-                        <span class="text-xs text-gray-500">Ketua: {{ $proposal->user->name }}</span>
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td><strong>#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</strong></td>
+                    <td>
+                        <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong><br>
+                        <span style="font-size: 9px; color: #555;">Ketua: {{ $proposal->user->name }}</span>
                     </td>
-                    <td class="px-4 py-3 text-sm border-r border-slate-300">
-                        <span class="font-semibold text-xs">{{ $isAlsintan ? 'ALSINTAN' : 'PROGRAM' }}</span><br>
+                    <td>
+                        <span style="font-size: 9px; font-weight: bold;">{{ $isAlsintan ? 'ALSINTAN' : 'PROGRAM' }}</span><br>
                         {{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}
                     </td>
-                    <td class="px-4 py-3 text-sm text-center border-r border-slate-300">
+                    <td class="text-center">
                         {{ $proposal->submission_date?->translatedFormat('d/m/Y') }}
                     </td>
-                    <td class="px-4 py-3 text-sm font-bold text-center">
-                        @if($proposal->status == 'disetujui')
-                            <span class="text-emerald-600 uppercase">Disetujui</span>
-                        @elseif($proposal->status == 'ditolak')
-                            <span class="text-rose-600 uppercase">Ditolak</span>
-                        @else
-                            <span class="text-amber-600 uppercase">Menunggu</span>
-                        @endif
+                    <td class="text-center">
+                        @php
+                            $statusColors = [
+                                'sedang_diverifikasi_admin'    => '#EAB308',
+                                'sedang_diverifikasi_pimpinan' => '#6366F1',
+                                'persiapan_survei'             => '#F59E0B',
+                                'sedang_survei'                => '#3B82F6',
+                                'verifikasi_cpcl'              => '#F59E0B',
+                                'menunggu_keputusan_akhir'     => '#A855F7',
+                                'disetujui'                    => '#16A34A',
+                                'dikembalikan'                 => '#14B8A6',
+                                'ditolak'                      => '#DC2626',
+                            ];
+                            $statusColor = $statusColors[$proposal->status] ?? '#6B7280';
+                        @endphp
+                        <span class="status-badge" style="color: {{ $statusColor }}">{{ $proposal->statusLabel }}</span>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="px-4 py-8 text-center text-gray-500 font-medium">Tidak ada data proposal yang sesuai dengan filter.</td>
+                    <td colspan="6" class="text-center" style="padding: 20px;">Tidak ada data proposal yang sesuai dengan filter.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
-    <div class="mt-12 flex justify-end">
-        <div class="text-center">
-            <p class="text-sm mb-16">Muaro Jambi, {{ now()->translatedFormat('d F Y') }}<br>Kepala Dinas,</p>
-            <p class="font-bold underline">{{ auth()->user()->name }}</p>
-            <p class="text-xs">NIP. ........................................</p>
-        </div>
+    <div class="footer">
+        <p>Muaro Jambi, {{ now()->translatedFormat('d F Y') }}<br>Kepala Dinas,</p>
+        <div class="name">{{ auth()->user()->display_name }}</div>
+        <p style="font-size: 10px;">NIP. {{ auth()->user()->display_nip !== '-' ? auth()->user()->display_nip : '........................................' }}</p>
     </div>
 
-    <div class="mt-8 text-center no-print">
-        <button onclick="window.print()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold shadow-md hover:bg-indigo-700">Cetak Sekarang</button>
-        <button onclick="window.close()" class="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-bold shadow-md hover:bg-gray-300 ml-2">Tutup Tab</button>
-    </div>
-
-    <script>
-        window.onload = function() {
-            // Auto trigger print dialog when page loads
-            setTimeout(function() {
-                window.print();
-            }, 500);
-        };
-    </script>
 </body>
 </html>

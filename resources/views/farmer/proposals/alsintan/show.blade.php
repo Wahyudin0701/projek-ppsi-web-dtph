@@ -31,7 +31,7 @@
                         @endif
                         <div class="absolute top-5 left-5 z-10">
                             <span class="inline-block rounded-xl bg-white/95 backdrop-blur-md px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-[#19A148] shadow-sm">
-                                {{ $alsintan->category }}
+                                {{ $alsintan->category ? $alsintan->category->name : '-' }}
                             </span>
                         </div>
                     </div>
@@ -42,17 +42,25 @@
                     <h3 class="font-bold text-gray-900 mb-2">Ingin Meminjam Alat Ini?</h3>
                     <p class="text-sm text-gray-500 mb-6">Ajukan proposal peminjaman sekarang dengan melengkapi form yang tersedia.</p>
                     @php
-                        $hasActiveProposal = auth()->check() && \App\Models\Proposal::where('user_id', auth()->id())
+                        $activeStatuses = ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'persiapan_survei', 'sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'];
+                        $activeProposal = auth()->check() ? \App\Models\Proposal::where('user_id', auth()->id())
                             ->where('alsintan_id', $alsintan->id)
-                            ->whereIn('status', ['menunggu_verifikasi', 'diproses'])
-                            ->exists();
+                            ->whereIn('status', $activeStatuses)
+                            ->first() : null;
                     @endphp
 
-                    @if($hasActiveProposal)
+                    @if($activeProposal)
+                        @if($activeProposal->status === 'disetujui')
+                        <button disabled class="w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-green-50 border border-green-200 text-green-600 font-bold text-base rounded-2xl cursor-not-allowed shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Aktif Dipinjam
+                        </button>
+                        @else
                         <button disabled class="w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-yellow-50 border border-yellow-200 text-yellow-600 font-bold text-base rounded-2xl cursor-not-allowed shadow-sm">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Sedang Diproses
                         </button>
+                        @endif
                     @elseif($alsintan->available_stock > 0)
                         <a href="{{ route('farmer.proposals.alsintan.create', $alsintan->id) }}"
                            class="group w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#19A148] text-white font-bold text-base rounded-2xl hover:bg-green-700 hover:shadow-xl hover:shadow-green-900/20 hover:-translate-y-1 transition-all duration-300">

@@ -29,12 +29,12 @@ class ProposalController extends Controller
             'total'           => $statusCounts->sum(),
             'menunggu_survei' => $statusCounts->get('persiapan_survei', 0),
             'dalam_survei'    => $statusCounts->get('sedang_survei', 0),
-            'survei_selesai'  => $statusCounts->get('survei_selesai', 0) + $statusCounts->get('verifikasi_cpcl', 0),
+            'survei_selesai'  => $statusCounts->get('verifikasi_cpcl', 0),
             'selesai'         => $statusCounts->get('menunggu_keputusan_akhir', 0) + $statusCounts->get('disetujui', 0) + $statusCounts->get('ditolak', 0),
         ];
 
         $pendingAction = Proposal::where('kabid_id', $kabid->id)
-            ->whereIn('status', ['persiapan_survei', 'survei_selesai', 'verifikasi_cpcl'])
+            ->whereIn('status', ['persiapan_survei', 'verifikasi_cpcl'])
             ->with(['user.farmerProfile', 'program', 'alsintan'])
             ->latest('updated_at')
             ->take(5)
@@ -280,7 +280,7 @@ class ProposalController extends Controller
     {
         $this->authorizeKabid($proposal);
 
-        if (!in_array($proposal->status, ['sedang_survei', 'survei_selesai', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'])) {
+        if (!in_array($proposal->status, ['sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'])) {
             abort(403, 'Form CPCL belum tersedia.');
         }
 

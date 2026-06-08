@@ -30,10 +30,10 @@
                 'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Sedang Diverifikasi Pimpinan'],
                 'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Disposisi ke Kabid'],
                 'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
-                'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
                 'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
                 'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Keputusan Akhir'],
                 'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
+                'dikembalikan'             => ['bg' => 'bg-gray-100 text-gray-700',      'label' => 'Telah Dikembalikan'],
                 'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
                 default                    => ['bg' => 'bg-gray-100 text-gray-600',       'label' => $proposal->statusLabel],
             };
@@ -59,7 +59,7 @@
             </div>
 
             {{-- Action Buttons --}}
-            <div class="flex flex-col sm:flex-row flex-wrap justify-end gap-3 w-full sm:w-auto items-stretch sm:items-center" x-data="{ showApprove: false, showReject: false }">
+            <div class="flex flex-col sm:flex-row flex-wrap justify-end gap-3 w-full sm:w-auto items-stretch sm:items-center" x-data="{ showApprove: false, showReject: false, showReturn: false }">
                 @if($proposal->file_proposal)
                     <a href="{{ Storage::url($proposal->file_proposal) }}" target="_blank"
                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-50 border border-indigo-100 text-indigo-700 hover:bg-indigo-100 text-sm font-bold rounded-xl transition-colors shadow-sm w-full sm:w-auto">
@@ -160,6 +160,41 @@
                         @endif
                     @endif
                 @endif
+                
+                @if($proposal->status === 'disetujui' && $isAlsintan)
+                    <button @click="showReturn = true" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 border border-emerald-700 text-white hover:bg-emerald-700 text-sm font-bold rounded-xl transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                        Tandai Telah Dikembalikan
+                    </button>
+
+                    {{-- Return Modal --}}
+                    <template x-if="showReturn">
+                        <div class="fixed inset-0 z-[999] overflow-y-auto">
+                            <div class="flex items-center justify-center min-h-screen px-4">
+                                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showReturn = false"></div>
+                                <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-gray-100">
+                                    <div class="flex items-center gap-4 mb-5">
+                                        <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-black text-gray-900">Pengembalian Alat</h3>
+                                            <p class="text-sm text-gray-500">Konfirmasi pengembalian alat berat.</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-6">Apakah Anda yakin alat <strong>{{ $proposal->alsintan->name }}</strong> telah dikembalikan oleh <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> dan stok akan diupdate menjadi tersedia?</p>
+                                    <form action="{{ route('admin.proposals.return', $proposal) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <div class="flex flex-row-reverse gap-3">
+                                            <button type="submit" class="flex-1 px-6 py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-colors text-sm">Ya, Kembalikan</button>
+                                            <button type="button" @click="showReturn = false" class="flex-1 px-6 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors text-sm">Batal</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                @endif
             </div>
         </div>
 
@@ -204,18 +239,17 @@
                                 <p class="text-gray-900 font-medium">{{ $proposal->alsintan->merk ?? '-' }}</p>
                             </div>
                             <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kapasitas</p>
-                                <p class="text-gray-900 font-medium">{{ $proposal->alsintan->capacity ?? '-' }}</p>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Stok Tersedia (saat ini)</p>
+                                <p class="text-gray-900 font-medium">{{ $proposal->alsintan->available_stock }} unit</p>
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Durasi Peminjaman</p>
                                 <p class="text-gray-900 font-medium">{{ $proposal->rencana_durasi_hari ? $proposal->rencana_durasi_hari . ' Hari' : '-' }}</p>
                             </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Stok Tersedia (saat ini)</p>
-                                <p class="text-gray-900 font-medium">{{ $proposal->alsintan->available_stock }} unit</p>
+                            <div class="col-span-2">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Spesifikasi Alat</p>
+                                <p class="text-gray-900 font-medium whitespace-pre-line">{{ $proposal->alsintan->description ?? '-' }}</p>
                             </div>
-
                         </div>
                         @if($proposal->alsintan->image)
                         <div class="mt-6 pt-6 border-t border-gray-100">
@@ -280,10 +314,10 @@
                             'sedang_diverifikasi_pimpinan' => 1,
                             'persiapan_survei'      => 2,
                             'sedang_survei'     => 3,
-                            'survei_selesai'         => 4,
-                            'verifikasi_cpcl'  => 5,
-                            'menunggu_keputusan_akhir'   => 6,
-                            'disetujui'              => 7,
+                            'verifikasi_cpcl'  => 4,
+                            'menunggu_keputusan_akhir'   => 5,
+                            'disetujui'              => 6,
+                            'dikembalikan'           => 7,
                             'ditolak'                => -1,
                         ];
                         $currentOrder = $statusOrder[$proposal->status] ?? 0;
@@ -348,7 +382,7 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $disposition->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $kabidLabel }}</p>
                                 </div>
-                            @elseif($proposal->status === 'disetujui' && !$disposition)
+                            @elseif(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$disposition)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-gray-900">Verifikasi Pimpinan Selesai</p>
@@ -369,7 +403,7 @@
                         @endif
 
                         {{-- 4. Penugasan Survei (hidden if rejected at/before disposisi, or approved without survey) --}}
-                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !($proposal->status === 'disetujui' && !$surveyAssignment))
+                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$surveyAssignment))
                         <div class="relative">
                             @if($currentOrder >= 3 && $surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -399,7 +433,7 @@
                         @endif
 
                         {{-- 5. Pelaksanaan Survei (hidden if rejected at/before disposisi, or approved without survey) --}}
-                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !($proposal->status === 'disetujui' && !$surveyAssignment))
+                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$surveyAssignment))
                         <div class="relative">
                             @if($proposal->status === 'sedang_survei')
                                 <div class="absolute -left-[21px] bg-blue-500 w-3 h-3 rounded-full border-4 border-white animate-bounce"></div>
@@ -424,7 +458,7 @@
                         @endif
 
                         {{-- 6. Verifikasi CPCL (only shown from survei_selesai and above, or rejected at final) --}}
-                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !($proposal->status === 'disetujui' && !$surveyAssignment))
+                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$surveyAssignment))
                         <div class="relative">
                             @if(($currentOrder >= 6 || $rejectedAtFinal) && $beritaAcara)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -433,7 +467,7 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $beritaAcara->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Berita Acara dan dokumen rekomendasi telah berhasil diteruskan ke Pimpinan.</p>
                                 </div>
-                            @elseif($proposal->status === 'verifikasi_cpcl' || $proposal->status === 'survei_selesai')
+                            @elseif($proposal->status === 'verifikasi_cpcl')
                                 <div class="absolute -left-[21px] bg-blue-500 w-3 h-3 rounded-full border-4 border-white animate-bounce"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-blue-600">Sedang Verifikasi CPCL</p>
@@ -449,7 +483,7 @@
                         {{-- 7. Keputusan Akhir (only shown from menunggu_approval_ba and above, or rejected at final) --}}
                         @if(!$rejectedByAdmin && !$rejectedAtDisposisi)
                         <div class="relative">
-                            @if($proposal->status === 'disetujui')
+                            @if(in_array($proposal->status, ['disetujui', 'dikembalikan']))
                                 <div class="absolute -left-[21px] bg-green-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-green-700">Proposal Disetujui ✓</p>
@@ -473,6 +507,18 @@
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4 opacity-50"><p class="text-sm font-bold text-gray-400 text-[13px]">Keputusan Akhir</p></div>
                             @endif
+                        </div>
+                        @endif
+
+                        {{-- 8. Alat Dikembalikan --}}
+                        @if($proposal->status === 'dikembalikan')
+                        <div class="relative">
+                            <div class="absolute -left-[21px] bg-emerald-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                            <div class="pl-4">
+                                <p class="text-sm font-bold text-emerald-700">Alat Telah Dikembalikan</p>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->returned_at ? $proposal->returned_at->translatedFormat('d M Y - H:i') : '-' }} WIB</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Siklus peminjaman alat telah selesai (close).</p>
+                            </div>
                         </div>
                         @endif
                     </div>

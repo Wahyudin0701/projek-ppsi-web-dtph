@@ -115,7 +115,7 @@
                         </a>
                     @else
                         <p class="text-sm text-gray-500 mb-4">Jika Anda merasa ini adalah kesalahan atau ingin memperbaiki data, silakan hubungi admin kami.</p>
-                        <a href="#" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-sm text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                        <a href="{{ route('kontak') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-sm text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
                             Hubungi Bantuan
                         </a>
                     @endif

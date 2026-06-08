@@ -90,14 +90,10 @@
                             <p class="text-sm text-gray-500 leading-relaxed mb-5 line-clamp-2" x-text="item.description"></p>
 
                             {{-- Specs --}}
-                            <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="grid grid-cols-1 gap-3 mb-4">
                                 <div class="bg-gray-50 border border-gray-100 rounded-xl p-3">
                                     <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Merk / Tipe</p>
                                     <p class="text-sm font-bold text-gray-800 truncate" x-text="item.merk"></p>
-                                </div>
-                                <div class="bg-gray-50 border border-gray-100 rounded-xl p-3">
-                                    <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Kapasitas</p>
-                                    <p class="text-sm font-bold text-gray-800 truncate" x-text="item.capacity"></p>
                                 </div>
                             </div>
 
@@ -270,13 +266,9 @@
                             {{-- Specs Grid --}}
                             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Spesifikasi Teknis</h3>
                             <div class="grid grid-cols-2 gap-3 mb-8">
-                                <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                                <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 col-span-2">
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Merk / Tipe</p>
                                     <p class="text-sm font-bold text-gray-900" x-text="selected.merk"></p>
-                                </div>
-                                <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4">
-                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Kapasitas</p>
-                                    <p class="text-sm font-bold text-gray-900" x-text="selected.capacity"></p>
                                 </div>
                                 <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 col-span-2">
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Ketersediaan Unit</p>
@@ -316,14 +308,20 @@
                 <div class="sticky bottom-0 bg-white border-t border-gray-100 p-5 flex gap-3">
                     <template x-if="selected && selected.available_stock > 0">
                         @auth
-                            @if(auth()->user()->isApproved())
-                                <a :href="'{{ url('farmer/proposals/alsintan') }}/' + selected.id" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
-                                    Ajukan Pinjaman Sekarang
-                                </a>
+                            @if(auth()->user()->hasRole(['petani', 'umum']))
+                                @if(auth()->user()->isApproved())
+                                    <a :href="'{{ url('farmer/proposals/alsintan') }}/' + selected.id" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                        Ajukan Pinjaman Sekarang
+                                    </a>
+                                @else
+                                    <a href="{{ route('dashboard') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                        Lengkapi Profil Untuk Meminjam
+                                    </a>
+                                @endif
                             @else
-                                <a href="{{ route('dashboard') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
-                                    Lengkapi Profil Untuk Meminjam
-                                </a>
+                                <div class="flex-1 bg-gray-100 text-gray-500 py-3.5 rounded-2xl text-sm font-bold text-center border border-gray-200 cursor-not-allowed">
+                                    Khusus Petani / Umum
+                                </div>
                             @endif
                         @else
                             <a href="{{ route('login') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
@@ -357,18 +355,17 @@
                 drawer: false,
                 selected: null,
                 categories: [
-                    { id: 'all',        name: 'Semua Kategori' },
-                    { id: 'traktor',    name: 'Traktor' },
-                    { id: 'pompa',      name: 'Pompa Air' },
-                    { id: 'pascapanen', name: 'Pasca Panen' },
-                    { id: 'tanam',      name: 'Alat Tanam' },
+                    { id: 'all', name: 'Semua Kategori' },
+                    ...(@json($categories).map(cat => ({
+                        id: cat.id.toString(),
+                        name: cat.name
+                    })))
                 ],
                 items: @json($alsintans).map(item => ({
                     id: item.id,
-                    category_id: item.category ? item.category.toLowerCase() : 'lainnya',
+                    category_id: item.category ? item.category.id.toString() : 'lainnya',
                     name: item.name,
                     merk: item.merk || '-',
-                    capacity: item.capacity || '-',
                     stock: item.stock,
                     available_stock: item.available_stock,
                     borrowed_count: item.borrowed_count,

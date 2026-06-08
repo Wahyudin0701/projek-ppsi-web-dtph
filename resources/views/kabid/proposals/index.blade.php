@@ -47,9 +47,10 @@
                         <option value="">Semua Status</option>
                         <option value="persiapan_survei" {{ request('status') === 'persiapan_survei' ? 'selected' : '' }}>Persiapan Survei</option>
                         <option value="sedang_survei" {{ request('status') === 'sedang_survei' ? 'selected' : '' }}>Sedang Survei</option>
-                        <option value="survei_selesai" {{ request('status') === 'survei_selesai' ? 'selected' : '' }}>Menunggu Admin</option>
+
                         <option value="menunggu_keputusan_akhir" {{ request('status') === 'menunggu_keputusan_akhir' ? 'selected' : '' }}>Menunggu Keputusan</option>
                         <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="dikembalikan" {{ request('status') === 'dikembalikan' ? 'selected' : '' }}>Selesai (Dikembalikan)</option>
                         <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </form>
@@ -75,7 +76,7 @@
                                     'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
                                     'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Persiapan Survei'],
                                     'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
-                                    'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
+
                                     'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
                                     'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
                                     'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],

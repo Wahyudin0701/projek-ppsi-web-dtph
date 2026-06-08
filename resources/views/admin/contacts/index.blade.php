@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot:title>Kelola Kontak & Pesan Masuk</x-slot:title>
+    <x-slot name="header">Kelola Kontak & Pesan Masuk</x-slot>
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

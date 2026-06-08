@@ -26,8 +26,9 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/katalog', function () {
-    $alsintans = App\Models\Alsintan::all();
-    return view('public.katalog', compact('alsintans'));
+    $alsintans = App\Models\Alsintan::with('category')->get();
+    $categories = App\Models\AlsintanCategory::orderBy('name')->get();
+    return view('public.katalog', compact('alsintans', 'categories'));
 })->name('katalog');
 
 Route::get('/program', function () {
@@ -84,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Farmer Profile Request Change
-    Route::post('/farmer/profile/request-change', [App\Http\Controllers\FarmerProfileController::class, 'requestChange'])->name('farmer.profile.request-change');
+    Route::middleware(['role:petani|umum'])->post('/farmer/profile/request-change', [App\Http\Controllers\FarmerProfileController::class, 'requestChange'])->name('farmer.profile.request-change');
 
     // Farmer/User Routes
     Route::middleware(['role:petani'])->prefix('farmer')->name('farmer.')->group(function () {
@@ -123,8 +124,8 @@ Route::middleware(['auth'])->group(function () {
     // Admin Routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('users.index');
-        Route::get('/users-list', [App\Http\Controllers\Admin\AdminController::class, 'list'])->name('users.list');
-        Route::get('/users-individuals', [App\Http\Controllers\Admin\AdminController::class, 'listIndividuals'])->name('users.individuals');
+        Route::get('/users-kelompok-tani', [App\Http\Controllers\Admin\AdminController::class, 'list'])->name('users.kelompok-tani');
+        Route::get('/users-umum', [App\Http\Controllers\Admin\AdminController::class, 'listUmum'])->name('users.umum');
         Route::get('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('users.show');
         Route::post('/users/{user}/reviewed', [App\Http\Controllers\Admin\AdminController::class, 'markAsReviewed'])->name('users.reviewed');
         Route::patch('/users/{user}/approve', [App\Http\Controllers\Admin\AdminController::class, 'approve'])->name('users.approve');
@@ -133,14 +134,20 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/users/{user}/respond-change', [App\Http\Controllers\Admin\AdminController::class, 'respondChangeRequest'])->name('users.respond-change');
         
         Route::resource('programs', App\Http\Controllers\Admin\ProgramController::class);
-        
+        Route::resource('alsintan-categories', App\Http\Controllers\Admin\AlsintanCategoryController::class)->parameters([
+            'alsintan-categories' => 'category'
+        ])->except(['show']);
         Route::resource('alsintan', App\Http\Controllers\Admin\AlsintanController::class);
+        Route::post('alsintan/{alsintan}/inventories', [App\Http\Controllers\Admin\AlsintanInventoryController::class, 'store'])->name('alsintan.inventories.store');
+        Route::put('alsintan/{alsintan}/inventories/{inventory}', [App\Http\Controllers\Admin\AlsintanInventoryController::class, 'update'])->name('alsintan.inventories.update');
+        Route::delete('alsintan/{alsintan}/inventories/{inventory}', [App\Http\Controllers\Admin\AlsintanInventoryController::class, 'destroy'])->name('alsintan.inventories.destroy');
 
         // Proposal Management
         Route::get('/proposals', [App\Http\Controllers\Admin\ProposalController::class, 'index'])->name('proposals.index');
         Route::get('/proposals/{proposal}', [App\Http\Controllers\Admin\ProposalController::class, 'show'])->name('proposals.show');
         Route::patch('/proposals/{proposal}/approve', [App\Http\Controllers\Admin\ProposalController::class, 'approve'])->name('proposals.approve');
         Route::patch('/proposals/{proposal}/input-nomor', [App\Http\Controllers\Admin\ProposalController::class, 'inputNomor'])->name('proposals.input-nomor');
+        Route::patch('/proposals/{proposal}/return', [App\Http\Controllers\Admin\ProposalController::class, 'markAsReturned'])->name('proposals.return');
         Route::delete('/proposals/{proposal}/reject', [App\Http\Controllers\Admin\ProposalController::class, 'reject'])->name('proposals.reject');
         
 
@@ -209,13 +216,13 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Farmer Profile Edit (For Revision)
-    Route::prefix('farmer/profile')->name('farmer.profile.')->group(function () {
+    Route::middleware(['role:petani|umum'])->prefix('farmer/profile')->name('farmer.profile.')->group(function () {
         Route::get('/edit', [App\Http\Controllers\FarmerProfileController::class, 'edit'])->name('edit');
         Route::patch('/update', [App\Http\Controllers\FarmerProfileController::class, 'update'])->name('update');
     });
 
     // Farmer Routes
-    Route::middleware(['approved'])->prefix('farmer/proposals')->name('farmer.proposals.')->group(function () {
+    Route::middleware(['approved', 'role:petani|umum'])->prefix('farmer/proposals')->name('farmer.proposals.')->group(function () {
         // Riwayat
         Route::get('/', [App\Http\Controllers\Farmer\ProposalController::class, 'index'])->name('index');
         Route::get('/{proposal}/detail', [App\Http\Controllers\Farmer\ProposalController::class, 'show'])->name('show');

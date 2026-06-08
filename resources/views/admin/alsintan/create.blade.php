@@ -20,62 +20,41 @@
                 <form action="{{ route('admin.alsintan.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
-                    <div>
-                        <label for="image" class="block text-sm font-bold text-gray-700 mb-2">Foto / Gambar Alsintan <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                        <input type="file" name="image" id="image" accept="image/*"
-                               class="w-full rounded-xl border border-gray-300 p-2 text-sm focus:border-primary-500 focus:ring-primary-500 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
-                        <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, WEBP. Maks: 2MB.</p>
-                        <x-input-error :messages="$errors->get('image')" class="mt-2" />
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-bold text-gray-700 mb-2">Nama Alat/Mesin</label>
+                            <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
 
-                    <div>
-                        <label for="name" class="block text-sm font-bold text-gray-700 mb-2">Nama Alat/Mesin</label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                               class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                    </div>
-
-                    <div>
-                        <label for="category" class="block text-sm font-bold text-gray-700 mb-2">Kategori</label>
-                        <select name="category" id="category" required
-                                class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                            <option value="" disabled selected>Pilih Kategori</option>
-                            <option value="traktor" {{ old('category') == 'traktor' ? 'selected' : '' }}>Traktor</option>
-                            <option value="pompa" {{ old('category') == 'pompa' ? 'selected' : '' }}>Pompa Air</option>
-                            <option value="pascapanen" {{ old('category') == 'pascapanen' ? 'selected' : '' }}>Pasca Panen</option>
-                            <option value="tanam" {{ old('category') == 'tanam' ? 'selected' : '' }}>Alat Tanam</option>
-                        </select>
-                        <x-input-error :messages="$errors->get('category')" class="mt-2" />
+                        <div>
+                            <label for="image" class="block text-sm font-bold text-gray-700 mb-2">Foto / Gambar Alsintan <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                            <input type="file" name="image" id="image" accept="image/*"
+                                   class="w-full rounded-xl border border-gray-300 p-2 text-sm focus:border-primary-500 focus:ring-primary-500 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                            <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, WEBP. Maks: 2MB.</p>
+                            <x-input-error :messages="$errors->get('image')" class="mt-2" />
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="alsintan_category_id" class="block text-sm font-bold text-gray-700 mb-2">Kategori</label>
+                            <select name="alsintan_category_id" id="alsintan_category_id" required
+                                    class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
+                                <option value="" disabled {{ old('alsintan_category_id') ? '' : 'selected' }}>Pilih Kategori</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ old('alsintan_category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('alsintan_category_id')" class="mt-2" />
+                        </div>
+
                         <div>
                             <label for="merk" class="block text-sm font-bold text-gray-700 mb-2">Merk / Tipe <span class="text-gray-400 font-normal">(Opsional)</span></label>
                             <input type="text" name="merk" id="merk" value="{{ old('merk') }}" placeholder="Contoh: Kubota L1-24"
                                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
                             <x-input-error :messages="$errors->get('merk')" class="mt-2" />
-                        </div>
-                        <div>
-                            <label for="capacity" class="block text-sm font-bold text-gray-700 mb-2">Kapasitas <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                            <input type="text" name="capacity" id="capacity" value="{{ old('capacity') }}" placeholder="Contoh: 24 HP"
-                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                            <x-input-error :messages="$errors->get('capacity')" class="mt-2" />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="stock" class="block text-sm font-bold text-gray-700 mb-2">Jumlah Stok</label>
-                            <input type="number" name="stock" id="stock" value="{{ old('stock', 1) }}" min="0" required
-                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                            <x-input-error :messages="$errors->get('stock')" class="mt-2" />
-                        </div>
-                        <div>
-                            <label for="broken_count" class="block text-sm font-bold text-gray-700 mb-2">Jumlah Rusak <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                            <input type="number" name="broken_count" id="broken_count" value="{{ old('broken_count', 0) }}" min="0"
-                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                            <p class="text-xs text-gray-500 mt-1">Jumlah unit yang saat ini rusak/dalam perbaikan.</p>
-                            <x-input-error :messages="$errors->get('broken_count')" class="mt-2" />
                         </div>
                     </div>
 
@@ -84,6 +63,7 @@
                         <textarea name="description" id="description" rows="4"
                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">{{ old('description') }}</textarea>
                         <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                    </div>
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-50">

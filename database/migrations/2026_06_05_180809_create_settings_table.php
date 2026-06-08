@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('facebook_url')->nullable();
-            $table->string('twitter_url')->nullable();
-            $table->string('instagram_url')->nullable();
-            $table->string('youtube_url')->nullable();
+            $table->string('key')->unique();
+            $table->text('value')->nullable();
             $table->timestamps();
         });
     }

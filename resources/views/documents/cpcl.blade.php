@@ -9,6 +9,17 @@
 <body class="font-sans text-gray-900 antialiased bg-gray-50 pt-8">
     <div class="max-w-4xl mx-auto space-y-6 pb-10 px-4 sm:px-6">
 
+        @if(session('error'))
+            <div class="bg-red-50 text-red-700 p-4 rounded-xl border border-red-200 mt-6 no-print">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if(session('success'))
+            <div class="bg-green-50 text-green-700 p-4 rounded-xl border border-green-200 mt-6 no-print">
+                {{ session('success') }}
+            </div>
+        @endif
+
         @php
             $cpcl = $proposal->cpclVerifications->last();
             $assignment = $proposal->surveyAssignments->last();
@@ -316,12 +327,50 @@
                 
             </div>
             
-            <div class="bg-gray-50 px-5 sm:px-8 py-5 border-t border-gray-100 flex justify-end gap-3 no-print">
+            <div x-data="{ showConfirmModal: false }" class="bg-gray-50 px-5 sm:px-8 py-5 border-t border-gray-100 flex justify-end gap-3 no-print">
                 <button onclick="history.back()" class="px-6 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-colors text-sm shadow-sm">
                     Kembali
                 </button>
                 @if(auth()->user()->isKabid())
                     @if(!in_array($proposal->status, ['menunggu_keputusan_akhir', 'disetujui', 'ditolak']))
+                    <button @click="showConfirmModal = true" type="button" class="px-6 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-colors text-sm flex items-center gap-2 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        Teruskan ke Pimpinan
+                    </button>
+
+                    <!-- Modal Confirmation -->
+                    <div x-show="showConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" x-cloak>
+                        <div @click.away="showConfirmModal = false" class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 mx-4 transform transition-all"
+                             x-transition:enter="ease-out duration-300"
+                             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                             x-transition:leave="ease-in duration-200"
+                             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                             
+                            <div class="flex items-center justify-center w-14 h-14 mx-auto bg-green-100 rounded-full mb-5">
+                                <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-center text-gray-900 mb-2">Konfirmasi Penerusan</h3>
+                            <p class="text-sm text-center text-gray-600 leading-relaxed mb-8">
+                                Anda yakin ingin meneruskan proposal ini ke Pimpinan? <br>
+                                <span class="font-bold text-red-500 mt-2 block">Pastikan dokumen fisik scan Berita Acara telah diunggah dan seluruh data sudah benar.</span>
+                            </p>
+                            
+                            <div class="flex justify-center gap-3">
+                                <button @click="showConfirmModal = false" type="button" class="flex-1 px-5 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors text-sm">
+                                    Batal
+                                </button>
+                                <form action="{{ route('kabid.berita-acara.approve', $proposal) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    <button type="submit" class="w-full px-5 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-colors text-sm shadow-sm">
+                                        Ya, Teruskan
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <a href="{{ route('kabid.proposals.cpcl.edit', $proposal) }}" class="px-6 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors text-sm flex items-center gap-2 shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Edit CPCL
@@ -333,6 +382,7 @@
     </div>
 
     <style>
+        [x-cloak] { display: none !important; }
         @media print {
             body { background-color: white !important; margin: 0; padding: 0; }
             .no-print { display: none !important; }

@@ -49,41 +49,35 @@ class CatalogSeeder extends Seeder
             'close_date' => now()->addMonths(2),
         ]);
 
-        // === Seed Alsintans ===
-        Alsintan::create([
-            'name' => 'Traktor Roda 4',
-            'category' => 'Prapanen',
-            'merk' => 'Kubota M6040',
-            'nomor_rangka' => 'KUB-6040-2023-001',
-            'nomor_mesin' => 'V3300-T-2023-001',
-            'tahun_perolehan' => 2023,
-            'capacity' => '60 HP',
-            'stock' => 5,
-            'description' => 'Traktor roda empat kapasitas sedang, cocok untuk pengolahan lahan sawah maupun lahan kering yang luas.',
+        // === Seed Alsintan Categories ===
+        $catTraktor = \App\Models\AlsintanCategory::firstOrCreate([
+            'slug' => 'traktor'
+        ], [
+            'name' => 'Traktor',
+            'description' => 'Mesin pengolah tanah dan penarik alat pertanian lainnya.'
         ]);
 
-        Alsintan::create([
-            'name' => 'Combine Harvester Besar',
-            'category' => 'Pascapanen',
-            'merk' => 'Yanmar AW82V',
-            'nomor_rangka' => 'YAN-82V-2022-045',
-            'nomor_mesin' => '4TNV98-2022-045',
-            'tahun_perolehan' => 2022,
-            'capacity' => '82 HP',
-            'stock' => 2,
-            'description' => 'Mesin panen padi kombinasi kapasitas besar. Mempercepat waktu panen dan mengurangi susut hasil panen secara signifikan.',
+        $catPompa = \App\Models\AlsintanCategory::firstOrCreate([
+            'slug' => 'pompa-air'
+        ], [
+            'name' => 'Pompa Air',
+            'description' => 'Alat untuk memompa air irigasi ke lahan pertanian.'
         ]);
 
-        Alsintan::create([
-            'name' => 'Pompa Air Irigasi',
-            'category' => 'Pengairan',
-            'merk' => 'Honda WL30XN',
-            'nomor_rangka' => 'HON-30-2024-112',
-            'nomor_mesin' => 'GX160-2024-112',
-            'tahun_perolehan' => 2024,
-            'capacity' => '3 Inch / 1100 L/min',
-            'stock' => 15,
-            'description' => 'Pompa air irigasi portabel berbahan bakar bensin. Sangat efektif untuk mengatasi kekeringan atau memompa air dari sungai/sumur dangkal ke lahan sawah.',
+        $catPascaPanen = \App\Models\AlsintanCategory::firstOrCreate([
+            'slug' => 'pasca-panen'
+        ], [
+            'name' => 'Pasca Panen',
+            'description' => 'Alat dan mesin untuk proses setelah panen seperti perontok dan penggiling.'
         ]);
+
+        $catAlatTanam = \App\Models\AlsintanCategory::firstOrCreate([
+            'slug' => 'alat-tanam'
+        ], [
+            'name' => 'Alat Tanam',
+            'description' => 'Mesin penanam benih atau bibit secara mekanis.'
+        ]);
+        
+        // Alat-alat kini disemai di AlsintanSeeder.php
     }
 }

@@ -2,7 +2,7 @@
 
 <div class="bg-white sm:rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6 sm:p-8 space-y-8">
     
-    @if($user->farmerProfile)
+    @if($user->role === 'petani' && $user->farmerProfile)
     {{-- Informasi Ketua --}}
     <div>
         <h3 class="text-lg font-black text-gray-900 tracking-tight mb-6 border-b border-gray-100 pb-3">Informasi Ketua Kelompok</h3>
@@ -204,6 +204,34 @@
                         <p class="font-bold text-gray-900 break-all text-sm capitalize">{{ $user->roleLabel }}</p>
                     </div>
                 </div>
+                
+                @if($user->role === 'umum' && $user->umumProfile)
+                <div class="space-y-1 min-w-0">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">NIK</label>
+                    <div class="bg-gray-50 rounded-2xl p-3 border border-gray-50 overflow-hidden">
+                        <p class="font-bold text-gray-900 font-mono tracking-wider break-all text-sm">{{ $user->umumProfile->nik ?? '-' }}</p>
+                    </div>
+                </div>
+                <div class="space-y-1 min-w-0">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Nomor WA / Kontak</label>
+                    <div class="bg-gray-50 rounded-2xl p-3 border border-gray-50 overflow-hidden">
+                        <p class="font-bold text-gray-900 break-all text-sm">{{ $user->umumProfile->no_wa ?? '-' }}</p>
+                    </div>
+                </div>
+                <div class="space-y-1 min-w-0 md:col-span-2">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Foto KTP</label>
+                    <div class="bg-gray-50 rounded-2xl p-3 border border-gray-50 overflow-hidden">
+                        @if($user->umumProfile->foto_ktp)
+                            <a href="{{ Storage::url($user->umumProfile->foto_ktp) }}" target="_blank" class="text-sm font-bold text-blue-600 hover:underline flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                Lihat Foto KTP
+                            </a>
+                        @else
+                            <p class="font-bold text-gray-400 italic text-sm">-</p>
+                        @endif
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     @endif

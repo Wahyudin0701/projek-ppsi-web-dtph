@@ -260,7 +260,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @php
-                $katalog = \App\Models\Alsintan::take(3)->get();
+                $katalog = \App\Models\Alsintan::with('category')->take(3)->get();
                 @endphp
 
                 @foreach($katalog as $i => $item)
@@ -274,7 +274,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-0"></div>
 
                         <div class="absolute top-4 left-4 z-10">
-                            <span class="text-[11px] font-bold text-white bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-lg uppercase tracking-wider">{{ $item->category }}</span>
+                            <span class="text-[11px] font-bold text-white bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-lg uppercase tracking-wider">{{ $item->category ? $item->category->name : '-' }}</span>
                         </div>
                         <div class="absolute top-4 right-4 z-10">
                             <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-gray-800 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-gray-100 shadow-sm">

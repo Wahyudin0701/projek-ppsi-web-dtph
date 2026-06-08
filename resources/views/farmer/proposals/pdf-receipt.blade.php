@@ -14,21 +14,15 @@
             color: #333;
             line-height: 1.35;
         }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-        }
-        .header h2 {
-            margin: 0;
-            font-size: 18px;
-            text-transform: uppercase;
-        }
-        .header p {
-            margin: 3px 0 0;
-            font-size: 12px;
-        }
+        .header-table { width: 100%; margin-bottom: 2px; border: none; font-family: 'Times New Roman', Times, serif; }
+        .header-table td { border: none; padding: 0; vertical-align: top; }
+        .header-table .logo-cell { width: 80px; text-align: center; vertical-align: middle; }
+        .header-table .logo-cell img { width: 75px; height: auto; }
+        .header-table .text-cell { text-align: center; }
+        .header-table h1 { font-size: 13pt; margin: 0; font-weight: bold; }
+        .header-table h2 { font-size: 14pt; margin: 0; font-weight: bold; }
+        .header-table p { font-size: 8.5pt; margin: 0; }
+        .header-line { border: none; border-top: 3px solid #000; border-bottom: 1px solid #000; height: 2px; background: transparent; margin: 5px 0 15px 0; }
         .title {
             text-align: center;
             font-size: 16px;
@@ -75,11 +69,25 @@
 
     <div class="watermark">DTPH MUARO JAMBI</div>
 
-    <div class="header">
-        <h2>DINAS TANAMAN PANGAN DAN HORTIKULTURA</h2>
-        <h2>KABUPATEN MUARO JAMBI</h2>
-        <p>Sistem Informasi E-Proposal Pengajuan Alsintan & Bantuan</p>
-    </div>
+    <table class="header-table">
+        <tr>
+            <td class="logo-cell">
+                @php
+                    $logoPath = public_path('images/Lambang_Kabupaten_Muaro_Jambi.png');
+                    $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
+                @endphp
+                @if($logoData)
+                    <img src="data:image/png;base64,{{ $logoData }}" alt="Logo Muaro Jambi">
+                @endif
+            </td>
+            <td class="text-cell">
+                <h1>PEMERINTAH KABUPATEN MUARO JAMBI</h1>
+                <h2>DINAS TANAMAN PANGAN<br>DAN HORTIKULTURA</h2>
+                <p>Komplek Perkantoran Bukit Cinto Kenang, Jalan Lintas Timur Km.26, Sengeti, Kecamatan Sekernan 36381<br>Telp. (0741) 590069, Faksimile. (0741) 590070</p>
+            </td>
+        </tr>
+    </table>
+    <hr class="header-line">
 
     <div class="title">
         TANDA TERIMA PENGAJUAN PROPOSAL
@@ -179,7 +187,7 @@
                             'sedang_diverifikasi_pimpinan'   => '#6366F1',
                             'persiapan_survei'        => '#F59E0B',
                             'sedang_survei'       => '#3B82F6',
-                            'survei_selesai'           => '#F97316',
+
                             'menunggu_keputusan_akhir'     => '#A855F7',
                             'disetujui'                => '#19A148',
                             'ditolak'                  => '#EF4444',

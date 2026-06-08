@@ -22,7 +22,8 @@ class AlsintanController extends Controller
      */
     public function create()
     {
-        return view('admin.alsintan.create');
+        $categories = \App\Models\AlsintanCategory::orderBy('name')->get();
+        return view('admin.alsintan.create', compact('categories'));
     }
 
     /**
@@ -32,24 +33,11 @@ class AlsintanController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category' => 'required|string|in:traktor,pompa,pascapanen,tanam',
+            'alsintan_category_id' => 'required|exists:alsintan_categories,id',
             'merk' => 'nullable|string|max:255',
-            'capacity' => 'nullable|string|max:255',
-            'stock' => 'required|integer|min:0',
-            'borrowed_count' => 'nullable|integer|min:0',
-            'broken_count' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
-
-        $validated['borrowed_count'] = $validated['borrowed_count'] ?? 0;
-        $validated['broken_count'] = $validated['broken_count'] ?? 0;
-
-        if (($validated['borrowed_count'] + $validated['broken_count']) > $validated['stock']) {
-            return back()->withInput()->withErrors([
-                'stock' => 'Total alat dipinjam dan rusak (' . ($validated['borrowed_count'] + $validated['broken_count']) . ') tidak boleh melebihi total stok milik dinas (' . $validated['stock'] . ').'
-            ]);
-        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('alsintan', 'public');
@@ -73,30 +61,18 @@ class AlsintanController extends Controller
      */
     public function edit(Alsintan $alsintan)
     {
-        return view('admin.alsintan.edit', compact('alsintan'));
+        $categories = \App\Models\AlsintanCategory::orderBy('name')->get();
+        return view('admin.alsintan.edit', compact('alsintan', 'categories'));
     }
     public function update(Request $request, Alsintan $alsintan)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category' => 'required|string|in:traktor,pompa,pascapanen,tanam',
+            'alsintan_category_id' => 'required|exists:alsintan_categories,id',
             'merk' => 'nullable|string|max:255',
-            'capacity' => 'nullable|string|max:255',
-            'stock' => 'required|integer|min:0',
-            'borrowed_count' => 'nullable|integer|min:0',
-            'broken_count' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
-
-        $validated['borrowed_count'] = $validated['borrowed_count'] ?? 0;
-        $validated['broken_count'] = $validated['broken_count'] ?? 0;
-
-        if (($validated['borrowed_count'] + $validated['broken_count']) > $validated['stock']) {
-            return back()->withInput()->withErrors([
-                'stock' => 'Total alat dipinjam dan rusak (' . ($validated['borrowed_count'] + $validated['broken_count']) . ') tidak boleh melebihi total stok milik dinas (' . $validated['stock'] . ').'
-            ]);
-        }
 
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada

@@ -76,43 +76,36 @@
             @endforelse
         </div>
 
-        {{-- ===== PROGRAM YANG SUDAH DITUTUP (COLLAPSIBLE) ===== --}}
+        {{-- ===== PROGRAM YANG SUDAH DITUTUP ===== --}}
         @if($closedPrograms->isNotEmpty())
-            <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 overflow-hidden">
-                {{-- Toggle Header --}}
-                <button @click="open = !open"
-                        class="w-full flex items-center justify-between px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-gray-200 flex items-center justify-center">
-                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        </div>
-                        <div>
-                            <p class="font-bold text-gray-600 text-sm">Pendaftaran Sudah Ditutup</p>
-                            <p class="text-xs text-gray-400">{{ $closedPrograms->count() }} program tidak lagi menerima pengajuan</p>
-                        </div>
+            <div class="mt-8">
+                <div class="flex items-center gap-3 mb-4 px-2">
+                    <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                     </div>
-                    <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </button>
+                    <div>
+                        <h2 class="font-black text-gray-800 text-lg">Pendaftaran Sudah Ditutup</h2>
+                        <p class="text-sm text-gray-500">Program di bawah ini sudah tidak menerima pengajuan proposal.</p>
+                    </div>
+                </div>
 
-                {{-- Collapsed Content --}}
-                <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="divide-y divide-gray-100 bg-white">
+                <div class="rounded-2xl border border-gray-200 overflow-hidden divide-y divide-gray-100 bg-white shadow-sm">
                     @foreach($closedPrograms as $program)
-                        <div onclick="window.location.href='{{ route('farmer.proposals.bantuan.show', $program) }}'" class="cursor-pointer flex flex-col sm:flex-row opacity-70 hover:opacity-90 transition-opacity">
+                        <div onclick="window.location.href='{{ route('farmer.proposals.bantuan.show', $program) }}'" class="group cursor-pointer flex flex-col sm:flex-row hover:bg-gray-50 transition-colors">
 
 
                             {{-- Info --}}
-                            <div class="flex-1 p-5 flex flex-col justify-between">
+                            <div class="flex-1 p-5 flex flex-col justify-between opacity-80 group-hover:opacity-100 transition-opacity">
                                 <div>
                                     <div class="flex items-center gap-3 mb-2">
-                                        <h3 class="font-bold text-gray-600 text-base">{{ $program->name }}</h3>
+                                        <h3 class="font-bold text-gray-700 text-base">{{ $program->name }}</h3>
                                         <span class="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
                                             {{ str_replace('_', ' ', $program->type) }}
                                         </span>
                                     </div>
-                                    <div class="flex items-center gap-4 text-xs text-gray-400 mb-2">
-                                        <span>Batas Akhir: <span class="font-bold text-gray-500">{{ $program->close_date?->format('d M Y') ?? 'Tanpa Batas' }}</span></span>
-                                        <span>Terdaftar: <span class="font-bold text-gray-500">{{ $program->proposals_count ?? '0' }}</span></span>
+                                    <div class="flex items-center gap-4 text-xs text-gray-500 mb-2">
+                                        <span>Batas Akhir: <span class="font-bold text-gray-700">{{ $program->close_date?->format('d M Y') ?? 'Tanpa Batas' }}</span></span>
+                                        <span>Terdaftar: <span class="font-bold text-gray-700">{{ $program->proposals_count ?? '0' }}</span></span>
                                     </div>
                                     @if($program->description)
                                         <p class="text-sm text-gray-400 leading-relaxed line-clamp-1">{{ $program->description }}</p>

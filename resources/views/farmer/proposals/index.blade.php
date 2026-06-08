@@ -69,11 +69,12 @@
                                             'sedang_diverifikasi_pimpinan' => 'bg-indigo-100 text-indigo-700',
                                             'persiapan_survei' => 'bg-amber-100 text-amber-700',
                                             'sedang_survei' => 'bg-blue-100 text-blue-700',
-                                            'survei_selesai' => 'bg-orange-100 text-orange-700',
+
                                             'verifikasi_cpcl' => 'bg-purple-100 text-purple-700',
                                             'menunggu_keputusan_akhir' => 'bg-purple-100 text-purple-700',
-                                            'disetujui'          => 'bg-green-100 text-green-700',
-                                            'ditolak'            => 'bg-red-100 text-red-700',
+                                            'disetujui' => 'bg-emerald-100 text-emerald-700',
+                                            'dikembalikan' => 'bg-gray-100 text-gray-700',
+                                            'ditolak' => 'bg-red-100 text-red-700',
                                         ];
                                         $color = $statusColors[$proposal->status] ?? 'bg-gray-100 text-gray-700';
                                         $statusLabel = match($proposal->status) {
@@ -81,11 +82,12 @@
                                             'sedang_diverifikasi_pimpinan'  => 'Di Pimpinan',
                                             'persiapan_survei'  => 'Di Kabid',
                                             'sedang_survei' => 'Sedang Survei',
-                                            'survei_selesai' => 'Survei Selesai',
+
                                             'verifikasi_cpcl' => 'Finalisasi',
                                             'menunggu_keputusan_akhir' => 'Finalisasi',
-                                            'disetujui'          => 'Disetujui',
-                                            'ditolak'            => 'Ditolak',
+                                            'disetujui' => 'Disetujui',
+                                            'dikembalikan' => 'Dikembalikan',
+                                            'ditolak' => 'Ditolak',
                                             default              => $proposal->status,
                                         };
                                     @endphp

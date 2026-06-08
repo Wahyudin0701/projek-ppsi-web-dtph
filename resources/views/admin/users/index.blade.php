@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Verifikasi Akun Kelompok Tani') }}
+            {{ __('Verifikasi Akun Pendaftar') }}
         </h2>
     </x-slot>
 
@@ -9,7 +9,7 @@
         {{-- Header Stats/Title --}}
         <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">Verifikasi Kelompok Tani</h2>
+                <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">Verifikasi Pendaftar Baru</h2>
                 <p class="text-sm text-gray-500 font-medium mt-1">Tinjau permohonan pendaftaran dan berikan akses sistem.</p>
             </div>
             
@@ -34,14 +34,18 @@
                     <div class="flex items-start gap-5 pl-2">
                         {{-- Avatar --}}
                         <div class="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xl shrink-0 group-hover:scale-105 transition-transform">
-                            {{ substr($user->farmerProfile->nama_kelompok ?? 'K', 0, 1) }}
+                            {{ substr($user->role === 'petani' ? ($user->farmerProfile->nama_kelompok ?? 'K') : $user->name, 0, 1) }}
                         </div>
 
                         {{-- Info --}}
                         <div>
                             <div class="flex items-center gap-3 mb-1.5">
-                                <h3 class="font-extrabold text-gray-900 text-lg">{{ $user->farmerProfile->nama_kelompok }}</h3>
+                                <h3 class="font-extrabold text-gray-900 text-lg">{{ $user->role === 'petani' ? $user->farmerProfile->nama_kelompok : $user->name }}</h3>
                                 
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border {{ $user->role === 'petani' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-blue-50 text-blue-700 border-blue-200' }}">
+                                    {{ $user->role === 'petani' ? 'Kelompok Tani' : 'User Umum' }}
+                                </span>
+
                                 @if($user->status === 'menunggu')
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-black tracking-widest uppercase">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
@@ -63,8 +67,8 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 mt-2">
                                 <div class="flex items-center gap-2 text-sm text-gray-600">
                                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    <span class="font-semibold">{{ $user->farmerProfile->ketua }}</span>
-                                    <span class="text-xs text-gray-400 font-mono">({{ $user->farmerProfile->nik_ketua ?? '-' }})</span>
+                                    <span class="font-semibold">{{ $user->role === 'petani' ? ($user->farmerProfile->ketua ?? '-') : $user->name }}</span>
+                                    <span class="text-xs text-gray-400 font-mono">({{ $user->role === 'petani' ? ($user->farmerProfile->nik_ketua ?? '-') : ($user->umumProfile->nik ?? '-') }})</span>
                                 </div>
                                 <div class="flex items-center gap-2 text-sm text-gray-600">
                                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"/></svg>
@@ -72,7 +76,7 @@
                                 </div>
                                 <div class="flex items-center gap-2 text-sm text-gray-600 md:col-span-2">
                                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                    {{ $user->farmerProfile->kontak }}
+                                    {{ $user->role === 'petani' ? ($user->farmerProfile->kontak ?? '-') : ($user->umumProfile->no_wa ?? '-') }}
                                 </div>
                             </div>
                         </div>
@@ -95,7 +99,7 @@
                         <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                     <h3 class="font-extrabold text-gray-900 text-xl mb-2">Antrean Kosong</h3>
-                    <p class="text-gray-500">Semua pendaftar kelompok tani telah diverifikasi.</p>
+                    <p class="text-gray-500">Semua pendaftar telah diverifikasi.</p>
                 </div>
             @endforelse
         </div>

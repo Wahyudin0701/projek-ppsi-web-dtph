@@ -38,7 +38,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div class="absolute top-5 left-5 z-10">
                             <span class="inline-block rounded-xl bg-white/95 backdrop-blur-md px-3.5 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-[#19A148] shadow-sm">
-                                {{ $alsintan->category }}
+                                {{ $alsintan->category->name }}
                             </span>
                         </div>
                     </div>
@@ -99,53 +99,40 @@
             @endforelse
         </div>
 
-        {{-- ===== ALSINTAN YANG TIDAK TERSEDIA (COLLAPSIBLE) ===== --}}
+        {{-- ===== ALSINTAN YANG TIDAK TERSEDIA ===== --}}
         @if($unavailableAlsintans->isNotEmpty())
-            <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 overflow-hidden">
-                {{-- Toggle Header --}}
-                <button @click="open = !open"
-                        class="w-full flex items-center justify-between px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-gray-200 flex items-center justify-center">
-                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        </div>
-                        <div>
-                            <p class="font-bold text-gray-600 text-sm">Tidak Tersedia untuk Dipinjam</p>
-                            <p class="text-xs text-gray-400">{{ $unavailableAlsintans->count() }} alat — stok habis atau sedang dalam proses pengajuan</p>
-                        </div>
+            <div class="mt-8">
+                <div class="flex items-center gap-3 mb-4 px-2">
+                    <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                     </div>
-                    <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </button>
+                    <div>
+                        <h2 class="font-black text-gray-800 text-lg">Tidak Dapat Dipinjam Saat Ini</h2>
+                        <p class="text-sm text-gray-500">Alat di bawah ini sedang dalam proses peminjaman Anda atau stoknya tidak tersedia.</p>
+                    </div>
+                </div>
 
-                {{-- Collapsed Content --}}
-                <div x-show="open"
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 -translate-y-2"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100 translate-y-0"
-                     x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="divide-y divide-gray-100 bg-white">
+                <div class="rounded-2xl border border-gray-200 overflow-hidden divide-y divide-gray-100 bg-white shadow-sm">
                     @foreach($unavailableAlsintans as $alsintan)
-                        <div onclick="window.location.href='{{ route('farmer.proposals.alsintan.show', $alsintan) }}'" class="cursor-pointer flex flex-col sm:flex-row opacity-70 hover:opacity-90 transition-opacity">
+                        <div onclick="window.location.href='{{ route('farmer.proposals.alsintan.show', $alsintan) }}'" class="group cursor-pointer flex flex-col sm:flex-row hover:bg-gray-50 transition-colors">
                             {{-- Image --}}
                             <div class="w-full sm:w-40 h-36 sm:h-auto bg-gray-50 flex-shrink-0 overflow-hidden flex items-center justify-center border-r border-gray-100">
                                 @if($alsintan->image)
-                                    <img src="{{ Storage::url($alsintan->image) }}" alt="{{ $alsintan->name }}" class="w-full h-full object-cover grayscale">
+                                    <img src="{{ Storage::url($alsintan->image) }}" alt="{{ $alsintan->name }}" class="w-full h-full object-cover grayscale opacity-60">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center text-gray-200">
+                                    <div class="w-full h-full flex items-center justify-center text-gray-300">
                                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
                                 @endif
                             </div>
 
                             {{-- Info --}}
-                            <div class="flex-1 p-5 flex flex-col justify-between">
+                            <div class="flex-1 p-5 flex flex-col justify-between opacity-80 group-hover:opacity-100 transition-opacity">
                                 <div>
-                                    <h3 class="font-bold text-gray-500 text-base mb-1">{{ $alsintan->name }}</h3>
-                                    <div class="flex items-center gap-4 text-xs text-gray-400 mb-2">
-                                        <span>Tersedia: <span class="font-bold text-gray-500">{{ $alsintan->available_stock }} unit</span></span>
-                                        <span>Dipinjam: <span class="font-bold text-gray-500">{{ $alsintan->borrowed_count }}</span></span>
+                                    <h3 class="font-bold text-gray-700 text-base mb-1">{{ $alsintan->name }}</h3>
+                                    <div class="flex items-center gap-4 text-xs text-gray-500 mb-2">
+                                        <span>Tersedia: <span class="font-bold text-gray-700">{{ $alsintan->available_stock }} unit</span></span>
+                                        <span>Dipinjam: <span class="font-bold text-gray-700">{{ $alsintan->borrowed_count }}</span></span>
                                     </div>
                                     @if($alsintan->description)
                                         <p class="text-sm text-gray-400 line-clamp-1">{{ $alsintan->description }}</p>
@@ -153,11 +140,18 @@
                                 </div>
 
                                 <div class="mt-3 pt-3 border-t border-gray-50">
-                                    @if(in_array($alsintan->id, $activeAlsintanIds))
+                                    @if(array_key_exists($alsintan->id, $activeAlsintans))
+                                        @if($activeAlsintans[$alsintan->id] === 'disetujui')
+                                        <span class="inline-flex items-center gap-2 px-5 py-2 bg-green-50 border border-green-200 text-green-600 font-bold text-xs rounded-xl cursor-not-allowed">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Aktif Dipinjam
+                                        </span>
+                                        @else
                                         <span class="inline-flex items-center gap-2 px-5 py-2 bg-yellow-50 border border-yellow-200 text-yellow-600 font-bold text-xs rounded-xl cursor-not-allowed">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             Sedang Diproses
                                         </span>
+                                        @endif
                                     @else
                                         <span class="inline-flex items-center gap-2 px-5 py-2 bg-gray-100 text-gray-400 font-bold text-xs rounded-xl cursor-not-allowed">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>

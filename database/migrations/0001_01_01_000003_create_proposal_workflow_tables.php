@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('program_id')->nullable()->constrained('programs')->nullOnDelete();
             $table->foreignId('alsintan_id')->nullable()->constrained('alsintans')->nullOnDelete();
+            $table->foreignId('alsintan_inventory_id')->nullable()->constrained('alsintan_inventories')->nullOnDelete();
             $table->integer('jumlah_unit')->default(1);
             $table->integer('durasi_sewa_hari')->nullable();
             $table->integer('rencana_durasi_hari')->nullable();
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->timestamp('submission_date')->useCurrent();
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamp('decided_at')->nullable();
+            $table->timestamp('returned_at')->nullable();
             $table->text('admin_notes')->nullable();
             $table->text('pimpinan_notes')->nullable();
             $table->foreignId('kabid_id')->nullable()->constrained('users')->nullOnDelete();

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Detail Registrasi Kelompok Tani') }}
+            {{ $user->role === 'umum' ? __('Detail Registrasi User Umum') : __('Detail Registrasi Kelompok Tani') }}
         </h2>
     </x-slot>
 
@@ -9,7 +9,7 @@
         {{-- Page Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-extrabold text-gray-900">Detail Registrasi Kelompok Tani</h2>
+                <h2 class="text-2xl font-extrabold text-gray-900">{{ $user->role === 'umum' ? 'Detail Registrasi User Umum' : 'Detail Registrasi Kelompok Tani' }}</h2>
                 <p class="text-gray-500 text-sm mt-1">Tinjau informasi registrasi dan lakukan tindakan verifikasi.</p>
             </div>
             <a href="{{ url()->previous() }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
@@ -31,7 +31,8 @@
                     <x-farmer-profile-detail :user="$user" />
 
                     {{-- Verification History Section --}}
-                    @if($user->farmerProfile && $user->farmerProfile->verificationLogs && $user->farmerProfile->verificationLogs->count() > 0)
+                    {{-- Verification History Section (Petani Only) --}}
+                    @if($user->role === 'petani' && $user->farmerProfile && $user->farmerProfile->verificationLogs && $user->farmerProfile->verificationLogs->count() > 0)
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                             <div class="px-6 py-4 border-b border-gray-50 bg-gray-50/30">
                                 <h3 class="text-lg font-black text-gray-900 tracking-tight">Riwayat Verifikasi</h3>
@@ -74,7 +75,12 @@
 
                 {{-- Right Side: Actions --}}
                 <div class="space-y-8">
-                    @if(!$user->farmerProfile)
+                    @php
+                        $hasProfile = ($user->role === 'umum' && $user->umumProfile) || ($user->role === 'petani' && $user->farmerProfile);
+                        $profile = $user->role === 'umum' ? $user->umumProfile : $user->farmerProfile;
+                    @endphp
+
+                    @if(!$hasProfile)
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 sticky top-8 text-center">
                             <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-gray-50 text-gray-400">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -121,7 +127,7 @@
                                         </div>
                                         <div>
                                             <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">Nomor WA</p>
-                                            <p class="text-sm font-bold text-gray-700">{{ $user->farmerProfile->kontak }}</p>
+                                            <p class="text-sm font-bold text-gray-700">{{ $user->role === 'umum' ? $profile->no_wa : $profile->kontak }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -139,7 +145,7 @@
 
                             <div class="mt-4 p-4 bg-purple-50 rounded-2xl border border-purple-100 text-left">
                                 <p class="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1">Alasan Perubahan Data</p>
-                                <p class="text-xs font-bold text-purple-700 leading-relaxed">{{ $user->farmerProfile->change_request_reason }}</p>
+                                <p class="text-xs font-bold text-purple-700 leading-relaxed">{{ $user->role === 'petani' ? $profile->change_request_reason : '-' }}</p>
                             </div>
 
                             <div class="mt-6 space-y-3">
@@ -204,7 +210,7 @@
                             @if($user->status === 'rejected')
                                 <div class="mt-4 p-4 bg-red-50 rounded-2xl border border-red-100">
                                     <p class="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Alasan Penolakan</p>
-                                    <p class="text-xs font-bold text-red-700 leading-relaxed">{{ $user->farmerProfile->rejection_reason }}</p>
+                                    <p class="text-xs font-bold text-red-700 leading-relaxed">{{ $profile->rejection_reason }}</p>
                                 </div>
                             @endif
 
@@ -216,7 +222,7 @@
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">Nomor WA</p>
-                                        <p class="text-sm font-bold text-gray-700">{{ $user->farmerProfile->kontak }}</p>
+                                        <p class="text-sm font-bold text-gray-700">{{ $user->role === 'umum' ? $profile->no_wa : $profile->kontak }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -226,13 +232,13 @@
             </div>
 
 
-        @if($user->farmerProfile)
+        @if($hasProfile)
         {{-- Respond Modal --}}
         <template x-teleport="body">
             <div x-show="respondModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm px-4 text-left">
                 <div @click.away="respondModal = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="bg-white rounded-2xl p-6 shadow-xl w-full max-w-lg">
                     <h3 class="text-lg font-bold text-gray-900 mb-2" x-text="respondAction === 'approve' ? 'Konfirmasi Izin Revisi' : 'Tolak Permohonan'"></h3>
-                    <p class="text-sm text-gray-500 mb-6" x-text="respondAction === 'approve' ? 'Status kelompok tani akan diubah menjadi Revisi sehingga mereka dapat memperbarui data tanpa memberikan catatan revisi.' : 'Permohonan akan ditolak dan status kembali terkunci (Disetujui).'"></p>
+                    <p class="text-sm text-gray-500 mb-6" x-text="respondAction === 'approve' ? 'Status akun akan diubah menjadi Revisi sehingga mereka dapat memperbarui data tanpa memberikan catatan revisi.' : 'Permohonan akan ditolak dan status kembali terkunci (Disetujui).'"></p>
 
                     <form action="{{ route('admin.users.respond-change', $user) }}" method="POST">
                         @csrf
@@ -275,7 +281,7 @@
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                             </div>
                             <h3 class="text-xl font-black text-gray-900">Tolak Pendaftaran</h3>
-                            <p class="text-sm text-gray-500 mt-1">Berikan alasan penolakan untuk Kelompok Tani <span class="font-bold text-gray-900">{{ $user->farmerProfile->nama_kelompok }}</span></p>
+                            <p class="text-sm text-gray-500 mt-1">Berikan alasan penolakan untuk {{ $user->role === 'umum' ? 'User Umum' : 'Kelompok Tani' }} <span class="font-bold text-gray-900">{{ $user->role === 'umum' ? $user->name : $user->farmerProfile->nama_kelompok }}</span></p>
                         </div>
 
                         <form action="{{ route('admin.users.reject', $user) }}" method="POST" x-data="{ 
@@ -414,7 +420,7 @@
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             <h3 class="text-xl font-black text-gray-900">Konfirmasi Persetujuan</h3>
-                            <p class="text-sm text-gray-500 mt-1">Anda akan menyetujui akun Kelompok Tani <span class="font-bold text-gray-900">{{ $user->farmerProfile->nama_kelompok }}</span>. Pastikan semua data sudah valid.</p>
+                            <p class="text-sm text-gray-500 mt-1">Anda akan menyetujui akun {{ $user->role === 'umum' ? 'User Umum' : 'Kelompok Tani' }} <span class="font-bold text-gray-900">{{ $user->role === 'umum' ? $user->name : $user->farmerProfile->nama_kelompok }}</span>. Pastikan semua data sudah valid.</p>
                         </div>
 
                         <form action="{{ route('admin.users.approve', $user) }}" method="POST">

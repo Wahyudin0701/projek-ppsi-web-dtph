@@ -10,11 +10,9 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $pendingUsers = User::where('role', 'petani')
-            ->whereHas('farmerProfile', function ($query) {
-                $query->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi']);
-            })
-            ->with('farmerProfile')
+        $pendingUsers = User::whereIn('role', ['petani', 'umum'])
+            ->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi'])
+            ->with(['farmerProfile', 'umumProfile'])
             ->latest()
             ->get();
 
@@ -24,7 +22,7 @@ class AdminController extends Controller
     public function show(User $user)
     {
         if ($user->status === 'menunggu') {
-            $user->farmerProfile->update(['status' => 'reviewed']);
+            $user->update(['status' => 'reviewed']);
         }
 
         return view('admin.users.show', compact('user'));
@@ -33,7 +31,7 @@ class AdminController extends Controller
     public function markAsReviewed(User $user)
     {
         if ($user->status === 'menunggu') {
-            $user->farmerProfile->update(['status' => 'reviewed']);
+            $user->update(['status' => 'reviewed']);
         }
         return response()->json([
             'success' => true,
@@ -45,16 +43,19 @@ class AdminController extends Controller
     {
         $user->update(['status' => 'approved']);
         
-        if ($user->farmerProfile) {
+        if ($user->role === 'petani' && $user->farmerProfile) {
             \App\Models\FarmerVerificationLog::create([
                 'farmer_profile_id' => $user->farmerProfile->id,
                 'admin_id' => auth()->id(),
                 'status' => 'approved',
                 'notes' => 'Disetujui oleh admin.',
             ]);
+            $user->farmerProfile->update(['status' => 'approved']);
+        } elseif ($user->role === 'umum' && $user->umumProfile) {
+            $user->umumProfile->update(['status' => 'approved']);
         }
 
-        $nama = $user->farmerProfile->nama_kelompok ?? $user->name;
+        $nama = $user->role === 'umum' ? $user->name : ($user->farmerProfile->nama_kelompok ?? $user->name);
         return redirect()->route('admin.users.index')->with('success', "Akun {$nama} berhasil disetujui.");
     }
 
@@ -66,9 +67,10 @@ class AdminController extends Controller
 
         $user->update(['status' => 'rejected']);
 
-        if ($user->farmerProfile) {
+        if ($user->role === 'petani' && $user->farmerProfile) {
             $user->farmerProfile->update([
                 'rejection_reason' => $request->rejection_reason,
+                'status' => 'rejected'
             ]);
 
             \App\Models\FarmerVerificationLog::create([
@@ -77,9 +79,14 @@ class AdminController extends Controller
                 'status' => 'rejected',
                 'notes' => $request->rejection_reason,
             ]);
+        } elseif ($user->role === 'umum' && $user->umumProfile) {
+            $user->umumProfile->update([
+                'rejection_reason' => $request->rejection_reason,
+                'status' => 'rejected'
+            ]);
         }
 
-        $nama = $user->farmerProfile->nama_kelompok ?? $user->name;
+        $nama = $user->role === 'umum' ? $user->name : ($user->farmerProfile->nama_kelompok ?? $user->name);
         return redirect()->route('admin.users.index')->with('success', "Pendaftaran {$nama} telah ditolak.");
     }
 
@@ -91,9 +98,10 @@ class AdminController extends Controller
 
         $user->update(['status' => 'revisi']);
 
-        if ($user->farmerProfile) {
+        if ($user->role === 'petani' && $user->farmerProfile) {
             $user->farmerProfile->update([
-                'rejection_reason' => $request->revision_note, // We can reuse this column for the latest note for backward compatibility if needed, but we also have logs
+                'rejection_reason' => $request->revision_note,
+                'status' => 'revisi'
             ]);
 
             \App\Models\FarmerVerificationLog::create([
@@ -102,9 +110,14 @@ class AdminController extends Controller
                 'status' => 'revisi',
                 'notes' => $request->revision_note,
             ]);
+        } elseif ($user->role === 'umum' && $user->umumProfile) {
+            $user->umumProfile->update([
+                'rejection_reason' => $request->revision_note,
+                'status' => 'revisi'
+            ]);
         }
 
-        $nama = $user->farmerProfile->nama_kelompok ?? $user->name;
+        $nama = $user->role === 'umum' ? $user->name : ($user->farmerProfile->nama_kelompok ?? $user->name);
         return redirect()->route('admin.users.index')->with('success', "Pendaftaran {$nama} dikembalikan untuk direvisi.");
     }
 
@@ -126,30 +139,33 @@ class AdminController extends Controller
             return $user->farmerProfile->nama_kelompok ?? '';
         });
 
-        return view('admin.users.list', compact('users'));
+        return view('admin.users.user-list-kelompok-tani', compact('users'));
     }
 
-    public function listIndividuals(Request $request)
+    public function listUmum(Request $request)
     {
-        $query = User::where('role', 'umum')->with('farmerProfile');
+        $query = User::where('role', 'umum')->with('umumProfile');
 
         if ($request->filled('status') && $request->status !== 'all') {
             $query->where('status', $request->status);
         }
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhereHas('farmerProfile', function ($q) use ($request) {
-                      $q->where('nama_kelompok', 'like', '%' . $request->search . '%')
-                        ->orWhere('nik_ketua', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhereHas('umumProfile', function ($q) use ($search) {
+                      $q->where('nik', 'like', "%{$search}%");
                   });
+            });
         }
 
         $users = $query->get()->sortBy(function($user) {
             return $user->name;
         });
 
-        return view('admin.users.individuals', compact('users'));
+        return view('admin.users.user-list-umum', compact('users'));
     }
 
     public function respondChangeRequest(Request $request, User $user)
@@ -174,9 +190,16 @@ class AdminController extends Controller
             return redirect()->route('admin.verifikasi.index')->with('success', 'Revisi disetujui, akun aktif.');
         } else {
             $user->update(['status' => 'rejected']);
-            $user->farmerProfile->update([
-                'rejection_reason' => $request->rejection_reason
-            ]);
+            
+            if ($user->role === 'petani' && $user->farmerProfile) {
+                $user->farmerProfile->update([
+                    'rejection_reason' => $request->rejection_reason
+                ]);
+            } elseif ($user->role === 'umum' && $user->umumProfile) {
+                $user->umumProfile->update([
+                    'rejection_reason' => $request->rejection_reason
+                ]);
+            }
             
             Activity::causedBy(Auth::user())
                 ->performedOn($user)

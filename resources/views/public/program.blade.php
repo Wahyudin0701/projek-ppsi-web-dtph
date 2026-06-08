@@ -235,16 +235,22 @@
                             <span class="text-xs text-gray-400 font-medium">{{ $program['tahap'] }}</span>
                             @if($program['status_pendaftaran'] === 'buka')
                                 @auth
-                                    @if(auth()->user()->isApproved())
-                                        <a href="{{ route('farmer.proposals.create', $program['id']) }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
-                                            Ajukan Proposal
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                                        </a>
+                                    @if(auth()->user()->hasRole(['petani', 'umum']))
+                                        @if(auth()->user()->isApproved())
+                                            <a href="{{ route('farmer.proposals.create', $program['id']) }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                                Ajukan Proposal
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('dashboard') }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
+                                                Lengkapi Profil
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                            </a>
+                                        @endif
                                     @else
-                                        <a href="{{ route('dashboard') }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
-                                            Lengkapi Profil
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                                        </a>
+                                        <span @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 cursor-not-allowed">
+                                            Khusus Petani / Umum
+                                        </span>
                                     @endif
                                 @else
                                     <a href="{{ route('login') }}" @click.stop class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-all hover:translate-x-0.5">
@@ -450,14 +456,20 @@
             <div class="sticky bottom-0 bg-white border-t border-gray-100 p-5 flex gap-3">
                 <template x-if="selected && selected.status_pendaftaran === 'buka'">
                     @auth
-                        @if(auth()->user()->isApproved())
-                            <a :href="'{{ url('farmer/proposals/bantuan') }}/' + selected.id" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
-                                Ajukan Proposal Sekarang
-                            </a>
+                        @if(auth()->user()->hasRole(['petani', 'umum']))
+                            @if(auth()->user()->isApproved())
+                                <a :href="'{{ url('farmer/proposals/bantuan') }}/' + selected.id" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                    Ajukan Proposal Sekarang
+                                </a>
+                            @else
+                                <a href="{{ route('dashboard') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
+                                    Lengkapi Profil Untuk Mengajukan
+                                </a>
+                            @endif
                         @else
-                            <a href="{{ route('dashboard') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">
-                                Lengkapi Profil Untuk Mengajukan
-                            </a>
+                            <div class="flex-1 bg-gray-100 text-gray-500 py-3.5 rounded-2xl text-sm font-bold text-center border border-gray-200 cursor-not-allowed">
+                                Khusus Petani / Umum
+                            </div>
                         @endif
                     @else
                         <a href="{{ route('login') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-2xl text-sm font-bold text-center transition-colors shadow-lg shadow-primary-600/20">

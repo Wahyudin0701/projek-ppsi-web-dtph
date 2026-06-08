@@ -13,6 +13,10 @@
                 <div class="bg-white rounded-[2rem] p-8 sm:p-10 border border-gray-100 shadow-sm relative overflow-hidden h-fit">
                     @include('profile.partials.farmer-profile-information')
                 </div>
+            @elseif(auth()->user()->role === 'umum')
+                <div class="bg-white rounded-[2rem] p-8 sm:p-10 border border-gray-100 shadow-sm relative overflow-hidden h-fit">
+                    @include('profile.partials.umum-profile-information')
+                </div>
             @endif
 
             {{-- Card 2: Informasi Akun --}}

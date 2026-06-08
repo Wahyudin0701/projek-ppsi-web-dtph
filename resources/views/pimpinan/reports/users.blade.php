@@ -22,8 +22,8 @@
                 </div>
                 <div>
                     <button onclick="window.open('{{ route('pimpinan.reports.users.print', request()->query()) }}', '_blank')" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm w-full md:w-auto">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                        Cetak Laporan
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Unduh Laporan
                     </button>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                     <select name="afiliasi" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Semua Jenis</option>
                         <option value="kelompok_tani" {{ request('afiliasi') == 'kelompok_tani' ? 'selected' : '' }}>Kelompok Tani / Lembaga</option>
-                        <option value="individu" {{ request('afiliasi') == 'individu' ? 'selected' : '' }}>Petani Individu</option>
+                        <option value="individu" {{ request('afiliasi') == 'individu' ? 'selected' : '' }}>User Umum</option>
                     </select>
                 </div>
                 <div>

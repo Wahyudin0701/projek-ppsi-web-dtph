@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">{{ $isArchive ? 'Arsip Keputusan' : 'Tinjau Proposal' }}</x-slot>
+    <x-slot name="header">{{ $isArchive ? 'Semua Proposal' : 'Tinjau Proposal' }}</x-slot>
 
     <div class="max-w-7xl mx-auto space-y-6">
 
@@ -16,11 +16,11 @@
             {{-- Header & Filter --}}
             <div class="p-6 md:p-8 border-b border-gray-50 flex flex-col gap-5">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-900">{{ $isArchive ? 'Arsip Keputusan' : 'Daftar Proposal Masuk' }}</h3>
+                    <h3 class="text-xl font-bold text-gray-900">{{ $isArchive ? 'Semua Proposal' : 'Daftar Proposal Masuk' }}</h3>
                     <p class="text-sm text-gray-500 mt-1">{{ $isArchive ? 'Riwayat seluruh proposal yang telah Anda setujui atau tolak.' : 'Tinjau proposal pengajuan bantuan atau peminjaman alsintan dari kelompok tani yang sedang aktif.' }}</p>
                 </div>
                 
-                <form method="GET" action="{{ $isArchive ? route('pimpinan.proposals.archives') : route('pimpinan.proposals.index') }}" class="flex flex-wrap gap-3 items-center" x-data x-ref="filterForm">
+                <form method="GET" action="{{ $isArchive ? route('pimpinan.proposals.archives') : route('pimpinan.proposals.index') }}" class="flex flex-wrap gap-3 items-end" x-data x-ref="filterForm">
                     <div class="relative flex-1 min-w-[200px]">
                         <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -36,6 +36,33 @@
                         <option value="alsintan" {{ request('type') === 'alsintan' ? 'selected' : '' }}>Peminjaman Alsintan</option>
                         <option value="bantuan" {{ request('type') === 'bantuan' ? 'selected' : '' }}>Program Bantuan</option>
                     </select>
+
+                    <div class="flex flex-col min-w-[180px]">
+                        <div class="flex justify-between items-center mb-1.5 min-h-[16px]">
+                            <span class="text-xs font-bold text-gray-700">Status</span>
+                            @if(request()->anyFilled(['search', 'status', 'type']))
+                                <a href="{{ $isArchive ? route('pimpinan.proposals.archives') : route('pimpinan.proposals.index') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">Reset Filter</a>
+                            @endif
+                        </div>
+                        <select name="status" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none bg-white pr-8"
+                            style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
+                            <option value="">Semua Status</option>
+                            @if($isArchive)
+                                <option value="sedang_diverifikasi_admin" {{ request('status') === 'sedang_diverifikasi_admin' ? 'selected' : '' }}>Di Admin</option>
+                                <option value="sedang_diverifikasi_pimpinan" {{ request('status') === 'sedang_diverifikasi_pimpinan' ? 'selected' : '' }}>Di Pimpinan</option>
+                                <option value="persiapan_survei" {{ request('status') === 'persiapan_survei' ? 'selected' : '' }}>Persiapan Survei</option>
+                                <option value="sedang_survei" {{ request('status') === 'sedang_survei' ? 'selected' : '' }}>Sedang Survei</option>
+                                <option value="verifikasi_cpcl" {{ request('status') === 'verifikasi_cpcl' ? 'selected' : '' }}>Verifikasi CPCL</option>
+                                <option value="menunggu_keputusan_akhir" {{ request('status') === 'menunggu_keputusan_akhir' ? 'selected' : '' }}>Finalisasi (Pimpinan)</option>
+                                <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                                <option value="dikembalikan" {{ request('status') === 'dikembalikan' ? 'selected' : '' }}>Selesai (Dikembalikan)</option>
+                                <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                            @else
+                                <option value="sedang_diverifikasi_pimpinan" {{ request('status') === 'sedang_diverifikasi_pimpinan' ? 'selected' : '' }}>Verifikasi Awal Pimpinan</option>
+                                <option value="menunggu_keputusan_akhir" {{ request('status') === 'menunggu_keputusan_akhir' ? 'selected' : '' }}>Menunggu Keputusan Akhir</option>
+                            @endif
+                        </select>
+                    </div>
                 </form>
             </div>
 
@@ -60,7 +87,7 @@
                                         'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
                                         'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
                                         'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
-                                        'survei_selesai'           => ['bg' => 'bg-orange-100 text-orange-700',  'label' => 'Survei Selesai'],
+
                                         'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
                                         'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
                                         'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],

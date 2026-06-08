@@ -199,7 +199,7 @@
                         <tr>
                             <td>1</td>
                             <td class="bold">{{ $fullNamaAlat }}</td>
-                            <td></td>
+                            <td>{{ $proposal->alsintanInventory->nomor_rangka ?? '-' }} / {{ $proposal->alsintanInventory->nomor_mesin ?? '-' }}</td>
                             <td>1</td>
                             <td>Baik dan Lengkap</td>
                         </tr>
@@ -271,7 +271,9 @@
                     <td>
                         <span class="bold">PIHAK KEDUA</span><br>
                         POKTAN {{ strtoupper($namaPoktan) }}<br>
-                        <br><br><br><br><br>
+                        <br><br>
+                        <span style="font-size: 10px; color: #555;">Materai 10.000</span><br>
+                        <br><br>
                         <span style="font-weight: bold; text-decoration: underline;">{{ $ketuaPoktan }}</span><br>
                         Ketua
                     </td>

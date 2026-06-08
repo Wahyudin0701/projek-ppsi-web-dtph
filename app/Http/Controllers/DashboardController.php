@@ -102,7 +102,7 @@ class DashboardController extends Controller
             'proses'    => $allUserProposals->whereIn('status', [
                                 'sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan',
                                 'persiapan_survei', 'sedang_survei',
-                                'survei_selesai', 'menunggu_keputusan_akhir',
+                                'verifikasi_cpcl', 'menunggu_keputusan_akhir',
                             ])->count(),
             'disetujui' => $allUserProposals->where('status', 'disetujui')->count(),
             'ditolak'   => $allUserProposals->where('status', 'ditolak')->count(),
@@ -136,7 +136,9 @@ class DashboardController extends Controller
             ->get();
 
         $alsintans = Alsintan::whereNotIn('id', $activeProposalAlsintanIds)
-            ->whereRaw('(stock - borrowed_count - broken_count) > 0')
+            ->whereHas('inventories', function($q) {
+                $q->where('status_ketersediaan', 'Tersedia');
+            })
             ->latest()
             ->take(3)
             ->get();

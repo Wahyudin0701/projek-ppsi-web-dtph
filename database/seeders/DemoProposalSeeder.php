@@ -11,6 +11,7 @@ use App\Models\ProposalDisposition;
 use App\Models\SurveyAssignment;
 use App\Models\CpclVerification;
 use App\Models\BeritaAcara;
+use App\Models\DispositionLog;
 
 class DemoProposalSeeder extends Seeder
 {
@@ -82,6 +83,13 @@ class DemoProposalSeeder extends Seeder
             'reviewed_at' => now()->subDays(6),
             'kabid_id' => $kabid->id,
         ]);
+        DispositionLog::create([
+            'proposal_id' => $propSurat->id,
+            'disposed_by' => $pimpinan->id,
+            'disposed_to' => $kabid->id,
+            'notes' => 'Tolong survei lokasi ini.',
+            'created_at' => now()->subDays(5),
+        ]);
         SurveyAssignment::create([
             'proposal_id' => $propSurat->id,
             'nomor_surat' => '001/80.a/Kep-PPK/DTPH/' . date('Y'),
@@ -93,15 +101,22 @@ class DemoProposalSeeder extends Seeder
             ]
         ]);
 
-        // [Status 5] survei_selesai
+        // [Status 5] verifikasi_cpcl
         $propSurvei = Proposal::create([
             'user_id' => $farmer->id,
             'program_id' => $program->id,
-            'status' => 'survei_selesai',
+            'status' => 'verifikasi_cpcl',
             'no_surat_pengajuan' => '005/PROG/KT/' . date('Y'),
             'submission_date' => now()->subDays(10),
             'reviewed_at' => now()->subDays(9),
             'kabid_id' => $kabid->id,
+        ]);
+        DispositionLog::create([
+            'proposal_id' => $propSurvei->id,
+            'disposed_by' => $pimpinan->id,
+            'disposed_to' => $kabid->id,
+            'notes' => 'Silakan ditindaklanjuti',
+            'created_at' => now()->subDays(8),
         ]);
         $assignment2 = SurveyAssignment::create([
             'proposal_id' => $propSurvei->id,
@@ -131,6 +146,29 @@ class DemoProposalSeeder extends Seeder
             'reviewed_at' => now()->subDays(14),
             'kabid_id' => $kabid->id,
         ]);
+        DispositionLog::create([
+            'proposal_id' => $propBA->id,
+            'disposed_by' => $pimpinan->id,
+            'disposed_to' => $kabid->id,
+            'notes' => 'Segera siapkan BA',
+            'created_at' => now()->subDays(13),
+        ]);
+        $assignmentBA = SurveyAssignment::create([
+            'proposal_id' => $propBA->id,
+            'nomor_surat' => '003/80.a/Kep-PPK/DTPH/' . date('Y'),
+            'valid_from' => now()->subDays(12),
+            'valid_until' => now()->subDays(10),
+            'team_members' => [['name' => 'Budi Surveyor', 'role' => 'Ketua Tim']]
+        ]);
+        CpclVerification::create([
+            'survey_assignment_id' => $assignmentBA->id,
+            'status_kepemilikan' => 'Milik Sendiri',
+            'luas_lahan' => 3.0,
+            'kondisi_lahan' => 'Siap Tanam',
+            'kesesuaian_komoditas' => true,
+            'rekomendasi_surveyor' => 'Sangat Direkomendasikan',
+            'catatan' => 'Lahan siap pakai.',
+        ]);
         BeritaAcara::create([
             'proposal_id' => $propBA->id,
             'kabid_id' => $kabid->id,
@@ -141,7 +179,7 @@ class DemoProposalSeeder extends Seeder
         ]);
 
         // [Status 7] disetujui
-        Proposal::create([
+        $propSetuju = Proposal::create([
             'user_id' => $farmer->id,
             'program_id' => $program->id,
             'status' => 'disetujui',
@@ -151,6 +189,37 @@ class DemoProposalSeeder extends Seeder
             'kabid_id' => $kabid->id,
             'decided_at' => now()->subDays(1),
             'pimpinan_notes' => 'Disetujui. Silakan lanjut proses SK/Perjanjian.',
+        ]);
+        DispositionLog::create([
+            'proposal_id' => $propSetuju->id,
+            'disposed_by' => $pimpinan->id,
+            'disposed_to' => $kabid->id,
+            'notes' => 'Setuju',
+            'created_at' => now()->subDays(18),
+        ]);
+        $assignmentSetuju = SurveyAssignment::create([
+            'proposal_id' => $propSetuju->id,
+            'nomor_surat' => '004/80.a/Kep-PPK/DTPH/' . date('Y'),
+            'valid_from' => now()->subDays(17),
+            'valid_until' => now()->subDays(15),
+            'team_members' => [['name' => 'Budi Surveyor', 'role' => 'Ketua Tim']]
+        ]);
+        CpclVerification::create([
+            'survey_assignment_id' => $assignmentSetuju->id,
+            'status_kepemilikan' => 'Milik Sendiri',
+            'luas_lahan' => 1.5,
+            'kondisi_lahan' => 'Siap',
+            'kesesuaian_komoditas' => true,
+            'rekomendasi_surveyor' => 'Direkomendasikan',
+            'catatan' => 'OK.',
+        ]);
+        BeritaAcara::create([
+            'proposal_id' => $propSetuju->id,
+            'kabid_id' => $kabid->id,
+            'survey_date' => now()->subDays(10),
+            'location' => 'Desa A',
+            'content' => 'BA Disetujui',
+            'recommendation' => 'direkomendasikan',
         ]);
 
         echo "Berhasil membuat Demo Proposals untuk semua stage Hybrid Workflow!\n";

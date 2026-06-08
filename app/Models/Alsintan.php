@@ -20,25 +20,58 @@ class Alsintan extends Model
             ->setDescriptionForEvent(fn(string $eventName) => "Alsintan has been {$eventName}");
     }
 
-    protected $appends = ['available_stock'];
+    protected $appends = ['stock', 'broken_count', 'borrowed_count', 'available_stock'];
 
     protected $fillable = [
         'name',
-        'category',
+        'alsintan_category_id',
         'merk',
-        'capacity',
-        'stock',
-        'borrowed_count',
-        'broken_count',
         'description',
         'image',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(AlsintanCategory::class, 'alsintan_category_id');
+    }
+
+    public function inventories()
+    {
+        return $this->hasMany(AlsintanInventory::class);
+    }
+
+    public function getStockAttribute(): int
+    {
+        if ($this->relationLoaded('inventories')) {
+            return $this->inventories->count();
+        }
+        return $this->inventories()->count();
+    }
+
+    public function getBrokenCountAttribute(): int
+    {
+        if ($this->relationLoaded('inventories')) {
+            return $this->inventories->where('status_ketersediaan', 'Sedang Rusak')->count();
+        }
+        return $this->inventories()->where('status_ketersediaan', 'Sedang Rusak')->count();
+    }
+
+    public function getBorrowedCountAttribute(): int
+    {
+        if ($this->relationLoaded('inventories')) {
+            return $this->inventories->where('status_ketersediaan', 'Dipinjam')->count();
+        }
+        return $this->inventories()->where('status_ketersediaan', 'Dipinjam')->count();
+    }
 
     /**
      * Get the available stock.
      */
     public function getAvailableStockAttribute(): int
     {
-        return max(0, $this->stock - $this->borrowed_count - $this->broken_count);
+        if ($this->relationLoaded('inventories')) {
+            return $this->inventories->where('status_ketersediaan', 'Tersedia')->count();
+        }
+        return $this->inventories()->where('status_ketersediaan', 'Tersedia')->count();
     }
 }

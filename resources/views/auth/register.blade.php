@@ -251,10 +251,10 @@
                     <div x-show="step === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             @if($role === 'umum')
-                            <!-- Nama Lengkap / Instansi -->
+                            <!-- Nama Pendaftar / Instansi -->
                             <div class="md:col-span-2">
                                 <label for="name" class="block text-sm font-bold text-gray-800 mb-2">
-                                    Nama Lengkap / Instansi <span class="text-red-500">*</span>
+                                    Nama Pendaftar / Instansi <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -281,6 +281,50 @@
                                 </div>
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
+
+                            @if($role === 'umum')
+                            <!-- NIK -->
+                            <div>
+                                <label for="nik_ketua" class="block text-sm font-bold text-gray-800 mb-2">NIK <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"/></svg>
+                                    </div>
+                                    <input type="text" name="nik_ketua" id="nik_ketua" value="{{ old('nik_ketua') }}" :required="step === 1"
+                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                        placeholder="16 digit NIK">
+                                </div>
+                                <x-input-error :messages="$errors->get('nik_ketua')" class="mt-2" />
+                            </div>
+
+                            <!-- No WhatsApp -->
+                            <div>
+                                <label for="no_wa" class="block text-sm font-bold text-gray-800 mb-2">Nomor WhatsApp <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                    </div>
+                                    <input type="text" name="no_wa" id="no_wa" value="{{ old('no_wa') }}" :required="step === 1"
+                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
+                                        placeholder="08xx-xxxx-xxxx">
+                                </div>
+                                <x-input-error :messages="$errors->get('no_wa')" class="mt-2" />
+                            </div>
+
+                            <!-- Foto KTP -->
+                            <div class="md:col-span-2">
+                                <label for="foto_ktp" class="block text-sm font-bold text-gray-800 mb-2">Foto KTP <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    </div>
+                                    <input type="file" name="foto_ktp" id="foto_ktp" accept=".jpg,.jpeg,.png" :required="step === 1"
+                                        class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
+                                </div>
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: JPG/PNG. Maksimal 5MB.</p>
+                                <x-input-error :messages="$errors->get('foto_ktp')" class="mt-2" />
+                            </div>
+                            @endif
 
                             <!-- Kata Sandi -->
                             <div x-data="{ showPassword: false }">

@@ -28,6 +28,7 @@ class Proposal extends Model
         'user_id',
         'program_id',
         'alsintan_id',
+        'alsintan_inventory_id',
         'status',
         'nomor_dokumen_final',
         'no_surat_pengajuan',
@@ -43,12 +44,14 @@ class Proposal extends Model
         'foto_lahan',
         'foto_pemetaan',
         'file_proposal',
+        'returned_at',
     ];
 
     protected $casts = [
         'submission_date' => 'datetime',
         'reviewed_at'     => 'datetime',
         'decided_at'      => 'datetime',
+        'returned_at'     => 'datetime',
     ];
 
     /**
@@ -65,7 +68,6 @@ class Proposal extends Model
             'sedang_diverifikasi_pimpinan' => 'Sedang Diverifikasi Pimpinan',
             'persiapan_survei'             => 'Persiapan Survei',
             'sedang_survei'                => 'Sedang Survei',
-            'survei_selesai'               => 'Survei Selesai',
             'verifikasi_cpcl'              => 'Verifikasi CPCL',
             'menunggu_keputusan_akhir'     => 'Menunggu Keputusan Akhir',
             'disetujui'                    => 'Disetujui',
@@ -96,6 +98,14 @@ class Proposal extends Model
     public function alsintan(): BelongsTo
     {
         return $this->belongsTo(Alsintan::class);
+    }
+
+    /**
+     * Get the physical alsintan inventory assigned to the proposal.
+     */
+    public function alsintanInventory(): BelongsTo
+    {
+        return $this->belongsTo(AlsintanInventory::class);
     }
 
     /**

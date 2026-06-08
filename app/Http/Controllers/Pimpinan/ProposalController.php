@@ -64,11 +64,7 @@ class ProposalController extends Controller
             ->latest('submission_date');
 
         $query->whereIn('status', [
-            'sedang_diverifikasi_pimpinan', 
-            'persiapan_survei', 
-            'sedang_survei', 
-            'survei_selesai', 
-            'verifikasi_cpcl',
+            'sedang_diverifikasi_pimpinan',
             'menunggu_keputusan_akhir'
         ]);
 
@@ -119,7 +115,8 @@ class ProposalController extends Controller
         $query = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'kabid'])
             ->latest('submission_date');
 
-        $query->whereIn('status', ['disetujui', 'ditolak']);
+        // Arsip Keputusan sekarang menampilkan semua proposal dengan semua status
+        // Tidak ada filter status default (kecuali jika ditambahkan via request nantinya)
 
         if ($request->filled('type')) {
             if ($request->type === 'alsintan') {
@@ -136,6 +133,10 @@ class ProposalController extends Controller
                   ->orWhereHas('alsintan', fn($a) => $a->where('name', 'like', "%{$search}%"))
                   ->orWhereHas('program', fn($p) => $p->where('name', 'like', "%{$search}%"));
             });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
         }
 
         $proposals = $query->paginate(15)->withQueryString();
@@ -159,7 +160,15 @@ class ProposalController extends Controller
         // Kabid yang tersedia untuk disposisi
         $kabidList = User::whereIn('role', ['kabid_psp', 'kabid_tp', 'kabid_hortikultura'])->get();
 
-        return view('pimpinan.proposals.show', compact('proposal', 'kabidList'));
+        // Ambil stok alsintan yang tersedia (hanya jika proposal berupa alsintan)
+        $availableInventories = [];
+        if ($proposal->alsintan_id) {
+            $availableInventories = \App\Models\AlsintanInventory::where('alsintan_id', $proposal->alsintan_id)
+                ->where('status_ketersediaan', 'Tersedia')
+                ->get();
+        }
+
+        return view('pimpinan.proposals.show', compact('proposal', 'kabidList', 'availableInventories'));
     }
 
     /**
@@ -212,7 +221,8 @@ class ProposalController extends Controller
         }
 
         $request->validate([
-            'pimpinan_notes' => 'nullable|string|max:1000',
+            'pimpinan_notes'        => 'nullable|string|max:1000',
+            'alsintan_inventory_id' => $proposal->alsintan_id ? 'required|exists:alsintan_inventories,id' : 'nullable',
         ]);
 
         // Auto-generate nomor surat resmi
@@ -222,11 +232,17 @@ class ProposalController extends Controller
         $nomor = "SP/{$year}/{$month}/PRP-{$id}";
 
         $proposal->update([
-            'status'              => 'disetujui',
-            'decided_at'          => now(),
-            'pimpinan_notes'      => $request->pimpinan_notes,
-            'nomor_dokumen_final' => $nomor,
+            'status'                => 'disetujui',
+            'decided_at'            => now(),
+            'pimpinan_notes'        => $request->pimpinan_notes,
+            'nomor_dokumen_final'   => $nomor,
+            'alsintan_inventory_id' => $request->alsintan_inventory_id,
         ]);
+
+        if ($request->alsintan_inventory_id) {
+            \App\Models\AlsintanInventory::where('id', $request->alsintan_inventory_id)
+                ->update(['status_ketersediaan' => 'Dipinjam']);
+        }
 
         return redirect()->route('pimpinan.proposals.show', $proposal)
             ->with('success', 'Proposal #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah disetujui dan Nomor Surat Resmi (' . $nomor . ') berhasil diterbitkan otomatis.');
@@ -323,7 +339,8 @@ class ProposalController extends Controller
 
         $proposals = $query->get();
         
-        return view('pimpinan.reports.print', compact('proposals'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pimpinan.reports.print', compact('proposals'))->setPaper('a4', 'landscape');
+        return $pdf->stream('Laporan_Rekapitulasi_Proposal.pdf');
     }
 
     /**
@@ -387,7 +404,8 @@ class ProposalController extends Controller
 
         $users = $query->get();
         
-        return view('pimpinan.reports.print_users', compact('users'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pimpinan.reports.print_users', compact('users'))->setPaper('a4', 'landscape');
+        return $pdf->stream('Laporan_Pengguna_Terdaftar.pdf');
     }
 }
 

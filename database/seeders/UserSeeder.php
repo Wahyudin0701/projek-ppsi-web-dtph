@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\FarmerProfile;
+use App\Models\UmumProfile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -95,7 +96,7 @@ class UserSeeder extends Seeder
         );
 
         // Umum
-        User::firstOrCreate(
+        $umum = User::firstOrCreate(
             ['email' => 'user.umum@dtph.com'],
             [
                 'name' => 'Pengguna Umum',
@@ -104,6 +105,16 @@ class UserSeeder extends Seeder
                 'is_verified' => 1,
                 'status' => 'approved',
                 'email_verified_at' => now(),
+            ]
+        );
+
+        UmumProfile::firstOrCreate(
+            ['user_id' => $umum->id],
+            [
+                'nik' => '1504012345670001',
+                'no_wa' => '081299998888',
+                'foto_ktp' => 'dummy_ktp.jpg',
+                'status' => 'approved',
             ]
         );
 

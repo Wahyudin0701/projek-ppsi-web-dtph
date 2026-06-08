@@ -13,7 +13,7 @@ class FarmerProfileController extends Controller
         $user = Auth::user();
         $profile = $user->farmerProfile;
 
-        if (!$profile || !in_array($profile->status, ['revisi'])) {
+        if (!$profile || !in_array($user->status, ['revisi'])) {
             return redirect()->route('dashboard')->with('error', 'Anda hanya dapat mengedit profil jika status pendaftaran dalam tahap revisi.');
         }
 
@@ -25,7 +25,7 @@ class FarmerProfileController extends Controller
         $user = Auth::user();
         $profile = $user->farmerProfile;
 
-        if (!$profile || !in_array($profile->status, ['revisi'])) {
+        if (!$profile || !in_array($user->status, ['revisi'])) {
             return redirect()->route('dashboard')->with('error', 'Anda hanya dapat mengedit profil jika status pendaftaran dalam tahap revisi.');
         }
 
@@ -54,7 +54,7 @@ class FarmerProfileController extends Controller
         $validated = $request->validate($rules);
 
         $validated['komoditi'] = implode(', ', $validated['komoditi']);
-        $validated['status'] = 'menunggu';
+        $user->update(['status' => 'menunggu']);
 
         if ($request->hasFile('file_sk')) {
             if ($profile->sk_pengukuhan_path) {
@@ -97,9 +97,8 @@ class FarmerProfileController extends Controller
     public function requestChange(Request $request)
     {
         $user = Auth::user();
-        $profile = $user->farmerProfile;
 
-        if (!$profile || $profile->status !== 'approved') {
+        if ($user->status !== 'approved') {
             return redirect()->route('dashboard')->with('error', 'Anda hanya dapat mengajukan perubahan data jika profil sudah disetujui.');
         }
 
@@ -107,17 +106,22 @@ class FarmerProfileController extends Controller
             'change_request_reason' => 'required|string|max:1000',
         ]);
 
+        $profile = $user->role === 'umum' ? $user->umumProfile : $user->farmerProfile;
+
         $profile->update([
-            'status' => 'pengajuan_revisi',
             'change_request_reason' => $validated['change_request_reason'],
         ]);
+        
+        $user->update(['status' => 'pengajuan_revisi']);
 
-        // Catat ke log verifikasi bahwa petani mengajukan perubahan
-        $profile->verificationLogs()->create([
-            'admin_id' => null, // sistem / oleh petani sendiri
-            'status' => 'pengajuan_revisi',
-            'notes' => 'Alasan: ' . $validated['change_request_reason'],
-        ]);
+        // Catat ke log verifikasi jika petani
+        if ($user->role === 'petani') {
+            $profile->verificationLogs()->create([
+                'admin_id' => null, // sistem / oleh petani sendiri
+                'status' => 'pengajuan_revisi',
+                'notes' => 'Alasan: ' . $validated['change_request_reason'],
+            ]);
+        }
 
         return redirect()->route('dashboard')->with('success', 'Permohonan perubahan data berhasil dikirim. Silakan tunggu persetujuan dari Admin.');
     }

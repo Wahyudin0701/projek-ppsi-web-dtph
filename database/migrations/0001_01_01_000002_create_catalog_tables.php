@@ -27,22 +27,36 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('alsintan_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('alsintans', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('category')->nullable();
+            $table->foreignId('alsintan_category_id')->nullable()->constrained('alsintan_categories')->onDelete('restrict');
             $table->string('merk')->nullable();
-            $table->string('nomor_rangka')->nullable();
-            $table->string('nomor_mesin')->nullable();
-            $table->integer('tahun_perolehan')->nullable();
-            $table->string('capacity')->nullable();
-            $table->integer('stock')->default(0);
-            $table->integer('borrowed_count')->default(0);
-            $table->integer('broken_count')->default(0);
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->string('juknis_file')->nullable();
             $table->string('juknis_url')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('alsintan_inventories', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('alsintan_id')->constrained('alsintans')->cascadeOnDelete();
+            $table->string('nomor_rangka')->nullable();
+            $table->string('nomor_mesin')->nullable();
+            $table->string('sumber_dana')->nullable();
+            $table->integer('tahun_pengadaan')->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->enum('status_ketersediaan', ['Tersedia', 'Dipinjam', 'Sedang Rusak'])->default('Tersedia');
             $table->timestamps();
         });
     }
@@ -52,7 +66,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('alsintan_inventories');
         Schema::dropIfExists('alsintans');
+        Schema::dropIfExists('alsintan_categories');
         Schema::dropIfExists('programs');
     }
 };

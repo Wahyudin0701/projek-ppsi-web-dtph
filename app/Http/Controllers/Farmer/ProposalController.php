@@ -32,22 +32,24 @@ class ProposalController extends Controller
      */
     public function alsintanList()
     {
-        // IDs alsintan yang sudah memiliki proposal aktif (belum selesai diverifikasi)
-        $activeAlsintanIds = Proposal::where('user_id', Auth::id())
+        $activeStatuses = ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'persiapan_survei', 'sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'];
+        
+        // Dapatkan status aktif per alsintan_id
+        $activeAlsintans = Proposal::where('user_id', Auth::id())
             ->whereNotNull('alsintan_id')
-            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui'])
-            ->pluck('alsintan_id')
+            ->whereIn('status', $activeStatuses)
+            ->pluck('status', 'alsintan_id')
             ->toArray();
 
-        $all = \App\Models\Alsintan::latest()->get();
+        $all = \App\Models\Alsintan::with('inventories')->latest()->get();
 
         // Tersedia: stok ada & belum ada proposal aktif
-        $alsintans = $all->filter(fn($a) => $a->available_stock > 0 && !in_array($a->id, $activeAlsintanIds))->values();
+        $alsintans = $all->filter(fn($a) => $a->available_stock > 0 && !array_key_exists($a->id, $activeAlsintans))->values();
 
         // Tidak tersedia: stok habis ATAU sudah ada proposal aktif
-        $unavailableAlsintans = $all->filter(fn($a) => $a->available_stock <= 0 || in_array($a->id, $activeAlsintanIds))->values();
+        $unavailableAlsintans = $all->filter(fn($a) => $a->available_stock <= 0 || array_key_exists($a->id, $activeAlsintans))->values();
 
-        return view('farmer.proposals.alsintan.list', compact('alsintans', 'unavailableAlsintans', 'activeAlsintanIds'));
+        return view('farmer.proposals.alsintan.list', compact('alsintans', 'unavailableAlsintans', 'activeAlsintans'));
     }
 
     /**
@@ -67,15 +69,17 @@ class ProposalController extends Controller
             return back()->with('error', 'Stok alat ini sedang habis atau tidak tersedia untuk dipinjam.');
         }
 
-        // Cek apakah user sudah punya proposal aktif untuk alat ini
+        $activeStatuses = ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'persiapan_survei', 'sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'];
         $existingProposal = Proposal::where('user_id', Auth::id())
             ->where('alsintan_id', $alsintan->id)
-            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui'])
+            ->whereIn('status', $activeStatuses)
             ->first();
 
         if ($existingProposal) {
-            return redirect()->route('farmer.proposals.alsintan')
-                ->with('error', 'Anda sudah memiliki proposal aktif untuk alat "' . $alsintan->name . '". Silakan tunggu proses verifikasi selesai.');
+            $msg = $existingProposal->status === 'disetujui' 
+                ? 'Anda sedang meminjam alat "' . $alsintan->name . '". Silakan kembalikan terlebih dahulu sebelum mengajukan peminjaman baru.'
+                : 'Anda sudah memiliki proposal yang sedang diproses untuk alat "' . $alsintan->name . '". Silakan tunggu prosesnya selesai.';
+            return redirect()->route('farmer.proposals.alsintan')->with('error', $msg);
         }
 
         return view('farmer.proposals.alsintan.create', compact('alsintan'));
@@ -92,15 +96,17 @@ class ProposalController extends Controller
             return back()->with('error', 'Stok alat ini sedang habis atau tidak tersedia untuk dipinjam.');
         }
 
-        // Blokir jika sudah ada proposal aktif untuk alat yang sama
+        $activeStatuses = ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'persiapan_survei', 'sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'];
         $existingProposal = Proposal::where('user_id', $user->id)
             ->where('alsintan_id', $alsintan->id)
-            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui'])
+            ->whereIn('status', $activeStatuses)
             ->first();
 
         if ($existingProposal) {
-            return redirect()->route('farmer.proposals.alsintan')
-                ->with('error', 'Anda sudah memiliki proposal aktif untuk alat "' . $alsintan->name . '". Silakan tunggu proses verifikasi selesai.');
+            $msg = $existingProposal->status === 'disetujui' 
+                ? 'Anda sedang meminjam alat "' . $alsintan->name . '". Silakan kembalikan terlebih dahulu sebelum mengajukan peminjaman baru.'
+                : 'Anda sudah memiliki proposal yang sedang diproses untuk alat "' . $alsintan->name . '". Silakan tunggu prosesnya selesai.';
+            return redirect()->route('farmer.proposals.alsintan')->with('error', $msg);
         }
 
         $request->validate([
@@ -190,12 +196,12 @@ class ProposalController extends Controller
             return back()->with('error', 'Maaf, pendaftaran untuk program ini sudah ditutup.');
         }
 
-        // 2. Business Rule: Check if user already has an active proposal for this TYPE of program
+        $activeStatuses = ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'persiapan_survei', 'sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'];
         $existingProposal = Proposal::where('user_id', $user->id)
             ->whereHas('program', function ($query) use ($program) {
                 $query->where('type', $program->type);
             })
-            ->whereIn('status', ['sedang_diverifikasi_admin', 'disetujui']) // Assuming 'disetujui' means it's still "active"
+            ->whereIn('status', $activeStatuses)
             ->first();
 
         if ($existingProposal) {

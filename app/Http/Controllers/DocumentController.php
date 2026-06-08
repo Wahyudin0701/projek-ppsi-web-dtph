@@ -60,7 +60,7 @@ class DocumentController extends Controller
     {
         $this->authorizeAccess($proposal);
 
-        if (!in_array($proposal->status, ['sedang_survei', 'survei_selesai', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'])) {
+        if (!in_array($proposal->status, ['sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'])) {
             abort(403, 'Form CPCL belum tersedia.');
         }
 

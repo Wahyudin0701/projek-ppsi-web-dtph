@@ -63,6 +63,12 @@ class RegisteredUserController extends Controller
                 'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
                 'id_poktan' => ['required', 'string', 'max:255'],
             ]);
+        } elseif ($role === 'umum') {
+            $rules = array_merge($rules, [
+                'nik_ketua' => ['required', 'string', 'size:16'],
+                'no_wa' => ['required', 'string', 'max:20'],
+                'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+            ]);
         }
 
         $request->validate($rules);
@@ -76,6 +82,8 @@ class RegisteredUserController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => $dbRole,
             ]);
+
+            $user->assignRole($dbRole);
 
             if ($role === 'petani') {
                 $profile = $user->farmerProfile()->create([
@@ -94,6 +102,7 @@ class RegisteredUserController extends Controller
                     'sk_pengukuhan_path' => $request->hasFile('file_sk') ? $request->file('file_sk')->store('sk_kelompok', 'public') : null,
                     'foto_ktp' => $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('ktp_ketua', 'public') : null,
                     'status' => 'menunggu',
+                    'afiliasi_lembaga' => 'Kelompok Tani',
                 ]);
 
                 if ($request->has('anggota_nama') && is_array($request->anggota_nama)) {
@@ -105,16 +114,19 @@ class RegisteredUserController extends Controller
                         ]);
                     }
                 }
+            } elseif ($role === 'umum') {
+                $user->umumProfile()->create([
+                    'nik' => $request->nik_ketua,
+                    'no_wa' => $request->no_wa,
+                    'foto_ktp' => $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('ktp_umum', 'public') : null,
+                    'status' => 'menunggu',
+                ]);
             }
 
             return $user;
         });
 
         event(new Registered($user));
-
-        if ($user->role === 'umum') {
-            return redirect()->route('login')->with('status', 'Pendaftaran berhasil. Akun Anda sedang menunggu verifikasi oleh admin.');
-        }
 
         Auth::login($user);
 
