@@ -265,6 +265,7 @@
                                         </svg>
                                         Kelola Unduhan Dokumen
                                     </a>
+
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.satuan-kerja.index') }}" 
@@ -669,6 +670,7 @@
                             </svg>
                             Kelola Unduhan Dokumen
                         </a>
+
                         <a href="{{ route('admin.satuan-kerja.index') }}" @click="mobileMenuOpen = false"
                            class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 {{ request()->routeIs('admin.satuan-kerja.*') ? $roleColor['active'] : $roleColor['hover'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -822,7 +824,7 @@
             </header>
 
             <!-- Page Content scrollable -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-8">
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-6">
                 {{ $slot }}
             </div>
         </main>

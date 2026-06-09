@@ -67,6 +67,7 @@ class RegisteredUserController extends Controller
             $rules = array_merge($rules, [
                 'nik_ketua' => ['required', 'string', 'size:16'],
                 'no_wa' => ['required', 'string', 'max:20'],
+                'alamat' => ['required', 'string'],
                 'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
             ]);
         }
@@ -102,7 +103,6 @@ class RegisteredUserController extends Controller
                     'sk_pengukuhan_path' => $request->hasFile('file_sk') ? $request->file('file_sk')->store('sk_kelompok', 'public') : null,
                     'foto_ktp' => $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('ktp_ketua', 'public') : null,
                     'status' => 'menunggu',
-                    'afiliasi_lembaga' => 'Kelompok Tani',
                 ]);
 
                 if ($request->has('anggota_nama') && is_array($request->anggota_nama)) {
@@ -118,6 +118,7 @@ class RegisteredUserController extends Controller
                 $user->umumProfile()->create([
                     'nik' => $request->nik_ketua,
                     'no_wa' => $request->no_wa,
+                    'alamat' => $request->alamat,
                     'foto_ktp' => $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('ktp_umum', 'public') : null,
                     'status' => 'menunggu',
                 ]);

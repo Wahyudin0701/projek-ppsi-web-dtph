@@ -72,9 +72,11 @@
 
                                             'verifikasi_cpcl' => 'bg-purple-100 text-purple-700',
                                             'menunggu_keputusan_akhir' => 'bg-purple-100 text-purple-700',
+                                            'direkomendasikan' => 'bg-emerald-100 text-emerald-700',
                                             'disetujui' => 'bg-emerald-100 text-emerald-700',
                                             'dikembalikan' => 'bg-gray-100 text-gray-700',
                                             'ditolak' => 'bg-red-100 text-red-700',
+                                            'ditolak_pusat' => 'bg-red-100 text-red-700',
                                         ];
                                         $color = $statusColors[$proposal->status] ?? 'bg-gray-100 text-gray-700';
                                         $statusLabel = match($proposal->status) {
@@ -85,9 +87,11 @@
 
                                             'verifikasi_cpcl' => 'Finalisasi',
                                             'menunggu_keputusan_akhir' => 'Finalisasi',
+                                            'direkomendasikan' => 'Di Pusat',
                                             'disetujui' => 'Disetujui',
                                             'dikembalikan' => 'Dikembalikan',
-                                            'ditolak' => 'Ditolak',
+                                            'ditolak' => 'Di Tolak',
+                                            'ditolak_pusat' => 'Di Tolak',
                                             default              => $proposal->status,
                                         };
                                     @endphp

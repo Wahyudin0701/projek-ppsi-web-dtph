@@ -102,13 +102,31 @@ class SuratController extends Controller
         $letters = $letters->sortByDesc('tanggal')->values();
 
         // Fitur Filter Search
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('search')) {
             $search = strtolower($request->search);
             $letters = $letters->filter(function ($item) use ($search) {
                 return str_contains(strtolower($item['jenis']), $search) || 
                        str_contains(strtolower($item['nomor']), $search) || 
                        str_contains(strtolower($item['kelompok']), $search) ||
                        str_contains(strtolower($item['perihal']), $search);
+            })->values();
+        }
+
+        if ($request->filled('jenis_surat')) {
+            $letters = $letters->where('jenis', $request->jenis_surat)->values();
+        }
+
+        if ($request->filled('start_date')) {
+            $startDate = \Carbon\Carbon::parse($request->start_date)->startOfDay();
+            $letters = $letters->filter(function($item) use ($startDate) {
+                return \Carbon\Carbon::parse($item['tanggal'])->startOfDay() >= $startDate;
+            })->values();
+        }
+
+        if ($request->filled('end_date')) {
+            $endDate = \Carbon\Carbon::parse($request->end_date)->startOfDay();
+            $letters = $letters->filter(function($item) use ($endDate) {
+                return \Carbon\Carbon::parse($item['tanggal'])->startOfDay() <= $endDate;
             })->values();
         }
 

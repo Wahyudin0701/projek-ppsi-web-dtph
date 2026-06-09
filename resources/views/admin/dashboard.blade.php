@@ -55,14 +55,14 @@
                 </div>
             </div>
 
-            {{-- Program Berjalan --}}
+            {{-- Total Kelompok Tani --}}
             <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 group">
                 <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-transform duration-300">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
                 <div>
-                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Program Berjalan</p>
-                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['active_programs'] }}</p>
+                    <p class="text-[10px] sm:text-xs font-bold text-gray-500 mb-0.5 sm:mb-1 uppercase tracking-widest">Total Kelompok Tani</p>
+                    <p class="text-2xl sm:text-3xl font-black text-slate-800 leading-none tracking-tight">{{ $stats['total_kelompok_tani'] }}</p>
                 </div>
             </div>
 
@@ -77,6 +77,9 @@
                 </div>
             </div>
         </div>
+
+        {{-- ===== CHARTS ===== --}}
+        @include('components.dashboard-charts')
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {{-- ===== DAFTAR USER MENUNGGU ===== --}}

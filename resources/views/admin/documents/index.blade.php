@@ -6,12 +6,20 @@
             <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Kelola Unduh Dokumen</h1>
             <p class="text-sm text-gray-500 mt-1">Manajemen berkas dan dokumen yang dapat diunduh oleh publik yang akan ditampilkan di halaman utama (homepage).</p>
         </div>
-        <a href="{{ route('admin.documents.create') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Tambah Dokumen
-        </a>
+        <div class="flex flex-col sm:flex-row items-center gap-3">
+            <a href="{{ route('admin.document-categories.index') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm w-full sm:w-auto">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                Kategori Dokumen
+            </a>
+            <a href="{{ route('admin.documents.create') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm w-full sm:w-auto">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Tambah Dokumen
+            </a>
+        </div>
     </div>
 
     @if(session('success'))
@@ -41,7 +49,7 @@
                             <div class="text-xs text-gray-500 line-clamp-1">{{ $doc->description ?: '-' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-md">{{ $doc->category }}</span>
+                            <span class="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-md">{{ $doc->category?->name ?? '-' }}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($doc->is_public)

@@ -41,10 +41,7 @@
         .footer p { margin: 0; }
         .footer .name { margin-top: 60px; font-weight: bold; text-decoration: underline; }
         
-        .status-badge { font-weight: bold; text-transform: uppercase; font-size: 9px; }
-        .status-approved { color: #166534; }
-        .status-rejected { color: #991b1b; }
-        .status-pending { color: #b45309; }
+        .status-badge { font-weight: bold; text-transform: uppercase; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -112,8 +109,15 @@
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td><strong>#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</strong></td>
                     <td>
-                        <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong><br>
-                        <span style="font-size: 9px; color: #555;">Ketua: {{ $proposal->user->name }}</span>
+                        @php
+                            $namaUtama = $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name;
+                            $idPoktan = $proposal->user->farmerProfile->id_poktan ?? null;
+                        @endphp
+                        <strong>{{ $namaUtama }}</strong>
+                        @if($idPoktan)
+                            <br>
+                            <span style="font-size: 9px; color: #555; font-family: monospace;">ID: {{ $idPoktan }}</span>
+                        @endif
                     </td>
                     <td>
                         <span style="font-size: 9px; font-weight: bold;">{{ $isAlsintan ? 'ALSINTAN' : 'PROGRAM' }}</span><br>
@@ -124,20 +128,22 @@
                     </td>
                     <td class="text-center">
                         @php
-                            $statusColors = [
-                                'sedang_diverifikasi_admin'    => '#EAB308',
-                                'sedang_diverifikasi_pimpinan' => '#6366F1',
-                                'persiapan_survei'             => '#F59E0B',
-                                'sedang_survei'                => '#3B82F6',
-                                'verifikasi_cpcl'              => '#F59E0B',
-                                'menunggu_keputusan_akhir'     => '#A855F7',
-                                'disetujui'                    => '#16A34A',
-                                'dikembalikan'                 => '#14B8A6',
-                                'ditolak'                      => '#DC2626',
+                            $statusConfig = [
+                                'sedang_diverifikasi_admin'    => ['bg' => '#FEF9C3', 'text' => '#A16207', 'label' => 'Di Admin'],
+                                'sedang_diverifikasi_pimpinan' => ['bg' => '#E0E7FF', 'text' => '#4338CA', 'label' => 'Di Pimpinan'],
+                                'persiapan_survei'             => ['bg' => '#FEF3C7', 'text' => '#B45309', 'label' => 'Di Kabid'],
+                                'sedang_survei'                => ['bg' => '#DBEAFE', 'text' => '#1D4ED8', 'label' => 'Sedang Survei'],
+                                'verifikasi_cpcl'              => ['bg' => '#CCFBF1', 'text' => '#0F766E', 'label' => 'Verifikasi CPCL'],
+                                'menunggu_keputusan_akhir'     => ['bg' => '#F3E8FF', 'text' => '#7E22CE', 'label' => 'Finalisasi'],
+                                'direkomendasikan'             => ['bg' => '#D1FAE5', 'text' => '#065F46', 'label' => 'Rekomendasi Pusat'],
+                                'disetujui'                    => ['bg' => '#DCFCE7', 'text' => '#15803D', 'label' => 'Disetujui'],
+                                'dikembalikan'                 => ['bg' => '#F3F4F6', 'text' => '#374151', 'label' => 'Selesai'],
+                                'ditolak'                      => ['bg' => '#FEE2E2', 'text' => '#B91C1C', 'label' => 'Ditolak'],
+                                'ditolak_pusat'                => ['bg' => '#FEE2E2', 'text' => '#7F1D1D', 'label' => 'Ditolak Pusat'],
                             ];
-                            $statusColor = $statusColors[$proposal->status] ?? '#6B7280';
+                            $sc = $statusConfig[$proposal->status] ?? ['bg' => '#F3F4F6', 'text' => '#4B5563', 'label' => $proposal->statusLabel];
                         @endphp
-                        <span class="status-badge" style="color: {{ $statusColor }}">{{ $proposal->statusLabel }}</span>
+                        <span class="status-badge" style="color: {{ $sc['text'] }};">{{ $sc['label'] }}</span>
                     </td>
                 </tr>
             @empty
@@ -147,6 +153,92 @@
             @endforelse
         </tbody>
     </table>
+
+    <div style="margin-top: 20px; float: left; width: 230px; margin-right: 20px;">
+        <strong style="font-size: 11px;">Rekapitulasi Status Proposal:</strong>
+        <table class="data-table" style="margin-top: 5px; margin-bottom: 0;">
+            @php
+                $statusCounts = [
+                    'Di Admin' => $proposals->where('status', 'sedang_diverifikasi_admin')->count(),
+                    'Di Pimpinan' => $proposals->where('status', 'sedang_diverifikasi_pimpinan')->count(),
+                    'Di Kabid' => $proposals->where('status', 'persiapan_survei')->count(),
+                    'Sedang Survei' => $proposals->where('status', 'sedang_survei')->count(),
+                    'Verifikasi CPCL' => $proposals->where('status', 'verifikasi_cpcl')->count(),
+                    'Finalisasi' => $proposals->where('status', 'menunggu_keputusan_akhir')->count(),
+                    'Rekomendasi Pusat' => $proposals->where('status', 'direkomendasikan')->count(),
+                    'Disetujui' => $proposals->where('status', 'disetujui')->count(),
+                    'Ditolak' => $proposals->where('status', 'ditolak')->count(),
+                    'Ditolak Pusat' => $proposals->where('status', 'ditolak_pusat')->count(),
+                    'Selesai (Dikembalikan)' => $proposals->where('status', 'dikembalikan')->count(),
+                ];
+                $hasRecap = false;
+            @endphp
+            @foreach($statusCounts as $label => $count)
+                @if($count > 0)
+                    @php $hasRecap = true; @endphp
+                    <tr>
+                        <td style="padding: 4px 6px;">{{ $label }}</td>
+                        <td style="padding: 4px 6px; text-align: center; font-weight: bold; width: 40px;">{{ $count }}</td>
+                    </tr>
+                @endif
+            @endforeach
+            @if(!$hasRecap)
+                <tr><td colspan="2" style="padding: 4px 6px; text-align: center; color: #777;">Tidak ada data</td></tr>
+            @endif
+        </table>
+    </div>
+
+    <div style="margin-top: 20px; float: left; width: 230px; margin-right: 20px;">
+        <strong style="font-size: 11px;">Rekap Jenis Pengajuan:</strong>
+        <table class="data-table" style="margin-top: 5px; margin-bottom: 15px;">
+            <tr>
+                <td style="padding: 4px 6px;">Alsintan</td>
+                <td style="padding: 4px 6px; text-align: center; font-weight: bold; width: 40px;">{{ $proposals->whereNotNull('alsintan_id')->count() }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px 6px;">Program Bantuan</td>
+                <td style="padding: 4px 6px; text-align: center; font-weight: bold; width: 40px;">{{ $proposals->whereNotNull('program_id')->count() }}</td>
+            </tr>
+        </table>
+        
+        <strong style="font-size: 11px;">Kategori Alsintan:</strong>
+        <table class="data-table" style="margin-top: 5px; margin-bottom: 0;">
+            @php
+                $alsintanCounts = $proposals->whereNotNull('alsintan_id')->groupBy(function($item) {
+                    return $item->alsintan->category->name ?? 'Tanpa Kategori';
+                })->map->count();
+            @endphp
+            @forelse($alsintanCounts as $label => $count)
+                <tr>
+                    <td style="padding: 4px 6px;">{{ $label }}</td>
+                    <td style="padding: 4px 6px; text-align: center; font-weight: bold; width: 40px;">{{ $count }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="2" style="padding: 4px 6px; text-align: center; color: #777;">Tidak ada data</td></tr>
+            @endforelse
+        </table>
+    </div>
+
+    <div style="margin-top: 20px; float: left; width: 230px;">
+        <strong style="font-size: 11px;">Jenis Program Bantuan:</strong>
+        <table class="data-table" style="margin-top: 5px; margin-bottom: 0;">
+            @php
+                $programCounts = $proposals->whereNotNull('program_id')->groupBy(function($item) {
+                    return $item->program->category->name ?? 'Tanpa Kategori';
+                })->map->count();
+            @endphp
+            @forelse($programCounts as $label => $count)
+                <tr>
+                    <td style="padding: 4px 6px;">{{ $label }}</td>
+                    <td style="padding: 4px 6px; text-align: center; font-weight: bold; width: 40px;">{{ $count }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="2" style="padding: 4px 6px; text-align: center; color: #777;">Tidak ada data</td></tr>
+            @endforelse
+        </table>
+    </div>
+    
+    <div style="clear: both;"></div>
 
     <div class="footer">
         <p>Muaro Jambi, {{ now()->translatedFormat('d F Y') }}<br>Kepala Dinas,</p>

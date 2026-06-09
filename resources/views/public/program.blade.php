@@ -27,13 +27,7 @@
 
         @php
         // Transform Eloquent models into the format the view expects
-        $jenisIconMap = [
-            'alsintan'      => ['path' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', 'color' => 'text-primary-600',  'bg' => 'bg-primary-50'],
-            'benih'         => ['path' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'color' => 'text-green-600',   'bg' => 'bg-green-50'],
-            'pupuk'         => ['path' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',                                                                                                                                                                                   'color' => 'text-lime-600',    'bg' => 'bg-lime-50'],
-            'infrastruktur' => ['path' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7',                                                                                  'color' => 'text-blue-600',    'bg' => 'bg-blue-50'],
-            'pelatihan'     => ['path' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'color' => 'text-violet-600',  'bg' => 'bg-violet-50'],
-        ];        $programsData = $programs->map(function ($p) use ($jenisIconMap) {
+        $programsData = $programs->map(function ($p) {
             // Use the model's computed status accessor (single source of truth)
             $status = $p->status; // 'belum_berjalan' | 'berjalan' | 'selesai'
 
@@ -47,7 +41,11 @@
             ];
             $meta = $labelMap[$status] ?? $labelMap['selesai'];
 
-            $icon = $jenisIconMap[$p->jenis] ?? $jenisIconMap['alsintan'];
+            $icon = [
+                'path' => $p->category && $p->category->icon_path ? $p->category->icon_path : 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
+                'color' => $p->category && $p->category->icon_color ? $p->category->icon_color : 'text-emerald-600',
+                'bg' => $p->category && $p->category->icon_bg ? $p->category->icon_bg : 'bg-emerald-50'
+            ];
 
             return [
                 'id'                  => $p->id,
@@ -56,19 +54,21 @@
                 'label'               => $meta['label'],
                 'labelColor'          => $meta['labelColor'],
                 'dotColor'            => $meta['dotColor'],
-                'jenis'               => $p->jenis ?? 'alsintan',
+                'jenis'               => $p->category ? $p->category->name : '-',
                 'judul'               => $p->name,
                 'deskripsi'           => $p->description ?? '',
                 'sasaran'             => $p->sasaran ?? '-',
                 'kuota'               => $p->kuota ?? '-',
                 'jadwal_buka'         => $p->open_date?->translatedFormat('d F Y') ?? '-',
                 'jadwal_tutup'        => $p->close_date?->translatedFormat('d F Y') ?? '-',
-                'tahap'               => str_replace('_', ' ', ucfirst($p->type ?? '')),
                 'icon_path'           => $icon['path'],
                 'icon_color'          => $icon['color'],
                 'icon_bg'             => $icon['bg'],
                 'syarat'              => $p->requirements ?? [],
                 'sop'                 => $p->sop_description ?? '',
+                'contact_person'      => $p->contact_person,
+                'contact_phone'       => $p->contact_phone,
+                'juknis_url'          => $p->juknis_file ? \Illuminate\Support\Facades\Storage::url($p->juknis_file) : null,
             ];
         })->toArray();
 
@@ -160,7 +160,7 @@
 
                         {{-- Footer --}}
                         <div class="px-6 sm:px-7 py-4 mt-auto border-t border-gray-50 flex items-center justify-between">
-                            <span class="text-xs text-gray-400 font-medium">{{ $program['tahap'] }}</span>
+                            <span class="text-xs text-gray-400 font-medium">Belum Berjalan</span>
                             <span class="text-xs font-bold text-amber-600">Belum Dibuka</span>
                         </div>
                     </div>
@@ -232,7 +232,7 @@
 
                         {{-- Footer --}}
                         <div class="px-6 sm:px-7 py-4 mt-auto border-t border-gray-50 flex items-center justify-between">
-                            <span class="text-xs text-gray-400 font-medium">{{ $program['tahap'] }}</span>
+                            <span class="text-xs text-gray-400 font-medium">Sedang Berjalan</span>
                             @if($program['status_pendaftaran'] === 'buka')
                                 @auth
                                     @if(auth()->user()->hasRole(['petani', 'umum']))
@@ -331,7 +331,7 @@
 
                         {{-- Footer --}}
                         <div class="px-6 sm:px-7 py-4 mt-auto border-t border-gray-50 flex items-center justify-between">
-                            <span class="text-xs text-gray-400 font-medium">{{ $program['tahap'] }}</span>
+                            <span class="text-xs text-gray-400 font-medium">Program Selesai</span>
                             <span class="text-xs font-bold text-gray-400">Pendaftaran Ditutup</span>
                         </div>
                     </div>
@@ -406,10 +406,6 @@
                             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Kuota</p>
                             <p class="text-sm font-bold text-gray-900" x-text="selected.kuota"></p>
                         </div>
-                        <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 col-span-2">
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Tahap</p>
-                            <p class="text-sm font-bold text-gray-900" x-text="selected.tahap"></p>
-                        </div>
                     </div>
 
                     {{-- Jadwal Grid --}}
@@ -421,6 +417,18 @@
                         <div class="rounded-2xl p-4" :class="selected.status_pendaftaran === 'buka' ? 'bg-red-50 border border-red-100' : 'bg-gray-50 border border-gray-100'">
                             <p class="text-[10px] font-bold uppercase tracking-wider mb-1" :class="selected.status_pendaftaran === 'buka' ? 'text-red-400' : 'text-gray-400'">Jadwal Tutup</p>
                             <p class="text-sm font-bold" :class="selected.status_pendaftaran === 'buka' ? 'text-red-600' : 'text-gray-600'" x-text="selected.jadwal_tutup"></p>
+                        </div>
+                        
+                        {{-- Contact Person --}}
+                        <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 col-span-2" x-show="selected.contact_person">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Narahubung (Contact Person)</p>
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-bold text-gray-900" x-text="selected.contact_person"></p>
+                                <a x-show="selected.contact_phone" :href="'https://wa.me/' + selected.contact_phone.replace(/^0/, '62')" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                    <span x-text="selected.contact_phone"></span>
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -438,16 +446,22 @@
                     </div>
 
                     {{-- SOP Section (Relocated & Styled) --}}
-                    <div class="mb-8 bg-blue-50/50 border border-blue-100 rounded-2xl p-5" x-show="selected.sop">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
+                    <div class="mb-8 bg-blue-50/50 border border-blue-100 rounded-2xl p-5" x-show="selected.sop || selected.juknis_url">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-sm font-bold text-blue-900">Alur / SOP Pengajuan</h3>
                             </div>
-                            <h3 class="text-sm font-bold text-blue-900">Alur / SOP Pengajuan</h3>
+                            <a x-show="selected.juknis_url" :href="selected.juknis_url" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-xl transition-colors">
+                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download Dokumen Juknis
+                            </a>
                         </div>
-                        <div class="text-sm text-blue-800/80 leading-relaxed space-y-2 whitespace-pre-line" x-text="selected.sop"></div>
+                        <div x-show="selected.sop" class="text-sm text-blue-800/80 leading-relaxed space-y-2 whitespace-pre-line" x-text="selected.sop"></div>
                     </div>
                 </div>
             </template>
@@ -503,6 +517,7 @@
 
     <script>
         const programsData = @json($programs);
+        const categoriesData = @json($categories);
 
         document.addEventListener('alpine:init', () => {
             Alpine.data('programPage', () => ({
@@ -515,11 +530,7 @@
                 expandTutup: true,
                 categories: [
                     { id: 'semua', name: 'Semua Jenis Program' },
-                    { id: 'alsintan', name: 'Alsintan' },
-                    { id: 'benih', name: 'Benih' },
-                    { id: 'pupuk', name: 'Pupuk' },
-                    { id: 'infrastruktur', name: 'Infrastruktur' },
-                    { id: 'pelatihan', name: 'Pelatihan & Pendampingan' },
+                    ...categoriesData.map(c => ({ id: c.name, name: c.name }))
                 ],
                 matchesFilterById(id) {
                     const p = programsData.find(p => p.id === id);

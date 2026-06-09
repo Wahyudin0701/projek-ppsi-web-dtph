@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('nik')->nullable();
             $table->string('no_wa')->nullable();
+            $table->text('alamat')->nullable();
             $table->string('foto_ktp')->nullable();
             $table->string('status')->default('menunggu');
             $table->text('rejection_reason')->nullable();

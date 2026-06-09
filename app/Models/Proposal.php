@@ -70,9 +70,12 @@ class Proposal extends Model
             'sedang_survei'                => 'Sedang Survei',
             'verifikasi_cpcl'              => 'Verifikasi CPCL',
             'menunggu_keputusan_akhir'     => 'Menunggu Keputusan Akhir',
+            'direkomendasikan'             => 'Rekomendasi Pusat',
             'disetujui'                    => 'Disetujui',
+            'dikembalikan'                 => 'Selesai (Dikembalikan)',
             'ditolak'                      => 'Ditolak',
-            default                  => ucfirst($this->status),
+            'ditolak_pusat'                => 'Ditolak Pusat',
+            default                        => ucfirst(str_replace('_', ' ', $this->status)),
         };
     }
 

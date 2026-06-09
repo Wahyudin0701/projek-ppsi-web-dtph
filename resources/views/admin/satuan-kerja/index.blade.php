@@ -6,7 +6,7 @@
             <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Kelola Satuan Kerja</h1>
             <p class="text-sm text-gray-500 mt-1">Daftar Balai Penyuluhan Pertanian dan Unit Pelaksana Teknis yang akan ditampilkan di halaman utama (homepage).</p>
         </div>
-        <a href="{{ route('admin.satuan-kerja.create') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-sm">
+        <a href="{{ route('admin.satuan-kerja.create') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>

@@ -9,15 +9,15 @@
                 <h2 class="text-2xl font-extrabold text-gray-900">Tambah Program Baru</h2>
                 <p class="text-gray-500 text-sm mt-1">Masukkan detail spesifikasi dan jadwal program bantuan baru.</p>
             </div>
-            <a href="{{ route('admin.programs.index') }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Kembali
-            </a>
+            <a href="{{ route('admin.programs.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
         </div>
 
         <div class="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100">
             <div class="p-6 sm:p-8 text-gray-900">
-                <form action="{{ route('admin.programs.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('admin.programs.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
                     {{-- Nama Program --}}
@@ -29,31 +29,17 @@
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
-                    {{-- Jenis + Tipe --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="jenis" class="block text-sm font-bold text-gray-700 mb-2">Jenis Program</label>
-                            <select name="jenis" id="jenis" required
-                                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                                <option value="" disabled selected>Pilih Jenis</option>
-                                <option value="alsintan" {{ old('jenis') == 'alsintan' ? 'selected' : '' }}>Alsintan</option>
-                                <option value="benih" {{ old('jenis') == 'benih' ? 'selected' : '' }}>Benih</option>
-                                <option value="pupuk" {{ old('jenis') == 'pupuk' ? 'selected' : '' }}>Pupuk</option>
-                                <option value="infrastruktur" {{ old('jenis') == 'infrastruktur' ? 'selected' : '' }}>Infrastruktur</option>
-                                <option value="pelatihan" {{ old('jenis') == 'pelatihan' ? 'selected' : '' }}>Pelatihan & Pendampingan</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('jenis')" class="mt-2" />
-                        </div>
-                        <div>
-                            <label for="type" class="block text-sm font-bold text-gray-700 mb-2">Tipe / Tahap</label>
-                            <select name="type" id="type" required
-                                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
-                                <option value="" disabled selected>Pilih Tipe</option>
-                                <option value="bantuan_permanen" {{ old('type') == 'bantuan_permanen' ? 'selected' : '' }}>Bantuan Permanen (Hibah)</option>
-                                <option value="usulan_pendanaan" {{ old('type') == 'usulan_pendanaan' ? 'selected' : '' }}>Usulan Pendanaan</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('type')" class="mt-2" />
-                        </div>
+                    {{-- Jenis --}}
+                    <div>
+                        <label for="program_category_id" class="block text-sm font-bold text-gray-700 mb-2">Jenis Program</label>
+                        <select name="program_category_id" id="program_category_id" required
+                                class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
+                            <option value="" disabled selected>Pilih Jenis</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}" {{ old('program_category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('program_category_id')" class="mt-2" />
                     </div>
 
                     {{-- Deskripsi --}}
@@ -76,6 +62,17 @@
                                   placeholder="Jelaskan langkah-langkah atau SOP untuk mengikuti program ini..."
                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">{{ old('sop_description') }}</textarea>
                         <x-input-error :messages="$errors->get('sop_description')" class="mt-2" />
+                    </div>
+
+                    {{-- Upload Juknis --}}
+                    <div>
+                        <label for="juknis_file" class="block text-sm font-bold text-gray-700 mb-2">
+                            Dokumen Juknis / SOP <span class="text-gray-400 font-normal">(PDF, Maks. 10MB)</span>
+                        </label>
+                        <input type="file" name="juknis_file" id="juknis_file" accept=".pdf"
+                               class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 text-sm text-gray-500 bg-white border">
+                        <x-input-error :messages="$errors->get('juknis_file')" class="mt-2" />
+                        <p class="text-xs text-gray-400 mt-2">Unggah dokumen resmi agar dapat diunduh oleh pemohon.</p>
                     </div>
 
                     {{-- Sasaran & Kuota --}}
@@ -135,6 +132,28 @@
                             </template>
                         </div>
                         <x-input-error :messages="$errors->get('requirements.*')" class="mt-2" />
+                    </div>
+
+                    {{-- Kontak Narahubung --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-5 bg-gray-50 border border-gray-100 rounded-2xl">
+                        <div>
+                            <label for="contact_person" class="block text-sm font-bold text-gray-700 mb-2">
+                                Nama Narahubung <span class="text-gray-400 font-normal">(Opsional)</span>
+                            </label>
+                            <input type="text" name="contact_person" id="contact_person" value="{{ old('contact_person') }}"
+                                   placeholder="Contoh: Tri Rizki Handayani"
+                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
+                            <x-input-error :messages="$errors->get('contact_person')" class="mt-2" />
+                        </div>
+                        <div>
+                            <label for="contact_phone" class="block text-sm font-bold text-gray-700 mb-2">
+                                No. HP / WhatsApp <span class="text-gray-400 font-normal">(Opsional)</span>
+                            </label>
+                            <input type="text" name="contact_phone" id="contact_phone" value="{{ old('contact_phone') }}"
+                                   placeholder="Contoh: 081234567890"
+                                   class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
+                            <x-input-error :messages="$errors->get('contact_phone')" class="mt-2" />
+                        </div>
                     </div>
 
                     {{-- Jadwal --}}

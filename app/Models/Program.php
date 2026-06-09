@@ -23,8 +23,7 @@ class Program extends Model
 
     protected $fillable = [
         'name',
-        'type',
-        'jenis',
+        'program_category_id',
         'open_date',
         'close_date',
         'description',
@@ -32,6 +31,9 @@ class Program extends Model
         'sasaran',
         'kuota',
         'requirements',
+        'juknis_file',
+        'contact_person',
+        'contact_phone',
     ];
 
     protected $casts = [
@@ -76,6 +78,11 @@ class Program extends Model
     /**
      * Get the proposals for the program.
      */
+    public function category()
+    {
+        return $this->belongsTo(ProgramCategory::class, 'program_category_id');
+    }
+
     public function proposals(): HasMany
     {
         return $this->hasMany(Proposal::class);

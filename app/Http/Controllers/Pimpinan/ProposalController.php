@@ -21,8 +21,8 @@ class ProposalController extends Controller
             SUM(CASE WHEN program_id IS NOT NULL THEN 1 ELSE 0 END) as program_count
         ")->first();
 
-        $totalPoktan = \App\Models\FarmerProfile::where('afiliasi_lembaga', '!=', 'Individu')->count();
-        $totalUserUmum = \App\Models\FarmerProfile::where('afiliasi_lembaga', 'Individu')->count();
+        $totalPoktan = \App\Models\FarmerProfile::count();
+        $totalUserUmum = 0; // Not applicable anymore
         $totalAlsintan = \App\Models\Alsintan::count();
         $totalProgram = \App\Models\Program::where('is_open', true)->count();
 
@@ -35,16 +35,25 @@ class ProposalController extends Controller
             'pengajuan_program'  => (int) ($statsRaw->program_count ?? 0),
         ];
 
-        // Fetch data for chart
-        $chartData = Proposal::select('id', 'submission_date', 'alsintan_id', 'program_id')
+        // Chart data: limited to current year only for performance
+        $currentYear = now()->year;
+        $chartData = Proposal::select('id', 'submission_date', 'alsintan_id', 'program_id', 'user_id', 'status')
+            ->with(['user.farmerProfile', 'alsintan.category', 'program.category'])
             ->whereNotNull('submission_date')
+            ->whereYear('submission_date', $currentYear)
             ->get()
             ->map(function($item) {
                 return [
-                    'date' => $item->submission_date->format('Y-m-d'),
-                    'type' => $item->alsintan_id ? 'alsintan' : 'program'
+                    'date'             => $item->submission_date->format('Y-m-d'),
+                    'type'             => $item->alsintan_id ? 'alsintan' : 'program',
+                    'status'           => $item->status,
+                    'kecamatan'        => $item->user?->farmerProfile?->kecamatan ?? 'Lainnya',
+                    'desa'             => $item->user?->farmerProfile?->alamat ?? 'Lainnya',
+                    'kelompok'         => $item->user?->farmerProfile?->nama_kelompok ?? $item->user?->name ?? 'Lainnya',
+                    'kategori_alat'    => $item->alsintan_id ? ($item->alsintan?->category?->name ?? 'Tanpa Kategori') : null,
+                    'kategori_program' => $item->program_id ? ($item->program?->category?->name ?? 'Tanpa Kategori') : null
                 ];
-            });
+            })->values()->toArray();
 
         $pendingProposals = Proposal::with(['user.farmerProfile', 'program', 'alsintan'])
             ->whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir'])
@@ -74,6 +83,14 @@ class ProposalController extends Controller
             } else {
                 $query->whereNotNull('program_id');
             }
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('submission_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('submission_date', '<=', $request->end_date);
         }
 
         if ($request->filled('search')) {
@@ -124,6 +141,14 @@ class ProposalController extends Controller
             } else {
                 $query->whereNotNull('program_id');
             }
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('submission_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('submission_date', '<=', $request->end_date);
         }
 
         if ($request->filled('search')) {
@@ -229,6 +254,19 @@ class ProposalController extends Controller
         $year = date('Y');
         $month = date('m');
         $id = str_pad($proposal->id, 3, '0', STR_PAD_LEFT);
+
+        if ($proposal->program_id) {
+            $nomorCpcl = "CPCL/{$year}/{$month}/PRP-{$id}";
+            $proposal->update([
+                'status'                => 'direkomendasikan',
+                'pimpinan_notes'        => $request->pimpinan_notes,
+                'nomor_dokumen_final'   => $nomorCpcl, // SK CPCL
+            ]);
+            return redirect()->route('pimpinan.proposals.show', $proposal)
+                ->with('success', 'Proposal Program Bantuan #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah disetujui sebagai CPCL dan Nomor Surat Rekomendasi/CPCL (' . $nomorCpcl . ') berhasil diterbitkan. Status: Menunggu Keputusan Pusat.');
+        }
+
+        // Jika Alsintan, langsung disetujui
         $nomor = "SP/{$year}/{$month}/PRP-{$id}";
 
         $proposal->update([
@@ -245,8 +283,56 @@ class ProposalController extends Controller
         }
 
         return redirect()->route('pimpinan.proposals.show', $proposal)
-            ->with('success', 'Proposal #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah disetujui dan Nomor Surat Resmi (' . $nomor . ') berhasil diterbitkan otomatis.');
+            ->with('success', 'Proposal Alsintan #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah disetujui dan Nomor Surat Resmi (' . $nomor . ') berhasil diterbitkan otomatis.');
     }
+
+    /**
+     * Konfirmasi Persetujuan dari Pusat untuk Program Bantuan (CPCL -> Disetujui)
+     */
+    public function finalizeApproval(Request $request, Proposal $proposal)
+    {
+        if ($proposal->status !== 'direkomendasikan') {
+            return back()->with('error', 'Hanya proposal berstatus Direkomendasikan yang dapat ditetapkan.');
+        }
+
+        $year = date('Y');
+        $month = date('m');
+        $id = str_pad($proposal->id, 3, '0', STR_PAD_LEFT);
+        $nomor = "SK-BANTUAN/{$year}/{$month}/PRP-{$id}";
+
+        $proposal->update([
+            'status'                => 'disetujui',
+            'decided_at'            => now(),
+            'nomor_dokumen_final'   => $nomor,
+        ]);
+
+        return redirect()->route('pimpinan.proposals.show', $proposal)
+            ->with('success', 'Proposal Program Bantuan #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah ditetapkan/disetujui oleh Pusat. SK Penerima Bantuan (' . $nomor . ') berhasil diterbitkan.');
+    }
+
+    /**
+     * Konfirmasi Penolakan dari Pusat untuk Program Bantuan (CPCL -> Ditolak Pusat)
+     */
+    public function rejectByPusat(Request $request, Proposal $proposal)
+    {
+        if ($proposal->status !== 'direkomendasikan') {
+            return back()->with('error', 'Hanya proposal berstatus Direkomendasikan yang dapat ditolak oleh pusat.');
+        }
+
+        $request->validate([
+            'pimpinan_notes' => 'required|string|max:1000',
+        ]);
+
+        $proposal->update([
+            'status'         => 'ditolak_pusat',
+            'decided_at'     => now(),
+            'pimpinan_notes' => 'DITOLAK PUSAT: ' . $request->pimpinan_notes,
+        ]);
+
+        return redirect()->route('pimpinan.proposals.show', $proposal)
+            ->with('success', 'Proposal Program Bantuan #PRP-' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . ' telah ditandai sebagai Ditolak oleh Pusat.');
+    }
+
 
     /**
      * Tolak proposal (keputusan akhir).
@@ -295,10 +381,10 @@ class ProposalController extends Controller
         if ($request->filled('status')) {
             if ($request->status === 'menunggu') {
                 $query->whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir']);
-            } elseif ($request->status === 'disetujui') {
-                $query->where('status', 'disetujui');
             } elseif ($request->status === 'ditolak') {
-                $query->where('status', 'ditolak');
+                $query->whereIn('status', ['ditolak', 'ditolak_pusat']);
+            } else {
+                $query->where('status', $request->status);
             }
         }
 
@@ -312,7 +398,7 @@ class ProposalController extends Controller
      */
     public function printReport(Request $request)
     {
-        $query = Proposal::with(['user.farmerProfile', 'program', 'alsintan', 'kabid'])
+        $query = Proposal::with(['user.farmerProfile', 'program.category', 'alsintan.category', 'kabid'])
             ->latest('submission_date');
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -330,10 +416,10 @@ class ProposalController extends Controller
         if ($request->filled('status')) {
             if ($request->status === 'menunggu') {
                 $query->whereIn('status', ['sedang_diverifikasi_pimpinan', 'menunggu_keputusan_akhir']);
-            } elseif ($request->status === 'disetujui') {
-                $query->where('status', 'disetujui');
             } elseif ($request->status === 'ditolak') {
-                $query->where('status', 'ditolak');
+                $query->whereIn('status', ['ditolak', 'ditolak_pusat']);
+            } else {
+                $query->where('status', $request->status);
             }
         }
 

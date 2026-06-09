@@ -45,6 +45,9 @@
             @endforeach
         </div>
 
+        {{-- ===== CHARTS ===== --}}
+        @include('components.dashboard-charts')
+
         {{-- ===== NEEDS ACTION ===== --}}
         <div>
             <div class="flex items-center justify-between mb-5 px-1">

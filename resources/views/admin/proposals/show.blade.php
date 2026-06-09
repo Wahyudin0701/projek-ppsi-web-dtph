@@ -9,10 +9,10 @@
                 <h2 class="text-2xl font-extrabold text-gray-900">Detail Pengajuan Proposal</h2>
                 <p class="text-gray-500 text-sm mt-1">Tinjau informasi lengkap dan ambil keputusan untuk proposal ini.</p>
             </div>
-            <a href="{{ route('admin.proposals.index') }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Kembali
-            </a>
+            <a href="{{ route('admin.proposals.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
         </div>
 
         {{-- Success Alert --}}
@@ -31,10 +31,12 @@
                 'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Disposisi ke Kabid'],
                 'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
                 'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
-                'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Keputusan Akhir'],
+                'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Menunggu Keputusan Akhir'],
+                'direkomendasikan'             => ['bg' => 'bg-emerald-100 text-emerald-700','label' => 'Sedang Diverifikasi Pusat'],
                 'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
                 'dikembalikan'             => ['bg' => 'bg-gray-100 text-gray-700',      'label' => 'Telah Dikembalikan'],
-                'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
+                'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Di tolak'],
+                'ditolak_pusat'            => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Di tolak'],
                 default                    => ['bg' => 'bg-gray-100 text-gray-600',       'label' => $proposal->statusLabel],
             };
         @endphp
@@ -268,16 +270,36 @@
                                 <p class="text-gray-900 font-bold text-base">{{ $proposal->program->name }}</p>
                             </div>
                             <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Tipe Program</p>
-                                <p class="text-gray-900 font-medium capitalize">{{ str_replace('_', ' ', $proposal->program->type) }}</p>
-                            </div>
-                            <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Sasaran</p>
                                 <p class="text-gray-900 font-medium">{{ $proposal->program->sasaran ?? '-' }}</p>
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kuota Program</p>
                                 <p class="text-gray-900 font-medium">{{ $proposal->program->kuota ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Narahubung (Contact Person)</p>
+                                @if($proposal->program->contact_person)
+                                    <p class="text-gray-900 font-medium">
+                                        {{ $proposal->program->contact_person }}
+                                        @if($proposal->program->contact_phone)
+                                            <span class="text-gray-500 font-normal">({{ $proposal->program->contact_phone }})</span>
+                                        @endif
+                                    </p>
+                                @else
+                                    <p class="text-gray-900 font-medium">-</p>
+                                @endif
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Dokumen Juknis</p>
+                                @if($proposal->program->juknis_file)
+                                    <a href="{{ Storage::url($proposal->program->juknis_file) }}" target="_blank" class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-bold mt-0.5 text-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        Unduh Dokumen
+                                    </a>
+                                @else
+                                    <p class="text-gray-900 font-medium">-</p>
+                                @endif
                             </div>
                         </div>
                     @endif
@@ -316,8 +338,10 @@
                             'sedang_survei'     => 3,
                             'verifikasi_cpcl'  => 4,
                             'menunggu_keputusan_akhir'   => 5,
-                            'disetujui'              => 6,
-                            'dikembalikan'           => 7,
+                            'direkomendasikan'       => 6,
+                            'disetujui'              => 7,
+                            'ditolak_pusat'          => 7,
+                            'dikembalikan'           => 8,
                             'ditolak'                => -1,
                         ];
                         $currentOrder = $statusOrder[$proposal->status] ?? 0;
@@ -349,11 +373,11 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->reviewed_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-red-500 mt-0.5">Alasan: {{ $proposal->admin_notes ?? '-' }}</p>
                                 </div>
-                            @elseif($proposal->reviewed_at)
+                            @elseif($proposal->reviewed_at || $currentOrder >= 1 || $rejectedAtFinal || $rejectedAtDisposisi)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-gray-900">Verifikasi Admin Selesai</p>
-                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->reviewed_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->reviewed_at ? $proposal->reviewed_at->translatedFormat('d M Y - H:i') : $proposal->updated_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Berkas dinyatakan lengkap & layak.</p>
                                 </div>
                             @else
@@ -382,7 +406,7 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $disposition->created_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">Diteruskan ke: {{ $kabidLabel }}</p>
                                 </div>
-                            @elseif(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$disposition)
+                            @elseif(in_array($proposal->status, ['disetujui', 'dikembalikan', 'direkomendasikan', 'ditolak_pusat']) && !$disposition)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-gray-900">Verifikasi Pimpinan Selesai</p>
@@ -403,7 +427,7 @@
                         @endif
 
                         {{-- 4. Penugasan Survei (hidden if rejected at/before disposisi, or approved without survey) --}}
-                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$surveyAssignment))
+                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan', 'direkomendasikan', 'ditolak_pusat']) && !$surveyAssignment))
                         <div class="relative">
                             @if($currentOrder >= 3 && $surveyAssignment)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -433,7 +457,7 @@
                         @endif
 
                         {{-- 5. Pelaksanaan Survei (hidden if rejected at/before disposisi, or approved without survey) --}}
-                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$surveyAssignment))
+                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan', 'direkomendasikan', 'ditolak_pusat']) && !$surveyAssignment))
                         <div class="relative">
                             @if($proposal->status === 'sedang_survei')
                                 <div class="absolute -left-[21px] bg-blue-500 w-3 h-3 rounded-full border-4 border-white animate-bounce"></div>
@@ -458,7 +482,7 @@
                         @endif
 
                         {{-- 6. Verifikasi CPCL (only shown from survei_selesai and above, or rejected at final) --}}
-                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan']) && !$surveyAssignment))
+                        @if(!$rejectedByAdmin && !$rejectedAtDisposisi && !(in_array($proposal->status, ['disetujui', 'dikembalikan', 'direkomendasikan', 'ditolak_pusat']) && !$surveyAssignment))
                         <div class="relative">
                             @if(($currentOrder >= 6 || $rejectedAtFinal) && $beritaAcara)
                                 <div class="absolute -left-[21px] bg-primary-500 w-3 h-3 rounded-full border-4 border-white"></div>
@@ -490,6 +514,13 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-gray-500 mt-0.5">{{ $proposal->pimpinan_notes ?? 'Keputusan akhir telah diambil oleh Pimpinan.' }}</p>
                                 </div>
+                            @elseif($proposal->status === 'ditolak_pusat')
+                                <div class="absolute -left-[21px] bg-red-500 w-3 h-3 rounded-full border-4 border-white"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-red-600">Ditolak oleh Pusat</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at ? $proposal->decided_at->translatedFormat('d M Y - H:i') : $proposal->updated_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-red-500 mt-0.5">Alasan: {{ str_replace('DITOLAK PUSAT: ', '', $proposal->pimpinan_notes ?? '-') }}</p>
+                                </div>
                             @elseif($rejectedAtFinal)
                                 <div class="absolute -left-[21px] bg-red-500 w-3 h-3 rounded-full border-4 border-white"></div>
                                 <div class="pl-4">
@@ -497,11 +528,18 @@
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->decided_at->translatedFormat('d M Y - H:i') }} WIB</p>
                                     <p class="text-xs text-red-500 mt-0.5">Alasan: {{ $proposal->pimpinan_notes ?? '-' }}</p>
                                 </div>
-                            @elseif($proposal->status === 'menunggu_keputusan_akhir')
+                            @elseif(in_array($proposal->status, ['verifikasi_cpcl', 'menunggu_keputusan_akhir']))
                                 <div class="absolute -left-[21px] bg-purple-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
                                 <div class="pl-4">
                                     <p class="text-sm font-bold text-purple-700">Menunggu Keputusan Akhir</p>
                                     <p class="text-xs text-gray-400">Menunggu persetujuan final Pimpinan.</p>
+                                </div>
+                            @elseif($proposal->status === 'direkomendasikan')
+                                <div class="absolute -left-[21px] bg-emerald-400 w-3 h-3 rounded-full border-4 border-white animate-pulse"></div>
+                                <div class="pl-4">
+                                    <p class="text-sm font-bold text-emerald-700">Diusulkan ke Pusat (CPCL)</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $proposal->updated_at->translatedFormat('d M Y - H:i') }} WIB</p>
+                                    <p class="text-xs text-gray-500 mt-1">Proposal telah disetujui sebagai Calon Petani Calon Lokasi (CPCL) dan diteruskan ke Pemerintah Pusat.</p>
                                 </div>
                             @else
                                 <div class="absolute -left-[21px] bg-gray-200 w-3 h-3 rounded-full border-4 border-white"></div>

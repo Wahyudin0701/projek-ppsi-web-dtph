@@ -28,7 +28,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('pimpinan.reports.users') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form action="{{ route('pimpinan.reports.users') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Mulai Daftar</label>
                     <input type="date" name="start_date" value="{{ request('start_date') }}" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
@@ -38,17 +38,9 @@
                     <input type="date" name="end_date" value="{{ request('end_date') }}" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Jenis / Afiliasi Lembaga</label>
-                    <select name="afiliasi" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Semua Jenis</option>
-                        <option value="kelompok_tani" {{ request('afiliasi') == 'kelompok_tani' ? 'selected' : '' }}>Kelompok Tani / Lembaga</option>
-                        <option value="individu" {{ request('afiliasi') == 'individu' ? 'selected' : '' }}>User Umum</option>
-                    </select>
-                </div>
-                <div>
                     <div class="flex justify-between items-center mb-1">
                         <label class="block text-xs font-bold text-gray-700">Status Verifikasi</label>
-                        @if(request()->anyFilled(['start_date', 'end_date', 'afiliasi', 'status']))
+                        @if(request()->anyFilled(['start_date', 'end_date', 'status']))
                             <a href="{{ route('pimpinan.reports.users') }}" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800">Reset Filter</a>
                         @endif
                     </div>
@@ -72,8 +64,8 @@
                 <table class="w-full text-left">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-100">
-                            <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">Nama Lengkap / Akun</th>
-                            <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">Afiliasi Lembaga</th>
+                            <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">Nama / Kelompok Tani</th>
+                            <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">Email</th>
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest">Kontak</th>
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest text-center">Tgl. Daftar</th>
                             <th class="px-6 py-4 text-xs font-extrabold text-gray-400 uppercase tracking-widest text-center">Status</th>
@@ -84,13 +76,14 @@
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4">
                                     <span class="font-bold text-gray-900 text-sm">{{ $user->name }}</span>
-                                    <p class="text-xs text-gray-400 mt-0.5">{{ $user->email }}</p>
+                                    @if($user->farmerProfile && $user->farmerProfile->id_poktan)
+                                        <p class="font-semibold text-indigo-700 text-[11px] mt-0.5 tracking-wide">ID POKTAN: {{ $user->farmerProfile->id_poktan }}</p>
+                                    @elseif($user->farmerProfile && $user->farmerProfile->nama_kelompok && strtolower(trim($user->name)) !== strtolower(trim($user->farmerProfile->nama_kelompok)))
+                                        <p class="font-semibold text-indigo-700 text-[11px] mt-0.5">{{ $user->farmerProfile->nama_kelompok }}</p>
+                                    @endif
                                 </td>
-                                <td class="px-6 py-4">
-                                    <p class="font-semibold text-gray-800 text-sm">{{ $user->farmerProfile->nama_kelompok ?? '-' }}</p>
-                                    <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md mt-1 {{ ($user->farmerProfile->afiliasi_lembaga ?? '') === 'Individu' ? 'bg-orange-50 text-orange-600' : 'bg-indigo-50 text-indigo-600' }}">
-                                        {{ $user->farmerProfile->afiliasi_lembaga ?? 'Belum Melengkapi Profil' }}
-                                    </span>
+                                <td class="px-6 py-4 text-sm text-gray-600">
+                                    {{ $user->email }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600">
                                     {{ $user->farmerProfile->kontak ?? '-' }}
@@ -99,7 +92,7 @@
                                     <p class="text-sm text-gray-700">{{ $user->created_at?->translatedFormat('d M Y') }}</p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    @php $status = $user->farmerProfile->status ?? 'pending'; @endphp
+                                    @php $status = $user->status ?? 'pending'; @endphp
                                     @if($status == 'approved')
                                         <span class="inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">Disetujui</span>
                                     @elseif($status == 'rejected')

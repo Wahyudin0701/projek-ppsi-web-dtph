@@ -311,6 +311,20 @@
                                 <x-input-error :messages="$errors->get('no_wa')" class="mt-2" />
                             </div>
 
+                            <!-- Alamat -->
+                            <div class="md:col-span-2">
+                                <label for="alamat" class="block text-sm font-bold text-gray-800 mb-2">Alamat Lengkap <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="absolute top-3 left-0 pl-3.5 flex items-start pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    </div>
+                                    <textarea name="alamat" id="alamat" rows="3" :required="step === 1"
+                                        class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm resize-none"
+                                        placeholder="Masukkan alamat lengkap Anda">{{ old('alamat') }}</textarea>
+                                </div>
+                                <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+                            </div>
+
                             <!-- Foto KTP -->
                             <div class="md:col-span-2">
                                 <label for="foto_ktp" class="block text-sm font-bold text-gray-800 mb-2">Foto KTP <span class="text-red-500">*</span></label>

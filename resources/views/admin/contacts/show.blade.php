@@ -6,10 +6,8 @@
             <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Detail Pesan</h1>
             <p class="text-sm text-gray-500 mt-1">Baca pesan dan berikan tanggapan kepada pengguna.</p>
         </div>
-        <a href="{{ route('admin.contacts.index') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+        <a href="{{ route('admin.contacts.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
     </div>

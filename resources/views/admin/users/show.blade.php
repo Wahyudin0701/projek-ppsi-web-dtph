@@ -12,18 +12,18 @@
                 <h2 class="text-2xl font-extrabold text-gray-900">{{ $user->role === 'umum' ? 'Detail Registrasi User Umum' : 'Detail Registrasi Kelompok Tani' }}</h2>
                 <p class="text-gray-500 text-sm mt-1">Tinjau informasi registrasi dan lakukan tindakan verifikasi.</p>
             </div>
-            <a href="{{ url()->previous() }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Kembali
-            </a>
+            <a href="{{ url()->previous() }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
         </div>
 
         {{-- Mobile Back Button --}}
         <div class="lg:hidden mb-6">
             <a href="{{ url()->previous() }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                Kembali ke Halaman Sebelumnya
-            </a>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
         </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {{-- Left Side: Main Data --}}

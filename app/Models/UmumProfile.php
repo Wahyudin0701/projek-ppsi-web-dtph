@@ -10,6 +10,7 @@ class UmumProfile extends Model
         'user_id',
         'nik',
         'no_wa',
+        'alamat',
         'foto_ktp',
         'status',
         'rejection_reason',

@@ -219,6 +219,12 @@
                     </div>
                 </div>
                 <div class="space-y-1 min-w-0 md:col-span-2">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Alamat Lengkap</label>
+                    <div class="bg-gray-50 rounded-2xl p-3 border border-gray-50 overflow-hidden">
+                        <p class="font-bold text-gray-900 break-all text-sm">{{ $user->umumProfile->alamat ?? '-' }}</p>
+                    </div>
+                </div>
+                <div class="space-y-1 min-w-0 md:col-span-2">
                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Foto KTP</label>
                     <div class="bg-gray-50 rounded-2xl p-3 border border-gray-50 overflow-hidden">
                         @if($user->umumProfile->foto_ktp)

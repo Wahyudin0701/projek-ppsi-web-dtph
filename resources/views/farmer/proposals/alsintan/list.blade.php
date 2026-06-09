@@ -114,7 +114,7 @@
 
                 <div class="rounded-2xl border border-gray-200 overflow-hidden divide-y divide-gray-100 bg-white shadow-sm">
                     @foreach($unavailableAlsintans as $alsintan)
-                        <div onclick="window.location.href='{{ route('farmer.proposals.alsintan.show', $alsintan) }}'" class="group cursor-pointer flex flex-col sm:flex-row hover:bg-gray-50 transition-colors">
+                       <div onclick="window.location.href=`{{ route('farmer.proposals.alsintan.show', $alsintan) }}`" class="group cursor-pointer ...">
                             {{-- Image --}}
                             <div class="w-full sm:w-40 h-36 sm:h-auto bg-gray-50 flex-shrink-0 overflow-hidden flex items-center justify-center border-r border-gray-100">
                                 @if($alsintan->image)

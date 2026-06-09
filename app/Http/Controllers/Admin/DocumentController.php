@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Models\DocumentCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,14 +13,13 @@ class DocumentController extends Controller
 {
     public function index()
     {
-        $documents = Document::latest()->paginate(10);
+        $documents = Document::with('category')->latest()->paginate(10);
         return view('admin.documents.index', compact('documents'));
     }
 
     public function create()
     {
-        // Ambil daftar kategori unik untuk datalist
-        $categories = Document::select('category')->distinct()->pluck('category');
+        $categories = DocumentCategory::orderBy('name')->get();
         return view('admin.documents.create', compact('categories'));
     }
 
@@ -28,7 +28,7 @@ class DocumentController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'required|string|max:255',
+            'document_category_id' => 'required|exists:document_categories,id',
             'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,zip,rar|max:20480', // max 20MB
             'is_public' => 'boolean',
         ]);
@@ -54,7 +54,7 @@ class DocumentController extends Controller
         Document::create([
             'title' => $request->title,
             'description' => $request->description,
-            'category' => $request->category,
+            'document_category_id' => $request->document_category_id,
             'file_path' => $path,
             'file_size' => $fileSize,
             'file_format' => $fileFormat,
@@ -66,7 +66,7 @@ class DocumentController extends Controller
 
     public function edit(Document $document)
     {
-        $categories = Document::select('category')->distinct()->pluck('category');
+        $categories = DocumentCategory::orderBy('name')->get();
         return view('admin.documents.edit', compact('document', 'categories'));
     }
 
@@ -75,7 +75,7 @@ class DocumentController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'required|string|max:255',
+            'document_category_id' => 'required|exists:document_categories,id',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,zip,rar|max:20480',
             'is_public' => 'boolean',
         ]);
@@ -83,7 +83,7 @@ class DocumentController extends Controller
         $data = [
             'title' => $request->title,
             'description' => $request->description,
-            'category' => $request->category,
+            'document_category_id' => $request->document_category_id,
             'is_public' => $request->has('is_public'),
         ];
 

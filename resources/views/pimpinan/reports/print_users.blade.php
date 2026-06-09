@@ -103,6 +103,7 @@
             <tr>
                 <th style="width: 30px;">No</th>
                 <th>Nama Lengkap / NIK Ketua</th>
+                <th>Email</th>
                 <th>Nama Kelompok & Jenis</th>
                 <th>Kontak & Alamat</th>
                 <th style="width: 100px;">Tgl. Daftar</th>
@@ -111,7 +112,7 @@
         </thead>
         <tbody>
             @forelse($users as $index => $user)
-                @php $status = $user->farmerProfile->status ?? 'pending'; @endphp
+                @php $status = $user->status ?? 'pending'; @endphp
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>
@@ -119,8 +120,10 @@
                         <span style="font-size: 9px; color: #555;">NIK: {{ $user->farmerProfile->nik_ketua ?? '-' }}</span>
                     </td>
                     <td>
-                        <strong>{{ $user->farmerProfile->nama_kelompok ?? '-' }}</strong><br>
-                        <span style="font-size: 9px; text-transform: uppercase;">{{ $user->farmerProfile->afiliasi_lembaga ?? 'BELUM MELENGKAPI PROFIL' }}</span>
+                        <span style="font-size: 11px;">{{ $user->email }}</span>
+                    </td>
+                    <td>
+                        <div style="font-weight: bold; margin-bottom: 2px;">{{ $user->farmerProfile->nama_kelompok ?? '-' }}</div>
                     </td>
                     <td>
                         <strong>{{ $user->farmerProfile->kontak ?? '-' }}</strong><br>

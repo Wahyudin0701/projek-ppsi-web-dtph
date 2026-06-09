@@ -33,7 +33,8 @@ Route::get('/katalog', function () {
 
 Route::get('/program', function () {
     $programs = App\Models\Program::orderBy('open_date', 'desc')->get();
-    return view('public.program', compact('programs'));
+    $categories = App\Models\ProgramCategory::orderBy('name')->get();
+    return view('public.program', compact('programs', 'categories'));
 })->name('program');
 
 Route::get('/kontak', function () {
@@ -134,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/users/{user}/respond-change', [App\Http\Controllers\Admin\AdminController::class, 'respondChangeRequest'])->name('users.respond-change');
         
         Route::resource('programs', App\Http\Controllers\Admin\ProgramController::class);
+        Route::resource('program-categories', App\Http\Controllers\Admin\ProgramCategoryController::class)->except(['show']);
         Route::resource('alsintan-categories', App\Http\Controllers\Admin\AlsintanCategoryController::class)->parameters([
             'alsintan-categories' => 'category'
         ])->except(['show']);
@@ -160,6 +162,9 @@ Route::middleware(['auth'])->group(function () {
 
         // Kelola Unduh Dokumen
         Route::resource('documents', App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
+        Route::resource('document-categories', App\Http\Controllers\Admin\DocumentCategoryController::class)->parameters([
+            'document-categories' => 'documentCategory'
+        ])->except(['show']);
 
         // Kelola Surat (System Generated)
         Route::get('surat', [App\Http\Controllers\Admin\SuratController::class, 'index'])->name('surat.index');
@@ -185,6 +190,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/proposals/{proposal}', [App\Http\Controllers\Pimpinan\ProposalController::class, 'show'])->name('proposals.show');
         Route::post('/proposals/{proposal}/dispose', [App\Http\Controllers\Pimpinan\ProposalController::class, 'dispose'])->name('proposals.dispose');
         Route::patch('/proposals/{proposal}/approve', [App\Http\Controllers\Pimpinan\ProposalController::class, 'approve'])->name('proposals.approve');
+        Route::patch('/proposals/{proposal}/finalize', [App\Http\Controllers\Pimpinan\ProposalController::class, 'finalizeApproval'])->name('proposals.finalize');
+        Route::patch('/proposals/{proposal}/reject-pusat', [App\Http\Controllers\Pimpinan\ProposalController::class, 'rejectByPusat'])->name('proposals.reject-pusat');
         Route::delete('/proposals/{proposal}/reject', [App\Http\Controllers\Pimpinan\ProposalController::class, 'reject'])->name('proposals.reject');
     });
 

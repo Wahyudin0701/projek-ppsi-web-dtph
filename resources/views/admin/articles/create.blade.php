@@ -19,9 +19,9 @@
     </style>
 
     <div class="mb-6 flex justify-between items-center">
-        <a href="{{ route('admin.articles.index') }}" class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors font-bold text-sm">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Kembali ke Daftar
+        <a href="{{ route('admin.articles.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
         </a>
     </div>
 
@@ -44,14 +44,14 @@
                 <div>
                     <label for="title" class="block text-sm font-bold text-gray-800 mb-2">Judul Artikel <span class="text-red-500">*</span></label>
                     <input type="text" name="title" id="title" value="{{ old('title') }}" required
-                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
                 </div>
 
                 <!-- Ringkasan -->
                 <div>
                     <label for="summary" class="block text-sm font-bold text-gray-800 mb-2">Ringkasan (Maks 500 karakter) <span class="text-red-500">*</span></label>
                     <textarea name="summary" id="summary" rows="3" required
-                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">{{ old('summary') }}</textarea>
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">{{ old('summary') }}</textarea>
                 </div>
 
                 <!-- Konten / Trix Editor -->
@@ -67,7 +67,7 @@
                 <div>
                     <label for="category" class="block text-sm font-bold text-gray-800 mb-2">Kategori <span class="text-red-500">*</span></label>
                     <select name="category" id="category" required
-                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
                         <option value="berita" {{ old('category') == 'berita' ? 'selected' : '' }}>Berita</option>
                         <option value="program" {{ old('category') == 'program' ? 'selected' : '' }}>Program</option>
                         <option value="artikel" {{ old('category') == 'artikel' ? 'selected' : '' }}>Artikel Edukasi</option>
@@ -79,7 +79,7 @@
                 <div>
                     <label for="author_name" class="block text-sm font-bold text-gray-800 mb-2">Nama Penulis / Tim <span class="text-red-500">*</span></label>
                     <input type="text" name="author_name" id="author_name" value="{{ old('author_name', auth()->user()->name) }}" required
-                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all">
                 </div>
 
                 <!-- Foto Thumbnail -->
@@ -95,7 +95,7 @@
                     <label class="flex items-center gap-3 cursor-pointer">
                         <div class="relative">
                             <input type="checkbox" name="is_published" value="1" class="sr-only peer" {{ old('is_published', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#19A148]"></div>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </div>
                         <span class="text-sm font-bold text-gray-900">Langsung Publikasikan</span>
                     </label>

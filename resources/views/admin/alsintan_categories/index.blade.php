@@ -27,12 +27,10 @@
             <h3 class="text-xl font-bold text-gray-900">Kategori Alat</h3>
             <p class="text-sm text-gray-500 mt-1">Kelola daftar kategori untuk Alat dan Mesin Pertanian</p>
         </div>
-            <a href="{{ route('admin.alsintan.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Kembali
-            </a>
+            <a href="{{ route('admin.alsintan.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
         </div>
 
         <!-- Content Card -->

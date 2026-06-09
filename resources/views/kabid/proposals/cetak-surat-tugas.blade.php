@@ -91,9 +91,12 @@
                 @php
                     // Coba dapatkan pangkat/gol dari database jika tidak ada di JSON
                     $pangkatGol = $member['pangkat_gol'] ?? null;
-                    if (!$pangkatGol) {
-                        $emp = \App\Models\Employee::where('nip', $member['nip'])->first();
+                    $nipMember = $member['nip'] ?? null;
+                    if (!$pangkatGol && $nipMember) {
+                        $emp = \App\Models\Employee::where('nip', $nipMember)->first();
                         $pangkatGol = $emp?->pangkat_gol ?? '-';
+                    } elseif (!$pangkatGol) {
+                        $pangkatGol = '-';
                     }
                 @endphp
                 <table class="person-table">

@@ -40,10 +40,12 @@ class PublicInformationController extends Controller
 
     public function documents()
     {
-        $dokumen = \App\Models\Document::where('is_public', true)
+        $dokumen = \App\Models\Document::with('category')->where('is_public', true)
             ->latest()
             ->get()
-            ->groupBy('category');
+            ->groupBy(function($item) {
+                return $item->category ? $item->category->name : 'Lainnya';
+            });
             
         return view('public.informasi.unduh-dokumen', compact('dokumen'));
     }

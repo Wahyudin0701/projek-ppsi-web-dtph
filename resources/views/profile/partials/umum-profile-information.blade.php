@@ -41,6 +41,10 @@
                         <x-input-label value="Nomor HP/WhatsApp" />
                         <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->umumProfile->no_wa }}</p>
                     </div>
+                    <div class="md:col-span-2">
+                        <x-input-label value="Alamat Lengkap" />
+                        <p class="mt-1 text-sm text-gray-900 bg-gray-50 p-2.5 rounded-lg border border-gray-200">{{ auth()->user()->umumProfile->alamat }}</p>
+                    </div>
                 </div>
             </div>
 

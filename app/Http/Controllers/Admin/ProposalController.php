@@ -22,13 +22,20 @@ class ProposalController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Filter by type (alsintan or bantuan)
         if ($request->filled('type')) {
             if ($request->type === 'alsintan') {
                 $query->whereNotNull('alsintan_id');
             } else {
                 $query->whereNotNull('program_id');
             }
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('submission_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('submission_date', '<=', $request->end_date);
         }
 
         // Filter by search (user name or proposal item name)

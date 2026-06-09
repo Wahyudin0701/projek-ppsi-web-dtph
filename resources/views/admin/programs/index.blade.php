@@ -20,13 +20,22 @@
                     <h3 class="text-xl font-bold text-gray-900">Program Bantuan</h3>
                     <p class="text-sm text-gray-500 mt-1">Kelola daftar program bantuan. Status ditentukan otomatis dari tanggal buka dan tutup.</p>
                 </div>
-                <a href="{{ route('admin.programs.create') }}"
-                   class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm self-start sm:self-auto shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Tambah Program
-                </a>
+                <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                    <a href="{{ route('admin.program-categories.index') }}"
+                       class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-50 hover:text-blue-600 hover:border-blue-200 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        Jenis Program
+                    </a>
+                    <a href="{{ route('admin.programs.create') }}"
+                       class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Tambah Program
+                    </a>
+                </div>
             </div>
 
             {{-- Table --}}
@@ -47,17 +56,12 @@
                             {{-- Name --}}
                             <td class="px-6 py-4">
                                 <p class="font-bold text-gray-900 text-sm">{{ $program->name }}</p>
-                                <p class="text-xs text-gray-500 mt-0.5 capitalize">{{ str_replace('_', ' ', $program->type) }}</p>
                             </td>
 
                             {{-- Jenis --}}
                             <td class="px-6 py-4 text-center">
-                                @php
-                                    $jenisLabels = ['alsintan'=>'Alsintan','benih'=>'Benih','pupuk'=>'Pupuk','infrastruktur'=>'Infrastruktur','pelatihan'=>'Pelatihan'];
-                                    $jenisLabel = $jenisLabels[$program->jenis] ?? ucfirst($program->jenis ?? '-');
-                                @endphp
                                 <span class="inline-block px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg border border-gray-200">
-                                    {{ $jenisLabel }}
+                                    {{ $program->category ? $program->category->name : '-' }}
                                 </span>
                             </td>
 

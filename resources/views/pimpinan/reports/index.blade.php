@@ -54,10 +54,17 @@
                     </div>
                     <select name="status" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Semua Status</option>
+                        <option value="sedang_diverifikasi_admin" {{ request('status') == 'sedang_diverifikasi_admin' ? 'selected' : '' }}>Di Admin</option>
+                        <option value="sedang_diverifikasi_pimpinan" {{ request('status') == 'sedang_diverifikasi_pimpinan' ? 'selected' : '' }}>Di Pimpinan</option>
+                        <option value="persiapan_survei" {{ request('status') == 'persiapan_survei' ? 'selected' : '' }}>Di Kabid</option>
+                        <option value="sedang_survei" {{ request('status') == 'sedang_survei' ? 'selected' : '' }}>Sedang Survei</option>
+                        <option value="verifikasi_cpcl" {{ request('status') == 'verifikasi_cpcl' ? 'selected' : '' }}>Verifikasi CPCL</option>
+                        <option value="menunggu_keputusan_akhir" {{ request('status') == 'menunggu_keputusan_akhir' ? 'selected' : '' }}>Finalisasi</option>
+                        <option value="direkomendasikan" {{ request('status') == 'direkomendasikan' ? 'selected' : '' }}>Rekomendasi Pusat</option>
                         <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                         <option value="dikembalikan" {{ request('status') == 'dikembalikan' ? 'selected' : '' }}>Selesai (Dikembalikan)</option>
                         <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                        <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu Keputusan</option>
+                        <option value="ditolak_pusat" {{ request('status') == 'ditolak_pusat' ? 'selected' : '' }}>Ditolak Pusat</option>
                     </select>
                 </div>
             </form>
@@ -88,8 +95,14 @@
                                     <span class="font-bold text-gray-900 text-sm">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <p class="font-bold text-gray-900 text-sm">{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">{{ $proposal->user->name }}</p>
+                                    @php
+                                        $namaUtama = $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name;
+                                        $idPoktan = $proposal->user->farmerProfile->id_poktan ?? null;
+                                    @endphp
+                                    <p class="font-bold text-gray-900 text-sm">{{ $namaUtama }}</p>
+                                    @if($idPoktan)
+                                        <p class="text-xs text-gray-400 mt-0.5 font-mono">ID: {{ $idPoktan }}</p>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md mb-1 {{ $isAlsintan ? 'bg-sky-50 text-sky-600' : 'bg-violet-50 text-violet-600' }}">
@@ -103,13 +116,26 @@
                                     <p class="text-sm text-gray-700">{{ $proposal->submission_date?->translatedFormat('d M Y') }}</p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    @if($proposal->status == 'disetujui')
-                                        <span class="inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">Disetujui</span>
-                                    @elseif($proposal->status == 'ditolak')
-                                        <span class="inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 rounded-md">Ditolak</span>
-                                    @else
-                                        <span class="inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md">Menunggu</span>
-                                    @endif
+                                    @php
+                                        $statusConfig = [
+                                            'sedang_diverifikasi_admin'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Di Admin'],
+                                            'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
+                                            'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
+                                            'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
+
+                                            'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
+                                            'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
+                                            'direkomendasikan'             => ['bg' => 'bg-emerald-100 text-emerald-700','label' => 'Di Pusat'],
+                                            'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
+                                            'dikembalikan'             => ['bg' => 'bg-gray-100 text-gray-700',      'label' => 'Selesai'],
+                                            'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
+                                            'ditolak_pusat'            => ['bg' => 'bg-red-200 text-red-900',        'label' => 'Ditolak Pusat'],
+                                        ];
+                                        $sc = $statusConfig[$proposal->status] ?? ['bg' => 'bg-gray-100 text-gray-600', 'label' => $proposal->statusLabel];
+                                    @endphp
+                                    <span class="inline-flex items-center whitespace-nowrap px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border {{ $sc['bg'] }} {{ str_replace('bg-', 'border-', explode(' ', $sc['bg'])[0]) }}">
+                                        {{ $sc['label'] }}
+                                    </span>
                                 </td>
                             </tr>
                         @empty

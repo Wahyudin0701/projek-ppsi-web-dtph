@@ -198,11 +198,18 @@ class User extends Authenticatable
         return $this->hasMany(SurveyTeam::class, 'kabid_id');
     }
 
+    protected $resolvedEmployee = null;
+    protected $employeeResolved = false;
+
     /**
      * Get associated Employee record based on role
      */
     public function getEmployeeAttribute()
     {
+        if ($this->employeeResolved) {
+            return $this->resolvedEmployee;
+        }
+
         $roleMap = [
             'pimpinan' => 'Kepala Dinas',
             'kabid_psp' => 'Kabid. PSP',
@@ -211,10 +218,13 @@ class User extends Authenticatable
         ];
         
         if (isset($roleMap[$this->role])) {
-            return \App\Models\Employee::where('role', $roleMap[$this->role])->first();
+            $this->resolvedEmployee = \App\Models\Employee::where('role', $roleMap[$this->role])->first();
+        } else {
+            $this->resolvedEmployee = null;
         }
         
-        return null;
+        $this->employeeResolved = true;
+        return $this->resolvedEmployee;
     }
 
     /**

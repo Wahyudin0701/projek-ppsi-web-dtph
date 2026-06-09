@@ -26,33 +26,54 @@
                 </div>
                 
                 <form method="GET" action="{{ route('kabid.proposals.index') }}" class="flex flex-wrap gap-3 items-center" x-data x-ref="filterForm">
-                    <div class="relative flex-1 min-w-[200px]">
-                        <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <div class="relative flex-1 min-w-[200px] flex flex-col">
+                        <label class="text-xs font-bold text-gray-700 mb-1.5 ml-1">Pencarian</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+                            <input type="search" name="search" value="{{ request('search') }}" placeholder="Cari petani, kelompok..."
+                                x-on:search="$refs.filterForm.submit()"
+                                class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
                         </div>
-                        <input type="search" name="search" value="{{ request('search') }}" placeholder="Cari petani, kelompok, atau program..."
-                            x-on:search="$refs.filterForm.submit()"
-                            class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
                     </div>
 
-                    <select name="type" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all appearance-none bg-white pr-8"
-                        style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
-                        <option value="">Semua Jenis</option>
-                        <option value="alsintan" {{ request('type') === 'alsintan' ? 'selected' : '' }}>Peminjaman Alsintan</option>
-                        <option value="bantuan" {{ request('type') === 'bantuan' ? 'selected' : '' }}>Program Bantuan</option>
-                    </select>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-bold text-gray-700 mb-1.5 ml-1">Jenis</label>
+                        <select name="type" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all appearance-none bg-white pr-8"
+                            style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
+                            <option value="">Semua</option>
+                            <option value="alsintan" {{ request('type') === 'alsintan' ? 'selected' : '' }}>Alsintan</option>
+                            <option value="bantuan" {{ request('type') === 'bantuan' ? 'selected' : '' }}>Bantuan</option>
+                        </select>
+                    </div>
 
-                    <select name="status" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all appearance-none bg-white pr-8"
-                        style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
-                        <option value="">Semua Status</option>
-                        <option value="persiapan_survei" {{ request('status') === 'persiapan_survei' ? 'selected' : '' }}>Persiapan Survei</option>
-                        <option value="sedang_survei" {{ request('status') === 'sedang_survei' ? 'selected' : '' }}>Sedang Survei</option>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-bold text-gray-700 mb-1.5 ml-1">Mulai Tgl</label>
+                        <input type="date" name="start_date" value="{{ request('start_date') }}" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-white">
+                    </div>
 
-                        <option value="menunggu_keputusan_akhir" {{ request('status') === 'menunggu_keputusan_akhir' ? 'selected' : '' }}>Menunggu Keputusan</option>
-                        <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
-                        <option value="dikembalikan" {{ request('status') === 'dikembalikan' ? 'selected' : '' }}>Selesai (Dikembalikan)</option>
-                        <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                    </select>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-bold text-gray-700 mb-1.5 ml-1">Sampai Tgl</label>
+                        <input type="date" name="end_date" value="{{ request('end_date') }}" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-white">
+                    </div>
+
+                    <div class="flex flex-col min-w-[180px]">
+                        <div class="flex justify-between items-center mb-1.5 min-h-[16px]">
+                            <span class="text-xs font-bold text-gray-700 ml-1">Status</span>
+                            @if(request()->anyFilled(['search', 'status', 'type', 'start_date', 'end_date']))
+                                <a href="{{ route('kabid.proposals.index') }}" class="text-xs font-bold text-amber-600 hover:text-amber-800 transition-colors">Reset Filter</a>
+                            @endif
+                        </div>
+                        <select name="status" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all appearance-none bg-white pr-8"
+                            style="-webkit-appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1rem;">
+                            <option value="">Semua Status</option>
+                            <option value="persiapan_survei" {{ request('status') === 'persiapan_survei' ? 'selected' : '' }}>Persiapan Survei</option>
+                            <option value="sedang_survei" {{ request('status') === 'sedang_survei' ? 'selected' : '' }}>Sedang Survei</option>
+                            <option value="verifikasi_cpcl" {{ request('status') === 'verifikasi_cpcl' ? 'selected' : '' }}>Verifikasi CPCL</option>
+                            <option value="selesai_kabid" {{ request('status') === 'selesai_kabid' ? 'selected' : '' }}>Selesai di Kabid</option>
+                        </select>
+                    </div>
                 </form>
             </div>
 
@@ -74,13 +95,16 @@
                                 $statusConfig = [
                                     'sedang_diverifikasi_admin'       => ['bg' => 'bg-yellow-100 text-yellow-700',  'label' => 'Di Admin'],
                                     'sedang_diverifikasi_pimpinan'   => ['bg' => 'bg-indigo-100 text-indigo-700',  'label' => 'Di Pimpinan'],
-                                    'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Persiapan Survei'],
+                                    'persiapan_survei'        => ['bg' => 'bg-amber-100 text-amber-700',    'label' => 'Di Kabid'],
                                     'sedang_survei'       => ['bg' => 'bg-blue-100 text-blue-700',      'label' => 'Sedang Survei'],
 
                                     'verifikasi_cpcl'    => ['bg' => 'bg-teal-100 text-teal-700',      'label' => 'Verifikasi CPCL'],
                                     'menunggu_keputusan_akhir'     => ['bg' => 'bg-purple-100 text-purple-700',  'label' => 'Finalisasi'],
-                                    'disetujui'                => ['bg' => 'bg-emerald-100 text-emerald-700',    'label' => 'Disetujui'],
-                                    'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Ditolak'],
+                                    'direkomendasikan'             => ['bg' => 'bg-emerald-100 text-emerald-700','label' => 'Di Pusat'],
+                                    'disetujui'                => ['bg' => 'bg-green-100 text-green-700',    'label' => 'Disetujui'],
+                                    'dikembalikan'             => ['bg' => 'bg-gray-100 text-gray-700',      'label' => 'Selesai'],
+                                    'ditolak'                  => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Di Tolak'],
+                                    'ditolak_pusat'            => ['bg' => 'bg-red-100 text-red-700',        'label' => 'Di Tolak'],
                                 ];
                                 $sc = $statusConfig[$proposal->status] ?? ['bg' => 'bg-gray-100 text-gray-600', 'label' => $proposal->statusLabel];
                                 $isAlsintan = $proposal->alsintan_id !== null;
@@ -88,11 +112,17 @@
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="font-bold text-gray-900 text-sm">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">{{ $proposal->updated_at->diffForHumans() }}</p>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">{{ $proposal->created_at->format('d M Y') }}</p>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <p class="font-bold text-gray-900 text-sm">{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">{{ $proposal->user->name }}</p>
+                                    @php
+                                        $namaUtama = $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name;
+                                        $idPoktan = $proposal->user->farmerProfile->id_poktan ?? null;
+                                    @endphp
+                                    <p class="font-bold text-gray-900 text-sm">{{ $namaUtama }}</p>
+                                    @if($idPoktan)
+                                        <p class="text-xs text-gray-400 mt-0.5 font-mono">ID: {{ $idPoktan }}</p>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border mb-1 {{ $isAlsintan ? 'bg-sky-50 text-sky-600 border-sky-100' : 'bg-violet-50 text-violet-600 border-violet-100' }}">

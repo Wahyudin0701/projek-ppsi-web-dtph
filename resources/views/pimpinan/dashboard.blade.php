@@ -3,8 +3,6 @@
 
     <div class="max-w-7xl mx-auto space-y-8">
 
-
-
         {{-- ===== STAT CARDS (Master & Operational) ===== --}}
         <div class="grid grid-cols-2 lg:grid-cols-3 gap-5">
             {{-- Kelompok Tani --}}
@@ -74,25 +72,11 @@
             </div>
         </div>
 
-        {{-- ===== CHART PENGJUAN ===== --}}
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6" x-data="proposalChartComponent()">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <div>
-                    <h3 class="font-extrabold text-gray-800 text-lg">Tren Pengajuan Proposal</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Perbandingan pengajuan Alsintan dan Program Bantuan</p>
-                </div>
-                <div class="inline-flex bg-gray-100 rounded-lg p-1">
-                    <button @click="setFilter('week')" :class="filter === 'week' ? 'bg-white shadow-sm text-gray-900 font-bold' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 text-xs rounded-md transition-all">Minggu Ini</button>
-                    <button @click="setFilter('month')" :class="filter === 'month' ? 'bg-white shadow-sm text-gray-900 font-bold' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 text-xs rounded-md transition-all">Bulan Ini</button>
-                    <button @click="setFilter('year')" :class="filter === 'year' ? 'bg-white shadow-sm text-gray-900 font-bold' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 text-xs rounded-md transition-all">Tahun Ini</button>
-                </div>
-            </div>
-            
-            <div x-ref="chart" id="chartContainer" class="w-full h-80"></div>
-        </div>
+        {{-- ===== CHARTS ===== --}}
+        @include('components.dashboard-charts')
 
         {{-- ===== PROPOSAL MENUNGGU PERSETUJUAN ===== --}}
-        <div>
+        <div class="mt-6">
             <div class="flex items-center justify-between mb-5 px-1">
                 <div>
                     <h3 class="font-extrabold text-gray-800 text-lg">Proposal Menunggu Persetujuan Anda</h3>
@@ -165,180 +149,3 @@
 
     </div>
 </x-app-layout>
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-    const initChartComponent = () => {
-        Alpine.data('proposalChartComponent', () => ({
-            filter: 'year',
-            chart: null,
-            rawData: {!! json_encode($chartData) !!},
-            
-            init() {
-                const checkAndRender = () => {
-                    if (typeof ApexCharts !== 'undefined' && this.$refs.chart) {
-                        this.renderChart();
-                    } else {
-                        setTimeout(checkAndRender, 100);
-                    }
-                };
-                checkAndRender();
-            },
-            
-            setFilter(val) {
-                this.filter = val;
-                this.updateChart();
-            },
-            
-            processData() {
-                let seriesAlsintan = [];
-                let seriesProgram = [];
-                let categories = [];
-                
-                let now = new Date();
-                
-                if (this.filter === 'year') {
-                    categories = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
-                    let countsA = new Array(12).fill(0);
-                    let countsP = new Array(12).fill(0);
-                    
-                    this.rawData.forEach(item => {
-                        let d = new Date(item.date);
-                        if (d.getFullYear() === now.getFullYear()) {
-                            if (item.type === 'alsintan') countsA[d.getMonth()]++;
-                            else countsP[d.getMonth()]++;
-                        }
-                    });
-                    seriesAlsintan = countsA;
-                    seriesProgram = countsP;
-                } else if (this.filter === 'month') {
-                    let daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-                    for (let i = 1; i <= daysInMonth; i++) {
-                        categories.push(i);
-                    }
-                    let countsA = new Array(daysInMonth).fill(0);
-                    let countsP = new Array(daysInMonth).fill(0);
-                    
-                    this.rawData.forEach(item => {
-                        let d = new Date(item.date);
-                        if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) {
-                            if (item.type === 'alsintan') countsA[d.getDate() - 1]++;
-                            else countsP[d.getDate() - 1]++;
-                        }
-                    });
-                    seriesAlsintan = countsA;
-                    seriesProgram = countsP;
-                } else if (this.filter === 'week') {
-                    categories = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-                    let countsA = new Array(7).fill(0);
-                    let countsP = new Array(7).fill(0);
-                    
-                    let currentDay = now.getDay();
-                    let distanceToMonday = currentDay === 0 ? 6 : currentDay - 1;
-                    let monday = new Date(now);
-                    monday.setDate(now.getDate() - distanceToMonday);
-                    monday.setHours(0,0,0,0);
-                    
-                    let sunday = new Date(monday);
-                    sunday.setDate(monday.getDate() + 6);
-                    sunday.setHours(23,59,59,999);
-                    
-                    this.rawData.forEach(item => {
-                        let d = new Date(item.date);
-                        if (d >= monday && d <= sunday) {
-                            let dayIndex = d.getDay() === 0 ? 6 : d.getDay() - 1;
-                            if (item.type === 'alsintan') countsA[dayIndex]++;
-                            else countsP[dayIndex]++;
-                        }
-                    });
-                    seriesAlsintan = countsA;
-                    seriesProgram = countsP;
-                }
-                
-                return { categories, seriesAlsintan, seriesProgram };
-            },
-            
-            renderChart() {
-                const data = this.processData();
-                
-                const options = {
-                    series: [{
-                        name: 'Alsintan',
-                        data: data.seriesAlsintan
-                    }, {
-                        name: 'Program Bantuan',
-                        data: data.seriesProgram
-                    }],
-                    chart: {
-                        type: 'area',
-                        height: 320,
-                        fontFamily: 'Inter, sans-serif',
-                        toolbar: { show: false },
-                        zoom: { enabled: false }
-                    },
-                    colors: ['#0ea5e9', '#10b981'],
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.4,
-                            opacityTo: 0.05,
-                            stops: [0, 90, 100]
-                        }
-                    },
-                    dataLabels: { enabled: false },
-                    stroke: { curve: 'smooth', width: 2 },
-                    xaxis: {
-                        categories: data.categories,
-                        axisBorder: { show: false },
-                        axisTicks: { show: false },
-                        labels: {
-                            style: { colors: '#64748b', fontSize: '12px' }
-                        }
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: '#64748b', fontSize: '12px' },
-                            formatter: (val) => { return Math.floor(val) }
-                        }
-                    },
-                    grid: {
-                        borderColor: '#f1f5f9',
-                        strokeDashArray: 4,
-                        yaxis: { lines: { show: true } },
-                        xaxis: { lines: { show: false } }
-                    },
-                    legend: { 
-                        position: 'top', 
-                        horizontalAlign: 'right',
-                        markers: { radius: 12 }
-                    }
-                };
-                
-                this.chart = new ApexCharts(this.$refs.chart, options);
-                this.chart.render();
-            },
-            
-            updateChart() {
-                if (this.chart) {
-                    const data = this.processData();
-                    this.chart.updateSeries([
-                        { name: 'Alsintan', data: data.seriesAlsintan },
-                        { name: 'Program Bantuan', data: data.seriesProgram }
-                    ]);
-                    this.chart.updateOptions({
-                        xaxis: { categories: data.categories }
-                    });
-                }
-            }
-        }));
-    };
-
-    if (window.Alpine) {
-        initChartComponent();
-    } else {
-        document.addEventListener('alpine:init', initChartComponent);
-    }
-</script>
-@endpush

@@ -34,8 +34,10 @@
               x-data="{ 
                 employees: {{ json_encode($employees) }},
                 members: {{ json_encode(old('team_members', [['name' => '', 'nip' => '', 'role' => '']])) }},
-                validFrom: '{{ old('valid_from') }}'
-              }">
+                validFrom: '{{ old('valid_from') }}',
+                isSubmitting: false
+              }"
+              @submit="if(isSubmitting) { $event.preventDefault(); } else { isSubmitting = true; }">
             @csrf
 
             <h3 class="font-extrabold text-gray-800 text-lg">Konfigurasi Penugasan</h3>
@@ -113,8 +115,10 @@
                     Batal
                 </a>
                 <button type="submit" 
-                        class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-2xl transition-all shadow-lg shadow-amber-500/30 order-1 sm:order-2">
-                    Simpan & Terbitkan Surat Tugas
+                        :disabled="isSubmitting"
+                        :class="isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-amber-600 shadow-amber-500/30 shadow-lg'"
+                        class="flex-1 bg-amber-500 text-white font-extrabold py-3.5 rounded-2xl transition-all order-1 sm:order-2">
+                    <span x-text="isSubmitting ? 'Memproses...' : 'Simpan & Terbitkan Surat Tugas'"></span>
                 </button>
             </div>
         </form>

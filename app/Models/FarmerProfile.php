@@ -23,6 +23,7 @@ class FarmerProfile extends Model
 
     protected $fillable = [
         'user_id',
+        'status',
         'nama_kelompok',
         'id_poktan',
         'no_sk',
@@ -34,8 +35,10 @@ class FarmerProfile extends Model
         'komoditi',
         'komoditi_utama',
         'alamat',
+        'desa',
         'kecamatan',
         'sk_pengukuhan_path',
+        'afiliasi_lembaga',
         'rejection_reason',
         'is_verified_acknowledged',
         'change_request_reason',

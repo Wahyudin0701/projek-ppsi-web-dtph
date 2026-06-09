@@ -40,20 +40,15 @@ class DashboardController extends Controller
 
             $pendingProposalsCount = Proposal::where('status', 'sedang_diverifikasi_admin')->count();
             
-            $now = now()->startOfDay();
-            $activeProgramsCount = Program::whereNotNull('open_date')
-                ->where('open_date', '<=', $now)
-                ->where(function ($query) use ($now) {
-                    $query->whereNull('close_date')
-                          ->orWhere('close_date', '>=', $now);
-                })->count();
             $totalProposalsCount = Proposal::count();
 
+            $totalKelompokTaniCount = User::where('role', 'petani')->count();
+
             $stats = [
-                'pending_users'     => $pendingUsersCount,
-                'pending_proposals' => $pendingProposalsCount,
-                'active_programs'   => $activeProgramsCount,
-                'total_proposals'   => $totalProposalsCount,
+                'pending_users'       => $pendingUsersCount,
+                'pending_proposals'   => $pendingProposalsCount,
+                'total_kelompok_tani' => $totalKelompokTaniCount,
+                'total_proposals'     => $totalProposalsCount,
             ];
 
             $latestPendingUsers = User::with('farmerProfile')
@@ -77,7 +72,27 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
 
-            return view('admin.dashboard', compact('stats', 'latestPendingUsers', 'latestPendingProposals', 'dispositionedProposals'));
+            // Fetch data for chart — limited to current year for performance
+            $currentYear = now()->year;
+            $chartData = Proposal::select('id', 'submission_date', 'alsintan_id', 'program_id', 'user_id', 'status')
+                ->with(['user.farmerProfile', 'alsintan.category', 'program.category'])
+                ->whereNotNull('submission_date')
+                ->whereYear('submission_date', $currentYear)
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'date'             => $item->submission_date->format('Y-m-d'),
+                        'type'             => $item->alsintan_id ? 'alsintan' : 'program',
+                        'status'           => $item->status,
+                        'kecamatan'        => $item->user?->farmerProfile?->kecamatan ?? 'Lainnya',
+                        'desa'             => $item->user?->farmerProfile?->alamat ?? 'Lainnya',
+                        'kelompok'         => $item->user?->farmerProfile?->nama_kelompok ?? $item->user?->name ?? 'Lainnya',
+                        'kategori_alat'    => $item->alsintan_id ? ($item->alsintan?->category?->name ?? 'Tanpa Kategori') : null,
+                        'kategori_program' => $item->program_id ? ($item->program?->category?->name ?? 'Tanpa Kategori') : null
+                    ];
+                })->values()->toArray();
+
+            return view('admin.dashboard', compact('stats', 'latestPendingUsers', 'latestPendingProposals', 'dispositionedProposals', 'chartData'));
         }
 
         if ($user->isPimpinan()) {
@@ -92,39 +107,48 @@ class DashboardController extends Controller
             return view('farmer.dashboard');
         }
 
-        // Farmer/User dashboard data
-        $allUserProposals = Proposal::where('user_id', $user->id)
-            ->with('program')
-            ->get();
+        // Farmer/User dashboard data — use targeted DB queries, not PHP filtering
+        $userId = $user->id;
 
         $stats = [
-            'total'     => $allUserProposals->count(),
-            'proses'    => $allUserProposals->whereIn('status', [
+            'total'     => Proposal::where('user_id', $userId)->count(),
+            'proses'    => Proposal::where('user_id', $userId)->whereIn('status', [
                                 'sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan',
                                 'persiapan_survei', 'sedang_survei',
                                 'verifikasi_cpcl', 'menunggu_keputusan_akhir',
+                                'direkomendasikan',
                             ])->count(),
-            'disetujui' => $allUserProposals->where('status', 'disetujui')->count(),
-            'ditolak'   => $allUserProposals->where('status', 'ditolak')->count(),
+            'disetujui' => Proposal::where('user_id', $userId)->whereIn('status', ['disetujui', 'dikembalikan'])->count(),
+            'ditolak'   => Proposal::where('user_id', $userId)->whereIn('status', ['ditolak', 'ditolak_pusat'])->count(),
         ];
 
-        $recentProposals = $allUserProposals->sortByDesc('submission_date')->take(3);
+        $recentProposals = Proposal::where('user_id', $userId)
+            ->with(['program', 'alsintan'])
+            ->latest('submission_date')
+            ->take(3)
+            ->get();
 
-        // IDs and Types already applied for
-        $activeProposals = $allUserProposals->whereIn('status', ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'disetujui']);
+        // IDs of alsintan with active proposals (to exclude from suggestions)
+        $activeStatuses = ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'persiapan_survei', 'sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui', 'direkomendasikan'];
         
-        $activeProposalProgramTypes = $activeProposals->whereNotNull('program_id')
+        $activeAlsintanIds = Proposal::where('user_id', $userId)
+            ->whereNotNull('alsintan_id')
+            ->whereIn('status', $activeStatuses)
+            ->pluck('alsintan_id')
+            ->toArray();
+        
+        $activeProgramTypes = Proposal::where('user_id', $userId)
+            ->whereNotNull('program_id')
+            ->whereIn('status', $activeStatuses)
+            ->with('program:id,type')
+            ->get()
             ->pluck('program.type')
             ->filter()
             ->unique()
             ->toArray();
 
-        $activeProposalAlsintanIds = $activeProposals->whereNotNull('alsintan_id')
-            ->pluck('alsintan_id')
-            ->toArray();
-
         $programs = Program::where('is_open', true)
-            ->whereNotIn('type', $activeProposalProgramTypes)
+            ->whereNotIn('type', $activeProgramTypes)
             ->whereNotNull('open_date')
             ->where('open_date', '<=', now()->startOfDay())
             ->where(function ($query) {
@@ -135,7 +159,7 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        $alsintans = Alsintan::whereNotIn('id', $activeProposalAlsintanIds)
+        $alsintans = Alsintan::whereNotIn('id', $activeAlsintanIds)
             ->whereHas('inventories', function($q) {
                 $q->where('status_ketersediaan', 'Tersedia');
             })

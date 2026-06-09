@@ -40,7 +40,27 @@ class ProposalController extends Controller
             ->take(5)
             ->get();
 
-        return view('kabid.dashboard', compact('stats', 'pendingAction', 'kabid'));
+        // Chart data: only kabid's proposals, only current year for performance
+        $currentYear = now()->year;
+        $chartData = Proposal::select('id', 'submission_date', 'alsintan_id', 'program_id', 'user_id', 'status')
+            ->with(['user.farmerProfile', 'alsintan.category', 'program.category'])
+            ->whereNotNull('submission_date')
+            ->whereYear('submission_date', $currentYear)
+            ->get()
+            ->map(function($item) {
+                return [
+                    'date'             => $item->submission_date->format('Y-m-d'),
+                    'type'             => $item->alsintan_id ? 'alsintan' : 'program',
+                    'status'           => $item->status,
+                    'kecamatan'        => $item->user?->farmerProfile?->kecamatan ?? 'Lainnya',
+                    'desa'             => $item->user?->farmerProfile?->alamat ?? 'Lainnya',
+                    'kelompok'         => $item->user?->farmerProfile?->nama_kelompok ?? $item->user?->name ?? 'Lainnya',
+                    'kategori_alat'    => $item->alsintan_id ? ($item->alsintan?->category?->name ?? 'Tanpa Kategori') : null,
+                    'kategori_program' => $item->program_id ? ($item->program?->category?->name ?? 'Tanpa Kategori') : null
+                ];
+            })->values()->toArray();
+
+        return view('kabid.dashboard', compact('stats', 'pendingAction', 'kabid', 'chartData'));
     }
 
     /**
@@ -62,6 +82,14 @@ class ProposalController extends Controller
             } else {
                 $query->whereNotNull('program_id');
             }
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('submission_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('submission_date', '<=', $request->end_date);
         }
 
         if ($request->filled('search')) {

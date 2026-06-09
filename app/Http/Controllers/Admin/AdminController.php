@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Models\Activity;
 
 class AdminController extends Controller
 {
@@ -123,21 +125,30 @@ class AdminController extends Controller
 
     public function list(Request $request)
     {
-        $query = User::where('role', 'petani')->with('farmerProfile');
+        // Use join to enable DB-level orderBy on related farmer_profiles.nama_kelompok
+        $query = User::where('users.role', 'petani')
+            ->with('farmerProfile')
+            ->join('farmer_profiles', 'users.id', '=', 'farmer_profiles.user_id')
+            ->select('users.*')
+            ->orderBy('farmer_profiles.nama_kelompok', 'asc');
 
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            $query->where('users.status', $request->status);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('users.created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('users.created_at', '<=', $request->end_date);
         }
 
         if ($request->filled('search')) {
-            $query->whereHas('farmerProfile', function ($q) use ($request) {
-                $q->where('nama_kelompok', 'like', '%' . $request->search . '%');
-            });
+            $query->where('farmer_profiles.nama_kelompok', 'like', '%' . $request->search . '%');
         }
 
-        $users = $query->get()->sortBy(function($user) {
-            return $user->farmerProfile->nama_kelompok ?? '';
-        });
+        $users = $query->get();
 
         return view('admin.users.user-list-kelompok-tani', compact('users'));
     }
@@ -148,6 +159,14 @@ class AdminController extends Controller
 
         if ($request->filled('status') && $request->status !== 'all') {
             $query->where('status', $request->status);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
         }
 
         if ($request->filled('search')) {
@@ -161,9 +180,7 @@ class AdminController extends Controller
             });
         }
 
-        $users = $query->get()->sortBy(function($user) {
-            return $user->name;
-        });
+        $users = $query->orderBy('name', 'asc')->get();
 
         return view('admin.users.user-list-umum', compact('users'));
     }
@@ -187,7 +204,7 @@ class AdminController extends Controller
                 ->event('approved_revision')
                 ->log("Admin menyetujui revisi profil {$user->name}");
                 
-            return redirect()->route('admin.verifikasi.index')->with('success', 'Revisi disetujui, akun aktif.');
+            return redirect()->route('admin.users.index')->with('success', 'Revisi disetujui, akun aktif.');
         } else {
             $user->update(['status' => 'rejected']);
             
@@ -206,7 +223,7 @@ class AdminController extends Controller
                 ->event('rejected_revision')
                 ->log("Admin menolak revisi profil {$user->name}");
                 
-            return redirect()->route('admin.verifikasi.index')->with('success', 'Revisi ditolak.');
+            return redirect()->route('admin.users.index')->with('success', 'Revisi ditolak.');
         }
     }
 }

@@ -14,7 +14,7 @@ class Document extends Model
     protected $fillable = [
         'title',
         'description',
-        'category',
+        'document_category_id',
         'file_path',
         'file_size',
         'file_format',
@@ -32,5 +32,10 @@ class Document extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn(string $eventName) => "Document has been {$eventName}");
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(DocumentCategory::class, 'document_category_id');
     }
 }

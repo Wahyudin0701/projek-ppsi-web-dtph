@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('nik_ketua')->nullable();
             $table->string('kontak')->nullable();
             $table->string('pekerjaan')->nullable();
-            $table->enum('afiliasi_lembaga', ['Individu', 'Kelompok Tani', 'Gapoktan', 'UPJA', 'Lainnya'])->default('Kelompok Tani');
             $table->string('grade')->nullable();
             $table->decimal('luas_lahan', 10, 2)->nullable();
             $table->string('komoditi')->nullable();

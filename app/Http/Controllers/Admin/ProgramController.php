@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Program;
+use App\Models\ProgramCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProgramController extends Controller
 {
@@ -16,15 +18,15 @@ class ProgramController extends Controller
 
     public function create()
     {
-        return view('admin.programs.create');
+        $categories = ProgramCategory::orderBy('name', 'asc')->get();
+        return view('admin.programs.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name'        => 'required|string|max:255',
-            'type'        => 'required|in:bantuan_permanen,usulan_pendanaan',
-            'jenis'       => 'required|in:alsintan,benih,pupuk,infrastruktur,pelatihan',
+            'program_category_id' => 'required|exists:program_categories,id',
             'open_date'   => 'required|date',
             'close_date'  => 'required|date|after_or_equal:open_date',
             'description' => 'nullable|string',
@@ -33,11 +35,20 @@ class ProgramController extends Controller
             'kuota'       => 'nullable|string|max:255',
             'requirements' => 'nullable|array',
             'requirements.*' => 'nullable|string|max:255',
+            'juknis_file' => 'nullable|file|mimes:pdf|max:10240', // max 10MB
+            'contact_person' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:20',
         ]);
 
-        Program::create($request->only([
-            'name', 'type', 'jenis', 'open_date', 'close_date', 'description', 'sop_description', 'sasaran', 'kuota', 'requirements',
-        ]));
+        $data = $request->only([
+            'name', 'program_category_id', 'open_date', 'close_date', 'description', 'sop_description', 'sasaran', 'kuota', 'requirements', 'contact_person', 'contact_phone'
+        ]);
+
+        if ($request->hasFile('juknis_file')) {
+            $data['juknis_file'] = $request->file('juknis_file')->store('programs', 'public');
+        }
+
+        Program::create($data);
 
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil dibuat.');
     }
@@ -49,15 +60,15 @@ class ProgramController extends Controller
 
     public function edit(Program $program)
     {
-        return view('admin.programs.edit', compact('program'));
+        $categories = ProgramCategory::orderBy('name', 'asc')->get();
+        return view('admin.programs.edit', compact('program', 'categories'));
     }
 
     public function update(Request $request, Program $program)
     {
         $request->validate([
             'name'        => 'required|string|max:255',
-            'type'        => 'required|in:bantuan_permanen,usulan_pendanaan',
-            'jenis'       => 'required|in:alsintan,benih,pupuk,infrastruktur,pelatihan',
+            'program_category_id' => 'required|exists:program_categories,id',
             'open_date'   => 'required|date',
             'close_date'  => 'required|date|after_or_equal:open_date',
             'description' => 'nullable|string',
@@ -66,17 +77,32 @@ class ProgramController extends Controller
             'kuota'       => 'nullable|string|max:255',
             'requirements' => 'nullable|array',
             'requirements.*' => 'nullable|string|max:255',
+            'juknis_file' => 'nullable|file|mimes:pdf|max:10240',
+            'contact_person' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:20',
         ]);
 
-        $program->update($request->only([
-            'name', 'type', 'jenis', 'open_date', 'close_date', 'description', 'sop_description', 'sasaran', 'kuota', 'requirements',
-        ]));
+        $data = $request->only([
+            'name', 'program_category_id', 'open_date', 'close_date', 'description', 'sop_description', 'sasaran', 'kuota', 'requirements', 'contact_person', 'contact_phone'
+        ]);
+
+        if ($request->hasFile('juknis_file')) {
+            if ($program->juknis_file) {
+                Storage::disk('public')->delete($program->juknis_file);
+            }
+            $data['juknis_file'] = $request->file('juknis_file')->store('programs', 'public');
+        }
+
+        $program->update($data);
 
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil diperbarui.');
     }
 
     public function destroy(Program $program)
     {
+        if ($program->juknis_file) {
+            Storage::disk('public')->delete($program->juknis_file);
+        }
         $program->delete();
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil dihapus.');
     }

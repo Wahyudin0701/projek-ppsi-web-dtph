@@ -156,17 +156,6 @@
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
                                     </div>
 
-                                    <!-- Afiliasi Lembaga -->
-                                    <div class="md:col-span-2">
-                                        <label for="profile_afiliasi_lembaga" class="block text-sm font-bold text-gray-800 mb-2">Afiliasi Lembaga</label>
-                                        <select name="profile[afiliasi_lembaga]" id="profile_afiliasi_lembaga"
-                                                class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                                            <option value="Kelompok Tani" {{ (old('profile.afiliasi_lembaga') == 'Kelompok Tani') ? 'selected' : '' }}>Kelompok Tani</option>
-                                            <option value="Gapoktan" {{ (old('profile.afiliasi_lembaga') == 'Gapoktan') ? 'selected' : '' }}>Gapoktan</option>
-                                            <option value="UPJA" {{ (old('profile.afiliasi_lembaga') == 'UPJA') ? 'selected' : '' }}>UPJA</option>
-                                            <option value="Individu" {{ (old('profile.afiliasi_lembaga') == 'Individu') ? 'selected' : '' }}>Individu</option>
-                                            <option value="Lainnya" {{ (old('profile.afiliasi_lembaga') == 'Lainnya') ? 'selected' : '' }}>Lainnya</option>
-                                        </select>
                                     </div>
 
                                     <!-- Anggota Kelompok -->

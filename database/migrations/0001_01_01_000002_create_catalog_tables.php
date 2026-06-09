@@ -11,16 +11,29 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('program_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->text('icon_path')->nullable();
+            $table->string('icon_color')->nullable();
+            $table->string('icon_bg')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['bantuan_permanen', 'usulan_pendanaan']);
-            $table->string('jenis')->nullable();
+            $table->foreignId('program_category_id')->nullable()->constrained('program_categories')->onDelete('restrict');
             $table->text('description')->nullable();
             $table->text('sop_description')->nullable();
             $table->string('sasaran')->nullable();
             $table->string('kuota')->nullable();
             $table->json('requirements')->nullable();
+            $table->string('juknis_file')->nullable();
+            $table->string('contact_person')->nullable();
+            $table->string('contact_phone')->nullable();
             $table->boolean('is_open')->default(true);
             $table->date('open_date')->nullable();
             $table->date('close_date')->nullable();
@@ -70,5 +83,6 @@ return new class extends Migration
         Schema::dropIfExists('alsintans');
         Schema::dropIfExists('alsintan_categories');
         Schema::dropIfExists('programs');
+        Schema::dropIfExists('program_categories');
     }
 };

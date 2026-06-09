@@ -4,7 +4,7 @@
 
     <div class="mb-6 flex justify-between items-center">
         <p class="text-sm text-gray-500">Kelola semua konten berita, program, artikel, berita acara, dan kegiatan yang tampil di halaman utama (homepage).</p>
-        <a href="{{ route('admin.articles.create') }}" class="inline-flex items-center gap-2 bg-[#19A148] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-[#158039] transition-all shadow-lg shadow-[#19A148]/20 text-sm">
+        <a href="{{ route('admin.articles.create') }}" class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 text-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -44,7 +44,7 @@
                                     @endif
                                     <div>
                                         <div class="font-bold text-gray-900 line-clamp-1">{{ $article->title }}</div>
-                                        <div class="text-xs text-gray-500 mt-1 uppercase font-bold text-[#19A148]">{{ $article->category }}</div>
+                                        <div class="text-xs text-gray-500 mt-1 uppercase font-bold text-blue-600">{{ $article->category }}</div>
                                     </div>
                                 </div>
                             </td>

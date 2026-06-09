@@ -9,10 +9,10 @@
                 <h2 class="text-2xl font-extrabold text-gray-900">Detail Program Bantuan</h2>
                 <p class="text-gray-500 text-sm mt-1">Dinas Tanaman Pangan dan Hortikultura</p>
             </div>
-            <a href="{{ route('admin.programs.index') }}" class="hidden sm:flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Kembali
-            </a>
+            <a href="{{ route('admin.programs.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
         </div>
         
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100">
@@ -20,26 +20,11 @@
                 {{-- Left Info Side (Visual representation & Code) --}}
                 <div class="bg-gray-50 p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
                     <div class="w-full aspect-square max-w-xs rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col items-center justify-center p-6 text-center">
-                        @if($program->jenis === 'alsintan')
-                            <svg class="w-20 h-20 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                        @elseif($program->jenis === 'benih')
-                            <svg class="w-20 h-20 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v19M5 12h14M12 12l-4-4m4 4l4-4m-4 4l-4 4m4-4l4 4"/>
-                            </svg>
-                        @elseif($program->jenis === 'pupuk')
-                            <svg class="w-20 h-20 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                            </svg>
-                        @else
-                            <svg class="w-20 h-20 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-20 h-20 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                             </svg>
-                        @endif
                         <span class="mt-4 block text-xs font-extrabold text-emerald-800 uppercase tracking-widest bg-emerald-100/60 px-3 py-1 rounded-full">
-                            {{ ucfirst($program->jenis) }}
+                            {{ $program->category ? $program->category->name : '-' }}
                         </span>
                     </div>
                     <div class="mt-6 text-center w-full">
@@ -52,16 +37,6 @@
                 <div class="p-8 md:col-span-2 flex flex-col">
                     <div class="mb-6 flex justify-between items-start gap-4">
                         <div>
-                            @php
-                                $typeLabels = [
-                                    'bantuan_permanen' => 'Bantuan Permanen (Hibah)',
-                                    'usulan_pendanaan' => 'Usulan Pendanaan / Hibah Dana'
-                                ];
-                                $typeLabel = $typeLabels[$program->type] ?? str_replace('_', ' ', $program->type);
-                            @endphp
-                            <span class="inline-block px-3 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-lg border border-primary-100 mb-3">
-                                Tipe Program: {{ $typeLabel }}
-                            </span>
                             <h3 class="text-3xl font-black text-gray-900 leading-tight mb-2">{{ $program->name }}</h3>
                         </div>
                         <a href="{{ route('admin.programs.edit', $program) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded-xl font-bold text-sm transition-colors border border-amber-200 flex-shrink-0">
@@ -92,6 +67,30 @@
                         <div>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Kuota Penerima</p>
                             <p class="font-bold text-gray-900">{{ $program->kuota ?: '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Narahubung (Contact Person)</p>
+                            @if($program->contact_person)
+                                <p class="font-bold text-gray-900">
+                                    {{ $program->contact_person }} 
+                                    @if($program->contact_phone)
+                                        <span class="text-gray-500 font-normal">({{ $program->contact_phone }})</span>
+                                    @endif
+                                </p>
+                            @else
+                                <p class="font-bold text-gray-900">-</p>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Dokumen Juknis / SOP</p>
+                            @if($program->juknis_file)
+                                <a href="{{ Storage::url($program->juknis_file) }}" target="_blank" class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-bold mt-0.5">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    Unduh Dokumen
+                                </a>
+                            @else
+                                <p class="font-bold text-gray-900">-</p>
+                            @endif
                         </div>
                     </div>
 
