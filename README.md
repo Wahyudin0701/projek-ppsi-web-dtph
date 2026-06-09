@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/images/logo_muarojambi.png" alt="Logo Muaro Jambi" width="120" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/Lambang_Kabupaten_Muaro_Jambi.png" alt="Logo Muaro Jambi" width="120" />
 </p>
 
 <h1 align="center">Portal Pelayanan DTPH Kabupaten Muaro Jambi</h1>
