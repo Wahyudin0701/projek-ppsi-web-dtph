@@ -67,6 +67,8 @@
                         Lihat Proposal
                     </a>
                 @endif
+
+                {{-- SK Bantuan diterbitkan oleh Pusat, tidak tersedia di sini --}}
                 
                 @if($proposal->status === 'sedang_diverifikasi_pimpinan')
                 <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
@@ -382,15 +384,22 @@
         </div>
 
         @if(in_array($proposal->status, ['disetujui', 'dikembalikan']))
-        <div class="p-5 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-4 shadow-sm">
-            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div class="p-5 {{ $isAlsintan ? 'bg-blue-50 border-blue-100' : 'bg-amber-50 border-amber-100' }} border rounded-2xl flex items-start gap-4 shadow-sm">
+            <div class="w-10 h-10 {{ $isAlsintan ? 'bg-blue-100 text-blue-600' : 'bg-amber-100 text-amber-600' }} rounded-xl flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div>
-                <h4 class="text-sm font-bold text-blue-900 mb-1">Menunggu Tindakan Petani</h4>
-                <p class="text-sm text-blue-700 leading-relaxed">
-                    Proposal ini telah disetujui. Langkah selanjutnya adalah menunggu pihak pemohon (petani) untuk mencetak {{ $isAlsintan ? 'Surat Perjanjian' : 'SK Bantuan' }} dari sistem mereka, menandatanganinya di atas materai, dan menyerahkannya ke Dinas sebagai bukti sah.
-                </p>
+                @if($isAlsintan)
+                    <h4 class="text-sm font-bold text-blue-900 mb-1">Menunggu Tindakan Petani</h4>
+                    <p class="text-sm text-blue-700 leading-relaxed">
+                        Proposal ini telah disetujui. Langkah selanjutnya adalah menunggu pihak pemohon (petani) untuk mencetak Surat Perjanjian dari sistem mereka, menandatanganinya di atas materai, dan menyerahkannya ke Dinas sebagai bukti sah.
+                    </p>
+                @else
+                    <h4 class="text-sm font-bold text-amber-900 mb-1">Informasi: SK Diterbitkan oleh Pusat</h4>
+                    <p class="text-sm text-amber-800 leading-relaxed">
+                        Proposal program bantuan ini telah disetujui dan direkomendasikan. Surat Keputusan (SK) penerima bantuan akan diterbitkan langsung oleh Pemerintah Pusat. Pemohon telah diarahkan untuk mendatangi kantor Dinas guna kelengkapan administrasi selanjutnya.
+                    </p>
+                @endif
             </div>
         </div>
         @endif

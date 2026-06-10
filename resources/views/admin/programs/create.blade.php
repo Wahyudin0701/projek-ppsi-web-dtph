@@ -157,18 +157,27 @@
                     </div>
 
                     {{-- Jadwal --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                         x-data="{ openDate: '{{ old('open_date') }}' }">
                         <div>
                             <label for="open_date" class="block text-sm font-bold text-gray-700 mb-2">Tanggal Buka</label>
                             <input type="date" name="open_date" id="open_date" value="{{ old('open_date') }}" required
+                                   x-model="openDate"
+                                   x-on:change="
+                                       const cd = document.getElementById('close_date');
+                                       cd.min = openDate;
+                                       if (cd.value && cd.value < openDate) cd.value = '';
+                                   "
                                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
                             <x-input-error :messages="$errors->get('open_date')" class="mt-2" />
                         </div>
                         <div>
                             <label for="close_date" class="block text-sm font-bold text-gray-700 mb-2">Tanggal Tutup</label>
                             <input type="date" name="close_date" id="close_date" value="{{ old('close_date') }}" required
+                                   :min="openDate"
                                    class="w-full rounded-xl border-gray-300 focus:border-primary-500 focus:ring-primary-500 shadow-sm">
                             <x-input-error :messages="$errors->get('close_date')" class="mt-2" />
+                            <p class="text-xs text-gray-400 mt-1">Harus setelah atau sama dengan Tanggal Buka.</p>
                         </div>
                     </div>
 

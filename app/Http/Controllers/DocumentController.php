@@ -98,24 +98,6 @@ class DocumentController extends Controller
     // Fitur Cetak PDF Berita Acara dihapus karena redundan dengan dokumen fisik yang sudah diunggah Kabid.
 
     /**
-     * Cetak SK Bantuan (untuk Program Bantuan yang disetujui)
-     */
-    public function printSKBantuan(Proposal $proposal)
-    {
-        $this->authorizeAccess($proposal);
-
-        if ($proposal->status !== 'disetujui' || $proposal->alsintan_id) {
-            abort(404, 'SK Bantuan tidak tersedia untuk proposal ini.');
-        }
-
-        $proposal->load(['user.farmerProfile', 'program']);
-        $kepalaDinas = \App\Models\Employee::where('role', 'Kepala Dinas')->first();
-
-        $pdf = Pdf::loadView('documents.sk-bantuan', compact('proposal', 'kepalaDinas'));
-        return $pdf->stream('SK_Bantuan_PRP_' . str_pad($proposal->id, 5, '0', STR_PAD_LEFT) . '.pdf');
-    }
-
-    /**
      * Cetak Surat Perjanjian Pinjam Pakai (untuk Alsintan yang disetujui)
      */
     public function printSuratPerjanjian(Proposal $proposal)

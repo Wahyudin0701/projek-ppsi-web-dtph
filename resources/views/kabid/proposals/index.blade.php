@@ -25,7 +25,7 @@
                     <p class="text-sm text-gray-500 mt-1">Proposal yang didelegasikan kepada Anda untuk ditindaklanjuti, seperti pembentukan tim survei dan pembuatan berita acara.</p>
                 </div>
                 
-                <form method="GET" action="{{ route('kabid.proposals.index') }}" class="flex flex-wrap gap-3 items-center" x-data x-ref="filterForm">
+                <form method="GET" action="{{ route('kabid.proposals.index') }}" class="flex flex-wrap gap-3 items-center" x-data="{ startDate: '{{ request('start_date') }}' }" x-ref="filterForm">
                     <div class="relative flex-1 min-w-[200px] flex flex-col">
                         <label class="text-xs font-bold text-gray-700 mb-1.5 ml-1">Pencarian</label>
                         <div class="relative">
@@ -50,12 +50,12 @@
 
                     <div class="flex flex-col">
                         <label class="text-xs font-bold text-gray-700 mb-1.5 ml-1">Mulai Tgl</label>
-                        <input type="date" name="start_date" value="{{ request('start_date') }}" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-white">
+                        <input type="date" name="start_date" x-model="startDate" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-white">
                     </div>
 
                     <div class="flex flex-col">
                         <label class="text-xs font-bold text-gray-700 mb-1.5 ml-1">Sampai Tgl</label>
-                        <input type="date" name="end_date" value="{{ request('end_date') }}" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-white">
+                        <input type="date" name="end_date" value="{{ request('end_date') }}" :min="startDate" x-on:change="$refs.filterForm.submit()" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all bg-white">
                     </div>
 
                     <div class="flex flex-col min-w-[180px]">

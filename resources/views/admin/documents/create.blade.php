@@ -38,19 +38,14 @@
                     </div>
 
                     <div>
-                        <label for="category" class="block text-sm font-bold text-gray-700 mb-2">Kategori <span class="text-red-500">*</span></label>
-                        <input type="text" name="category" id="category" value="{{ old('category') }}" required list="category-list"
-                               class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                               placeholder="Pilih atau ketik kategori baru...">
-                        <datalist id="category-list">
+                        <label for="document_category_id" class="block text-sm font-bold text-gray-700 mb-2">Kategori <span class="text-red-500">*</span></label>
+                        <select name="document_category_id" id="document_category_id" required
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm">
+                            <option value="" disabled selected>-- Pilih Kategori --</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat }}"></option>
+                                <option value="{{ $cat->id }}" {{ old('document_category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                             @endforeach
-                            <option value="Peraturan Perundang-undangan"></option>
-                            <option value="Petunjuk Teknis Bantuan & Pengelolaan"></option>
-                            <option value="Standar Pelayanan Publik"></option>
-                        </datalist>
-                        <p class="text-xs text-gray-500 mt-2">Anda bisa memilih dari daftar yang ada atau mengetik kategori baru.</p>
+                        </select>
                     </div>
 
                     <div>

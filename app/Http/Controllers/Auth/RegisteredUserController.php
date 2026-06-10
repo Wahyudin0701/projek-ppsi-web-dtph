@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -59,8 +60,10 @@ class RegisteredUserController extends Controller
                 'anggota_nik' => ['required', 'array', 'min:1'],
                 'anggota_nik.*' => ['required', 'string', 'size:16'],
                 'no_sk' => ['required', 'string', 'max:255'],
-                'file_sk' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
-                'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'file_sk' => ['required_without:temp_file_sk', 'nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+                'temp_file_sk' => ['nullable', 'string'],
+                'foto_ktp' => ['required_without:temp_foto_ktp', 'nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'temp_foto_ktp' => ['nullable', 'string'],
                 'id_poktan' => ['required', 'string', 'max:255'],
             ]);
         } elseif ($role === 'umum') {
@@ -68,7 +71,8 @@ class RegisteredUserController extends Controller
                 'nik_ketua' => ['required', 'string', 'size:16'],
                 'no_wa' => ['required', 'string', 'max:20'],
                 'alamat' => ['required', 'string'],
-                'foto_ktp' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'foto_ktp' => ['required_without:temp_foto_ktp', 'nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'temp_foto_ktp' => ['nullable', 'string'],
             ]);
         }
 
@@ -100,9 +104,8 @@ class RegisteredUserController extends Controller
                     'kecamatan' => $request->kecamatan,
                     'alamat' => $request->alamat,
                     'no_sk' => $request->no_sk,
-                    'sk_pengukuhan_path' => $request->hasFile('file_sk') ? $request->file('file_sk')->store('sk_kelompok', 'public') : null,
-                    'foto_ktp' => $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('ktp_ketua', 'public') : null,
-                    'status' => 'menunggu',
+                    'sk_pengukuhan_path' => $this->handleFileUpload($request, 'file_sk', 'temp_file_sk', 'sk_kelompok'),
+                    'foto_ktp' => $this->handleFileUpload($request, 'foto_ktp', 'temp_foto_ktp', 'ktp_ketua'),
                 ]);
 
                 if ($request->has('anggota_nama') && is_array($request->anggota_nama)) {
@@ -119,8 +122,7 @@ class RegisteredUserController extends Controller
                     'nik' => $request->nik_ketua,
                     'no_wa' => $request->no_wa,
                     'alamat' => $request->alamat,
-                    'foto_ktp' => $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('ktp_umum', 'public') : null,
-                    'status' => 'menunggu',
+                    'foto_ktp' => $this->handleFileUpload($request, 'foto_ktp', 'temp_foto_ktp', 'ktp_umum'),
                 ]);
             }
 
@@ -132,5 +134,32 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
+    }
+
+    private function handleFileUpload($request, $fileKey, $tempKey, $destination)
+    {
+        if ($request->hasFile($fileKey)) {
+            return $request->file($fileKey)->store($destination, 'public');
+        } elseif ($request->filled($tempKey) && Storage::disk('public')->exists($request->input($tempKey))) {
+            $tempPath = $request->input($tempKey);
+            $newPath = str_replace('temp/', $destination . '/', $tempPath);
+            Storage::disk('public')->move($tempPath, $newPath);
+            return $newPath;
+        }
+        return null;
+    }
+
+    public function tempUpload(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+        ]);
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('temp', 'public');
+            return response()->json(['path' => $path]);
+        }
+
+        return response()->json(['error' => 'File not found'], 400);
     }
 }

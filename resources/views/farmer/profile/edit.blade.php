@@ -241,25 +241,58 @@
                         <x-input-error :messages="$errors->get('komoditi_utama')" class="mt-2" />
                     </div>
 
-                    <!-- Kecamatan -->
-                    <div class="md:col-span-2">
-                        <label for="kecamatan" class="block text-sm font-bold text-gray-800 mb-2">Kecamatan</label>
-                        <select name="kecamatan" id="kecamatan" required
-                                class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                            @foreach(['Bahar Selatan', 'Bahar Utara', 'Jambi Luar Kota', 'Kumpeh', 'Kumpeh Ulu', 'Maro Sebo', 'Mestong', 'Sekernan', 'Sungai Bahar', 'Sungai Gelam', 'Taman Rajo'] as $kec)
-                                <option value="{{ $kec }}" {{ old('kecamatan', $profile->kecamatan) == $kec ? 'selected' : '' }}>{{ $kec }}</option>
-                            @endforeach
-                        </select>
-                        <x-input-error :messages="$errors->get('kecamatan')" class="mt-2" />
-                    </div>
+                    <!-- Kecamatan & Desa (dependent dropdown) -->
+                    <div class="md:col-span-2" x-data="{
+                        villages: [],
+                        loadingVillages: false,
+                        currentDesa: '{{ old('alamat', $profile->alamat) }}',
+                        fetchVillages(kecamatan) {
+                            this.villages = [];
+                            this.currentDesa = '';
+                            if (!kecamatan) return;
+                            this.loadingVillages = true;
+                            fetch(`/api/villages?kecamatan=${encodeURIComponent(kecamatan)}`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    this.villages = data;
+                                    this.loadingVillages = false;
+                                })
+                                .catch(() => { this.loadingVillages = false; });
+                        }
+                    }" x-init="fetchVillages(document.getElementById('kecamatan').value); $watch('currentDesa', v => {})">
 
-                    <!-- Desa -->
-                    <div class="md:col-span-2">
-                        <label for="alamat" class="block text-sm font-bold text-gray-800 mb-2">Desa</label>
-                        <input type="text" name="alamat" id="alamat" value="{{ old('alamat', $profile->alamat) }}" required
-                               class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all"
-                               placeholder="Nama Desa">
-                        <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+                        <!-- Kecamatan -->
+                        <div class="mb-4">
+                            <label for="kecamatan" class="block text-sm font-bold text-gray-800 mb-2">Kecamatan</label>
+                            <select name="kecamatan" id="kecamatan" required
+                                    @change="fetchVillages($event.target.value)"
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
+                                @foreach(['Bahar Selatan', 'Bahar Utara', 'Jambi Luar Kota', 'Kumpeh', 'Kumpeh Ulu', 'Maro Sebo', 'Mestong', 'Sekernan', 'Sungai Bahar', 'Sungai Gelam', 'Taman Rajo'] as $kec)
+                                    <option value="{{ $kec }}" {{ old('kecamatan', $profile->kecamatan) == $kec ? 'selected' : '' }}>{{ $kec }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('kecamatan')" class="mt-2" />
+                        </div>
+
+                        <!-- Desa -->
+                        <div>
+                            <label for="alamat" class="block text-sm font-bold text-gray-800 mb-2">Desa</label>
+                            <div class="relative">
+                                <select name="alamat" id="alamat" required x-model="currentDesa"
+                                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white"
+                                        :disabled="loadingVillages || villages.length === 0">
+                                    <option value="" x-show="loadingVillages">Memuat desa...</option>
+                                    <option value="" x-show="!loadingVillages && villages.length === 0">-- Pilih kecamatan terlebih dahulu --</option>
+                                    <template x-for="v in villages" :key="v.name">
+                                        <option :value="v.name" :selected="v.name === '{{ old('alamat', $profile->alamat) }}'" x-text="v.name"></option>
+                                    </template>
+                                </select>
+                                <div x-show="loadingVillages" class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                    <svg class="animate-spin h-4 w-4 text-[#19A148]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                </div>
+                            </div>
+                            <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+                        </div>
                     </div>
                 </div>
 

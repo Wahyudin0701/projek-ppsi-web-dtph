@@ -59,7 +59,7 @@
                                                     <span class="text-xs font-black uppercase tracking-widest 
                                                         {{ $log->status === 'approved' ? 'text-green-600' : 
                                                            ($log->status === 'rejected' ? 'text-red-600' : 'text-amber-600') }}">
-                                                        {{ $log->status }}
+                                                        {{ str_replace('_', ' ', $log->status) }}
                                                     </span>
                                                     <span class="text-xs font-bold text-gray-400">{{ $log->created_at->format('d M Y, H:i') }}</span>
                                                 </div>
@@ -244,6 +244,15 @@
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="action" x-bind:value="respondAction">
+
+                        <div x-show="respondAction === 'reject'" class="mb-6 mt-4">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">Alasan Penolakan</label>
+                            <textarea name="rejection_reason" 
+                                      rows="3" 
+                                      :required="respondAction === 'reject'"
+                                      class="w-full bg-gray-50 border-gray-100 rounded-2xl focus:ring-red-500 focus:border-red-500 text-sm font-medium p-4 transition-all"
+                                      placeholder="Ketik alasan mengapa permohonan ubah data ini ditolak..."></textarea>
+                        </div>
 
                         <div class="mt-6 flex justify-end gap-3">
                             <button type="button" @click="respondModal = false" class="px-4 py-2 bg-white border border-gray-300 rounded-xl font-bold text-sm text-gray-700 hover:bg-gray-50">Batal</button>

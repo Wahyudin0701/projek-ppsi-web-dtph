@@ -140,15 +140,14 @@ class DashboardController extends Controller
         $activeProgramTypes = Proposal::where('user_id', $userId)
             ->whereNotNull('program_id')
             ->whereIn('status', $activeStatuses)
-            ->with('program:id,type')
+            ->with('program:id,program_category_id')
             ->get()
-            ->pluck('program.type')
+            ->pluck('program.program_category_id')
             ->filter()
             ->unique()
             ->toArray();
 
-        $programs = Program::where('is_open', true)
-            ->whereNotIn('type', $activeProgramTypes)
+        $programs = Program::whereNotIn('program_category_id', $activeProgramTypes)
             ->whereNotNull('open_date')
             ->where('open_date', '<=', now()->startOfDay())
             ->where(function ($query) {

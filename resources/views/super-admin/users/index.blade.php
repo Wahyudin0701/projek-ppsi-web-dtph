@@ -110,6 +110,7 @@
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Nama</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">Email</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Role Aktif</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Status</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -135,6 +136,27 @@
                                     </span>
                                     @endforelse
                                 </div>
+                            </td>
+
+                            <td class="px-6 py-4 text-center">
+                                @php
+                                    $statusMap = [
+                                        'menunggu'         => ['label' => 'Menunggu',  'class' => 'bg-yellow-100 text-yellow-800 border-yellow-200'],
+                                        'reviewed'         => ['label' => 'Direview',  'class' => 'bg-blue-100 text-blue-800 border-blue-200'],
+                                        'approved'         => ['label' => 'Disetujui', 'class' => 'bg-green-100 text-green-800 border-green-200'],
+                                        'rejected'         => ['label' => 'Ditolak',   'class' => 'bg-red-100 text-red-800 border-red-200'],
+                                        'revisi'           => ['label' => 'Revisi',    'class' => 'bg-orange-100 text-orange-800 border-orange-200'],
+                                        'pengajuan_revisi' => ['label' => 'Pengajuan Revisi', 'class' => 'bg-purple-100 text-purple-800 border-purple-200'],
+                                    ];
+                                    $s = $statusMap[$user->status] ?? ['label' => ucfirst($user->status), 'class' => 'bg-gray-100 text-gray-700 border-gray-200'];
+                                @endphp
+                                @if(in_array($user->role, ['petani', 'umum']))
+                                <span class="inline-block px-2.5 py-1 text-xs font-bold rounded-lg border {{ $s['class'] }}">
+                                    {{ $s['label'] }}
+                                </span>
+                                @else
+                                <span class="text-xs text-gray-400">-</span>
+                                @endif
                             </td>
 
                             <td class="px-6 py-4 text-center">
@@ -188,7 +210,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-16 text-center">
+                            <td colspan="5" class="px-6 py-16 text-center">
                                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
                                     <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />

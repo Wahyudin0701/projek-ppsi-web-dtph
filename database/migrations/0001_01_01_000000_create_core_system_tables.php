@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default('petani');
-            $table->enum('status', ['menunggu', 'reviewed', 'approved', 'rejected', 'pengajuan_revisi'])->default('menunggu');
+            $table->enum('status', ['menunggu', 'reviewed', 'approved', 'rejected', 'pengajuan_revisi', 'revisi'])->default('menunggu');
             $table->boolean('is_verified')->default(false);
             $table->rememberToken();
             $table->timestamps();

@@ -153,10 +153,9 @@
                                     $currentUser = $isUserShow ? request()->route('user') : null;
                                     $isPendingVerif = $currentUser && $currentUser->farmerProfile && in_array($currentUser->farmerProfile->status, ['menunggu', 'reviewed']);
                                     $isMasterList = $currentUser && (!$currentUser->farmerProfile || in_array($currentUser->farmerProfile->status, ['approved', 'rejected']));
-                                    $pendingUserVerificationsCount = \App\Models\User::where('role', 'petani')
-                                        ->whereHas('farmerProfile', function ($query) {
-                                            $query->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi']);
-                                        })->count();
+                                    $pendingUserVerificationsCount = \App\Models\User::whereIn('role', ['petani', 'umum'])
+                                        ->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi'])
+                                        ->count();
                                 @endphp
                                 <li>
                                     <a href="{{ route('admin.users.kelompok-tani') }}" 
@@ -590,10 +589,9 @@
                             $currentUser = $isUserShow ? request()->route('user') : null;
                             $isPendingVerif = $currentUser && $currentUser->farmerProfile && in_array($currentUser->farmerProfile->status, ['menunggu', 'reviewed']);
                             $isMasterList = $currentUser && (!$currentUser->farmerProfile || in_array($currentUser->farmerProfile->status, ['approved', 'rejected']));
-                            $pendingUserVerificationsCount = \App\Models\User::where('role', 'petani')
-                                ->whereHas('farmerProfile', function ($query) {
-                                    $query->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi']);
-                                })->count();
+                            $pendingUserVerificationsCount = \App\Models\User::whereIn('role', ['petani', 'umum'])
+                                ->whereIn('status', ['menunggu', 'reviewed', 'pengajuan_revisi'])
+                                ->count();
                             $pendingCount = \App\Models\Proposal::where('status', 'sedang_diverifikasi_admin')->count();
                         @endphp
                         <a href="{{ route('admin.users.kelompok-tani') }}" @click="mobileMenuOpen = false"

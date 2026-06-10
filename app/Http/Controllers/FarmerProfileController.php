@@ -11,10 +11,22 @@ class FarmerProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $profile = $user->farmerProfile;
 
-        if (!$profile || !in_array($user->status, ['revisi'])) {
+        if (!in_array($user->status, ['revisi'])) {
             return redirect()->route('dashboard')->with('error', 'Anda hanya dapat mengedit profil jika status pendaftaran dalam tahap revisi.');
+        }
+
+        if ($user->role === 'umum') {
+            $profile = $user->umumProfile;
+            if (!$profile) {
+                return redirect()->route('dashboard')->with('error', 'Profil tidak ditemukan.');
+            }
+            return view('umum.profile.edit', compact('profile'));
+        }
+
+        $profile = $user->farmerProfile;
+        if (!$profile) {
+            return redirect()->route('dashboard')->with('error', 'Profil tidak ditemukan.');
         }
 
         return view('farmer.profile.edit', compact('profile'));
@@ -23,10 +35,42 @@ class FarmerProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        $profile = $user->farmerProfile;
 
-        if (!$profile || !in_array($user->status, ['revisi'])) {
+        if (!in_array($user->status, ['revisi'])) {
             return redirect()->route('dashboard')->with('error', 'Anda hanya dapat mengedit profil jika status pendaftaran dalam tahap revisi.');
+        }
+
+        // Handle Umum user update
+        if ($user->role === 'umum') {
+            $profile = $user->umumProfile;
+            if (!$profile) {
+                return redirect()->route('dashboard')->with('error', 'Profil tidak ditemukan.');
+            }
+
+            $validated = $request->validate([
+                'nik'      => ['required', 'string', 'size:16'],
+                'no_wa'    => ['required', 'string', 'max:20'],
+                'alamat'   => ['required', 'string', 'max:500'],
+                'foto_ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+            ]);
+
+            if ($request->hasFile('foto_ktp')) {
+                if ($profile->foto_ktp) {
+                    Storage::disk('public')->delete($profile->foto_ktp);
+                }
+                $validated['foto_ktp'] = $request->file('foto_ktp')->store('ktp_umum', 'public');
+            }
+
+            $profile->update($validated);
+            $user->update(['status' => 'menunggu']);
+
+            return redirect()->route('dashboard')->with('success', 'Profil berhasil diperbarui dan telah dikirim kembali untuk diverifikasi.');
+        }
+
+        // Handle Petani user update
+        $profile = $user->farmerProfile;
+        if (!$profile) {
+            return redirect()->route('dashboard')->with('error', 'Profil tidak ditemukan.');
         }
 
         $rules = [

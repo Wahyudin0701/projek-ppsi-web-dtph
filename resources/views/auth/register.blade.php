@@ -166,6 +166,7 @@
                           komoditiUtama: '{{ old('komoditi_utama', '') }}',
                           villages: [],
                           loadingVillages: false,
+                          passwordError: '',
                           review: {},
                           fetchVillages(kecamatan) {
                               this.villages = [];
@@ -176,11 +177,53 @@
                                   .then(data => {
                                       this.villages = data;
                                       this.loadingVillages = false;
-                                      // Reset desa selection
-                                      const desaEl = document.getElementById('alamat');
-                                      if (desaEl) desaEl.value = '';
+                                      this.$nextTick(() => {
+                                          const desaEl = document.getElementById('alamat');
+                                          if (desaEl) {
+                                              const oldAlamat = '{{ old('alamat') }}';
+                                              if (oldAlamat && this.villages.some(v => v.name === oldAlamat)) {
+                                                  desaEl.value = oldAlamat;
+                                              } else if (!oldAlamat) {
+                                                  desaEl.value = '';
+                                              }
+                                          }
+                                      });
                                   })
                                   .catch(() => { this.loadingVillages = false; });
+                          },
+                          validatePassword() {
+                              const pwd = document.getElementById('password');
+                              const conf = document.getElementById('password_confirmation');
+                              this.passwordError = '';
+                              if (pwd && conf && pwd.value !== conf.value) {
+                                  this.passwordError = 'Kata sandi dan konfirmasi kata sandi tidak cocok!';
+                                  return false;
+                              }
+                              return true;
+                          },
+                          uploadTempFile(fileInputId, hiddenInputId) {
+                              const input = document.getElementById(fileInputId);
+                              if (!input.files.length) return;
+                              
+                              let formData = new FormData();
+                              formData.append('file', input.files[0]);
+                              
+                              const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+                              
+                              fetch('/api/temp-upload', {
+                                  method: 'POST',
+                                  headers: {
+                                      'X-CSRF-TOKEN': csrfToken
+                                  },
+                                  body: formData
+                              })
+                              .then(res => res.json())
+                              .then(data => {
+                                  if(data.path) {
+                                      document.getElementById(hiddenInputId).value = data.path;
+                                  }
+                              })
+                              .catch(err => console.error('Upload failed', err));
                           },
                           updateReview() {
                               const desaEl = document.getElementById('alamat');
@@ -223,23 +266,23 @@
                             <div class="absolute left-0 top-4 transform -translate-y-1/2 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
                             <div class="absolute left-0 top-4 transform -translate-y-1/2 h-1 bg-[#19A148] z-0 rounded-full transition-all duration-500 ease-in-out" :style="'width: ' + ((step - 1) / (maxStep - 1) * 100) + '%'"></div>
                             
-                            <div class="relative z-10 flex flex-col items-center" :class="1 <= highestStep ? 'cursor-pointer group' : ''" @click="if(1 <= highestStep) { if (1 < step || $el.closest('form').reportValidity()) { step = 1; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="1 <= highestStep ? 'cursor-pointer group' : ''" @click="if(1 <= highestStep) { if (1 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 1; if(step === 5) updateReview(); } }">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 1 ? 'bg-[#19A148] text-white shadow-md' + (1 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">1</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 1 ? 'text-[#19A148]' : 'text-gray-400'">Akun</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="2 <= highestStep ? 'cursor-pointer group' : ''" @click="if(2 <= highestStep) { if (2 < step || $el.closest('form').reportValidity()) { step = 2; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="2 <= highestStep ? 'cursor-pointer group' : ''" @click="if(2 <= highestStep) { if (2 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 2; if(step === 5) updateReview(); } }">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 2 ? 'bg-[#19A148] text-white shadow-md' + (2 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">2</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 2 ? 'text-[#19A148]' : 'text-gray-400'">Ketua</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="3 <= highestStep ? 'cursor-pointer group' : ''" @click="if(3 <= highestStep) { if (3 < step || $el.closest('form').reportValidity()) { step = 3; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="3 <= highestStep ? 'cursor-pointer group' : ''" @click="if(3 <= highestStep) { if (3 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 3; if(step === 5) updateReview(); } }">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 3 ? 'bg-[#19A148] text-white shadow-md' + (3 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">3</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 3 ? 'text-[#19A148]' : 'text-gray-400'">Kelompok</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="4 <= highestStep ? 'cursor-pointer group' : ''" @click="if(4 <= highestStep) { if (4 < step || $el.closest('form').reportValidity()) { step = 4; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="4 <= highestStep ? 'cursor-pointer group' : ''" @click="if(4 <= highestStep) { if (4 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 4; if(step === 5) updateReview(); } }">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 4 ? 'bg-[#19A148] text-white shadow-md' + (4 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">4</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 4 ? 'text-[#19A148]' : 'text-gray-400'">Lahan</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="5 <= highestStep ? 'cursor-pointer group' : ''" @click="if(5 <= highestStep) { if (5 < step || $el.closest('form').reportValidity()) { step = 5; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="5 <= highestStep ? 'cursor-pointer group' : ''" @click="if(5 <= highestStep) { if (5 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 5; if(step === 5) updateReview(); } }">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 5 ? 'bg-[#19A148] text-white shadow-md' + (5 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">5</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 5 ? 'text-[#19A148]' : 'text-gray-400'">Review</span>
                             </div>
@@ -291,6 +334,7 @@
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"/></svg>
                                     </div>
                                     <input type="text" name="nik_ketua" id="nik_ketua" value="{{ old('nik_ketua') }}" :required="step === 1"
+                                        pattern="\d{16}" minlength="16" maxlength="16" title="NIK harus terdiri dari 16 digit angka"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                         placeholder="16 digit NIK">
                                 </div>
@@ -332,10 +376,11 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                     </div>
-                                    <input type="file" name="foto_ktp" id="foto_ktp" accept=".jpg,.jpeg,.png" :required="step === 1"
+                                    <input type="hidden" id="temp_foto_ktp" name="temp_foto_ktp" value="{{ old('temp_foto_ktp') }}">
+                                    <input type="file" name="foto_ktp" id="foto_ktp" accept=".jpg,.jpeg,.png" :required="step === 1 && !'{{ old('temp_foto_ktp') }}'" @change="uploadTempFile('foto_ktp', 'temp_foto_ktp')"
                                         class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
                                 </div>
-                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: JPG/PNG. Maksimal 5MB.</p>
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: JPG/PNG. Maksimal 5MB. @if(old('temp_foto_ktp')) <span class="text-[#19A148] font-bold">File KTP sudah diunggah sebelumnya.</span> @endif</p>
                                 <x-input-error :messages="$errors->get('foto_ktp')" class="mt-2" />
                             </div>
                             @endif
@@ -347,7 +392,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                                     </div>
-                                    <input :type="showPassword ? 'text' : 'password'" name="password" id="password" :required="step === 1"
+                                    <input :type="showPassword ? 'text' : 'password'" name="password" id="password" :required="step === 1" @input="passwordError = ''"
                                         class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                         placeholder="••••••••">
                                     
@@ -371,7 +416,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                                     </div>
-                                    <input :type="showPasswordConf ? 'text' : 'password'" name="password_confirmation" id="password_confirmation" :required="step === 1"
+                                    <input :type="showPasswordConf ? 'text' : 'password'" name="password_confirmation" id="password_confirmation" :required="step === 1" @input="passwordError = ''"
                                         class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                         placeholder="••••••••">
                                     
@@ -385,6 +430,7 @@
                                         </svg>
                                     </button>
                                 </div>
+                                <p x-show="passwordError" x-text="passwordError" x-cloak class="mt-2 text-sm font-bold text-red-500"></p>
                                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                             </div>
                         </div>
@@ -416,6 +462,7 @@
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"/></svg>
                                     </div>
                                     <input type="text" name="nik_ketua" id="nik_ketua" value="{{ old('nik_ketua') }}" :required="step === 2"
+                                        pattern="\d{16}" minlength="16" maxlength="16" title="NIK harus terdiri dari 16 digit angka"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                         placeholder="16 digit NIK">
                                 </div>
@@ -443,10 +490,11 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                     </div>
-                                    <input type="file" name="foto_ktp" id="foto_ktp" accept=".jpg,.jpeg,.png" :required="step === 2"
+                                    <input type="hidden" id="temp_foto_ktp_ketua" name="temp_foto_ktp" value="{{ old('temp_foto_ktp') }}">
+                                    <input type="file" name="foto_ktp" id="foto_ktp_ketua" accept=".jpg,.jpeg,.png" :required="step === 2 && !'{{ old('temp_foto_ktp') }}'" @change="uploadTempFile('foto_ktp_ketua', 'temp_foto_ktp_ketua')"
                                         class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
                                 </div>
-                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: JPG/PNG. Maksimal 5MB.</p>
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: JPG/PNG. Maksimal 5MB. @if(old('temp_foto_ktp')) <span class="text-[#19A148] font-bold">File KTP sudah diunggah sebelumnya.</span> @endif</p>
                                 <x-input-error :messages="$errors->get('foto_ktp')" class="mt-2" />
                             </div>
 
@@ -490,12 +538,13 @@
                                 <label for="file_sk" class="block text-sm font-bold text-gray-800 mb-2">File SK Kelompok Tani <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     </div>
-                                    <input type="file" name="file_sk" id="file_sk" accept=".pdf,.jpg,.jpeg,.png" :required="step === 3"
+                                    <input type="hidden" id="temp_file_sk" name="temp_file_sk" value="{{ old('temp_file_sk') }}">
+                                    <input type="file" name="file_sk" id="file_sk" accept=".pdf,.jpg,.jpeg,.png" :required="step === 3 && !'{{ old('temp_file_sk') }}'" @change="uploadTempFile('file_sk', 'temp_file_sk')"
                                         class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
                                 </div>
-                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: PDF/JPG/PNG. Maksimal 5MB.</p>
+                                <p class="mt-2 text-[11px] text-gray-500 font-medium">Format: PDF/JPG/PNG. Maksimal 5MB. @if(old('temp_file_sk')) <span class="text-[#19A148] font-bold">File SK sudah diunggah sebelumnya.</span> @endif</p>
                                 <x-input-error :messages="$errors->get('file_sk')" class="mt-2" />
                             </div>
 
@@ -532,6 +581,7 @@
                                                     <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"/></svg>
                                                 </div>
                                                 <input type="text" x-bind:name="'anggota_nik[' + index + ']'" x-model="item.nik" :required="step === 3"
+                                                    pattern="\d{16}" minlength="16" maxlength="16" title="NIK harus terdiri dari 16 digit angka"
                                                     class="input-anggota-nik block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                                     placeholder="16 Digit NIK">
                                             </div>
@@ -823,7 +873,7 @@
                         </button>
 
                         <!-- Next Button -->
-                        <button type="button" x-show="step < maxStep" @click="if($el.closest('form').reportValidity()) { if(step === maxStep - 1) updateReview(); step++; highestStep = Math.max(highestStep, step); }"
+                        <button type="button" x-show="step < maxStep" @click="if($el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; if(step === maxStep - 1) updateReview(); step++; highestStep = Math.max(highestStep, step); }"
                                 class="flex-1 flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#19A148] hover:bg-[#158C3D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
                             Selanjutnya
                             <svg class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

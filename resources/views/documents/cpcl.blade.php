@@ -52,6 +52,29 @@
             $tanggalTerbilang = $ba ? trim(terbilang($ba->survey_date->format('j'))) : '-';
             $bulan = $ba ? $ba->survey_date->translatedFormat('F') : '-';
             $tahunTerbilang = $ba ? trim(terbilang($ba->survey_date->format('Y'))) : '-';
+            
+            $isUmum = $proposal->user->role === 'umum';
+            if ($isUmum) {
+                $namaPengaju = $proposal->user->name;
+                $desa = !empty($proposal->user->umumProfile->alamat) ? $proposal->user->umumProfile->alamat : '-';
+                $kecamatan = '-'; 
+                $identitasLabel = 'NIK';
+                $identitasValue = $proposal->user->umumProfile->nik ?? '-';
+                $ketuaLabel = 'Nama Lengkap';
+                $ketuaValue = $namaPengaju;
+                $skLabel = 'No. HP / WA';
+                $noSk = $proposal->user->umumProfile->no_wa ?? '-';
+            } else {
+                $namaPengaju = $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name;
+                $desa = !empty($proposal->user->farmerProfile->alamat) ? $proposal->user->farmerProfile->alamat : '-';
+                $kecamatan = !empty($proposal->user->farmerProfile->kecamatan) ? $proposal->user->farmerProfile->kecamatan : '-';
+                $identitasLabel = 'ID Poktan';
+                $identitasValue = $proposal->user->farmerProfile->id_poktan ?? '-';
+                $ketuaLabel = 'Ketua Kelompok';
+                $ketuaValue = $proposal->user->farmerProfile->ketua ?? '-';
+                $skLabel = 'No. SK Kelompok Tani';
+                $noSk = !empty($assignment->no_sk_kelompok_tani) ? $assignment->no_sk_kelompok_tani : ($proposal->user->farmerProfile->no_sk ?? '-');
+            }
         @endphp
 
         <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden print-card">
@@ -67,45 +90,53 @@
                 <!-- Prolog Berita Acara -->
                 <div class="text-gray-800 text-sm md:text-base leading-relaxed space-y-4">
                     <p class="indent-8 text-justify">
-                        Pada hari <strong>{{ $hari }}</strong>, Tanggal <strong>{{ $tanggalTerbilang }}</strong>, Bulan <strong>{{ $bulan }}</strong>, Tahun <strong>{{ $tahunTerbilang }}</strong>, bertempat di Desa <strong>{{ ucwords(strtolower($farmer->alamat ?? '-')) }}</strong>, Kecamatan <strong>{{ ucwords(strtolower($farmer->kecamatan ?? '-')) }}</strong>, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
+                        @if($isUmum)
+                        Pada hari <strong>{{ $hari }}</strong>, Tanggal <strong>{{ $tanggalTerbilang }}</strong>, Bulan <strong>{{ $bulan }}</strong>, Tahun <strong>{{ $tahunTerbilang }}</strong>, bertempat di <strong>{{ ucwords(strtolower($desa)) }}</strong>, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
+                        @else
+                        Pada hari <strong>{{ $hari }}</strong>, Tanggal <strong>{{ $tanggalTerbilang }}</strong>, Bulan <strong>{{ $bulan }}</strong>, Tahun <strong>{{ $tahunTerbilang }}</strong>, bertempat di Desa / Alamat <strong>{{ ucwords(strtolower($desa)) }}</strong>, Kecamatan <strong>{{ ucwords(strtolower($kecamatan)) }}</strong>, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
+                        @endif
                     </p>
                     
                     <div class="pl-0 sm:pl-8 space-y-4 my-6">
                         <table class="w-full text-sm">
                             <tr>
-                                <td class="w-48 py-1">Nama Kelompok Tani</td>
+                                <td class="w-48 py-1">{{ $isUmum ? 'Nama Pemohon' : 'Nama Kelompok Tani' }}</td>
                                 <td class="w-4">:</td>
-                                <td class="font-bold">{{ $farmer->nama_kelompok ?? '-' }}</td>
+                                <td class="font-bold">{{ $namaPengaju }}</td>
                             </tr>
                             <tr>
-                                <td class="py-1">ID Poktan</td>
+                                <td class="py-1">{{ $identitasLabel }}</td>
                                 <td>:</td>
-                                <td>{{ $farmer->id_poktan ?? '-' }}</td>
+                                <td>{{ $identitasValue }}</td>
                             </tr>
+                            @if(!$isUmum)
                             <tr>
                                 <td class="py-1">Ketua Kelompok</td>
                                 <td>:</td>
-                                <td>{{ $farmer->ketua ?? '-' }}</td>
+                                <td>{{ $ketuaValue }}</td>
                             </tr>
+                            @endif
                             <tr>
-                                <td class="py-1">Desa</td>
+                                <td class="py-1">Desa / Alamat</td>
                                 <td>:</td>
-                                <td>{{ ucwords(strtolower($farmer->alamat ?? '-')) }}</td>
+                                <td>{{ ucwords(strtolower($desa)) }}</td>
                             </tr>
+                            @if(!$isUmum)
                             <tr>
                                 <td class="py-1">Kecamatan</td>
                                 <td>:</td>
-                                <td>{{ ucwords(strtolower($farmer->kecamatan ?? '-')) }}</td>
+                                <td>{{ ucwords(strtolower($kecamatan)) }}</td>
                             </tr>
+                            @endif
                             <tr>
                                 <td class="py-1">No. Surat Pengajuan</td>
                                 <td>:</td>
                                 <td>{{ $proposal->no_surat_pengajuan ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <td class="py-1">No. SK Kelompok Tani</td>
+                                <td class="py-1">{{ $skLabel }}</td>
                                 <td>:</td>
-                                <td>{{ $farmer->no_sk ?? '-' }}</td>
+                                <td>{{ $noSk }}</td>
                             </tr>
                         </table>
                     </div>

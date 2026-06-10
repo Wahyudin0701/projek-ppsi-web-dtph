@@ -199,14 +199,14 @@ class ProposalController extends Controller
         $activeStatuses = ['sedang_diverifikasi_admin', 'sedang_diverifikasi_pimpinan', 'persiapan_survei', 'sedang_survei', 'verifikasi_cpcl', 'menunggu_keputusan_akhir', 'disetujui'];
         $existingProposal = Proposal::where('user_id', $user->id)
             ->whereHas('program', function ($query) use ($program) {
-                $query->where('type', $program->type);
+                $query->where('program_category_id', $program->program_category_id);
             })
             ->whereIn('status', $activeStatuses)
             ->first();
 
         if ($existingProposal) {
-            $typeName = str_replace('_', ' ', $program->type);
-            return back()->with('error', "Anda sudah memiliki pengajuan aktif untuk jenis program {$typeName}. Silakan tunggu proses selesai sebelum mengajukan kembali untuk jenis yang sama.");
+            $categoryName = $program->category ? $program->category->name : 'ini';
+            return back()->with('error', "Anda sudah memiliki pengajuan aktif untuk kategori program {$categoryName}. Silakan tunggu proses selesai sebelum mengajukan kembali untuk kategori yang sama.");
         }
 
         $request->validate([

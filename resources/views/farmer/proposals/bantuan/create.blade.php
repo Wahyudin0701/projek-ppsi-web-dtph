@@ -70,24 +70,45 @@
                         Pemohon Terdaftar
                     </h3>
                     <div class="space-y-4">
-                        <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Kelompok Tani</p>
-                            <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->nama_kelompok ?? '-' }}</p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        @if(auth()->user()->role === 'umum')
                             <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Ketua</p>
-                                <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->ketua ?? auth()->user()->name }}</p>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Pemohon</p>
+                                <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->name }}</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">NIK</p>
+                                    <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->umumProfile->nik ?? '-' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Telepon</p>
+                                    <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->umumProfile->no_wa ?? '-' }}</p>
+                                </div>
                             </div>
                             <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Telepon</p>
-                                <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->kontak ?? '-' }}</p>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Alamat</p>
+                                <p class="text-sm font-medium text-gray-700 leading-relaxed">{{ auth()->user()->umumProfile->alamat ?? '-' }}</p>
                             </div>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Alamat Kelompok</p>
-                            <p class="text-sm font-medium text-gray-700 leading-relaxed">{{ auth()->user()->farmerProfile->alamat ?? '-' }}</p>
-                        </div>
+                        @else
+                            <div>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Nama Kelompok Tani</p>
+                                <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->nama_kelompok ?? '-' }}</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Ketua</p>
+                                    <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->ketua ?? auth()->user()->name }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Telepon</p>
+                                    <p class="font-bold text-gray-800 text-sm">{{ auth()->user()->farmerProfile->kontak ?? '-' }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Alamat Kelompok</p>
+                                <p class="text-sm font-medium text-gray-700 leading-relaxed">{{ auth()->user()->farmerProfile->alamat ?? '-' }}</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -180,7 +201,7 @@
                             <div>
                                 <h4 class="font-bold text-[#19A148] text-sm mb-1.5">Pernyataan Komitmen</h4>
                                 <p class="text-sm text-[#19A148]/80 leading-relaxed">
-                                    Dengan mengajukan proposal ini, Anda menyatakan permohonan sah atas nama kelompok tani terdaftar dan <strong class="text-[#19A148]">tidak dipungut biaya apapun (GRATIS)</strong>.
+                                    Dengan mengajukan proposal ini, Anda menyatakan permohonan sah atas nama {{ auth()->user()->role === 'umum' ? 'pribadi/instansi terdaftar' : 'kelompok tani terdaftar' }} dan <strong class="text-[#19A148]">tidak dipungut biaya apapun (GRATIS)</strong>.
                                 </p>
                             </div>
                         </div>

@@ -26,7 +26,7 @@
                     <p class="text-sm text-gray-500 mt-1">Kelola dan pantau seluruh data kelompok tani binaan DTPH Muaro Jambi.</p>
                 </div>
 
-                <form action="{{ route('admin.users.kelompok-tani') }}" method="GET" class="flex flex-col gap-3 w-full lg:w-auto">
+                <form action="{{ route('admin.users.kelompok-tani') }}" method="GET" class="flex flex-col gap-3 w-full lg:w-auto" x-data="{ startDate: '{{ request('start_date') }}' }">
                     <div class="flex flex-col sm:flex-row gap-3 items-end">
                         {{-- Search Input --}}
                         <div class="w-full sm:w-auto flex flex-col">
@@ -43,13 +43,13 @@
 
                         <div class="w-full sm:w-auto flex flex-col">
                             <label class="text-xs font-bold text-gray-500 mb-1">Mulai Tgl</label>
-                            <input type="date" name="start_date" value="{{ request('start_date') }}" onchange="this.form.submit()"
+                            <input type="date" name="start_date" x-model="startDate" onchange="this.form.submit()"
                                 class="w-full sm:w-36 py-2 px-3 bg-gray-50 border-gray-200 rounded-xl text-sm focus:ring-blue-600 focus:border-blue-600 transition-all">
                         </div>
 
                         <div class="w-full sm:w-auto flex flex-col">
                             <label class="text-xs font-bold text-gray-500 mb-1">Sampai Tgl</label>
-                            <input type="date" name="end_date" value="{{ request('end_date') }}" onchange="this.form.submit()"
+                            <input type="date" name="end_date" value="{{ request('end_date') }}" :min="startDate" onchange="this.form.submit()"
                                 class="w-full sm:w-36 py-2 px-3 bg-gray-50 border-gray-200 rounded-xl text-sm focus:ring-blue-600 focus:border-blue-600 transition-all">
                         </div>
 

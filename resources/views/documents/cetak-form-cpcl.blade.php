@@ -61,39 +61,63 @@
             $tahun = terbilang($dateToUse->format('Y'));
             
             // Menggunakan field alamat karena database tidak memiliki kolom desa
-            $desa = !empty($proposal->user->farmerProfile->alamat) ? $proposal->user->farmerProfile->alamat : '....................';
-            $kecamatan = !empty($proposal->user->farmerProfile->kecamatan) ? $proposal->user->farmerProfile->kecamatan : '....................';
-            
-            $noSk = !empty($assignment->no_sk_kelompok_tani) ? $assignment->no_sk_kelompok_tani : ($proposal->user->farmerProfile->no_sk ?? '-');
+            $isUmum = $proposal->user->role === 'umum';
+            if ($isUmum) {
+                $namaPengaju = $proposal->user->name;
+                $desa = !empty($proposal->user->umumProfile->alamat) ? $proposal->user->umumProfile->alamat : '....................';
+                $kecamatan = '....................'; 
+                $identitasLabel = 'NIK';
+                $identitasValue = $proposal->user->umumProfile->nik ?? '-';
+                $ketuaLabel = 'Nama Lengkap';
+                $ketuaValue = $namaPengaju;
+                $skLabel = 'No. HP / WA';
+                $noSk = $proposal->user->umumProfile->no_wa ?? '-';
+            } else {
+                $namaPengaju = $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name;
+                $desa = !empty($proposal->user->farmerProfile->alamat) ? $proposal->user->farmerProfile->alamat : '....................';
+                $kecamatan = !empty($proposal->user->farmerProfile->kecamatan) ? $proposal->user->farmerProfile->kecamatan : '....................';
+                $identitasLabel = 'ID Poktan';
+                $identitasValue = $proposal->user->farmerProfile->id_poktan ?? '-';
+                $ketuaLabel = 'Ketua Kelompok';
+                $ketuaValue = $proposal->user->farmerProfile->ketua ?? '-';
+                $skLabel = 'No. SK Kelompok Tani';
+                $noSk = !empty($assignment->no_sk_kelompok_tani) ? $assignment->no_sk_kelompok_tani : ($proposal->user->farmerProfile->no_sk ?? '-');
+            }
         @endphp
 
         <p style="text-indent: 40px; margin-bottom: 10px;">
+            @if($isUmum)
+            Pada hari {{ $hari }}, Tanggal {{ $tanggal }}, Bulan {{ $bulan }}, Tahun {{ $tahun }}, bertempat di {{ $desa }}, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
+            @else
             Pada hari {{ $hari }}, Tanggal {{ $tanggal }}, Bulan {{ $bulan }}, Tahun {{ $tahun }}, bertempat di Desa {{ $desa }}, Kecamatan {{ ucwords(strtolower($kecamatan)) }}, telah dilakukan verifikasi CPCL terhadap calon penerima bantuan :
+            @endif
         </p>
         
         <table class="info-table">
             <tr>
-                <td width="30%">1. Nama Kelompok Tani</td>
-                <td>: {{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</td>
+                <td width="30%">{{ $isUmum ? 'Nama Pemohon' : 'Nama Kelompok Tani' }}</td>
+                <td>: {{ $namaPengaju }}</td>
             </tr>
             <tr>
-                <td>ID Poktan</td>
-                <td>: {{ $proposal->user->farmerProfile->id_poktan ?? '-' }}</td>
+                <td>{{ $identitasLabel }}</td>
+                <td>: {{ $identitasValue }}</td>
             </tr>
             <tr>
-                <td>Desa</td>
-                <td>: {{ !empty($proposal->user->farmerProfile->alamat) ? $proposal->user->farmerProfile->alamat : '-' }}</td>
+                <td>Desa / Alamat</td>
+                <td>: {{ $desa }}</td>
             </tr>
+            @if(!$isUmum)
             <tr>
                 <td>Kecamatan</td>
-                <td>: {{ !empty($proposal->user->farmerProfile->kecamatan) ? ucwords(strtolower($proposal->user->farmerProfile->kecamatan)) : '-' }}</td>
+                <td>: {{ ucwords(strtolower($kecamatan)) }}</td>
             </tr>
+            @endif
             <tr>
                 <td>No. Surat Pengajuan</td>
                 <td>: {{ $proposal->no_surat_pengajuan ?? '-' }}</td>
             </tr>
             <tr>
-                <td>No. SK Kelompok Tani</td>
+                <td>{{ $skLabel }}</td>
                 <td>: {{ $noSk }}</td>
             </tr>
         </table>
@@ -149,11 +173,18 @@
             </thead>
             <tbody>
                 <tr><td style="text-align: center;">1</td><td>Surat Permohonan</td><td></td><td></td><td></td></tr>
+                @if($isUmum)
+                <tr><td style="text-align: center;">2</td><td>Fotocopy KTP Pemohon</td><td></td><td></td><td></td></tr>
+                <tr><td style="text-align: center;">3</td><td>Surat Keterangan Usaha / Domisili</td><td></td><td></td><td></td></tr>
+                <tr><td style="text-align: center;">4</td><td>Profil Usaha / Bukti Kegiatan Usaha</td><td></td><td></td><td></td></tr>
+                <tr><td style="text-align: center;">5</td><td>Dokumen Pendukung Lainnya</td><td></td><td></td><td></td></tr>
+                @else
                 <tr><td style="text-align: center;">2</td><td>Fotocopy KTP Ketua Kelompok dan Seluruh Anggota</td><td></td><td></td><td></td></tr>
                 <tr><td style="text-align: center;">3</td><td>Fotocopy SK Kelompok Tani yang di tandatangani oleh Kepala Desa</td><td></td><td></td><td></td></tr>
                 <tr><td style="text-align: center;">4</td><td>Fotocopy atau Printout data Kelompok Tani di Sistem Informasi Penyuluh Pertanian (Simluhtan)</td><td></td><td></td><td></td></tr>
                 <tr><td style="text-align: center;">5</td><td>Fotocopy Notula dan Daftar Hadir Rapat Kelompok Tani terkait permohonan bantuan</td><td></td><td></td><td></td></tr>
-                <tr><td style="text-align: center;">6</td><td>Titik Koordinat lokasi usaha tani</td><td></td><td></td><td></td></tr>
+                @endif
+                <tr><td style="text-align: center;">6</td><td>Titik Koordinat lokasi usaha {{ $isUmum ? '' : 'tani' }}</td><td></td><td></td><td></td></tr>
                 <tr><td style="text-align: center;">7</td><td>Tidak menerima bantuan yang sama dalam satu musim tanam</td><td></td><td></td><td></td></tr>
             </tbody>
         </table>
@@ -245,7 +276,7 @@
             </tr>
         </table>
 
-        <p style="margin-bottom: 5px;">Pengurus Gapoktan/Poktan</p>
+        <p style="margin-bottom: 5px;">{{ $isUmum ? 'Pemohon / Calon Penerima' : 'Pengurus Gapoktan/Poktan' }}</p>
         <table style="width: 100%; margin-left: 20px;">
             <tr>
                 <td style="padding: 5px 0; width: 350px;">1. .......................................</td>

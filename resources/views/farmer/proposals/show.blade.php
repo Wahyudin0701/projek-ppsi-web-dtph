@@ -66,11 +66,6 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             Unduh Surat Perjanjian
                         </a>
-                        @else
-                        <a href="{{ route('documents.sk-bantuan', $proposal->id) }}" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Unduh SK Bantuan
-                        </a>
                         @endif
                     @endif
                     <a href="{{ route('farmer.proposals.download-receipt', $proposal->id) }}" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
@@ -79,6 +74,18 @@
                     </a>
                 </div>
             </div>
+
+            @if($proposal->status === 'disetujui' && !$proposal->alsintan_id)
+                <div class="bg-blue-50 border border-blue-200 text-blue-800 p-5 rounded-2xl flex gap-4 items-start shadow-sm">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-blue-900 mb-1">Proposal Bantuan Disetujui!</h4>
+                        <p class="text-sm text-blue-800 leading-relaxed">Pengajuan program bantuan Anda telah disetujui. Harap mendatangi kantor Dinas Tanaman Pangan dan Hortikultura untuk memproses Surat Keputusan (SK) dan kelengkapan administrasi lainnya.</p>
+                    </div>
+                </div>
+            @endif
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {{-- Main Info --}}

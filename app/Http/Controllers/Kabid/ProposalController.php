@@ -73,7 +73,14 @@ class ProposalController extends Controller
             ->with(['user.farmerProfile', 'program', 'alsintan']);
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            if ($request->status === 'selesai_kabid') {
+                $query->whereIn('status', [
+                    'menunggu_keputusan_akhir', 'direkomendasikan', 'disetujui', 
+                    'dikembalikan', 'ditolak', 'ditolak_pusat'
+                ]);
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         if ($request->filled('type')) {

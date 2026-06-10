@@ -28,14 +28,14 @@
                 </div>
             </div>
 
-            <form action="{{ route('pimpinan.reports.users') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form action="{{ route('pimpinan.reports.users') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4" x-data="{ startDate: '{{ request('start_date') }}' }">
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Mulai Daftar</label>
-                    <input type="date" name="start_date" value="{{ request('start_date') }}" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="date" name="start_date" x-model="startDate" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Akhir Daftar</label>
-                    <input type="date" name="end_date" value="{{ request('end_date') }}" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="date" name="end_date" value="{{ request('end_date') }}" :min="startDate" onchange="this.form.submit()" class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
                     <div class="flex justify-between items-center mb-1">

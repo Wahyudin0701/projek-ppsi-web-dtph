@@ -71,12 +71,31 @@
         $namaAlat = $proposal->alsintan->name ?? '................';
         $merkAlat = $proposal->alsintan->merk ?? '';
         $fullNamaAlat = trim($namaAlat . ' ' . $merkAlat);
-        $namaPoktan = $proposal->user->farmerProfile->nama_kelompok ?? '..........................';
-        $ketuaPoktan = $proposal->user->farmerProfile->ketua ?? '..........................';
-        $alamatPoktan = $proposal->user->farmerProfile->alamat ?? '..........................';
-        $kecamatanPoktan = $proposal->user->farmerProfile->kecamatan ?? '................................';
-        $desaPoktan = $proposal->user->farmerProfile->desa ?? '...........';
-        $rtPoktan = '.......';
+        $noSurat = $proposal->nomor_dokumen_final ?? '531.1/         /DTPH-PSP/V/' . date('Y');
+        $durasi = $proposal->rencana_durasi_hari ?? '........';
+        
+        $isUmum = $proposal->user->role === 'umum';
+        if ($isUmum) {
+            $namaUtama = $proposal->user->name;
+            $alamatUtama = $proposal->user->umumProfile->alamat ?? '..........................';
+            $nikUtama = $proposal->user->umumProfile->nik ?? '................';
+            $identitasPihakKedua = "Pemohon Terdaftar dengan NIK " . $nikUtama . " yang beralamat di " . ucwords(strtolower($alamatUtama)) . ", bertindak untuk dan atas nama pribadi/instansi untuk selanjutnya disebut sebagai <strong>PIHAK KEDUA;</strong>";
+            $headerPihakKedua = strtoupper($namaUtama);
+            $ttdGelar = "";
+            $ttdLabel = strtoupper($namaUtama);
+            $lokasiOperasi = ucwords(strtolower($alamatUtama));
+        } else {
+            $namaPoktan = $proposal->user->farmerProfile->nama_kelompok ?? '..........................';
+            $ketuaPoktan = $proposal->user->farmerProfile->ketua ?? '..........................';
+            $alamatPoktan = $proposal->user->farmerProfile->alamat ?? '..........................';
+            $kecamatanPoktan = $proposal->user->farmerProfile->kecamatan ?? '................................';
+            $namaUtama = $ketuaPoktan;
+            $identitasPihakKedua = "Ketua Poktan <strong>" . $namaPoktan . "</strong> Selamanya Beralamat dan Berkedudukan di Desa " . ucwords(strtolower($alamatPoktan)) . ", Kecamatan " . $kecamatanPoktan . ", Kabupaten Muaro Jambi, bertindak untuk dan atas nama <strong>" . $namaPoktan . "</strong> untuk selanjutnya disebut sebagai <strong>PIHAK KEDUA;</strong>";
+            $headerPihakKedua = "KELOMPOK TANI " . strtoupper($namaPoktan);
+            $ttdGelar = "Ketua";
+            $ttdLabel = "POKTAN " . strtoupper($namaPoktan);
+            $lokasiOperasi = "Kecamatan " . $kecamatanPoktan;
+        }
         $noSurat = $proposal->nomor_dokumen_final ?? '531.1/         /DTPH-PSP/V/' . date('Y');
         $durasi = $proposal->rencana_durasi_hari ?? '........';
         
@@ -132,7 +151,7 @@
     @endphp
     <div class="title">
         <h3>SURAT PERJANJIAN PINJAM PAKAI</h3>
-        <p><strong>DINAS TANAMAN PANGAN DAN HORTIKULTURA KABUPATEN MUARO JAMBI<br>DENGAN<br>KELOMPOK TANI {{ strtoupper($namaPoktan) }}</strong></p>
+        <p><strong>DINAS TANAMAN PANGAN DAN HORTIKULTURA KABUPATEN MUARO JAMBI<br>DENGAN<br>{{ $headerPihakKedua }}</strong></p>
         <br>
         <p><strong>TENTANG<br>PINJAM PAKAI ALAT DAN MESIN BERUPA 1 (SATU) UNIT {{ strtoupper($fullNamaAlat) }} MILIK PEMERINTAH</strong></p>
         <p>NOMOR : 531.1/{{ str_pad($proposal->id, 3, '0', STR_PAD_LEFT) }}/DTPH-PSP/{{ $bulanRomawi }}/{{ $tanggalSekarang->year }}</p>
@@ -150,9 +169,9 @@
             </tr>
             <tr>
                 <td>2.</td>
-                <td>{{ $ketuaPoktan }}</td>
+                <td>{{ $namaUtama }}</td>
                 <td>:</td>
-                <td>Ketua Poktan <strong>{{ $namaPoktan }}</strong> Selamanya Beralamat dan Berkedudukan di Desa {{ ucwords(strtolower($alamatPoktan)) }}, Kecamatan {{ $kecamatanPoktan }}, Kabupaten Muaro Jambi, bertindak untuk dan atas nama <strong>{{ $namaPoktan }}</strong> untuk selanjutnya disebut sebagai <strong>PIHAK KEDUA;</strong></td>
+                <td>{!! $identitasPihakKedua !!}</td>
             </tr>
         </table>
 
@@ -220,7 +239,7 @@
             <p class="bold">Lokasi dan Jangka Waktu Peminjaman</p>
         </div>
         <ul class="list-pasal">
-            <li><span class="num">(1)</span> Lokasi operasi alat dan mesin tersebut adalah di Kecamatan <strong>{{ $kecamatanPoktan }}</strong>;</li>
+            <li><span class="num">(1)</span> Lokasi operasi alat dan mesin tersebut adalah di <strong>{{ $lokasiOperasi }}</strong>;</li>
             <li><span class="num">(2)</span> Jangka waktu pinjam pakai alat dan mesin milik Pemerintah dimaksud berlaku selama <strong>{{ $durasi }} Hari</strong> sejak Surat Pinjam Pakai Ditandatangani;</li>
             <li><span class="num">(3)</span> Apabila masa perjanjian telah berakhir Maka PIHAK KEDUA wajib menyerahkan dan Mengembalikan alat dan mesin tersebut kepada PIHAK PERTAMA dalam keadaan baik dan lengkap dengan Biaya ditanggung PIHAK KEDUA;</li>
         </ul>
@@ -270,12 +289,16 @@
                 <tr>
                     <td>
                         <span class="bold">PIHAK KEDUA</span><br>
-                        POKTAN {{ strtoupper($namaPoktan) }}<br>
+                        @if(!$isUmum)
+                        {{ $ttdLabel }}<br>
+                        @else
+                        <br>
+                        @endif
                         <br><br>
                         <span style="font-size: 10px; color: #555;">Materai 10.000</span><br>
                         <br><br>
-                        <span style="font-weight: bold; text-decoration: underline;">{{ $ketuaPoktan }}</span><br>
-                        Ketua
+                        <span style="font-weight: bold; text-decoration: underline;">{{ $namaUtama }}</span><br>
+                        {{ $ttdGelar }}
                     </td>
                     <td>
                         <span class="bold">PIHAK PERTAMA</span><br>

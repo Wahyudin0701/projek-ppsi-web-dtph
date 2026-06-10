@@ -337,7 +337,7 @@
                     @endif
 
                     {{-- Footer Buttons --}}
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-50">
+                    <div class="flex justify-end gap-3 pt-4 pb-6 px-6 border-t border-gray-50 mt-2">
                         <a href="{{ route('super-admin.users.index') }}"
                            class="px-5 py-2.5 text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
                             Batal

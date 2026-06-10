@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Activitylog\Models\Activity;
 
 class AdminController extends Controller
 {
@@ -52,9 +51,8 @@ class AdminController extends Controller
                 'status' => 'approved',
                 'notes' => 'Disetujui oleh admin.',
             ]);
-            $user->farmerProfile->update(['status' => 'approved']);
         } elseif ($user->role === 'umum' && $user->umumProfile) {
-            $user->umumProfile->update(['status' => 'approved']);
+            // Status is handled on User model
         }
 
         $nama = $user->role === 'umum' ? $user->name : ($user->farmerProfile->nama_kelompok ?? $user->name);
@@ -71,8 +69,7 @@ class AdminController extends Controller
 
         if ($user->role === 'petani' && $user->farmerProfile) {
             $user->farmerProfile->update([
-                'rejection_reason' => $request->rejection_reason,
-                'status' => 'rejected'
+                'rejection_reason' => $request->rejection_reason
             ]);
 
             \App\Models\FarmerVerificationLog::create([
@@ -83,8 +80,7 @@ class AdminController extends Controller
             ]);
         } elseif ($user->role === 'umum' && $user->umumProfile) {
             $user->umumProfile->update([
-                'rejection_reason' => $request->rejection_reason,
-                'status' => 'rejected'
+                'rejection_reason' => $request->rejection_reason
             ]);
         }
 
@@ -102,8 +98,7 @@ class AdminController extends Controller
 
         if ($user->role === 'petani' && $user->farmerProfile) {
             $user->farmerProfile->update([
-                'rejection_reason' => $request->revision_note,
-                'status' => 'revisi'
+                'rejection_reason' => $request->revision_note
             ]);
 
             \App\Models\FarmerVerificationLog::create([
@@ -114,8 +109,7 @@ class AdminController extends Controller
             ]);
         } elseif ($user->role === 'umum' && $user->umumProfile) {
             $user->umumProfile->update([
-                'rejection_reason' => $request->revision_note,
-                'status' => 'revisi'
+                'rejection_reason' => $request->revision_note
             ]);
         }
 
@@ -193,20 +187,28 @@ class AdminController extends Controller
         ]);
 
         if ($user->status !== 'pengajuan_revisi') {
-            return redirect()->route('admin.verifikasi.index')->with('error', 'Profil ini tidak dalam status pengajuan revisi.');
+            return redirect()->route('admin.users.index')->with('error', 'Profil ini tidak dalam status pengajuan revisi.');
         }
 
         if ($request->action === 'approve') {
-            $user->update(['status' => 'approved']);
+            $user->update(['status' => 'revisi']);
             
-            Activity::causedBy(Auth::user())
+            // Hapus alasan penolakan sebelumnya jika ada agar form revisi tidak menampilkannya
+            if ($user->role === 'petani' && $user->farmerProfile) {
+                $user->farmerProfile->update(['rejection_reason' => null]);
+            } elseif ($user->role === 'umum' && $user->umumProfile) {
+                $user->umumProfile->update(['rejection_reason' => null]);
+            }
+
+            activity()
+                ->causedBy(Auth::user())
                 ->performedOn($user)
-                ->event('approved_revision')
-                ->log("Admin menyetujui revisi profil {$user->name}");
+                ->event('approved_change_request')
+                ->log("Admin menyetujui permohonan ubah data profil {$user->name}");
                 
-            return redirect()->route('admin.users.index')->with('success', 'Revisi disetujui, akun aktif.');
+            return redirect()->route('admin.users.index')->with('success', 'Permohonan disetujui, pengguna kini dapat mengedit datanya.');
         } else {
-            $user->update(['status' => 'rejected']);
+            $user->update(['status' => 'approved']);
             
             if ($user->role === 'petani' && $user->farmerProfile) {
                 $user->farmerProfile->update([
@@ -218,12 +220,13 @@ class AdminController extends Controller
                 ]);
             }
             
-            Activity::causedBy(Auth::user())
+            activity()
+                ->causedBy(Auth::user())
                 ->performedOn($user)
-                ->event('rejected_revision')
-                ->log("Admin menolak revisi profil {$user->name}");
+                ->event('rejected_change_request')
+                ->log("Admin menolak permohonan ubah data profil {$user->name}");
                 
-            return redirect()->route('admin.users.index')->with('success', 'Revisi ditolak.');
+            return redirect()->route('admin.users.index')->with('success', 'Permohonan ditolak, akun kembali kekunci.');
         }
     }
 }

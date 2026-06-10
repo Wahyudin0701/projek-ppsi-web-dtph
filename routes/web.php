@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\LocationController;
 
 // Public API Routes
 Route::get('/api/villages', [LocationController::class, 'getVillages'])->name('api.villages');
+Route::post('/api/temp-upload', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'tempUpload'])->name('api.temp-upload');
 
 // Public Route
 Route::get('/', function () {
@@ -174,6 +175,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Kelola Kontak
         Route::get('contacts', [App\Http\Controllers\Admin\ContactController::class, 'index'])->name('contacts.index');
+        Route::put('contacts/settings/update', [App\Http\Controllers\Admin\ContactController::class, 'updateSettings'])->name('contacts.settings.update');
         Route::get('contacts/{contact}', [App\Http\Controllers\Admin\ContactController::class, 'show'])->name('contacts.show');
         Route::post('contacts/{contact}/reply', [App\Http\Controllers\Admin\ContactController::class, 'reply'])->name('contacts.reply');
     });
@@ -262,7 +264,6 @@ Route::middleware('auth')->prefix('documents')->name('documents.')->group(functi
     Route::get('/surat-tugas/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSuratTugas'])->name('surat-tugas');
     Route::get('/form-cpcl-blank/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printFormCpcl'])->name('form-cpcl-blank');
     Route::get('/cpcl/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printCpcl'])->name('cpcl');
-    Route::get('/sk-bantuan/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSKBantuan'])->name('sk-bantuan');
     Route::get('/surat-perjanjian/{proposal}', [\App\Http\Controllers\DocumentController::class, 'printSuratPerjanjian'])->name('surat-perjanjian');
 });
 

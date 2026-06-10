@@ -43,6 +43,7 @@
                         <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                         <option value="dikembalikan" {{ request('status') === 'dikembalikan' ? 'selected' : '' }}>Selesai (Dikembalikan)</option>
                         <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="ditolak_pusat" {{ request('status') === 'ditolak_pusat' ? 'selected' : '' }}>Ditolak Pusat</option>
                     </select>
                     <div class="flex flex-col">
                         <div class="flex justify-end mb-1.5 min-h-[16px]">
