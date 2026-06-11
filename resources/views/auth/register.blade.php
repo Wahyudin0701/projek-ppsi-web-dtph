@@ -348,7 +348,7 @@
                             <!-- Nama Pendaftar / Instansi -->
                             <div class="md:col-span-2">
                                 <label for="name" class="block text-sm font-bold text-gray-800 mb-2">
-                                    Nama Pendaftar / Instansi <span class="text-red-500">*</span>
+                                    {{ $role === 'petani' ? 'Nama Pendaftar' : 'Nama Lengkap / Instansi' }} <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -356,7 +356,7 @@
                                     </div>
                                     <input type="text" name="name" id="name" value="{{ old('name') }}" :required="step === 1" autofocus
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
-                                        placeholder="Masukkan nama lengkap atau nama instansi">
+                                        placeholder="{{ $role === 'petani' ? 'Masukkan nama pendaftar pengelola akun' : 'Masukkan nama lengkap atau nama instansi' }}">
                                 </div>
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
