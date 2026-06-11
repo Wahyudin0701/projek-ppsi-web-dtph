@@ -38,7 +38,6 @@ class FarmerProfile extends Model
         'desa',
         'kecamatan',
         'sk_pengukuhan_path',
-        'afiliasi_lembaga',
         'rejection_reason',
         'is_verified_acknowledged',
         'change_request_reason',

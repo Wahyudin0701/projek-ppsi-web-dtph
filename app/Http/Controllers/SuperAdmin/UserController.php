@@ -93,7 +93,6 @@ class UserController extends Controller
                 'nik_ketua' => $profileData['nik_ketua'] ?? '',
                 'kontak' => $profileData['kontak'] ?? null,
                 'pekerjaan' => $profileData['pekerjaan'] ?? 'Petani',
-                'afiliasi_lembaga' => $profileData['afiliasi_lembaga'] ?? 'Kelompok Tani',
                 'grade' => $profileData['grade'] ?? 'Pemula',
                 'luas_lahan' => $profileData['luas_lahan'] ?? 0,
                 'komoditi' => $komoditiStr,

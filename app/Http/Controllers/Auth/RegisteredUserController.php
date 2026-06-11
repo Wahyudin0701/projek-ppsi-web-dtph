@@ -45,6 +45,7 @@ class RegisteredUserController extends Controller
 
         if ($role === 'petani') {
             $rules = array_merge($rules, [
+                'nama_kelompok' => ['required', 'string', 'max:255'],
                 'nama_ketua' => ['required', 'string', 'max:255'],
                 'nik_ketua' => ['required', 'string', 'size:16'],
                 'no_wa' => ['required', 'string', 'max:20'],
@@ -92,7 +93,7 @@ class RegisteredUserController extends Controller
 
             if ($role === 'petani') {
                 $profile = $user->farmerProfile()->create([
-                    'nama_kelompok' => $request->name,
+                    'nama_kelompok' => $request->nama_kelompok,
                     'id_poktan' => $request->id_poktan,
                     'ketua' => $request->nama_ketua,
                     'nik_ketua' => $request->nik_ketua,

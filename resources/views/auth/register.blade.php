@@ -231,7 +231,8 @@
                           updateReview() {
                               const desaEl = document.getElementById('alamat');
                               this.review = {
-                                  name: document.getElementById('name') ? document.getElementById('name').value : (document.getElementById('name_petani') ? document.getElementById('name_petani').value : ''),
+                                  name: document.getElementById('name') ? document.getElementById('name').value : '',
+                                  nama_kelompok: document.getElementById('nama_kelompok') ? document.getElementById('nama_kelompok').value : '',
                                   email: document.getElementById('email') ? document.getElementById('email').value : '',
                                   id_poktan: document.getElementById('id_poktan') ? document.getElementById('id_poktan').value : '',
                                   no_sk: document.getElementById('no_sk') ? document.getElementById('no_sk').value : '',
@@ -344,7 +345,6 @@
                     <!-- STEP 1: Akun -->
                     <div x-show="step === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            @if($role === 'umum')
                             <!-- Nama Pendaftar / Instansi -->
                             <div class="md:col-span-2">
                                 <label for="name" class="block text-sm font-bold text-gray-800 mb-2">
@@ -360,7 +360,6 @@
                                 </div>
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
-                            @endif
 
                             <!-- Email -->
                             <div class="md:col-span-2">
@@ -559,16 +558,16 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <!-- Nama Kelompok Tani -->
                             <div>
-                                <label for="name_petani" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani <span class="text-red-500">*</span></label>
+                                <label for="nama_kelompok" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                     </div>
-                                    <input type="text" name="name" id="name_petani" value="{{ old('name') }}" :required="step === 3"
+                                    <input type="text" name="nama_kelompok" id="nama_kelompok" value="{{ old('nama_kelompok') }}" :required="step === 3"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                         placeholder="Masukkan nama kelompok tani">
                                 </div>
-                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('nama_kelompok')" class="mt-2" />
                             </div>
 
                             <!-- ID Poktan -->
@@ -813,7 +812,7 @@
                             <h4 class="font-bold text-sm text-[#19A148] mb-2 pb-1 border-b border-gray-100">1. Data Akun</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                                 <div>
-                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Kelompok</p>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Pendaftar</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.name || '-'"></p>
                                 </div>
                                 <div>
@@ -844,6 +843,10 @@
 
                             <h4 class="font-bold text-sm text-[#19A148] mt-6 mb-2 pb-1 border-b border-gray-100">3. Data Kelompok</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">Nama Kelompok</p>
+                                    <p class="font-medium text-gray-900 mt-0.5" x-text="review.nama_kelompok || '-'"></p>
+                                </div>
                                 <div>
                                     <p class="text-gray-500 text-[11px] font-semibold uppercase tracking-wider">ID Poktan</p>
                                     <p class="font-medium text-gray-900 mt-0.5" x-text="review.id_poktan || '-'"></p>
