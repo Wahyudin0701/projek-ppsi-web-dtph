@@ -162,4 +162,15 @@ class RegisteredUserController extends Controller
 
         return response()->json(['error' => 'File not found'], 400);
     }
+
+    public function checkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
+        ]);
+
+        $exists = User::where('email', $request->email)->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+require __DIR__.'/../bootstrap/finfo-polyfill.php';
 
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;

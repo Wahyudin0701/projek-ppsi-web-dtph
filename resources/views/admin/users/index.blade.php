@@ -31,16 +31,16 @@
                     {{-- Color Accent Bar --}}
                     <div class="absolute left-0 top-0 bottom-0 w-1.5 {{ $user->status === 'menunggu' ? 'bg-amber-400' : 'bg-purple-500' }}"></div>
 
-                    <div class="flex items-start gap-5 pl-2">
+                    <div class="flex items-start gap-4 sm:gap-5 pl-2 min-w-0 w-full">
                         {{-- Avatar --}}
-                        <div class="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xl shrink-0 group-hover:scale-105 transition-transform">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg sm:text-xl shrink-0 group-hover:scale-105 transition-transform">
                             {{ substr($user->role === 'petani' ? ($user->farmerProfile->nama_kelompok ?? 'K') : $user->name, 0, 1) }}
                         </div>
 
                         {{-- Info --}}
-                        <div>
-                            <div class="flex items-center gap-3 mb-1.5">
-                                <h3 class="font-extrabold text-gray-900 text-lg">{{ $user->role === 'petani' ? $user->farmerProfile->nama_kelompok : $user->name }}</h3>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                <h3 class="font-extrabold text-gray-900 text-base sm:text-lg truncate">{{ $user->role === 'petani' ? $user->farmerProfile->nama_kelompok : $user->name }}</h3>
                                 
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border {{ $user->role === 'petani' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-blue-50 text-blue-700 border-blue-200' }}">
                                     {{ $user->role === 'petani' ? 'Kelompok Tani' : 'User Umum' }}
@@ -65,18 +65,18 @@
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 mt-2">
-                                <div class="flex items-center gap-2 text-sm text-gray-600">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    <span class="font-semibold">{{ $user->role === 'petani' ? ($user->farmerProfile->ketua ?? '-') : $user->name }}</span>
-                                    <span class="text-xs text-gray-400 font-mono">({{ $user->role === 'petani' ? ($user->farmerProfile->nik_ketua ?? '-') : ($user->umumProfile->nik ?? '-') }})</span>
+                                <div class="flex items-center gap-2 text-sm text-gray-600 min-w-0">
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <span class="font-semibold truncate">{{ $user->role === 'petani' ? ($user->farmerProfile->ketua ?? '-') : $user->name }}</span>
+                                    <span class="text-xs text-gray-400 font-mono shrink-0">({{ $user->role === 'petani' ? ($user->farmerProfile->nik_ketua ?? '-') : ($user->umumProfile->nik ?? '-') }})</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-sm text-gray-600">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"/></svg>
-                                    {{ $user->email }}
+                                <div class="flex items-center gap-2 text-sm text-gray-600 min-w-0">
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"/></svg>
+                                    <span class="truncate">{{ $user->email }}</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-sm text-gray-600 md:col-span-2">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                    {{ $user->role === 'petani' ? ($user->farmerProfile->kontak ?? '-') : ($user->umumProfile->no_wa ?? '-') }}
+                                <div class="flex items-center gap-2 text-sm text-gray-600 md:col-span-2 min-w-0">
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                    <span class="truncate">{{ $user->role === 'petani' ? ($user->farmerProfile->kontak ?? '-') : ($user->umumProfile->no_wa ?? '-') }}</span>
                                 </div>
                             </div>
                         </div>

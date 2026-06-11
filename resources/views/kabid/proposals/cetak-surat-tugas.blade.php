@@ -39,6 +39,8 @@
         @media print {
             body { padding: 0; background: none; }
             @page { size: A4; margin: 1cm 1.5cm; }
+            img { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .logo-cell img { display: block !important; width: 75px !important; height: auto !important; }
         }
     </style>
 </head>
@@ -47,7 +49,7 @@
     <table class="header-table">
         <tr>
             <td class="logo-cell">
-                <img src="{{ public_path('images/Lambang_Kabupaten_Muaro_Jambi.png') }}" alt="Logo Muaro Jambi">
+                <img src="{{ route('logo.serve') }}" alt="Logo Muaro Jambi" style="width:75px;height:auto;display:block;">
             </td>
             <td class="text-cell">
                 <h1>PEMERINTAH KABUPATEN MUARO JAMBI</h1>

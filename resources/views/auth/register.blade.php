@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Pendaftaran {{ $role === 'umum' ? 'Umum' : 'Kelompok Tani' }} - E-Proposal Alsintan</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/Lambang_Kabupaten_Muaro_Jambi.png') }}">
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -167,6 +168,8 @@
                           villages: [],
                           loadingVillages: false,
                           passwordError: '',
+                          emailError: '',
+                          isCheckingEmail: false,
                           review: {},
                           fetchVillages(kecamatan) {
                               this.villages = [];
@@ -248,6 +251,54 @@
                                       return el.value + (nik ? ' (NIK: ' + nik + ')' : '');
                                   }).filter(val => val.trim() !== '' && val.trim() !== '()').join(', ')
                               }
+                          },
+                          async checkEmail() {
+                              const emailInput = document.getElementById('email').value;
+                              if (!emailInput) return true;
+                              this.isCheckingEmail = true;
+                              this.emailError = '';
+                              try {
+                                  const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+                                  const formData = new FormData();
+                                  formData.append('email', emailInput);
+                                  const res = await fetch('/api/check-email', {
+                                      method: 'POST',
+                                      headers: { 'X-CSRF-TOKEN': csrfToken },
+                                      body: formData
+                                  });
+                                  const data = await res.json();
+                                  if (data.exists) {
+                                      this.emailError = 'Email sudah terpakai!';
+                                      this.isCheckingEmail = false;
+                                      return false;
+                                  }
+                              } catch(e) {}
+                              this.isCheckingEmail = false;
+                              return true;
+                          },
+                          async handleNext() {
+                              if(!this.$el.closest('form').reportValidity()) return;
+                              if(this.step === 1) {
+                                  if(!this.validatePassword()) return;
+                                  const isEmailAvailable = await this.checkEmail();
+                                  if (!isEmailAvailable) return;
+                              }
+                              if(this.step === this.maxStep - 1) this.updateReview();
+                              this.step++;
+                              this.highestStep = Math.max(this.highestStep, this.step);
+                          },
+                          async goToStep(targetStep) {
+                              if(targetStep <= this.highestStep) {
+                                  if(targetStep < this.step || this.$el.closest('form').reportValidity()) {
+                                      if(this.step === 1 && targetStep > 1) {
+                                          if(!this.validatePassword()) return;
+                                          const isEmailAvailable = await this.checkEmail();
+                                          if (!isEmailAvailable) return;
+                                      }
+                                      this.step = targetStep;
+                                      if(this.step === 5) this.updateReview();
+                                  }
+                              }
                           }
                       }"
                       x-init="
@@ -266,23 +317,23 @@
                             <div class="absolute left-0 top-4 transform -translate-y-1/2 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
                             <div class="absolute left-0 top-4 transform -translate-y-1/2 h-1 bg-[#19A148] z-0 rounded-full transition-all duration-500 ease-in-out" :style="'width: ' + ((step - 1) / (maxStep - 1) * 100) + '%'"></div>
                             
-                            <div class="relative z-10 flex flex-col items-center" :class="1 <= highestStep ? 'cursor-pointer group' : ''" @click="if(1 <= highestStep) { if (1 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 1; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="1 <= highestStep ? 'cursor-pointer group' : ''" @click="goToStep(1)">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 1 ? 'bg-[#19A148] text-white shadow-md' + (1 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">1</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 1 ? 'text-[#19A148]' : 'text-gray-400'">Akun</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="2 <= highestStep ? 'cursor-pointer group' : ''" @click="if(2 <= highestStep) { if (2 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 2; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="2 <= highestStep ? 'cursor-pointer group' : ''" @click="goToStep(2)">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 2 ? 'bg-[#19A148] text-white shadow-md' + (2 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">2</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 2 ? 'text-[#19A148]' : 'text-gray-400'">Ketua</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="3 <= highestStep ? 'cursor-pointer group' : ''" @click="if(3 <= highestStep) { if (3 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 3; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="3 <= highestStep ? 'cursor-pointer group' : ''" @click="goToStep(3)">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 3 ? 'bg-[#19A148] text-white shadow-md' + (3 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">3</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 3 ? 'text-[#19A148]' : 'text-gray-400'">Kelompok</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="4 <= highestStep ? 'cursor-pointer group' : ''" @click="if(4 <= highestStep) { if (4 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 4; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="4 <= highestStep ? 'cursor-pointer group' : ''" @click="goToStep(4)">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 4 ? 'bg-[#19A148] text-white shadow-md' + (4 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">4</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 4 ? 'text-[#19A148]' : 'text-gray-400'">Lahan</span>
                             </div>
-                            <div class="relative z-10 flex flex-col items-center" :class="5 <= highestStep ? 'cursor-pointer group' : ''" @click="if(5 <= highestStep) { if (5 < step || $el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; step = 5; if(step === 5) updateReview(); } }">
+                            <div class="relative z-10 flex flex-col items-center" :class="5 <= highestStep ? 'cursor-pointer group' : ''" @click="goToStep(5)">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ring-4 ring-white" :class="step >= 5 ? 'bg-[#19A148] text-white shadow-md' + (5 <= highestStep ? ' group-hover:scale-110' : '') : 'bg-gray-200 text-gray-500'">5</div>
                                 <span class="text-[10px] sm:text-xs font-bold mt-2 transition-colors duration-300" :class="step >= 5 ? 'text-[#19A148]' : 'text-gray-400'">Review</span>
                             </div>
@@ -318,10 +369,11 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-[#19A148] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                                     </div>
-                                    <input type="email" name="email" id="email" value="{{ old('email') }}" :required="step === 1"
+                                    <input type="email" name="email" id="email" value="{{ old('email') }}" :required="step === 1" @input="emailError = ''"
                                         class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm"
                                         placeholder="email@contoh.com">
                                 </div>
+                                <p x-show="emailError" x-text="emailError" x-cloak class="mt-2 text-sm font-bold text-red-600"></p>
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
 
@@ -430,7 +482,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <p x-show="passwordError" x-text="passwordError" x-cloak class="mt-2 text-sm font-bold text-red-500"></p>
+                                <p x-show="passwordError" x-text="passwordError" x-cloak class="mt-2 text-sm text-red-600"></p>
                                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                             </div>
                         </div>
@@ -656,9 +708,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Holtikultura -->
+                                <!-- Hortikultura -->
                                 <div>
-                                    <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Holtikultura</p>
+                                    <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Hortikultura</p>
                                     <div class="flex flex-col space-y-3">
                                         @foreach([
                                             'Sayuran' => 'Contoh: brokoli, kangkung', 
@@ -873,10 +925,11 @@
                         </button>
 
                         <!-- Next Button -->
-                        <button type="button" x-show="step < maxStep" @click="if($el.closest('form').reportValidity()) { if(step === 1 && !validatePassword()) return; if(step === maxStep - 1) updateReview(); step++; highestStep = Math.max(highestStep, step); }"
-                                class="flex-1 flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#19A148] hover:bg-[#158C3D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98]">
-                            Selanjutnya
-                            <svg class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <button type="button" x-show="step < maxStep" @click="handleNext()" :disabled="isCheckingEmail"
+                                class="flex-1 flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#19A148] hover:bg-[#158C3D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#19A148] transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!isCheckingEmail">Selanjutnya</span>
+                            <span x-show="isCheckingEmail">Memeriksa...</span>
+                            <svg x-show="!isCheckingEmail" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </button>

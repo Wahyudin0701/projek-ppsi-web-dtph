@@ -226,7 +226,7 @@
     </div>
 
     {{-- Add Inventory Modal --}}
-    <x-modal name="add-inventory" :show="$errors->any()" focusable>
+    <x-modal name="add-inventory" :show="request()->routeIs('admin.alsintan.inventories.store') && $errors->any()" focusable>
         <form method="post" action="{{ route('admin.alsintan.inventories.store', $alsintan) }}" class="p-6">
             @csrf
             <h2 class="text-lg font-bold text-gray-900 mb-4">Tambah Unit Inventaris Fisik</h2>

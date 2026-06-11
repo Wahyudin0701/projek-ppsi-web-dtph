@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Masuk - E-Proposal Alsintan</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/Lambang_Kabupaten_Muaro_Jambi.png') }}">
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

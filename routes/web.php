@@ -12,6 +12,31 @@ use App\Http\Controllers\Api\LocationController;
 // Public API Routes
 Route::get('/api/villages', [LocationController::class, 'getVillages'])->name('api.villages');
 Route::post('/api/temp-upload', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'tempUpload'])->name('api.temp-upload');
+Route::post('/api/check-email', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'checkEmail'])->name('api.check-email');
+
+// Route permanen untuk serve logo (dipakai di dokumen cetak)
+Route::get('/logo-muaro-jambi', function () {
+    $paths = [
+        public_path('images/Lambang_Kabupaten_Muaro_Jambi.png'),
+        base_path('../public_html/images/Lambang_Kabupaten_Muaro_Jambi.png'),
+        '/home/' . get_current_user() . '/public_html/images/Lambang_Kabupaten_Muaro_Jambi.png',
+        $_SERVER['DOCUMENT_ROOT'] . '/images/Lambang_Kabupaten_Muaro_Jambi.png',
+    ];
+    foreach ($paths as $path) {
+        if (file_exists($path)) {
+            return response()->file($path, ['Content-Type' => 'image/png']);
+        }
+    }
+    abort(404, 'Logo not found');
+})->name('logo.serve');
+
+// ROUTE CLEAR CACHE SEMENTARA - HAPUS SETELAH DIGUNAKAN
+Route::get('/clear-cache-sementara', function () {
+    Artisan::call('view:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    return 'Cache berhasil dibersihkan! Silakan hapus route ini dari web.php';
+});
 
 // Public Route
 Route::get('/', function () {

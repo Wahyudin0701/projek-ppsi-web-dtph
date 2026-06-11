@@ -193,9 +193,9 @@
                             </div>
                         </div>
 
-                        <!-- Holtikultura -->
+                        <!-- Hortikultura -->
                         <div>
-                            <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Holtikultura</p>
+                            <p class="text-xs font-black text-[#19A148] uppercase tracking-widest mb-3">Hortikultura</p>
                             <div class="flex flex-col space-y-3">
                                 @foreach([
                                     'Sayuran' => 'Contoh: brokoli, kangkung', 
@@ -232,7 +232,7 @@
                                     <option value="{{ $kom }}" {{ old('komoditi_utama', $profile->komoditi_utama) == $kom ? 'selected' : '' }}>{{ $kom }}</option>
                                 @endforeach
                             </optgroup>
-                            <optgroup label="Holtikultura">
+                            <optgroup label="Hortikultura">
                                 @foreach(['Sayuran', 'Buah-buahan', 'Biofarmaka'] as $kom)
                                     <option value="{{ $kom }}" {{ old('komoditi_utama', $profile->komoditi_utama) == $kom ? 'selected' : '' }}>{{ $kom }}</option>
                                 @endforeach

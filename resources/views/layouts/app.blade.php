@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Portal DTPH Muaro Jambi') }}</title>
+        <link rel="icon" type="image/png" href="{{ asset('images/Lambang_Kabupaten_Muaro_Jambi.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +31,7 @@
 
         @stack('styles')
     </head>
-    <body class="bg-[#F8FAFC] text-slate-900 antialiased overflow-hidden flex h-screen" x-data="{ mobileMenuOpen: false }">
+    <body class="bg-[#F8FAFC] text-slate-900 antialiased lg:overflow-hidden flex flex-col lg:flex-row min-h-screen" x-data="{ mobileMenuOpen: false }">
         @php
             $roleColor = match(true) {
                 auth()->user()->hasRole('super_admin') => [
@@ -420,10 +421,10 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <main class="flex-1 flex flex-col lg:h-screen lg:overflow-hidden">
 
             {{-- ===== MOBILE TOP NAVBAR (lg:hidden) ===== --}}
-            <header class="lg:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 h-16 z-40 flex-shrink-0 relative">
+            <header class="lg:hidden bg-white border-b border-gray-100 flex items-center justify-between px-4 h-16 z-40 flex-shrink-0 sticky top-0">
                 {{-- Hamburger --}}
                 <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-gray-600 p-1 rounded-lg hover:bg-gray-50">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -822,7 +823,7 @@
             </header>
 
             <!-- Page Content scrollable -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-6">
+            <div class="flex-1 lg:overflow-y-auto p-4 md:p-6 pb-6">
                 {{ $slot }}
             </div>
         </main>
