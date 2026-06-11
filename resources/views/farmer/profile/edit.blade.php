@@ -224,20 +224,6 @@
 
                     <!-- Komoditi Utama -->
                     <div class="md:col-span-2">
-                        <label for="komoditi_utama" class="block text-sm font-bold text-gray-800 mb-2">Komoditi Utama</label>
-                        <select name="komoditi_utama" id="komoditi_utama" required
-                                class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                            <optgroup label="Tanaman Pangan">
-                                @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung Hibrida', 'Kedelai', 'Kacang Tanah'] as $kom)
-                                    <option value="{{ $kom }}" {{ old('komoditi_utama', $profile->komoditi_utama) == $kom ? 'selected' : '' }}>{{ $kom }}</option>
-                                @endforeach
-                            </optgroup>
-                            <optgroup label="Hortikultura">
-                                @foreach(['Sayuran', 'Buah-buahan', 'Biofarmaka'] as $kom)
-                                    <option value="{{ $kom }}" {{ old('komoditi_utama', $profile->komoditi_utama) == $kom ? 'selected' : '' }}>{{ $kom }}</option>
-                                @endforeach
-                            </optgroup>
-                        </select>
                         <x-input-error :messages="$errors->get('komoditi_utama')" class="mt-2" />
                     </div>
 

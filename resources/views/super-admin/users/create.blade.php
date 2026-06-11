@@ -265,24 +265,19 @@
                                         <template x-for="k in selectedKomoditi" :key="k">
                                             <input type="hidden" name="profile[komoditi][]" :value="komoditiDetails[k] && komoditiDetails[k].trim() !== '' ? k + ' (' + komoditiDetails[k].trim() + ')' : k">
                                         </template>
-                                    </div>
 
-                                    <!-- Komoditi Utama -->
-                                    <div class="md:col-span-2">
-                                        <label for="profile_komoditi_utama" class="block text-sm font-bold text-gray-800 mb-2">Komoditi Utama</label>
-                                        <select name="profile[komoditi_utama]" id="profile_komoditi_utama"
-                                                class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                                            <optgroup label="Tanaman Pangan">
-                                                @foreach(['Padi Sawah', 'Padi Gogo', 'Jagung Hibrida', 'Kedelai', 'Kacang Tanah'] as $kom)
-                                                    <option value="{{ $kom }}" {{ old('profile.komoditi_utama') == $kom ? 'selected' : '' }}>{{ $kom }}</option>
-                                                @endforeach
-                                            </optgroup>
-                                            <optgroup label="Hortikultura">
-                                                @foreach(['Sayuran', 'Buah-buahan', 'Biofarmaka'] as $kom)
-                                                    <option value="{{ $kom }}" {{ old('profile.komoditi_utama') == $kom ? 'selected' : '' }}>{{ $kom }}</option>
-                                                @endforeach
-                                            </optgroup>
-                                        </select>
+                                        <!-- Komoditi Utama (di dalam scope x-data yang sama) -->
+                                        <div class="mt-5 pt-4 border-t border-gray-100">
+                                            <label for="profile_komoditi_utama" class="block text-sm font-bold text-gray-800 mb-2">Komoditi Utama</label>
+                                            <select name="profile[komoditi_utama]" id="profile_komoditi_utama"
+                                                    class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
+                                                <option value="">-- Pilih Komoditi Utama --</option>
+                                                <template x-for="k in selectedKomoditi" :key="'utama-' + k">
+                                                    <option :value="k" x-text="k" :selected="k === '{{ old('profile.komoditi_utama') }}'"></option>
+                                                </template>
+                                            </select>
+                                            <p class="text-xs text-gray-500 mt-1">Hanya menampilkan komoditi yang dicentang di atas.</p>
+                                        </div>
                                     </div>
 
                                     <!-- Kecamatan -->
