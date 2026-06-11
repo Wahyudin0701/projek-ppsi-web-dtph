@@ -188,12 +188,12 @@ class UserController extends Controller
                 $user->save();
             }
 
-            // Update Farmer Profile if exists and role is user
-            if ($newRole === 'user' && $user->farmerProfile && $request->has('profile')) {
+            // Update or Create Farmer Profile if role is petani
+            if ($newRole === 'petani' && $request->has('profile')) {
                 $profileData = $request->input('profile');
                 
                 // Handle File Uploads
-                $skPath = $user->farmerProfile->sk_pengukuhan_path;
+                $skPath = optional($user->farmerProfile)->sk_pengukuhan_path;
                 if ($request->hasFile('profile.file_sk')) {
                     if ($skPath) {
                         \Illuminate\Support\Facades\Storage::disk('public')->delete($skPath);
@@ -201,7 +201,7 @@ class UserController extends Controller
                     $skPath = $request->file('profile.file_sk')->store('dokumen_sk', 'public');
                 }
 
-                $ktpPath = $user->farmerProfile->foto_ktp;
+                $ktpPath = optional($user->farmerProfile)->foto_ktp;
                 if ($request->hasFile('profile.foto_ktp')) {
                     if ($ktpPath) {
                         \Illuminate\Support\Facades\Storage::disk('public')->delete($ktpPath);
@@ -212,33 +212,36 @@ class UserController extends Controller
                 // Handle Komoditi Array
                 $komoditiStr = isset($profileData['komoditi']) && is_array($profileData['komoditi']) 
                     ? implode(', ', $profileData['komoditi']) 
-                    : ($profileData['komoditi'] ?? $user->farmerProfile->komoditi);
+                    : ($profileData['komoditi'] ?? optional($user->farmerProfile)->komoditi);
 
-                $user->farmerProfile->update([
-                    'nama_kelompok' => $profileData['nama_kelompok'] ?? $user->farmerProfile->nama_kelompok,
-                    'id_poktan' => $profileData['id_poktan'] ?? $user->farmerProfile->id_poktan,
-                    'no_sk' => $profileData['no_sk'] ?? $user->farmerProfile->no_sk,
-                    'ketua' => $profileData['ketua'] ?? $user->farmerProfile->ketua,
-                    'nik_ketua' => $profileData['nik_ketua'] ?? $user->farmerProfile->nik_ketua,
-                    'kontak' => $profileData['kontak'] ?? $user->farmerProfile->kontak,
-                    'pekerjaan' => $profileData['pekerjaan'] ?? $user->farmerProfile->pekerjaan,
-                    'grade' => $profileData['grade'] ?? $user->farmerProfile->grade,
-                    'luas_lahan' => $profileData['luas_lahan'] ?? $user->farmerProfile->luas_lahan,
-                    'komoditi' => $komoditiStr,
-                    'komoditi_utama' => $profileData['komoditi_utama'] ?? $user->farmerProfile->komoditi_utama,
-                    'alamat' => $profileData['alamat'] ?? $user->farmerProfile->alamat,
-                    'kecamatan' => $profileData['kecamatan'] ?? $user->farmerProfile->kecamatan,
-                    'sk_pengukuhan_path' => $skPath,
-                    'foto_ktp' => $ktpPath,
-                ]);
+                $farmerProfile = $user->farmerProfile()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'nama_kelompok' => $profileData['nama_kelompok'] ?? optional($user->farmerProfile)->nama_kelompok,
+                        'id_poktan' => $profileData['id_poktan'] ?? optional($user->farmerProfile)->id_poktan,
+                        'no_sk' => $profileData['no_sk'] ?? optional($user->farmerProfile)->no_sk,
+                        'ketua' => $profileData['ketua'] ?? optional($user->farmerProfile)->ketua,
+                        'nik_ketua' => $profileData['nik_ketua'] ?? optional($user->farmerProfile)->nik_ketua,
+                        'kontak' => $profileData['kontak'] ?? optional($user->farmerProfile)->kontak,
+                        'pekerjaan' => $profileData['pekerjaan'] ?? optional($user->farmerProfile)->pekerjaan ?? 'Petani',
+                        'grade' => $profileData['grade'] ?? optional($user->farmerProfile)->grade ?? 'Pemula',
+                        'luas_lahan' => $profileData['luas_lahan'] ?? optional($user->farmerProfile)->luas_lahan ?? 0,
+                        'komoditi' => $komoditiStr,
+                        'komoditi_utama' => $profileData['komoditi_utama'] ?? optional($user->farmerProfile)->komoditi_utama,
+                        'alamat' => $profileData['alamat'] ?? optional($user->farmerProfile)->alamat,
+                        'kecamatan' => $profileData['kecamatan'] ?? optional($user->farmerProfile)->kecamatan,
+                        'sk_pengukuhan_path' => $skPath,
+                        'foto_ktp' => $ktpPath,
+                    ]
+                );
 
                 // Handle Anggota
                 if (isset($profileData['anggota_nama']) && is_array($profileData['anggota_nama'])) {
-                    $user->farmerProfile->members()->delete();
+                    $farmerProfile->members()->delete();
                     foreach ($profileData['anggota_nama'] as $index => $nama) {
                         $nik = $profileData['anggota_nik'][$index] ?? null;
                         if (!empty(trim($nama)) && !empty(trim($nik))) {
-                            $user->farmerProfile->members()->create([
+                            $farmerProfile->members()->create([
                                 'nama' => $nama,
                                 'nik' => $nik,
                             ]);

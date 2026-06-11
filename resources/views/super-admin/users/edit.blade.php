@@ -111,7 +111,7 @@
                     </div>
 
                     {{-- Data Kelompok Tani (Jika Role = Kelompok Tani) --}}
-                    @if($user->farmerProfile)
+                    @if($user->role === 'petani')
                         <div class="mt-8 pt-8 border-t border-gray-100">
                             <h4 class="text-sm font-bold text-gray-900 mb-6">Data Profil Kelompok Tani</h4>
 
@@ -120,21 +120,21 @@
                                     <!-- Nama Kelompok -->
                                     <div>
                                         <label for="profile_nama_kelompok" class="block text-sm font-bold text-gray-800 mb-2">Nama Kelompok Tani</label>
-                                        <input type="text" name="profile[nama_kelompok]" id="profile_nama_kelompok" value="{{ old('profile.nama_kelompok', $user->farmerProfile->nama_kelompok) }}"
+                                        <input type="text" name="profile[nama_kelompok]" id="profile_nama_kelompok" value="{{ old('profile.nama_kelompok', optional($user->farmerProfile)->nama_kelompok) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm">
                                     </div>
 
                                     <!-- ID Poktan -->
                                     <div>
                                         <label for="profile_id_poktan" class="block text-sm font-bold text-gray-800 mb-2">ID Poktan <span class="text-red-500">*</span></label>
-                                        <input type="text" name="profile[id_poktan]" id="profile_id_poktan" value="{{ old('profile.id_poktan', $user->farmerProfile->id_poktan) }}"
+                                        <input type="text" name="profile[id_poktan]" id="profile_id_poktan" value="{{ old('profile.id_poktan', optional($user->farmerProfile)->id_poktan) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all sm:text-sm">
                                     </div>
 
                                     <!-- No SK Kelompok -->
                                     <div>
                                         <label for="profile_no_sk" class="block text-sm font-bold text-gray-800 mb-2">No. SK Kelompok <span class="text-xs text-gray-400 font-normal">(Opsional)</span></label>
-                                        <input type="text" name="profile[no_sk]" id="profile_no_sk" value="{{ old('profile.no_sk', $user->farmerProfile->no_sk) }}"
+                                        <input type="text" name="profile[no_sk]" id="profile_no_sk" value="{{ old('profile.no_sk', optional($user->farmerProfile)->no_sk) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
                                     </div>
 
@@ -145,7 +145,7 @@
                                         </label>
                                         <input type="file" name="profile[file_sk]" id="profile_file_sk" accept=".pdf,.jpg,.jpeg,.png"
                                             class="block w-full px-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
-                                        @if($user->farmerProfile->sk_pengukuhan_path)
+                                        @if(optional($user->farmerProfile)->sk_pengukuhan_path)
                                             <p class="text-xs text-gray-500 mt-2">File saat ini: <a href="{{ Storage::url($user->farmerProfile->sk_pengukuhan_path) }}" target="_blank" class="text-[#19A148] hover:underline font-semibold">Lihat File</a></p>
                                         @endif
                                     </div>
@@ -153,14 +153,14 @@
                                     <!-- Nama Ketua -->
                                     <div>
                                         <label for="profile_ketua" class="block text-sm font-bold text-gray-800 mb-2">Nama Ketua</label>
-                                        <input type="text" name="profile[ketua]" id="profile_ketua" value="{{ old('profile.ketua', $user->farmerProfile->ketua) }}"
+                                        <input type="text" name="profile[ketua]" id="profile_ketua" value="{{ old('profile.ketua', optional($user->farmerProfile)->ketua) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
                                     </div>
 
                                     <!-- NIK Ketua -->
                                     <div>
                                         <label for="profile_nik_ketua" class="block text-sm font-bold text-gray-800 mb-2">NIK Ketua</label>
-                                        <input type="text" name="profile[nik_ketua]" id="profile_nik_ketua" value="{{ old('profile.nik_ketua', $user->farmerProfile->nik_ketua) }}"
+                                        <input type="text" name="profile[nik_ketua]" id="profile_nik_ketua" value="{{ old('profile.nik_ketua', optional($user->farmerProfile)->nik_ketua) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
                                     </div>
 
@@ -171,7 +171,7 @@
                                         </label>
                                         <input type="file" name="profile[foto_ktp]" id="profile_foto_ktp" accept=".jpg,.jpeg,.png"
                                             class="block w-full px-4 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#19A148]/10 file:text-[#19A148] hover:file:bg-[#19A148]/20">
-                                        @if($user->farmerProfile->foto_ktp)
+                                        @if(optional($user->farmerProfile)->foto_ktp)
                                             <p class="text-xs text-gray-500 mt-2">Foto saat ini: <a href="{{ Storage::url($user->farmerProfile->foto_ktp) }}" target="_blank" class="text-[#19A148] hover:underline font-semibold">Lihat Foto</a></p>
                                         @endif
                                     </div>
@@ -179,14 +179,14 @@
                                     <!-- Kontak -->
                                     <div>
                                         <label for="profile_kontak" class="block text-sm font-bold text-gray-800 mb-2">Nomor WhatsApp / Kontak</label>
-                                        <input type="text" name="profile[kontak]" id="profile_kontak" value="{{ old('profile.kontak', $user->farmerProfile->kontak) }}"
+                                        <input type="text" name="profile[kontak]" id="profile_kontak" value="{{ old('profile.kontak', optional($user->farmerProfile)->kontak) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
                                     </div>
 
                                     </div>
 
                                     <!-- Anggota Kelompok -->
-                                    <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: {{ old('profile.anggota_nama') ? Js::from(collect(old('profile.anggota_nama'))->map(function($nama, $i) { return ['nama' => $nama, 'nik' => old('profile.anggota_nik.'.$i)]; })->values()->all()) : ($user->farmerProfile->members->count() > 0 ? Js::from($user->farmerProfile->members->map(function($m) { return ['nama' => $m->nama, 'nik' => $m->nik]; })) : "[{nama: '', nik: ''}]") }} }">
+                                    <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-2" x-data="{ anggota: {{ old('profile.anggota_nama') ? Js::from(collect(old('profile.anggota_nama'))->map(function($nama, $i) { return ['nama' => $nama, 'nik' => old('profile.anggota_nik.'.$i)]; })->values()->all()) : (optional($user->farmerProfile)->members && $user->farmerProfile->members->count() > 0 ? Js::from($user->farmerProfile->members->map(function($m) { return ['nama' => $m->nama, 'nik' => $m->nik]; })) : "[{nama: '', nik: ''}]") }} }">
                                         <label class="block text-sm font-bold text-gray-800 mb-3">Daftar Anggota Kelompok</label>
                                         <template x-for="(item, index) in anggota" :key="index">
                                             <div class="flex items-start sm:items-center flex-col sm:flex-row gap-3 mb-3">
@@ -216,22 +216,22 @@
                                         <label for="profile_grade" class="block text-sm font-bold text-gray-800 mb-2">Grade Tani</label>
                                         <select name="profile[grade]" id="profile_grade"
                                                 class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                                            <option value="Pemula" {{ old('profile.grade', $user->farmerProfile->grade) == 'Pemula' ? 'selected' : '' }}>Pemula</option>
-                                            <option value="Madya" {{ old('profile.grade', $user->farmerProfile->grade) == 'Madya' ? 'selected' : '' }}>Madya</option>
-                                            <option value="Utama" {{ old('profile.grade', $user->farmerProfile->grade) == 'Utama' ? 'selected' : '' }}>Utama</option>
+                                            <option value="Pemula" {{ old('profile.grade', optional($user->farmerProfile)->grade) == 'Pemula' ? 'selected' : '' }}>Pemula</option>
+                                            <option value="Madya" {{ old('profile.grade', optional($user->farmerProfile)->grade) == 'Madya' ? 'selected' : '' }}>Madya</option>
+                                            <option value="Utama" {{ old('profile.grade', optional($user->farmerProfile)->grade) == 'Utama' ? 'selected' : '' }}>Utama</option>
                                         </select>
                                     </div>
 
                                     <!-- Luas Lahan -->
                                     <div>
                                         <label for="profile_luas_lahan" class="block text-sm font-bold text-gray-800 mb-2">Luas Lahan Total (Hektar)</label>
-                                        <input type="number" step="0.01" name="profile[luas_lahan]" id="profile_luas_lahan" value="{{ old('profile.luas_lahan', $user->farmerProfile->luas_lahan) }}"
+                                        <input type="number" step="0.01" name="profile[luas_lahan]" id="profile_luas_lahan" value="{{ old('profile.luas_lahan', optional($user->farmerProfile)->luas_lahan) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all">
                                     </div>
 
                                     <!-- Komoditi -->
                                     @php
-                                        $rawKomoditi = old('profile.komoditi', $user->farmerProfile->komoditi ? explode(', ', $user->farmerProfile->komoditi) : []);
+                                        $rawKomoditi = old('profile.komoditi', optional($user->farmerProfile)->komoditi ? explode(', ', optional($user->farmerProfile)->komoditi) : []);
                                         $selectedBase = [];
                                         $details = [];
                                         foreach($rawKomoditi as $rk) {
@@ -300,7 +300,7 @@
                                                     class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
                                                 <option value="">-- Pilih Komoditi Utama --</option>
                                                 <template x-for="k in selectedKomoditi" :key="'utama-' + k">
-                                                    <option :value="k" x-text="k" :selected="k === '{{ old('profile.komoditi_utama', $user->farmerProfile->komoditi_utama ?? '') }}'"></option>
+                                                    <option :value="k" x-text="k" :selected="k === '{{ old('profile.komoditi_utama', optional($user->farmerProfile)->komoditi_utama ?? '') }}'"></option>
                                                 </template>
                                             </select>
                                             <p class="text-xs text-gray-500 mt-1">Hanya menampilkan komoditi yang dicentang di atas.</p>
@@ -313,7 +313,7 @@
                                         <select name="profile[kecamatan]" id="profile_kecamatan"
                                                 class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
                                             @foreach(['Bahar Selatan', 'Bahar Utara', 'Jambi Luar Kota', 'Kumpeh', 'Kumpeh Ulu', 'Maro Sebo', 'Mestong', 'Sekernan', 'Sungai Bahar', 'Sungai Gelam', 'Taman Rajo'] as $kec)
-                                                <option value="{{ $kec }}" {{ old('profile.kecamatan', $user->farmerProfile->kecamatan) == $kec ? 'selected' : '' }}>{{ $kec }}</option>
+                                                <option value="{{ $kec }}" {{ old('profile.kecamatan', optional($user->farmerProfile)->kecamatan) == $kec ? 'selected' : '' }}>{{ $kec }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -321,7 +321,7 @@
                                     <!-- Desa -->
                                     <div class="md:col-span-2">
                                         <label for="profile_alamat" class="block text-sm font-bold text-gray-800 mb-2">Desa</label>
-                                        <input type="text" name="profile[alamat]" id="profile_alamat" value="{{ old('profile.alamat', $user->farmerProfile->alamat) }}"
+                                        <input type="text" name="profile[alamat]" id="profile_alamat" value="{{ old('profile.alamat', optional($user->farmerProfile)->alamat) }}"
                                             class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all"
                                             placeholder="Nama Desa">
                                     </div>
