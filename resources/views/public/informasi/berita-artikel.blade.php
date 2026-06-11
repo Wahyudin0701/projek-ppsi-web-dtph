@@ -37,30 +37,30 @@
                 <div class="flex flex-col md:flex-row gap-6 justify-between items-center bg-white p-4 rounded-[2rem] border border-gray-100 shadow-sm">
                     
                     {{-- Category Pills --}}
-                    <div class="flex flex-wrap gap-2 justify-center md:justify-start w-full md:w-auto">
+                    <div class="flex overflow-x-auto pb-2 md:pb-0 md:flex-wrap gap-2 md:gap-3 w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x">
                         <button @click="activeCategory = 'semua'" 
                                 :class="activeCategory === 'semua' ? 'bg-primary-600 text-white shadow-md shadow-primary-600/20' : 'bg-gray-50 text-gray-600 hover:bg-primary-50 hover:text-primary-600 border border-transparent hover:border-primary-100'" 
-                                class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300">
+                                class="shrink-0 snap-start px-5 py-2 md:px-6 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300">
                             Semua
                         </button>
                         <button @click="activeCategory = 'berita'" 
                                 :class="activeCategory === 'berita' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600 border border-transparent hover:border-blue-100'" 
-                                class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300">
+                                class="shrink-0 snap-start px-5 py-2 md:px-6 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300">
                             Berita
                         </button>
                         <button @click="activeCategory = 'program'" 
                                 :class="activeCategory === 'program' ? 'bg-primary-600 text-white shadow-md shadow-primary-600/20' : 'bg-gray-50 text-gray-600 hover:bg-primary-50 hover:text-primary-600 border border-transparent hover:border-primary-100'" 
-                                class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300">
+                                class="shrink-0 snap-start px-5 py-2 md:px-6 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300">
                             Program
                         </button>
                         <button @click="activeCategory = 'artikel'" 
                                 :class="activeCategory === 'artikel' ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20' : 'bg-gray-50 text-gray-600 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-100'" 
-                                class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300">
+                                class="shrink-0 snap-start px-5 py-2 md:px-6 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300">
                             Artikel
                         </button>
                         <button @click="activeCategory = 'kegiatan'" 
                                 :class="activeCategory === 'kegiatan' ? 'bg-violet-600 text-white shadow-md shadow-violet-600/20' : 'bg-gray-50 text-gray-600 hover:bg-violet-50 hover:text-violet-600 border border-transparent hover:border-violet-100'" 
-                                class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300">
+                                class="shrink-0 snap-start px-5 py-2 md:px-6 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300">
                             Kegiatan
                         </button>
                     </div>
