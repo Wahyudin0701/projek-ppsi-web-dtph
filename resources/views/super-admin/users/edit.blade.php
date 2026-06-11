@@ -307,23 +307,69 @@
                                         </div>
                                     </div>
 
-                                    <!-- Kecamatan -->
-                                    <div class="md:col-span-2">
-                                        <label for="profile_kecamatan" class="block text-sm font-bold text-gray-800 mb-2">Kecamatan</label>
-                                        <select name="profile[kecamatan]" id="profile_kecamatan"
-                                                class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
-                                            @foreach(['Bahar Selatan', 'Bahar Utara', 'Jambi Luar Kota', 'Kumpeh', 'Kumpeh Ulu', 'Maro Sebo', 'Mestong', 'Sekernan', 'Sungai Bahar', 'Sungai Gelam', 'Taman Rajo'] as $kec)
-                                                <option value="{{ $kec }}" {{ old('profile.kecamatan', optional($user->farmerProfile)->kecamatan) == $kec ? 'selected' : '' }}>{{ $kec }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <!-- Kecamatan & Desa Dynamic -->
+                                    <div class="md:col-span-2" x-data="{
+                                        villages: [],
+                                        loadingVillages: false,
+                                        selectedDesa: '{{ old('profile.alamat', optional($user->farmerProfile)->alamat) }}',
+                                        fetchVillages(kecamatan) {
+                                            this.villages = [];
+                                            if (!kecamatan) return;
+                                            this.loadingVillages = true;
+                                            fetch(`/api/villages?kecamatan=${encodeURIComponent(kecamatan)}`)
+                                                .then(res => res.json())
+                                                .then(data => {
+                                                    this.villages = data;
+                                                    this.loadingVillages = false;
+                                                    this.$nextTick(() => {
+                                                        const desaEl = document.getElementById('profile_alamat');
+                                                        if (desaEl) {
+                                                            if (this.selectedDesa && this.villages.some(v => v.name === this.selectedDesa)) {
+                                                                desaEl.value = this.selectedDesa;
+                                                            } else {
+                                                                desaEl.value = '';
+                                                            }
+                                                        }
+                                                    });
+                                                })
+                                                .catch(() => { this.loadingVillages = false; });
+                                        }
+                                    }" x-init="fetchVillages('{{ old('profile.kecamatan', optional($user->farmerProfile)->kecamatan) }}')">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <!-- Kecamatan -->
+                                            <div>
+                                                <label for="profile_kecamatan" class="block text-sm font-bold text-gray-800 mb-2">Kecamatan</label>
+                                                <select name="profile[kecamatan]" id="profile_kecamatan" @change="fetchVillages($event.target.value)"
+                                                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white">
+                                                    <option value="" disabled selected>-- Pilih Kecamatan --</option>
+                                                    @foreach(['Bahar Selatan', 'Bahar Utara', 'Jambi Luar Kota', 'Kumpeh', 'Kumpeh Ulu', 'Maro Sebo', 'Mestong', 'Sekernan', 'Sungai Bahar', 'Sungai Gelam', 'Taman Rajo'] as $kec)
+                                                        <option value="{{ $kec }}" {{ old('profile.kecamatan', optional($user->farmerProfile)->kecamatan) == $kec ? 'selected' : '' }}>{{ $kec }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
-                                    <!-- Desa -->
-                                    <div class="md:col-span-2">
-                                        <label for="profile_alamat" class="block text-sm font-bold text-gray-800 mb-2">Desa</label>
-                                        <input type="text" name="profile[alamat]" id="profile_alamat" value="{{ old('profile.alamat', optional($user->farmerProfile)->alamat) }}"
-                                            class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all"
-                                            placeholder="Nama Desa">
+                                            <!-- Desa -->
+                                            <div>
+                                                <label for="profile_alamat" class="block text-sm font-bold text-gray-800 mb-2">Desa</label>
+                                                <div class="relative group">
+                                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+                                                        <svg x-show="loadingVillages" x-cloak class="h-5 w-5 text-[#19A148] animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+                                                    </div>
+                                                    <select name="profile[alamat]" id="profile_alamat"
+                                                        :disabled="villages.length === 0"
+                                                        class="block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#19A148]/20 focus:border-[#19A148] transition-all bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                                        :class="loadingVillages ? 'pl-10' : ''">
+                                                        <template x-if="villages.length > 0">
+                                                            <option value="" disabled selected>Pilih Desa/Kelurahan</option>
+                                                        </template>
+                                                        <template x-for="village in villages" :key="village.id">
+                                                            <option :value="village.name" x-text="village.name + ' (' + village.status + ')'" :selected="village.name === selectedDesa"></option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <p x-show="villages.length === 0 && !loadingVillages" class="text-xs text-gray-400 mt-1">Pilih kecamatan terlebih dahulu.</p>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
