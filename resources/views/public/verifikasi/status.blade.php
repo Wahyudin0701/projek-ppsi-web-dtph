@@ -1,5 +1,5 @@
-<x-app-layout>
-    <x-slot name="header">Verifikasi Dokumen Resmi</x-slot>
+<x-layouts.public>
+    <x-slot:title>Verifikasi Dokumen Resmi</x-slot:title>
 
     <div class="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         
@@ -71,4 +71,4 @@
             </a>
         </div>
     </div>
-</x-app-layout>
+</x-layouts.public>
