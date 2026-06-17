@@ -197,7 +197,6 @@
                     <span style="color: {{ $statusColor }}; font-weight: bold;">{{ $proposal->statusLabel }}</span></p>
                 </td>
                 <td style="width: 40%; text-align: center;">
-                    <p style="font-size: 10px; margin-bottom: 5px; font-weight: bold; margin-top: 0;">Tanda Tangan Digital:</p>
                     @php
                         $hash = substr(md5($proposal->id . $proposal->submission_date->timestamp . config('app.key')), 0, 10);
                         $verifyUrl = route('verification.proposal', ['id' => $proposal->id, 'hash' => $hash]);
