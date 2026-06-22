@@ -58,7 +58,9 @@ class FarmerProfileController extends Controller
                 if ($profile->foto_ktp) {
                     Storage::disk('public')->delete($profile->foto_ktp);
                 }
-                $validated['foto_ktp'] = $request->file('foto_ktp')->store('ktp_umum', 'public');
+                $file = $request->file('foto_ktp');
+                $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $validated['foto_ktp'] = $file->storeAs('ktp_umum', $filename, 'public');
             }
 
             $profile->update($validated);
@@ -104,14 +106,18 @@ class FarmerProfileController extends Controller
             if ($profile->sk_pengukuhan_path) {
                 Storage::disk('public')->delete($profile->sk_pengukuhan_path);
             }
-            $validated['sk_pengukuhan_path'] = $request->file('file_sk')->store('sk_kelompok', 'public');
+            $file = $request->file('file_sk');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $validated['sk_pengukuhan_path'] = $file->storeAs('sk_kelompok', $filename, 'public');
         }
 
         if ($request->hasFile('foto_ktp')) {
             if ($profile->foto_ktp) {
                 Storage::disk('public')->delete($profile->foto_ktp);
             }
-            $validated['foto_ktp'] = $request->file('foto_ktp')->store('ktp_ketua', 'public');
+            $file = $request->file('foto_ktp');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $validated['foto_ktp'] = $file->storeAs('ktp_ketua', $filename, 'public');
         }
 
         unset($validated['file_sk']);

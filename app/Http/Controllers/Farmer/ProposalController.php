@@ -115,7 +115,9 @@ class ProposalController extends Controller
             'file_proposal'       => 'required|file|extensions:pdf,doc,docx|max:5120',
         ]);
 
-        $filePath = $request->file('file_proposal')->store('proposals', 'public');
+        $file = $request->file('file_proposal');
+        $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+        $filePath = $file->storeAs('proposals', $filename, 'public');
 
         $proposal = Proposal::create([
             'user_id'             => $user->id,
@@ -214,7 +216,9 @@ class ProposalController extends Controller
             'file_proposal' => 'required|file|extensions:pdf,doc,docx|max:5120',
         ]);
 
-        $filePath = $request->file('file_proposal')->store('proposals', 'public');
+        $file = $request->file('file_proposal');
+        $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+        $filePath = $file->storeAs('proposals', $filename, 'public');
 
         $proposal = Proposal::create([
             'user_id' => $user->id,

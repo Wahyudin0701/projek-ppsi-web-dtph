@@ -45,7 +45,9 @@ class ProgramController extends Controller
         ]);
 
         if ($request->hasFile('juknis_file')) {
-            $data['juknis_file'] = $request->file('juknis_file')->store('programs', 'public');
+            $file = $request->file('juknis_file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $data['juknis_file'] = $file->storeAs('programs', $filename, 'public');
         }
 
         Program::create($data);
@@ -90,7 +92,9 @@ class ProgramController extends Controller
             if ($program->juknis_file) {
                 Storage::disk('public')->delete($program->juknis_file);
             }
-            $data['juknis_file'] = $request->file('juknis_file')->store('programs', 'public');
+            $file = $request->file('juknis_file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $data['juknis_file'] = $file->storeAs('programs', $filename, 'public');
         }
 
         $program->update($data);

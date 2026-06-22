@@ -140,7 +140,9 @@ class RegisteredUserController extends Controller
     private function handleFileUpload($request, $fileKey, $tempKey, $destination)
     {
         if ($request->hasFile($fileKey)) {
-            return $request->file($fileKey)->store($destination, 'public');
+            $file = $request->file($fileKey);
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            return $file->storeAs($destination, $filename, 'public');
         } elseif ($request->filled($tempKey) && Storage::disk('public')->exists($request->input($tempKey))) {
             $tempPath = $request->input($tempKey);
             $newPath = str_replace('temp/', $destination . '/', $tempPath);
@@ -157,7 +159,9 @@ class RegisteredUserController extends Controller
         ]);
 
         if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('temp', 'public');
+            $file = $request->file('file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('temp', $filename, 'public');
             return response()->json(['path' => $path]);
         }
 

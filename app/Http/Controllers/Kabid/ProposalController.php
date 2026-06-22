@@ -426,19 +426,19 @@ class ProposalController extends Controller
             'ket_titik_koordinat'        => $request->ket_titik_koordinat,
             'is_tidak_menerima_bantuan_sama' => $request->is_tidak_menerima_bantuan_sama,
             'ket_tidak_menerima_bantuan_sama'=> $request->ket_tidak_menerima_bantuan_sama,
-            'dokumen_fisik_path'             => $request->hasFile('dokumen_fisik') ? $request->file('dokumen_fisik')->store('cpcl_fisik', 'public') : null,
+            'dokumen_fisik_path'             => $request->hasFile('dokumen_fisik') ? $request->file('dokumen_fisik')->storeAs('cpcl_fisik', \Illuminate\Support\Str::random(40) . '.' . $request->file('dokumen_fisik')->getClientOriginalExtension(), 'public') : null,
         ]);
 
         if ($request->hasFile('foto_lahan')) {
             $proposal->surveyDocumentations()->create([
-                'file_path' => $request->file('foto_lahan')->store('survey_dokumentasi', 'public'),
+                'file_path' => $request->file('foto_lahan')->storeAs('survey_dokumentasi', \Illuminate\Support\Str::random(40) . '.' . $request->file('foto_lahan')->getClientOriginalExtension(), 'public'),
                 'keterangan' => 'Foto Lahan Survei CPCL',
             ]);
         }
 
         if ($request->hasFile('foto_pemetaan_data')) {
             $proposal->surveyDocumentations()->create([
-                'file_path' => $request->file('foto_pemetaan_data')->store('survey_dokumentasi', 'public'),
+                'file_path' => $request->file('foto_pemetaan_data')->storeAs('survey_dokumentasi', \Illuminate\Support\Str::random(40) . '.' . $request->file('foto_pemetaan_data')->getClientOriginalExtension(), 'public'),
                 'keterangan' => 'Foto Hasil Pemetaan Data',
             ]);
         }
@@ -577,19 +577,19 @@ class ProposalController extends Controller
             'ket_titik_koordinat'        => $request->ket_titik_koordinat,
             'is_tidak_menerima_bantuan_sama' => $request->is_tidak_menerima_bantuan_sama,
             'ket_tidak_menerima_bantuan_sama'=> $request->ket_tidak_menerima_bantuan_sama,
-            'dokumen_fisik_path'             => $request->hasFile('dokumen_fisik') ? $request->file('dokumen_fisik')->store('cpcl_fisik', 'public') : $cpcl->dokumen_fisik_path,
+            'dokumen_fisik_path'             => $request->hasFile('dokumen_fisik') ? $request->file('dokumen_fisik')->storeAs('cpcl_fisik', \Illuminate\Support\Str::random(40) . '.' . $request->file('dokumen_fisik')->getClientOriginalExtension(), 'public') : $cpcl->dokumen_fisik_path,
         ]);
 
         if ($request->hasFile('foto_lahan')) {
             $proposal->surveyDocumentations()->create([
-                'file_path' => $request->file('foto_lahan')->store('survey_dokumentasi', 'public'),
+                'file_path' => $request->file('foto_lahan')->storeAs('survey_dokumentasi', \Illuminate\Support\Str::random(40) . '.' . $request->file('foto_lahan')->getClientOriginalExtension(), 'public'),
                 'keterangan' => 'Foto Lahan Survei CPCL',
             ]);
         }
 
         if ($request->hasFile('foto_pemetaan_data')) {
             $proposal->surveyDocumentations()->create([
-                'file_path' => $request->file('foto_pemetaan_data')->store('survey_dokumentasi', 'public'),
+                'file_path' => $request->file('foto_pemetaan_data')->storeAs('survey_dokumentasi', \Illuminate\Support\Str::random(40) . '.' . $request->file('foto_pemetaan_data')->getClientOriginalExtension(), 'public'),
                 'keterangan' => 'Foto Hasil Pemetaan Data',
             ]);
         }
