@@ -29,7 +29,7 @@ class DocumentController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'document_category_id' => 'required|exists:document_categories,id',
-            'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,zip,rar|max:20480', // max 20MB
+            'file' => 'required|file|extensions:pdf,doc,docx,xls,xlsx,zip,rar|max:20480', // max 20MB
             'is_public' => 'boolean',
         ]);
 
@@ -76,7 +76,7 @@ class DocumentController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'document_category_id' => 'required|exists:document_categories,id',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,zip,rar|max:20480',
+            'file' => 'nullable|file|extensions:pdf,doc,docx,xls,xlsx,zip,rar|max:20480',
             'is_public' => 'boolean',
         ]);
 

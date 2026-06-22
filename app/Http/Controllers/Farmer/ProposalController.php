@@ -112,7 +112,7 @@ class ProposalController extends Controller
         $request->validate([
             'no_surat_pengajuan'  => 'nullable|string|max:255',
             'rencana_durasi_hari' => 'required|integer|min:1|max:365',
-            'file_proposal'       => 'required|file|mimes:pdf,doc,docx|max:5120',
+            'file_proposal'       => 'required|file|extensions:pdf,doc,docx|max:5120',
         ]);
 
         $filePath = $request->file('file_proposal')->store('proposals', 'public');
@@ -211,7 +211,7 @@ class ProposalController extends Controller
 
         $request->validate([
             'no_surat_pengajuan' => 'nullable|string|max:255',
-            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:5120',
+            'file_proposal' => 'required|file|extensions:pdf,doc,docx|max:5120',
         ]);
 
         $filePath = $request->file('file_proposal')->store('proposals', 'public');

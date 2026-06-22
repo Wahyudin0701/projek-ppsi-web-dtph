@@ -35,7 +35,7 @@ class ProgramController extends Controller
             'kuota'       => 'nullable|string|max:255',
             'requirements' => 'nullable|array',
             'requirements.*' => 'nullable|string|max:255',
-            'juknis_file' => 'nullable|file|mimes:pdf|max:10240', // max 10MB
+            'juknis_file' => 'nullable|file|extensions:pdf|max:10240', // max 10MB
             'contact_person' => 'nullable|string|max:255',
             'contact_phone' => 'nullable|string|max:20',
         ]);
@@ -77,7 +77,7 @@ class ProgramController extends Controller
             'kuota'       => 'nullable|string|max:255',
             'requirements' => 'nullable|array',
             'requirements.*' => 'nullable|string|max:255',
-            'juknis_file' => 'nullable|file|mimes:pdf|max:10240',
+            'juknis_file' => 'nullable|file|extensions:pdf|max:10240',
             'contact_person' => 'nullable|string|max:255',
             'contact_phone' => 'nullable|string|max:20',
         ]);

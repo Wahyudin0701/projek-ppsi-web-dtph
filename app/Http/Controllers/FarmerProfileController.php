@@ -51,7 +51,7 @@ class FarmerProfileController extends Controller
                 'nik'      => ['required', 'string', 'size:16'],
                 'no_wa'    => ['required', 'string', 'max:20'],
                 'alamat'   => ['required', 'string', 'max:500'],
-                'foto_ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'foto_ktp' => ['nullable', 'file', 'extensions:jpg,jpeg,png', 'max:5120'],
             ]);
 
             if ($request->hasFile('foto_ktp')) {
@@ -77,10 +77,10 @@ class FarmerProfileController extends Controller
             'nama_kelompok' => ['required', 'string', 'max:255'],
             'id_poktan' => ['required', 'string', 'max:255'],
             'no_sk' => ['nullable', 'string', 'max:255'],
-            'file_sk' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+            'file_sk' => ['nullable', 'file', 'extensions:pdf,jpg,jpeg,png', 'max:5120'],
             'ketua' => ['required', 'string', 'max:255'],
             'nik_ketua' => ['required', 'string', 'size:16'],
-            'foto_ktp' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'foto_ktp' => ['nullable', 'file', 'extensions:jpg,jpeg,png', 'max:5120'],
             'kontak' => ['required', 'string', 'max:20'],
             'grade' => ['required', 'string', 'in:Pemula,Madya,Utama'],
             'luas_lahan' => ['required', 'numeric', 'min:0'],

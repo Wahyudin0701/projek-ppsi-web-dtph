@@ -371,7 +371,7 @@ class ProposalController extends Controller
             'no_hp_pemetaan'      => 'nullable|string',
             'foto_lahan'          => 'nullable|image|max:5120',
             'foto_pemetaan_data'  => 'nullable|image|max:5120',
-            'dokumen_fisik'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'dokumen_fisik'       => 'nullable|file|extensions:pdf,jpg,jpeg,png|max:5120',
             // Verifikasi Administrasi
             'is_surat_permohonan_sesuai' => 'required|boolean',
             'ket_surat_permohonan'       => 'nullable|string',
@@ -518,7 +518,7 @@ class ProposalController extends Controller
             'no_hp_pemetaan'      => 'nullable|string',
             'foto_lahan'          => 'nullable|image|max:5120',
             'foto_pemetaan_data'  => 'nullable|image|max:5120',
-            'dokumen_fisik'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'dokumen_fisik'       => 'nullable|file|extensions:pdf,jpg,jpeg,png|max:5120',
             // Verifikasi Administrasi
             'is_surat_permohonan_sesuai' => 'required|boolean',
             'ket_surat_permohonan'       => 'nullable|string',

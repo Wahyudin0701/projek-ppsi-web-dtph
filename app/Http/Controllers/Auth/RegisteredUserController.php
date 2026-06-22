@@ -61,9 +61,9 @@ class RegisteredUserController extends Controller
                 'anggota_nik' => ['required', 'array', 'min:1'],
                 'anggota_nik.*' => ['required', 'string', 'size:16'],
                 'no_sk' => ['required', 'string', 'max:255'],
-                'file_sk' => ['required_without:temp_file_sk', 'nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+                'file_sk' => ['required_without:temp_file_sk', 'nullable', 'file', 'extensions:pdf,jpg,jpeg,png', 'max:5120'],
                 'temp_file_sk' => ['nullable', 'string'],
-                'foto_ktp' => ['required_without:temp_foto_ktp', 'nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'foto_ktp' => ['required_without:temp_foto_ktp', 'nullable', 'file', 'extensions:jpg,jpeg,png', 'max:5120'],
                 'temp_foto_ktp' => ['nullable', 'string'],
                 'id_poktan' => ['required', 'string', 'max:255'],
             ]);
@@ -72,7 +72,7 @@ class RegisteredUserController extends Controller
                 'nik_ketua' => ['required', 'string', 'size:16'],
                 'no_wa' => ['required', 'string', 'max:20'],
                 'alamat' => ['required', 'string'],
-                'foto_ktp' => ['required_without:temp_foto_ktp', 'nullable', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+                'foto_ktp' => ['required_without:temp_foto_ktp', 'nullable', 'file', 'extensions:jpg,jpeg,png', 'max:5120'],
                 'temp_foto_ktp' => ['nullable', 'string'],
             ]);
         }
@@ -153,7 +153,7 @@ class RegisteredUserController extends Controller
     public function tempUpload(Request $request)
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+            'file' => ['required', 'file', 'extensions:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
 
         if ($request->hasFile('file')) {
