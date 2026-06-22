@@ -73,12 +73,16 @@ class UserController extends Controller
             
             $skPath = null;
             if ($request->hasFile('profile.file_sk')) {
-                $skPath = $request->file('profile.file_sk')->store('dokumen_sk', 'public');
+                $file = $request->file('profile.file_sk');
+                $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $skPath = $file->storeAs('dokumen_sk', $filename, 'public');
             }
 
             $ktpPath = null;
             if ($request->hasFile('profile.foto_ktp')) {
-                $ktpPath = $request->file('profile.foto_ktp')->store('ktp', 'public');
+                $file = $request->file('profile.foto_ktp');
+                $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $ktpPath = $file->storeAs('ktp', $filename, 'public');
             }
 
             $komoditiStr = isset($profileData['komoditi']) && is_array($profileData['komoditi']) 
@@ -198,7 +202,9 @@ class UserController extends Controller
                     if ($skPath) {
                         \Illuminate\Support\Facades\Storage::disk('public')->delete($skPath);
                     }
-                    $skPath = $request->file('profile.file_sk')->store('dokumen_sk', 'public');
+                    $file = $request->file('profile.file_sk');
+                    $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+                    $skPath = $file->storeAs('dokumen_sk', $filename, 'public');
                 }
 
                 $ktpPath = optional($user->farmerProfile)->foto_ktp;
@@ -206,7 +212,9 @@ class UserController extends Controller
                     if ($ktpPath) {
                         \Illuminate\Support\Facades\Storage::disk('public')->delete($ktpPath);
                     }
-                    $ktpPath = $request->file('profile.foto_ktp')->store('ktp', 'public');
+                    $file = $request->file('profile.foto_ktp');
+                    $filename = \Illuminate\Support\Str::random(40) . '.' . $file->getClientOriginalExtension();
+                    $ktpPath = $file->storeAs('ktp', $filename, 'public');
                 }
 
                 // Handle Komoditi Array
