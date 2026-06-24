@@ -49,7 +49,23 @@
     <table class="header-table">
         <tr>
             <td class="logo-cell">
-                <img src="{{ route('logo.serve') }}" alt="Logo Muaro Jambi" style="width:75px;height:auto;display:block;">
+                @php
+                    $paths = [
+                        public_path('images/Lambang_Kabupaten_Muaro_Jambi.png'),
+                        base_path('../public_html/images/Lambang_Kabupaten_Muaro_Jambi.png'),
+                        $_SERVER['DOCUMENT_ROOT'] . '/images/Lambang_Kabupaten_Muaro_Jambi.png',
+                    ];
+                    $logoData = '';
+                    foreach ($paths as $path) {
+                        if (file_exists($path)) {
+                            $logoData = base64_encode(file_get_contents($path));
+                            break;
+                        }
+                    }
+                @endphp
+                @if($logoData)
+                    <img src="data:image/png;base64,{{ $logoData }}" alt="Logo Muaro Jambi" style="width:75px;height:auto;display:block;">
+                @endif
             </td>
             <td class="text-cell">
                 <h1>PEMERINTAH KABUPATEN MUARO JAMBI</h1>
