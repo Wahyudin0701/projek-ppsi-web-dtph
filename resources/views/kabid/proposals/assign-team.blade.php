@@ -52,7 +52,7 @@
 
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Berlaku Dari *</label>
-                    <input type="date" name="valid_from" x-model="validFrom" required
+                    <input type="date" name="valid_from" x-model="validFrom" required min="{{ date('Y-m-d') }}"
                            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 @error('valid_from') border-red-400 @enderror">
                     @error('valid_from')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>

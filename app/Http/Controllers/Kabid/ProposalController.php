@@ -177,7 +177,7 @@ class ProposalController extends Controller
 
         $request->validate([
             'nomor_surat'   => 'required|string|max:255|unique:survey_assignments,nomor_surat',
-            'valid_from'    => 'required|date',
+            'valid_from'    => 'required|date|after_or_equal:today',
             'valid_until'   => 'required|date|after_or_equal:valid_from',
             'team_members'  => 'required|array|min:1',
             'team_members.*.name' => 'required|string|distinct',
@@ -245,7 +245,7 @@ class ProposalController extends Controller
 
         $request->validate([
             'nomor_surat'   => 'required|string|max:255|unique:survey_assignments,nomor_surat,' . $assignment->id,
-            'valid_from'    => 'required|date',
+            'valid_from'    => 'required|date|after_or_equal:today',
             'valid_until'   => 'required|date|after_or_equal:valid_from',
             'team_members'  => 'required|array|min:1',
             'team_members.*.name' => 'required|string|distinct',
