@@ -51,6 +51,11 @@ Route::get('/', function () {
     return view('public.home', compact('employees'));
 })->name('home');
 
+// Safety net: redirect POST ke / menjadi GET ke home (mencegah MethodNotAllowedHttpException)
+Route::post('/', function () {
+    return redirect()->route('home');
+});
+
 Route::get('/katalog', function () {
     $alsintans = App\Models\Alsintan::with('category')->get();
     $categories = App\Models\AlsintanCategory::orderBy('name')->get();
