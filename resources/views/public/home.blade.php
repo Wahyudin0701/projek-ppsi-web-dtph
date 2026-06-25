@@ -182,10 +182,67 @@
         </div>
     </section>
 
+
+    {{-- ============================================================ --}}
+    {{-- VIDEO TUTORIAL SECTION                                        --}}
+    {{-- ============================================================ --}}
+    <section class="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {{-- Section Header --}}
+            <div class="reveal-section max-w-2xl mx-auto text-center mb-12">
+                <p class="text-[13px] font-bold uppercase tracking-[0.15em] text-[#19A148] mb-3">Video Tutorial</p>
+                <h2 class="text-3xl md:text-[2.5rem] font-black text-gray-900 tracking-tight leading-tight">Alur Akun Kelompok Tani<br><span class="text-[#19A148]">Portal DTPH</span></h2>
+                <p class="mt-4 text-gray-500 text-[16px] leading-relaxed">Pelajari cara mendaftar dan menggunakan portal DTPH Muaro Jambi melalui panduan video berikut ini.</p>
+            </div>
+
+            {{-- Video Embed --}}
+            <div class="reveal-section max-w-4xl mx-auto">
+                <div class="relative group">
+                    {{-- Glow Effect --}}
+                    <div class="absolute -inset-1 bg-gradient-to-r from-[#19A148] to-[#0d7a38] rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition duration-500"></div>
+                    {{-- Video Container --}}
+                    <div class="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+                        {{-- Top Bar Decoration --}}
+                        <div class="bg-gradient-to-r from-[#19A148] to-[#0d7a38] px-5 py-3 flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-white/30"></div>
+                            <div class="w-3 h-3 rounded-full bg-white/30"></div>
+                            <div class="w-3 h-3 rounded-full bg-white/30"></div>
+                            <span class="ml-3 text-white/80 text-xs font-medium tracking-wide">Tutorial Resmi Portal DTPH Muaro Jambi</span>
+                        </div>
+                        {{-- YouTube iFrame --}}
+                        <div class="relative w-full" style="padding-top: 56.25%;">
+                            <iframe
+                                class="absolute inset-0 w-full h-full"
+                                src="https://www.youtube.com/embed/9FHI3QSmjFQ?si=ZRMNwsieoPyvmzJ7&rel=0&modestbranding=1&color=white"
+                                title="Tutorial Alur Akun Kelompok Tani Portal DTPH Muaro Jambi"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- CTA bawah video --}}
+                <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="{{ route('register') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-[#19A148] hover:bg-[#0d7a38] text-white font-semibold rounded-xl shadow-lg shadow-green-500/20 hover:shadow-green-500/40 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                        Daftar Sekarang
+                    </a>
+                    <a href="https://youtu.be/9FHI3QSmjFQ?si=ZRMNwsieoPyvmzJ7" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        Tonton di YouTube
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- ============================================================ --}}
     {{-- LAYANAN / FEATURES SECTION                                   --}}
     {{-- ============================================================ --}}
     <section class="py-16 md:py-24 bg-white">
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Section Header --}}
             <div class="reveal-section max-w-xl mx-auto text-center mb-16">
