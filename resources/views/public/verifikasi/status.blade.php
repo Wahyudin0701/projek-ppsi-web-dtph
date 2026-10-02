@@ -42,10 +42,10 @@
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Detail Pengajuan</p>
                         @if($proposal->alsintan_id)
                             <div class="inline-block px-3 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-lg mb-2">Peminjaman Alsintan</div>
-                            <p class="text-lg font-bold text-gray-900">{{ $proposal->alsintan->name }} ({{ $proposal->alsintan->merk ?? '-' }})</p>
+                            <p class="text-lg font-bold text-gray-900">{{ ($proposal->alsintan?->name ?? '-') }} ({{ $proposal->alsintan?->merk ?? '-' }})</p>
                         @else
                             <div class="inline-block px-3 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg mb-2">Program Bantuan</div>
-                            <p class="text-lg font-bold text-gray-900">{{ $proposal->program->name }}</p>
+                            <p class="text-lg font-bold text-gray-900">{{ ($proposal->program?->name ?? '-') }}</p>
                         @endif
                     </div>
                 </div>

@@ -47,9 +47,9 @@
                     </div>
                     <h3 class="text-2xl font-black text-gray-900">
                         @if($proposal->alsintan_id)
-                            {{ $proposal->alsintan->name }}
+                            {{ ($proposal->alsintan?->name ?? '-') }}
                         @else
-                            {{ $proposal->program->name }}
+                            {{ ($proposal->program?->name ?? '-') }}
                         @endif
                     </h3>
                     <p class="text-gray-500 text-sm mt-1 mb-3">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
@@ -115,11 +115,11 @@
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Alat</p>
-                                    <p class="text-gray-900 font-bold text-base">{{ $proposal->alsintan->name }}</p>
+                                    <p class="text-gray-900 font-bold text-base">{{ ($proposal->alsintan?->name ?? '-') }}</p>
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Merk / Tipe</p>
-                                    <p class="text-gray-900 font-medium">{{ $proposal->alsintan->merk ?? '-' }}</p>
+                                    <p class="text-gray-900 font-medium">{{ $proposal->alsintan?->merk ?? '-' }}</p>
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Durasi Peminjaman</p>
@@ -130,10 +130,10 @@
                                     <p class="text-gray-900 font-medium whitespace-pre-line">{{ $proposal->alsintan->description ?? '-' }}</p>
                                 </div>
                             </div>
-                            @if($proposal->alsintan->image)
+                            @if($proposal->alsintan?->image)
                             <div class="mt-6 pt-6 border-t border-gray-100">
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Foto Alsintan</p>
-                                <img src="{{ Storage::url($proposal->alsintan->image) }}" alt="{{ $proposal->alsintan->name }}" class="w-full max-w-sm h-auto rounded-xl border border-gray-100 shadow-sm object-cover aspect-video">
+                                <img src="{{ Storage::url($proposal->alsintan?->image) }}" alt="{{ ($proposal->alsintan?->name ?? '-') }}" class="w-full max-w-sm h-auto rounded-xl border border-gray-100 shadow-sm object-cover aspect-video">
                             </div>
                             @endif
                         @else
@@ -144,7 +144,7 @@
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
-                                    <p class="text-gray-900 font-bold text-base">{{ $proposal->program->name }}</p>
+                                    <p class="text-gray-900 font-bold text-base">{{ ($proposal->program?->name ?? '-') }}</p>
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Sasaran</p>

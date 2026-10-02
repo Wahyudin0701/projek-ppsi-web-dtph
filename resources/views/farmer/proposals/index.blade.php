@@ -53,10 +53,10 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($proposal->alsintan)
-                                        <p class="font-bold text-gray-900 text-sm">{{ $proposal->alsintan->name }}</p>
+                                        <p class="font-bold text-gray-900 text-sm">{{ ($proposal->alsintan?->name ?? '-') }}</p>
                                         <p class="text-[10px] text-primary-600 font-bold uppercase tracking-tighter">Peminjaman Alsintan</p>
                                     @elseif($proposal->program)
-                                        <p class="font-bold text-gray-900 text-sm">{{ $proposal->program->name }}</p>
+                                        <p class="font-bold text-gray-900 text-sm">{{ ($proposal->program?->name ?? '-') }}</p>
                                         <p class="text-[10px] text-gray-400 uppercase tracking-tighter">{{ str_replace('_', ' ', $proposal->program->type) }}</p>
                                     @else
                                         <p class="font-bold text-gray-900">-</p>

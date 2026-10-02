@@ -53,7 +53,7 @@
             </tr>
             <tr>
                 <td>Jenis Usulan</td>
-                <td>: {{ $proposal->alsintan_id ? $proposal->alsintan->name : $proposal->program->name }}</td>
+                <td>: {{ $proposal->alsintan_id ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}</td>
             </tr>
             <tr>
                 <td>Alamat Kelompok</td>

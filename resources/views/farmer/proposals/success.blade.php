@@ -29,9 +29,9 @@
                             <p class="text-gray-500 font-semibold mb-0.5 text-xs">Jenis Pengajuan</p>
                             <p class="font-bold text-gray-900">
                                 @if($proposal->alsintan_id)
-                                    Peminjaman Alat — {{ $proposal->alsintan->name }}
+                                    Peminjaman Alat — {{ ($proposal->alsintan?->name ?? '-') }}
                                 @else
-                                    Program Bantuan — {{ $proposal->program->name }}
+                                    Program Bantuan — {{ ($proposal->program?->name ?? '-') }}
                                 @endif
                             </p>
                         </div>

@@ -238,7 +238,7 @@
                                                     {{ $isAlsintan ? 'Alsintan' : 'Bantuan' }}
                                                 </span>
                                                 <span class="text-xs text-gray-700 font-medium max-w-[200px] truncate">
-                                                    {{ $isAlsintan ? $prop->alsintan->name : $prop->program->name }}
+                                                    {{ $isAlsintan ? ($prop->alsintan?->name ?? '-') : ($prop->program?->name ?? '-') }}
                                                 </span>
                                             </div>
                                         </td>

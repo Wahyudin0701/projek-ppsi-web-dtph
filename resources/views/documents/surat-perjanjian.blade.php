@@ -68,8 +68,8 @@
         }
         
         $tanggalSekarang = \Carbon\Carbon::now()->locale('id');
-        $namaAlat = $proposal->alsintan->name ?? '................';
-        $merkAlat = $proposal->alsintan->merk ?? '';
+        $namaAlat = $proposal->alsintan?->name ?? '................';
+        $merkAlat = $proposal->alsintan?->merk ?? '';
         $fullNamaAlat = trim($namaAlat . ' ' . $merkAlat);
         $noSurat = $proposal->nomor_dokumen_final ?? '531.1/         /DTPH-PSP/V/' . date('Y');
         $durasi = $proposal->rencana_durasi_hari ?? '........';

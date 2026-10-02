@@ -109,7 +109,7 @@
                                         {{ $isAlsintan ? 'Alsintan' : 'Program Bantuan' }}
                                     </span>
                                     <p class="font-semibold text-gray-800 text-sm">
-                                        {{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}
+                                        {{ $isAlsintan ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}
                                     </p>
                                 </td>
                                 <td class="px-6 py-4 text-center">

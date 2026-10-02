@@ -48,7 +48,7 @@
                     </span>
                 </div>
                 <h3 class="text-2xl font-black text-gray-900">
-                    {{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}
+                    {{ $isAlsintan ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}
                 </h3>
                 <p class="text-gray-500 text-sm mt-1 mb-3">Nomor Registrasi: <span class="font-bold text-gray-900">#PRP-{{ str_pad($proposal->id, 5, '0', STR_PAD_LEFT) }}</span></p>
                 <div>
@@ -142,7 +142,7 @@
                                             <p class="text-sm text-gray-500">Proposal akan diproses ke tahap selanjutnya.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-4">Anda akan <strong class="text-indigo-600">menyetujui</strong> proposal <strong>{{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
+                                    <p class="text-sm text-gray-600 mb-4">Anda akan <strong class="text-indigo-600">menyetujui</strong> proposal <strong>{{ $isAlsintan ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
                                     <form action="{{ route('pimpinan.proposals.approve', $proposal) }}" method="POST">
                                         @csrf @method('PATCH')
                                         @if($proposal->alsintan_id)
@@ -191,7 +191,7 @@
                                             <p class="text-sm text-gray-500">Proposal akan ditolak secara permanen.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-4">Anda akan <strong class="text-red-600">menolak</strong> proposal <strong>{{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
+                                    <p class="text-sm text-gray-600 mb-4">Anda akan <strong class="text-red-600">menolak</strong> proposal <strong>{{ $isAlsintan ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
                                     <form action="{{ route('pimpinan.proposals.reject', $proposal) }}" method="POST">
                                         @csrf @method('DELETE')
                                         <div class="mb-5">
@@ -238,7 +238,7 @@
                                             <p class="text-sm text-gray-500">Proposal akan disetujui secara permanen.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-4">Anda akan memberikan keputusan akhir <strong class="text-indigo-600">menyetujui</strong> proposal <strong>{{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
+                                    <p class="text-sm text-gray-600 mb-4">Anda akan memberikan keputusan akhir <strong class="text-indigo-600">menyetujui</strong> proposal <strong>{{ $isAlsintan ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
                                     <form action="{{ route('pimpinan.proposals.approve', $proposal) }}" method="POST">
                                         @csrf @method('PATCH')
                                         @if($proposal->alsintan_id)
@@ -285,7 +285,7 @@
                                             <p class="text-sm text-gray-500">Proposal akan ditolak secara permanen.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-4">Anda akan <strong class="text-red-600">menolak</strong> proposal <strong>{{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
+                                    <p class="text-sm text-gray-600 mb-4">Anda akan <strong class="text-red-600">menolak</strong> proposal <strong>{{ $isAlsintan ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong>.</p>
                                     <form action="{{ route('pimpinan.proposals.reject', $proposal) }}" method="POST">
                                         @csrf @method('DELETE')
                                         <div class="mb-5">
@@ -333,7 +333,7 @@
                                             <p class="text-sm text-gray-500">Proposal Program Bantuan ini telah disetujui pusat.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-4">Anda akan memberikan SK Final (Penerima Bantuan) untuk proposal <strong>{{ $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> karena DIPA/Anggaran dari pusat telah turun.</p>
+                                    <p class="text-sm text-gray-600 mb-4">Anda akan memberikan SK Final (Penerima Bantuan) untuk proposal <strong>{{ ($proposal->program?->name ?? '-') }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> karena DIPA/Anggaran dari pusat telah turun.</p>
                                     <form action="{{ route('pimpinan.proposals.finalize', $proposal) }}" method="POST">
                                         @csrf @method('PATCH')
                                         <div class="flex flex-row-reverse gap-3 mt-6">
@@ -360,7 +360,7 @@
                                             <p class="text-sm text-gray-500">Proposal Program Bantuan ini ditolak/tidak masuk kuota pusat.</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-4">Anda akan menandai proposal <strong>{{ $proposal->program->name }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> ditolak oleh pusat.</p>
+                                    <p class="text-sm text-gray-600 mb-4">Anda akan menandai proposal <strong>{{ ($proposal->program?->name ?? '-') }}</strong> dari <strong>{{ $proposal->user->farmerProfile->nama_kelompok ?? $proposal->user->name }}</strong> ditolak oleh pusat.</p>
                                     <form action="{{ route('pimpinan.proposals.reject-pusat', $proposal) }}" method="POST">
                                         @csrf @method('PATCH')
                                         <div class="mb-5">
@@ -496,9 +496,9 @@
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Alat</p>
-                                <p class="text-gray-900 font-bold text-base">{{ $proposal->alsintan->name }}</p>
+                                <p class="text-gray-900 font-bold text-base">{{ ($proposal->alsintan?->name ?? '-') }}</p>
                             </div>
-                            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Merk / Tipe</p><p class="text-gray-900 font-medium">{{ $proposal->alsintan->merk ?? '-' }}</p></div>
+                            <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Merk / Tipe</p><p class="text-gray-900 font-medium">{{ $proposal->alsintan?->merk ?? '-' }}</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Stok Tersedia</p><p class="text-gray-900 font-medium">{{ $proposal->alsintan->available_stock }} unit</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Durasi Peminjaman</p><p class="text-gray-900 font-medium">{{ $proposal->rencana_durasi_hari ? $proposal->rencana_durasi_hari . ' Hari' : '-' }}</p></div>
                             <div class="col-span-2">
@@ -506,10 +506,10 @@
                                 <p class="text-gray-900 font-medium whitespace-pre-line">{{ $proposal->alsintan->description ?? '-' }}</p>
                             </div>
                         </div>
-                        @if($proposal->alsintan->image)
+                        @if($proposal->alsintan?->image)
                         <div class="mt-6 pt-6 border-t border-gray-100">
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Foto Alsintan</p>
-                            <img src="{{ Storage::url($proposal->alsintan->image) }}" alt="{{ $proposal->alsintan->name }}" class="w-full max-w-sm h-auto rounded-xl border border-gray-100 shadow-sm object-cover aspect-video">
+                            <img src="{{ Storage::url($proposal->alsintan?->image) }}" alt="{{ ($proposal->alsintan?->name ?? '-') }}" class="w-full max-w-sm h-auto rounded-xl border border-gray-100 shadow-sm object-cover aspect-video">
                         </div>
                         @endif
                     @else
@@ -520,7 +520,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nama Program</p>
-                                <p class="text-gray-900 font-bold text-base">{{ $proposal->program->name }}</p>
+                                <p class="text-gray-900 font-bold text-base">{{ ($proposal->program?->name ?? '-') }}</p>
                             </div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Sasaran</p><p class="text-gray-900 font-medium">{{ $proposal->program->sasaran ?? '-' }}</p></div>
                             <div><p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kuota</p><p class="text-gray-900 font-medium">{{ $proposal->program->kuota ?? '-' }}</p></div>

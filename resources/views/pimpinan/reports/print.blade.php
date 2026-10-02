@@ -131,7 +131,7 @@
                     </td>
                     <td>
                         <span style="font-size: 9px; font-weight: bold;">{{ $isAlsintan ? 'ALSINTAN' : 'PROGRAM' }}</span><br>
-                        {{ $isAlsintan ? $proposal->alsintan->name : $proposal->program->name }}
+                        {{ $isAlsintan ? ($proposal->alsintan?->name ?? '-') : ($proposal->program?->name ?? '-') }}
                     </td>
                     <td class="text-center">
                         {{ $proposal->submission_date?->translatedFormat('d/m/Y') }}

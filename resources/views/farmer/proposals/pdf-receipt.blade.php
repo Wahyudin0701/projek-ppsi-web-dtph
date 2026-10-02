@@ -175,9 +175,9 @@
             <td class="colon">:</td>
             <td>
                 @if($proposal->alsintan_id)
-                    {{ $proposal->alsintan->name }} (Merk: {{ $proposal->alsintan->merk ?? '-' }})
+                    {{ ($proposal->alsintan?->name ?? '-') }} (Merk: {{ $proposal->alsintan?->merk ?? '-' }})
                 @else
-                    {{ $proposal->program->name }}
+                    {{ ($proposal->program?->name ?? '-') }}
                 @endif
             </td>
         </tr>
